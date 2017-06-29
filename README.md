@@ -12,13 +12,43 @@ Use `$help` to view a list of all documented commands, and use `$help [command]`
 
 ## Features
 * Bible
+  * Verse Recognition for three versions.
+  * Daily verse selection, and auto-send.
 * Swearing Filter
+  * Relatively fast.
+  * Filters out symbols.
 * Chat Moderation
+  * Purge/clear out chat.
+  * Mute members.
+  * Command restrictions (Admin/Member/everyone).
+  * Ban-hammer.
+  * Kick users.
+  * Disable commands.
+  * Channel creation.
+  * Prune users.
 * Event Logging
+  * Logs everything, including:
+    * New message.
+    * Deleted message.
+    * Edited message.
+    * Server name change.
+    * Member name/nick/game/status change.
+    * Channel name/bitrate/max members/topic/etc... change.
+    * And More!
 * Polling
+  * Allows for several polls at one time.
+  * Can save the polls for later use.
 * Leveling
+  * Relatively easy.
+  * Near-infinite levels.
 * Games
-* Web-services (Wikipedia, Wolfram|Alpha, etc.)
+  * Rock, paper, scissors(, lizard, Spock)
+  * Word scramble.
+* Web-services
+  * Wikipedia
+  * Wolfram|Alpha
+  * Translator
+  * Dictionary
 
 ## Self-Run Instances
     Currently, you cannot run the bot locally on your computer.
