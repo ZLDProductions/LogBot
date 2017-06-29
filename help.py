@@ -389,8 +389,22 @@ infos = dict({
 		"Info"                :"Fetches the logs for a channel in a server.",
 		"Usage"               :"$fetch \\*channel-name\\*\n$fetch event",
 		"Required Permissions":"LogBot Admin"
+	},
+	"h_prefix"       :{
+		"Info"                :"Much like $help, this command will either show a list of prefixes (if no prefix parameter is present), or the plugin for the provided prefix.",
+		"Usage"               :"h$prefix\nh$prefix \\*prefix\\*",
+		"Required Permissions":"None"
 	}
 })
+prefixes = {
+	"a$":"Admin Plugin",
+	"v$":"Bible Plugin",
+	"g$":"Games Plugin",
+	"l$":"Levels Plugin",
+	"$" :"Main",
+	"p$":"Polling Plugin",
+	"h$":"Help Plugin"
+}
 
 @client.event
 async def on_ready():
@@ -434,6 +448,27 @@ async def on_message(message):
 		all_commands.sort()
 		all_commands = ', '.join(all_commands).replace("_", "$")
 		await client.send_message(message.channel, f"```Commands:\n{all_commands}```")
+		pass
+	elif startswith(f"h$prefix "):
+		prefix = message.content.replace("h$prefix ", "")
+		data = prefixes.get(prefix)
+		if data is None:
+			await client.send_message(message.channel, f"```There is no prefix \"{prefix}\"")
+			pass
+		else:
+			e = discord.Embed(title=prefix, description=f"Prefix Information for {prefix}", colour=discord.Colour.dark_gold()) \
+				.add_field(name="Plugin", value=data)
+			await client.send_message(message.channel, "Here you go!", embed=e)
+			del e
+			pass
+		del prefix
+		del data
+		pass
+	elif startswith(f"h$prefix"):
+		prefs = list(prefixes.keys())
+		prefs.sort()
+		await client.send_message(message.channel, f"```{', '.join(prefs)}```")
+		del prefs
 		pass
 	elif startswith(f"$update", "logbot.help.update"):
 		if message.author.id == owner_id: do_update = True
