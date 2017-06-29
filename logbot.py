@@ -45,6 +45,7 @@ bootup_time = datetime.now()
 owner_id = "239500860336373761"
 bot_id = "255379748828610561"
 hq_link = "https://discord.gg/82DYM3T"
+git_link = "https://github.com/ZLDProductions/LogBot"
 
 client = discord.Client()
 init()
@@ -1994,6 +1995,9 @@ async def on_message(message):
 			pass
 		elif startswith("$hq"):
 			await client.send_message(message.channel, hq_link)
+			pass
+		elif startswith("$git"):
+			await client.send_message(message.channel, "https://github.com/ZLDProductions/LogBot")
 			pass
 
 		save(message.server.id)
