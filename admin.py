@@ -30,21 +30,23 @@ class Commands:
 			try: _limit = int(cnt[1])
 			except: _limit = 100
 			logs = client.logs_from(message.channel, limit=_limit).iterate
-			messages = []
+			count = 0
 			while True:
 				try:
 					item = await logs()
-					messages.append(item)
+					await client.delete_message(item)
+					count += 1
 					pass
 				except: break
 				pass
-			for item in messages:
-				await client.delete_message(item)
-				pass
-			m = await client.send_message(message.channel, f"```Deleted {len(messages)} messages.```")
+			m = await client.send_message(message.channel, f"Deleted {count} messages.")
 			await sleep(3)
 			await client.delete_message(m)
-			print(len(messages))
+			del cnt
+			del count
+			del m
+			del _limit
+			del logs
 			pass
 		pass
 	class Owner:
