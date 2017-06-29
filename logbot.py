@@ -949,7 +949,7 @@ class Commands:
 			pass
 		@staticmethod
 		async def member(message: discord.Message, member_role: discord.Role):
-			content = message.content.replace(f'$member', '')[0]
+			content = message.content.replace(f'$member ', '')[0]
 			users = [discord.utils.find(lambda u:u.mention == item, message.server.members) if "<" in item else message.server.get_member_named(item) for item in message.content.split(" ")]
 			while None in users:
 				users.remove(None)
