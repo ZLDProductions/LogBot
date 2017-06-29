@@ -1043,7 +1043,6 @@ class Commands:
 			_mentions = kwargs.get("mentions")
 			_mentions_channel = kwargs.get("mentions_channel")
 			_mentions_role = kwargs.get("mentions_role")
-			if _contains is None: _contains = "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"
 
 			if isinstance(_from, str): _from = discord.utils.find(lambda u:u.mention == _from or u.name == _from or str(u) == _from or u.nick == _from, message.server.members)
 			if isinstance(_before, str): _before = await client.get_message(message.channel, _before)
@@ -1054,13 +1053,21 @@ class Commands:
 			def _check(m: discord.Message) -> bool:
 				res = []
 				if m.author == _from or _from is None: res.append(True)
+				else: res.append(False)
 				if _contains is None or _contains in m.content: res.append(True)
+				else: res.append(False)
 				if _pinned == m.pinned or _pinned is None: res.append(True)
+				else: res.append(False)
 				if (len(m.embeds) > 0) == _embedded or _embedded is None: res.append(True)
+				else: res.append(False)
 				if (len(m.attachments) > 0) == _attached or _attached is None: res.append(True)
+				else: res.append(False)
 				if _mentions in m.mentions or _mentions is None: res.append(True)
+				else: res.append(False)
 				if _mentions_channel in m.channel_mentions or _mentions_channel is None: res.append(True)
+				else: res.append(False)
 				if _mentions_role in m.role_mentions or _mentions_role is None: res.append(True)
+				else: res.append(False)
 
 				return False not in res
 				pass
