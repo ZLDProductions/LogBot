@@ -2028,6 +2028,14 @@ async def on_message(message):
 			elif disables["welcome"]: sendDisabled(message)
 			else: sendNoPerm(message)
 			pass
+		elif startswith("$joinrole"):
+			if (member_role in message.author.roles and not disables["welcome"]) or message.author.id == owner_id:
+				role = discord.utils.find(lambda r: r.id == join_roles[message.server.id], message.server.roles)
+				await client.send_message(message.channel, f"Join Role for {message.server.name}: {role}")
+				pass
+			elif disables["welcome"]: sendDisabled(message)
+			else: sendNoPerm(message)
+			pass
 
 		save(message.server.id)
 
@@ -2133,6 +2141,8 @@ async def on_member_join(member):
 		welcome_tmp = db.read("Welcomes", member.server.id)
 		welcome_tmp = re.sub("{server}", member.server.name, welcome_tmp, flags=2)
 		welcome_tmp = re.sub("{user}", member.mention, welcome_tmp, flags=2)
+		try: await client.add_roles(discord.utils.find(lambda r: r.id == join_roles[member.server.id], member.server.roles), member)
+		except: pass
 		await client.send_message(member.server.default_channel, welcome_tmp)
 		pass
 	pass

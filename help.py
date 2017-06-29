@@ -393,6 +393,11 @@ infos = dict({
 		"Info"                :"Much like $help, this command will either show a list of prefixes (if no prefix parameter is present), or the plugin for the provided prefix.",
 		"Usage"               :"h$prefix\nh$prefix \\*prefix\\*",
 		"Required Permissions":"None"
+	},
+	"_joinrole"      :{
+		"Info"                :"Gets or sets the join role.",
+		"Usage"               :"$joinrole [role]\n$joinrole",
+		"Required Permissions":"LogBot Admin/Member (respective)"
 	}
 })
 prefixes = {
