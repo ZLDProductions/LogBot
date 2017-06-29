@@ -53,3 +53,8 @@ Use `$help` to view a list of all documented commands, and use `$help [command]`
 ## Self-Run Instances
     Currently, you cannot run the bot locally on your computer.
     I am working on 24/7 up-time, but it may take quite a while.
+
+## Contributions
+    I will accept contributions from users who have tested the bot in it's server, and ONLY from those who are familiar with Python.
+    If you meet these standards, and wish to participate, contact me through Discord, and ask if you can.
+    Currently, I am looking for performance improvements, security improvements, and new features to add.
