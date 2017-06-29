@@ -26,17 +26,9 @@ from symbols import symbols
 
 # noinspection SpellCheckingInspection
 token = 'MjU1Mzc5NzQ4ODI4NjEwNTYx.CycwfQ.c6n0jvVrV5lGbbke68dHdlYMRX0'
-version = '14.5.7 Python'
+version = '15.0.0 Python'
 whats_new = [
-	"•Users can only vote ONCE per topic, so they can no longer spam the polls.",
-	"•Added a l$place command, so you can know where you are in the server without spamming chat.",
-	"•Minor performance improvements.",
-	"•Many DM commands fixed.",
-	"•When ranking up, the message now shows your previous rank.",
-	"•Fixed `$purge before=[id]` and `$purge after=[id]`.",
-	"•When referencing multiple verses, the bot will analyze each line separately, so you can title several different sections in one message (for example).",
-	"•When referencing the Bible, the bot will now filter out text formatting (code block, inline code, italics, etc.)",
-	"•Major performance improvements with the Main module."
+	"•Added join roles."
 ]
 planned = [
 	"•SQL storage, portable mode."
