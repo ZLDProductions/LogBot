@@ -94,6 +94,7 @@ disables = {
 }
 custom_commands = {}
 times = []
+join_roles = {}
 
 discord_logs = os.path.expanduser('~\\Documents\\Discord Logs')
 discord_settings = f"{discord_logs}\\SETTINGS"
@@ -105,10 +106,19 @@ name = f"{discord_settings}\\name.txt"
 customcmds = f"{discord_settings}\\commands.txt"
 suggestions = f"{discord_settings}\\suggestions.txt"
 channel_settings = f"{discord_settings}\\channel_settings.ini"
+_join_roles = f"{discord_settings}\\join_roles.txt"
 
 if not os.path.exists(discord_settings): os.makedirs(discord_settings)
 
 parser.read(f'{discord_settings}\\data.ini')
+
+try:
+	reader = open(_join_roles, 'r')
+	join_roles = ast.literal_eval(reader.read())
+	reader.close()
+	del reader
+	pass
+except: pass
 
 if not "SETTINGS" in parser.sections():
 	parser["SETTINGS"] = {
@@ -187,6 +197,12 @@ def save(sid: str):
 	writer.write(str(disables))
 	writer.close()
 	# </editor-fold>
+	# <editor-fold desc="Join Roles">
+	writer = open(_join_roles, 'w')
+	writer.write(str(join_roles))
+	writer.close()
+	del writer
+	# </editor-fold>
 
 	# <editor-fold desc="ini file">
 	with open(f"{discord_settings}\\data.ini", 'w') as configfile: parser.write(configfile)
@@ -231,9 +247,11 @@ def read(sid: str):
 	global disables
 
 	# <editor-fold desc="Disables">
+	# noinspection PyShadowingNames
 	reader = open(f"{server_settings}\\{sid}\\disables.txt", 'r')
 	disables = ast.literal_eval(reader.read())
 	reader.close()
+	del reader
 	# </editor-fold>
 	pass
 
@@ -1192,6 +1210,13 @@ class Commands:
 				else: await client.send_message(message.channel, f"You cannot ban the bot!")
 				pass
 			pass
+		@staticmethod
+		async def join_role(message: discord.Message):
+			cnt = message.content.replace("$joinrole ", "")
+			role = discord.utils.find(lambda r:r.name == cnt or r.id == cnt or r.mention == cnt, message.server.roles)
+			join_roles[message.server.id] = role.id
+			await client.send_message(message.channel, f"```Set the join role to {role}.```")
+			pass
 		pass
 	class Owner:
 		@staticmethod
@@ -2005,6 +2030,11 @@ async def on_message(message):
 			pass
 		elif startswith("$git"):
 			await client.send_message(message.channel, "https://github.com/ZLDProductions/LogBot")
+			pass
+		elif startswith("$joinrole "):
+			if (admin_role in message.author.roles and not disables["welcome"]) or message.author.id == owner_id: await Commands.Admin.join_role(message)
+			elif disables["welcome"]: sendDisabled(message)
+			else: sendNoPerm(message)
 			pass
 
 		save(message.server.id)
