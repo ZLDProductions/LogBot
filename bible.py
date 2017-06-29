@@ -731,51 +731,51 @@ try:
 	reader = open(verse_disables, 'r')
 	verse_disable_list = ast.literal_eval(reader.read())
 	reader.close()
+	del reader
 	pass
-except:
-	pass
+except: pass
 
 try:
 	reader = open(version_list, 'r')
 	bible_versions = ast.literal_eval(reader.read())
 	reader.close()
+	del reader
 	pass
-except:
-	pass
+except: pass
 
 try:
 	reader = open(type_list, 'r')
 	bible_types = ast.literal_eval(reader.read())
 	reader.close()
+	del reader
 	pass
-except:
-	pass
+except: pass
 
 try:
 	reader = open(c_list, 'r')
 	default_channel = ast.literal_eval(reader.read())
 	reader.close()
+	del reader
 	pass
-except:
-	pass
+except: pass
 
 try:
 	reader = open(d_last_day, 'r')
 	last_day = int(reader.read())
 	reader.close()
+	del reader
 	pass
-except:
-	pass
+except: pass
 
 try:
 	if last_day == datetime.now().day:
 		reader = open(votd_d, 'r')
 		votd = reader.read()
 		reader.close()
+		del reader
 		pass
 	pass
-except:
-	pass
+except: pass
 
 def parse_num(num: int) -> str:
 	_num = str(num)
