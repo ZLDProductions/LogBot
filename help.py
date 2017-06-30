@@ -442,6 +442,11 @@ infos = dict({
 		"Info"                :"Gives up a word scramble.",
 		"Usage"               :"$giveup",
 		"Required Permissions":"None"
+	},
+	"l_alert":{
+		"Info":"Sets which channel you will be alerted in when DM is OFF.",
+		"Usage":"l$alert {channel}",
+		"Required Permissions":"None"
 	}
 })
 prefixes = {
