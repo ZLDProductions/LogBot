@@ -7,9 +7,9 @@ import re
 import colorama
 import discord
 import requests
+from logbot_data import token
 
 # noinspection SpellCheckingInspection
-token = 'MjU1Mzc5NzQ4ODI4NjEwNTYx.CycwfQ.c6n0jvVrV5lGbbke68dHdlYMRX0'
 
 client = discord.Client()
 colorama.init()

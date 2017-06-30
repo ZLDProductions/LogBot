@@ -2,10 +2,10 @@ import asyncio
 import discord
 from colorama import Fore, init
 import os
+from logbot_data import token
 
 client = discord.Client()
 # noinspection SpellCheckingInspection
-token = 'MjU1Mzc5NzQ4ODI4NjEwNTYx.CycwfQ.c6n0jvVrV5lGbbke68dHdlYMRX0'
 init()
 
 @asyncio.coroutine

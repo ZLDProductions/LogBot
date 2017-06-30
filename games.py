@@ -7,9 +7,9 @@ from datetime import datetime
 import discord
 from colorama import Fore, init
 import sqlite3
+from logbot_data import token
 
 # noinspection SpellCheckingInspection
-token = 'MjU1Mzc5NzQ4ODI4NjEwNTYx.CycwfQ.c6n0jvVrV5lGbbke68dHdlYMRX0'
 client = discord.Client()
 init()
 sql = sqlite3.connect("logbot.db")

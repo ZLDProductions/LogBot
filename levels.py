@@ -9,12 +9,12 @@ from sys import exit
 
 import discord
 from colorama import Fore, init
+from logbot_data import token
 
 # from symbols import symbols
 
 init()
 client = discord.Client()
-token = 'MjU1Mzc5NzQ4ODI4NjEwNTYx.CycwfQ.c6n0jvVrV5lGbbke68dHdlYMRX0'
 owner_id = "239500860336373761"
 _data = os.path.expanduser("~\\Documents\\Discord Logs\\SETTINGS\\level_data")
 _disables = f"{_data}\\disables\\"

@@ -23,9 +23,9 @@ from colorama import Fore, init
 import argparser
 import sql
 from symbols import symbols
+from logbot_data import token
 
 # noinspection SpellCheckingInspection
-token = 'MjU1Mzc5NzQ4ODI4NjEwNTYx.CycwfQ.c6n0jvVrV5lGbbke68dHdlYMRX0'
 version = '15.3.3 Python'
 whats_new = [
 	"•Added join roles.",

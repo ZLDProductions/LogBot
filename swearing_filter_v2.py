@@ -8,8 +8,7 @@ from colorama import init, Fore
 from discord import Client
 import nltk
 import requests
-
-token = 'MjU1Mzc5NzQ4ODI4NjEwNTYx.CycwfQ.c6n0jvVrV5lGbbke68dHdlYMRX0'
+from logbot_data import token
 
 client = Client()
 init()

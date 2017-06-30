@@ -4,8 +4,8 @@ from datetime import datetime
 
 import discord
 from colorama import Fore, init
+from logbot_data import token
 
-token = 'MjU1Mzc5NzQ4ODI4NjEwNTYx.CycwfQ.c6n0jvVrV5lGbbke68dHdlYMRX0'
 client = discord.Client()
 init()
 

@@ -6,11 +6,11 @@ import discord
 from colorama import Fore, init
 
 import argparser
+from logbot_data import token
 
 client = discord.Client(max_messages=1000000)
 init()
 
-token = "MjU1Mzc5NzQ4ODI4NjEwNTYx.CycwfQ.c6n0jvVrV5lGbbke68dHdlYMRX0"
 owner_id = "239500860336373761"
 purge_parser = argparser.ArgParser("&&", "=")
 

@@ -13,9 +13,9 @@ from colorama import Fore, init
 
 import sql_data
 import symbols
+from logbot_data import token
 
 client = discord.Client()
-token = 'MjU1Mzc5NzQ4ODI4NjEwNTYx.CycwfQ.c6n0jvVrV5lGbbke68dHdlYMRX0'
 init()
 
 akjv_books = ["1 Samuel",

@@ -7,10 +7,10 @@ import discord
 from colorama import Fore, init
 from discord import Client, Colour, Embed, Server
 from discord.utils import find
+from logbot_data import token
 
 client = Client()
 # noinspection SpellCheckingInspection
-token = "MjU1Mzc5NzQ4ODI4NjEwNTYx.CycwfQ.c6n0jvVrV5lGbbke68dHdlYMRX0"
 init()
 
 poll_path = os.path.expanduser("~\\Documents\\Discord Logs\\SETTINGS\\Polling")
