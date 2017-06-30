@@ -26,7 +26,7 @@ from symbols import symbols
 
 # noinspection SpellCheckingInspection
 token = 'MjU1Mzc5NzQ4ODI4NjEwNTYx.CycwfQ.c6n0jvVrV5lGbbke68dHdlYMRX0'
-version = '15.1.0 Python'
+version = '15.1.1 Python'
 whats_new = [
 	"•Added join roles."
 ]
@@ -2040,7 +2040,7 @@ async def on_message(message):
 			elif disables["welcome"]: sendDisabled(message)
 			else: sendNoPerm(message)
 			pass
-		elif startswith(f"hello, <@{bot_id}>", f"hi, <@{bot_id}>", f"<@{bot_id}>"):
+		elif startswith(f"hello, <@{bot_id}>", f"hi, <@{bot_id}>", f"<@{bot_id}>", modifier="lower"):
 			await client.send_message(message.channel, f"Hello, {message.author.mention}!")
 			pass
 
