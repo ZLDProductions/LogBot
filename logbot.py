@@ -26,11 +26,12 @@ from symbols import symbols
 
 # noinspection SpellCheckingInspection
 token = 'MjU1Mzc5NzQ4ODI4NjEwNTYx.CycwfQ.c6n0jvVrV5lGbbke68dHdlYMRX0'
-version = '15.1.4 Python'
+version = '15.2.4 Python'
 whats_new = [
 	"•Added join roles.",
 	"•Updated help content.",
-	"•Added some user interaction with the bot."
+	"•Added some user interaction with the bot.",
+	"•Added the ability to not only set DM level up alerts, but which channel they appear in when DM is off."
 ]
 planned = [
 	"•SQL storage, portable mode."

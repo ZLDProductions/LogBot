@@ -224,23 +224,29 @@ async def on_message(message):
 					pass
 				if is_ranked_up:
 					do_dm = sqlread(f"""
-					SELECT dm
+					SELECT dm, alert_channel
 					FROM levels
 					WHERE server='{message.server.id}'
 					AND member='{message.author.id}';
-					""".replace("\t", ""))[0][0].lower()
+					""".replace("\t", ""))[0]
 					_tdat = sqlread(f"""
 					SELECT rank, tier*50
 					FROM levels
 					WHERE server='{message.server.id}'
 					AND member='{message.author.id}';
 					""".replace("\t", ""))[0]
-					if do_dm == "true":
+					if do_dm[0].lower() == "true":
 						await client.send_message(message.author, f"Congrats, {message.author.mention}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits in {message.server.name}!")
 						print(f"{Fore.GREEN}{message.author} has leveled up to {_tdat[0]}!{Fore.RESET}")
 						pass
 					else:
-						await client.send_message(message.channel, f"Congrats, {message.author.mention}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
+						alert_channel = discord.utils.find(lambda c: c.id == do_dm[1], message.server.channels)
+						if not alert_channel is None:
+							await client.send_message(alert_channel, f"Congrats, {message.author.mention}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
+							pass
+						else:
+							await client.send_message(alert_channel, f"Congrats, {message.author.mention}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
+							pass
 						print(f"{Fore.GREEN}{message.author} has leveled up to {_tdat[0]}!{Fore.RESET}")
 						pass
 					pass
@@ -248,7 +254,7 @@ async def on_message(message):
 				if startswith(f"l$rank"):
 					if len(message.mentions) == 0:
 						u_data = sqlread(f"""
-						SELECT tier, rank, xp, xp_limit, multiplier, credits, cpm, dm
+						SELECT tier, rank, xp, xp_limit, multiplier, credits, cpm, dm, alert_channel
 						FROM levels
 						WHERE server='{message.server.id}'
 						AND member='{message.author.id}';
@@ -264,13 +270,14 @@ async def on_message(message):
 							.add_field(name="Multiplier", value=f"{parse_num(_t[0])}.{_t[1]}") \
 							.add_field(name="CPM", value=parse_num(u_data[6])) \
 							.add_field(name="Tier", value=str(u_data[0])) \
-							.add_field(name="DM", value=str(u_data[7]))
+							.add_field(name="DM", value=str(u_data[7])) \
+							.add_field(name="Alert Channel", value=str(discord.utils.find(lambda c: c.id == u_data[8], message.server.channels)))
 						await client.send_message(message.channel, "Here you go!", embed=e)
 						pass
 					else:
 						user = message.mentions[0]
 						u_data = sqlread(f"""
-						SELECT tier, rank, xp, xp_limit, multiplier, credits, cpm, dm
+						SELECT tier, rank, xp, xp_limit, multiplier, credits, cpm, dm, alert_channel
 						FROM levels
 						WHERE server='{message.server.id}'
 						AND member='{user.id}';
@@ -287,7 +294,8 @@ async def on_message(message):
 							.add_field(name="Multiplier", value=f"{parse_num(_t[0])}.{_t[1]}") \
 							.add_field(name="CPM", value=parse_num(u_data[6])) \
 							.add_field(name="Tier", value=str(u_data[0])) \
-							.add_field(name="DM", value=str(u_data[7]))
+							.add_field(name="DM", value=str(u_data[7])) \
+							.add_field(name="Alert Channel", value=str(discord.utils.find(lambda c: c.id == u_data[8], message.server.channels)))
 						await client.send_message(message.channel, "Here you go!", embed=e)
 						pass
 					pass
@@ -1131,7 +1139,20 @@ async def on_message(message):
 				WHERE server='{message.server.id}'
 				AND member='{message.author.id}';
 				""".replace("\t", ""))
-			await client.send_message(message.channel, "```Updated Alert Channel.```")
+			await client.send_message(message.channel, "```Updated DM Channel.```")
+			pass
+		elif startswith(f"l$alert "):
+			cnt = message.content.replace("l$alert ", "")
+			if cnt.capitalize() == "None": new_alert = None
+			else: new_alert = discord.utils.find(lambda c: c.id == cnt or c.name == cnt or str(c) == cnt or c.mention == cnt, message.server.channels)
+			if isinstance(new_alert, discord.Channel): new_alert = new_alert.id
+			sqlexecute(f"""
+			UPDATE levels
+			SET alert_channel="{new_alert}"
+			WHERE server="{message.server.id}"
+			AND member="{message.author.id}";
+			""".replace("\t", ""))
+			await client.send_message(message.channel, f"```Updated Alert Channel```")
 			pass
 
 		save(message.server.id if not message.server is None else message.channel.id)
