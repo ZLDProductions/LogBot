@@ -106,7 +106,10 @@ class Commands:
 			FROM polls
 			WHERE server = "{message.server.id}";
 			""".replace("\t", ""))
-			stuffs = [f"{item[0]} : {item[1]}" for item in res]
+			stuffs = []
+			append = stuffs.append
+			for item in res:
+				if not f"{item[0]} : {item[1]}" in stuffs: append(f"{item[0]} : {item[1]}")
 			# for item in res:
 			#   if not f"{item[0] : {item[1]}" in stuffs: stuffs.append(f"{item[0]} : {item[1]}")
 			#   pass
