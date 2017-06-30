@@ -422,6 +422,26 @@ infos = dict({
 		"Info"                :"Gets or sets the join role.",
 		"Usage"               :"$joinrole [role]",
 		"Required Permissions":"LogBot Admin/Member"
+	},
+	"_git"           :{
+		"Info"                :"Shows a link to the GitHub repo for this bot.",
+		"Usage"               :"$git",
+		"Required Permissions":"None"
+	},
+	"_guess"         :{
+		"Info"                :"Take a guess at what the scrambled word is.",
+		"Usage"               :"$guess {word}",
+		"Required Permissions":"None"
+	},
+	"_scramble"      :{
+		"Info"                :"Adds a word, removes a word, searches for a word, lists all words, or starts a word scramble (respectively).",
+		"Usage"               :"$scramble add {word}\n$scramble rem {word}\n$scramble find {word}\n$scramble list\n$scramble",
+		"Required Permissions":"LogBot Member"
+	},
+	"_giveup"        :{
+		"Info"                :"Gives up a word scramble.",
+		"Usage"               :"$giveup",
+		"Required Permissions":"None"
 	}
 })
 prefixes = {

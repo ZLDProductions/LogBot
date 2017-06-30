@@ -26,7 +26,7 @@ from symbols import symbols
 
 # noinspection SpellCheckingInspection
 token = 'MjU1Mzc5NzQ4ODI4NjEwNTYx.CycwfQ.c6n0jvVrV5lGbbke68dHdlYMRX0'
-version = '15.1.2 Python'
+version = '15.1.3 Python'
 whats_new = [
 	"•Added join roles.",
 	"•Updated help content.",
