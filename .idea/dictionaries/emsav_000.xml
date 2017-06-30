@@ -47,6 +47,7 @@
       <w>marklist</w>
       <w>mcont</w>
       <w>mesg</w>
+      <w>messagecount</w>
       <w>mordechai</w>
       <w>msgcont</w>
       <w>myembed</w>
@@ -83,6 +84,7 @@
       <w>strikethrough</w>
       <w>tdat</w>
       <w>thessalonica</w>
+      <w>totalmessages</w>
       <w>twrr</w>
       <w>udat</w>
       <w>unban</w>

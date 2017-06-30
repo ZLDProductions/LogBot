@@ -48,6 +48,34 @@ class Commands:
 			del _limit
 			del logs
 			pass
+		@staticmethod
+		async def a_count(message: discord.Message):
+			count = 0
+			logs = client.logs_from(message.channel, limit=1000000000).iterate
+			while True:
+				try:
+					item = await logs()
+					count += 1
+					pass
+				except: break
+				pass
+			await client.send_message(message.channel, f"```{count} messages found!```")
+			pass
+		@staticmethod
+		async def a_total(message: discord.Message):
+			count = 0
+			for channel in message.server.channels:
+				logs = client.logs_from(channel, limit=1000000000).iterate
+				while True:
+					try:
+						item = await logs()
+						count += 1
+						pass
+					except: break
+					pass
+				pass
+			await client.send_message(message.channel, f"```{count} messages found!```")
+			pass
 		pass
 	class Owner:
 		@staticmethod
@@ -91,7 +119,13 @@ async def on_message(message):
 			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.at_clear(message)
 			pass
 		elif startswith("a$clsserver"):
-			if message.author == message.server.owner: await Commands.Owner.a_server_clear(message)
+			if message.author == message.server.owner or message.author.id == owner_id: await Commands.Owner.a_server_clear(message)
+			pass
+		elif startswith("a$count"):
+			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.a_count(message)
+			pass
+		elif startswith("a$total"):
+			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.a_total(message)
 			pass
 		pass
 

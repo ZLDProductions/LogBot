@@ -26,7 +26,7 @@ from symbols import symbols
 
 # noinspection SpellCheckingInspection
 token = 'MjU1Mzc5NzQ4ODI4NjEwNTYx.CycwfQ.c6n0jvVrV5lGbbke68dHdlYMRX0'
-version = '15.3.0 Python'
+version = '15.3.3 Python'
 whats_new = [
 	"•Added join roles.",
 	"•Updated help content.",
@@ -344,20 +344,37 @@ class Commands:
 			m = format_time(message.server.created_at)
 			server = message.server
 			roles = [f"{str(role).replace('@', '')} ({role.position}) [{role.id}]" for role in server.role_hierarchy]
-			# <editor-fold desc="discord.Embed">
-			e = discord.Embed(title=server.name, description=f"Information for {server.name}", colour=discord.Colour.teal()) \
-				.add_field(name="Total Members", value=str(server.member_count), inline=True) \
-				.add_field(name="Owner", value=str(server.owner), inline=True) \
-				.add_field(name="ID", value=server.id, inline=True) \
-				.add_field(name="Total Channels", value=str(len(server.channels)), inline=True) \
-				.add_field(name="Total Roles", value=str(len(server.roles)), inline=True) \
-				.add_field(name="Creation Time", value=f"{m.month}.{m.day}.{m.year} {m.hour}:{m.minute}") \
-				.add_field(name="Default Channel", value=str(server.default_channel)) \
-				.set_thumbnail(url=server.icon_url)
-			try: e.add_field(name="Role Hierarchy", value='\n'.join(roles))
-			except: pass
-			# </editor-fold>
-			await client.send_message(message.channel, "", embed=e)
+			try:
+				# <editor-fold desc="discord.Embed">
+				e = discord.Embed(title=server.name, description=f"Information for {server.name}", colour=discord.Colour.teal()) \
+					.add_field(name="Total Members", value=str(server.member_count), inline=True) \
+					.add_field(name="Owner", value=str(server.owner), inline=True) \
+					.add_field(name="ID", value=server.id, inline=True) \
+					.add_field(name="Total Channels", value=str(len(server.channels)), inline=True) \
+					.add_field(name="Total Roles", value=str(len(server.roles)), inline=True) \
+					.add_field(name="Creation Time", value=f"{m.month}.{m.day}.{m.year} {m.hour}:{m.minute}") \
+					.add_field(name="Default Channel", value=str(server.default_channel)) \
+					.set_thumbnail(url=server.icon_url)
+				try: e.add_field(name="Role Hierarchy", value='\n'.join(roles))
+				except: pass
+				# </editor-fold>
+				await client.send_message(message.channel, "", embed=e)
+				pass
+			except:
+				# <editor-fold desc="discord.Embed">
+				e = discord.Embed(title=server.name, description=f"Information for {server.name}", colour=discord.Colour.teal()) \
+					.add_field(name="Total Members", value=str(server.member_count), inline=True) \
+					.add_field(name="Owner", value=str(server.owner), inline=True) \
+					.add_field(name="ID", value=server.id, inline=True) \
+					.add_field(name="Total Channels", value=str(len(server.channels)), inline=True) \
+					.add_field(name="Total Roles", value=str(len(server.roles)), inline=True) \
+					.add_field(name="Creation Time", value=f"{m.month}.{m.day}.{m.year} {m.hour}:{m.minute}") \
+					.add_field(name="Default Channel", value=str(server.default_channel)) \
+					.set_thumbnail(url=server.icon_url)
+				# </editor-fold>
+				hierarchy = '\n'.join(roles)
+				await client.send_message(message.channel, f"Role Hierarchy:\n{hierarchy}", embed=e)
+				pass
 			del m
 			del server
 			del roles
