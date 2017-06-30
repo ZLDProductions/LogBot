@@ -50,6 +50,26 @@ class Commands:
 			pass
 		pass
 	class Owner:
+		@staticmethod
+		async def a_server_clear(message: discord.Message):
+			count = 0
+			for channel in message.server.channels:
+				logs = client.logs_from(channel, limit=1000000).iterate
+				while True:
+					try:
+						item = await logs()
+						await client.delete_message(item)
+						count += 1
+						pass
+					except: break
+					pass
+				pass
+			m = await client.send_message(message.channel, f"```Deleted {count} messages.```")
+			await sleep(3)
+			await client.delete_message(m)
+			del m
+			del count
+			pass
 		pass
 	pass
 
@@ -70,6 +90,9 @@ async def on_message(message):
 		elif startswith("a$purge"):
 			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.at_clear(message)
 			pass
+		elif startswith("a$clsserver"):
+			if message.author == message.server.owner: await Commands.Owner.a_server_clear(message)
+			pass
 		pass
 
 	if startswith("a$update", "logbot.admin.update", "$update"):
@@ -81,13 +104,14 @@ async def on_message(message):
 
 	if do_update is True:
 		print(f"{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}")
-		subprocess.Popen(f"python {os.getcwd()}\\bible.py")
+		subprocess.Popen(f"python {os.getcwd()}\\admin.py")
 		exit(0)
 		pass
 	pass
 
 @client.event
 async def on_ready():
+	os.system("cls")
 	print(f"{Fore.MAGENTA}Ready!!!{Fore.RESET}")
 	pass
 
