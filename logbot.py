@@ -26,7 +26,7 @@ from symbols import symbols
 
 # noinspection SpellCheckingInspection
 token = 'MjU1Mzc5NzQ4ODI4NjEwNTYx.CycwfQ.c6n0jvVrV5lGbbke68dHdlYMRX0'
-version = '15.0.0 Python'
+version = '15.1.0 Python'
 whats_new = [
 	"•Added join roles."
 ]
@@ -1484,13 +1484,17 @@ async def on_message(message):
 
 	msgcont = message.content if is_ascii(message.content) else u"{}".format(message.content)
 	# noinspection PyShadowingNames
-	def startswith(*msg: str, val: str = message.content) -> bool:
+	def startswith(*msg: str, val: str = message.content, modifier: str = "") -> bool:
 		"""
 		Checks if `val` starts with any string in `msg`.
 		:param msg: Several str type parameters. 
 		:param val: The string to compare msg to.
+		:param modifier: A special operation to perform on val. Can be "lower", "upper", or "capitalize"
 		:return: True if a value in msg is at the beginning of val, False if not.
 		"""
+		if modifier == "lower": val = val.lower()
+		if modifier == "upper": val = val.upper()
+		if modifier == "capitalize": val = val.capitalize()
 		# noinspection PyShadowingNames
 		for m in msg:
 			if val.startswith(m):
@@ -2030,11 +2034,14 @@ async def on_message(message):
 			pass
 		elif startswith("$joinrole"):
 			if (member_role in message.author.roles and not disables["welcome"]) or message.author.id == owner_id:
-				role = discord.utils.find(lambda r: r.id == join_roles[message.server.id], message.server.roles)
+				role = discord.utils.find(lambda r:r.id == join_roles[message.server.id], message.server.roles)
 				await client.send_message(message.channel, f"Join Role for {message.server.name}: {role}")
 				pass
 			elif disables["welcome"]: sendDisabled(message)
 			else: sendNoPerm(message)
+			pass
+		elif startswith(f"hello, <@{bot_id}>", f"hi, <@{bot_id}>", f"<@{bot_id}>"):
+			await client.send_message(message.channel, f"Hello, {message.author.mention}!")
 			pass
 
 		save(message.server.id)
@@ -2141,7 +2148,7 @@ async def on_member_join(member):
 		welcome_tmp = db.read("Welcomes", member.server.id)
 		welcome_tmp = re.sub("{server}", member.server.name, welcome_tmp, flags=2)
 		welcome_tmp = re.sub("{user}", member.mention, welcome_tmp, flags=2)
-		try: await client.add_roles(discord.utils.find(lambda r: r.id == join_roles[member.server.id], member.server.roles), member)
+		try: await client.add_roles(discord.utils.find(lambda r:r.id == join_roles[member.server.id], member.server.roles), member)
 		except: pass
 		await client.send_message(member.server.default_channel, welcome_tmp)
 		pass
