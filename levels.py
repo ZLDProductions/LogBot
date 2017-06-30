@@ -336,7 +336,10 @@ async def on_message(message):
 						for user in users:
 							is_ranked = False
 							for i in range(0, len(leaderboard)):
-								if leaderboard[i][0] == user.id: is_ranked = True
+								if leaderboard[i][0] == user.id:
+									is_ranked = True
+									break
+									pass
 								pass
 							if is_ranked: await client.send_message(message.channel, f"```{user} is ranked #{i+1}```")
 							else: await client.send_message(message.channel, f"```{user} is not ranked.```")
@@ -345,7 +348,10 @@ async def on_message(message):
 					else:
 						is_ranked = False
 						for i in range(0, len(leaderboard)):
-							if leaderboard[i][0] == message.author.id: is_ranked = True
+							if leaderboard[i][0] == message.author.id:
+								is_ranked = True
+								break
+								pass
 							pass
 						if is_ranked: await client.send_message(message.channel, f"```{message.author} is ranked #{i+1}```")
 						else: await client.send_message(message.channel, f"```{message.author} is not ranked.```")
