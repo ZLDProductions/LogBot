@@ -28,7 +28,9 @@ from symbols import symbols
 token = 'MjU1Mzc5NzQ4ODI4NjEwNTYx.CycwfQ.c6n0jvVrV5lGbbke68dHdlYMRX0'
 version = '15.1.2 Python'
 whats_new = [
-	"•Added join roles."
+	"•Added join roles.",
+	"•Updated help content.",
+	"•Added some user interaction with the bot."
 ]
 planned = [
 	"•SQL storage, portable mode."
