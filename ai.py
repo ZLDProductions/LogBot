@@ -14,20 +14,21 @@ async def _send():
 	Sends a message as the bot.
 	"""
 	os.system("cls")
-	channel = input(f"{Fore.RED}Channel:{Fore.LIGHTGREEN_EX} ")
-	message = input(f"{Fore.RED}Message:{Fore.LIGHTGREEN_EX} ")
-
-	if not ">" in channel:
-		channel = client.get_channel(channel)
-		pass
-	elif "DM:" in channel:
-		channel = await client.get_user_info(channel.replace("DM:", ""))
+	print("\n".join([f"{server} [{server.id}]" for server in client.servers]))
+	server = input(f"{Fore.RED}Server:{Fore.LIGHTGREEN_EX} ")
+	server = discord.utils.find(lambda s: s.name == server or s.id == server, client.servers)
+	if not server is None:
+		print("\n".join([f"{channel} [{channel.id}]" for channel in server.channels]))
+		channel = input(f"{Fore.RED}Channel:{Fore.LIGHTGREEN_EX} ")
+		channel = discord.utils.find(lambda c: c.name == channel or c.id == channel or c.mention == channel or f"#{str(c)}" == channel, server.channels)
 		pass
 	else:
-		tmp = channel.split(">")
-		server = discord.utils.find(lambda s:s.name == tmp[0], client.servers)
-		channel = discord.utils.find(lambda c:c.name == tmp[1], server.channels)
+		print('\n'.join([f"{channel} [{channel.id}]" for channel in client.get_all_members()]))
+		channel = input(f"{Fore.RED}Channel:{Fore.LIGHTGREEN_EX} ")
+		channel = discord.utils.find(lambda c: c.name == channel or c.id == channel or c.mention == channel or f"{str(c)}" == channel, client.get_all_members())
 		pass
+	message = input(f"{Fore.RED}Message:{Fore.LIGHTGREEN_EX} ")
+
 	await client.send_message(channel, message)
 	return
 
