@@ -300,7 +300,8 @@ async def on_message(message):
 						pass
 					pass
 				elif startswith(f"l$levels"):
-					ret = ""
+					await client.send_typing(message.channel)
+					ret = []
 					user_rank = 0
 					tmp = []
 					result = sqlread(f"""
@@ -310,14 +311,15 @@ async def on_message(message):
 					AND server = '{message.server.id}'
 					ORDER BY ((tier - 1) * 100) + rank DESC, xp DESC;
 					""".replace("\t", ""))
+					append = ret.append
 					for i in range(0, len(result)):
 						if result[i][0] == message.author.id: user_rank = i + 1
 						user = await client.get_user_info(result[i][0])
-						ret += f"{user} : {(result[i][1]*100)+result[i][2]}\n"
+						append(f"{user} : {(result[i][1]*100)+result[i][2]}")
 						pass
-					ret = ret.split("\n")
+					append = tmp.append
 					for i in range(0, len(ret)):
-						if i % 5 == 0: tmp.append(ret[i] + '\n')
+						if i % 5 == 0: append(ret[i] + '\n')
 						else: tmp[len(tmp) - 1] += ret[i] + "\n"
 						pass
 					for item in tmp: await client.send_message(message.channel, f"```{item}```")
