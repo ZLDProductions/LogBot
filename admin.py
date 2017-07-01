@@ -40,6 +40,7 @@ class Commands:
 				except: break
 				pass
 			m = await client.send_message(message.channel, f"Deleted {count} messages.")
+			print(count)
 			await sleep(3)
 			await client.delete_message(m)
 			del cnt
@@ -54,6 +55,7 @@ class Commands:
 			logs = client.logs_from(message.channel, limit=1000000000).iterate
 			while True:
 				try:
+					# noinspection PyUnusedLocal
 					item = await logs()
 					count += 1
 					pass

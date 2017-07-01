@@ -31,10 +31,10 @@ class SQL:
 		:param table: The table to write to.
 		:param values: The keys of the table, with their respective values.
 		"""
-		tmp1 = str
-		tmp2 = str
+		tmp1 = ""
+		tmp2 = ""
 		vals = values[0]
-		for v in vals:
+		for v in list(vals.keys()):
 			tmp1 += f", '{v}'"
 			tmp2 += f", '{vals[v]}'"
 			pass

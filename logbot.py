@@ -1149,7 +1149,7 @@ class Commands:
 			content = message.content.replace(f"$welcome ", "")
 			db.write("Welcomes", {"server":message.server.id, "message":content})
 			db.update("Welcomes", message.server.id, content, message.server.id)
-			await client.send_message(message.channel, "```Welcome message.set!```")
+			await client.send_message(message.channel, "```Welcome message set!```")
 			del content
 			pass
 		@staticmethod
@@ -2063,6 +2063,12 @@ async def on_message(message):
 			pass
 		elif startswith(f"hello, <@{bot_id}>", f"hi, <@{bot_id}>", f"<@{bot_id}>", modifier="lower"):
 			await client.send_message(message.channel, f"Hello, {message.author.mention}!")
+			pass
+
+		for item in list(custom_commands.keys()):
+			if startswith(item):
+				await client.send_message(message.channel, custom_commands[item])
+				pass
 			pass
 
 		save(message.server.id)
