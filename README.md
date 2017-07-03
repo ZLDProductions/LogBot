@@ -14,78 +14,172 @@ Key:
 
 * {} - required parameter.
 * [] - optional parameter.
+* {param: [choice/choice/...]} - required parameter with specific choices.
+* [param: [choice/choice/...]] - optional parameter with specific choices.
 
 Command documentation is as follows:
 
 #### $exclude
-##### Info
-###### Used to exclude a single message from the logs this bot creates.
-##### Usage
-###### $exclude {message}
-###### $ex {message}
-##### Required Permissions
-###### LogBot Admin
+**Info**  
+Used to exclude a single message from the logs this bot creates.
+
+**Usage**
+
+    $exclude {message}
+    $ex {message}
+
+**Required Permissions**  
+LogBot Admin
+
+---
 
 #### $excludechannel
-##### Info
-###### Excludes all messages in the mentioned channel(s) from the logs.
-##### Usage
-###### $excludechannel {channel_mention(s)}
-###### $exc {channel_mention(s)}
-##### Required Permissions
-###### LogBot Admin
+**Info**  
+Excludes all messages in the mentioned channel(s) from the logs.
+
+**Usage**
+
+    $excludechannel {channel_mention(s)}
+    $exc {channel_mention(s)}
+
+**Required Permissions**  
+LogBot Admin
+
+---
 
 #### $includechannel
-##### Info
-###### Used to remove the exclusion of mention channel(s) from the logs.
-##### Usage
-###### $includechannel {channel_mention(s)}
-###### $inc {channel_mention(s)}
-##### Required Permissions
-###### LogBot Admin
+**Info**  
+Used to remove the exclusion of mention channel(s) from the logs.
+
+**Usage**
+
+    $includechannel {channel_mention(s)}
+    $inc {channel_mention(s)}
+
+**Required Permissions**  
+LogBot Admin
+
+---
 
 #### $mark
-##### Info
-###### Used to set aside logs for the mentioned channel(s).
-#### Usage
-###### $mark a {channel_mention(s)}
-###### $mark r {channel_mention(s)}
-##### Required Permissions
-###### LogBot Admin
+**Info**  
+Used to set aside logs for the mentioned channel(s).
+
+**Usage**
+
+    $mark a {channel_mention(s)}
+    $mark r {channel_mention(s)}
+    
+**Required Permissions**      
+LogBot Admin
+
+---
 
 #### $admin
-##### Info
-###### Used to add, remove, or show the admins for this bot.
-###### Server owners are always an admin.
-##### Usage
-###### $admin a {mention(s)}
-###### $admin r {mention(s)}
-###### $admin s
-##### LogBot Admin
+**Info**  
+Used to add, remove, or show the admins for this bot.  
+Server owners are always an admin.
+
+**Usage**
+
+    $admin a {mention(s)}
+    $admin r {mention(s)}
+    $admin s
+    
+**Required Permissions**  
+LogBot Admin
+
+---
 
 #### $showlist
-##### Info
-###### Shows the list of excluded channels.
-##### Usage
-###### $showlist
-##### Required Permissions
-###### LogBot Member
+**Info**  
+Shows the list of excluded channels.
+
+**Usage**
+
+    $showlist
+
+**Required Permissions**  
+LogBot Member
+
+---
 
 #### $showmarks
-##### Info
-###### Shows the list of marked channels.
-##### Usage
-###### $showmarks
-##### Required Permissions
-###### LogBot Member
+**Info**  
+Shows the list of marked channels.
+
+**Usage**
+
+    $showmarks
+    
+**Required Permissions**  
+LogBot Member
+
+---
 
 #### $help
-##### Info
-###### Shows the help dialog for a specific command, or, if no command was stated, shows a list of commands.
-##### Usage
-###### $help [command]
-##### Required Permissions
-###### LogBot Member.
+**Info**  
+Shows the help dialog for a specific command, or, if no command was stated, shows a list of commands.
+
+**Usage**
+
+    $help [command]
+    
+**Required Permissions**  
+LogBot Member.
+
+---
+
+#### $version
+**Info**  
+Shows the current bot version, and what programming language it was written in.
+
+**Usage**
+
+    $version
+    
+**Required Permissions**  
+LogBot Member
+
+---
+
+#### $channel
+**Info**  
+Creates a channel, edits a channel, shows a list of channels created by the bot, or deletes a bot-created channel.
+
+**Usage**
+
+    $channel new {type: [text/voice]} {name} {permission level: [admin/member/everyone]
+    $channel del {channel mention or name}
+    $channel edit {new permission level: [admin/member/everyone]} {channel mention or name}
+    $channel show
+    
+**Required Permissions**  
+LogBot Admin
+
+#### $updates
+**Info**  
+Shows what is new with the bot.
+
+**Usage**  
+
+    $updates
+    
+**Required Permissions**  
+LogBot Member
+
+---
+
+#### $say
+**Info**  
+Sends a message in the specific channel.
+
+**Usage**
+
+    $say {text}|{channel_mention}|{tts [True/False]}
+    
+**Required Permissions**  
+LogBot Admin
 
 ## Features
 * Bible
