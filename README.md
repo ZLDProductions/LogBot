@@ -10,6 +10,83 @@ Have questions? Ask them here: [LogBot HQ](https://discord.gg/82DYM3T)
 ## Commands
 Use `$help` to view a list of all documented commands, and use `$help [command]` for more specific documentation.
 
+Key:
+
+* {} - required parameter.
+* [] - optional parameter.
+
+Command documentation is as follows:
+
+#### $exclude
+##### Info
+###### Used to exclude a single message from the logs this bot creates.
+##### Usage
+###### $exclude {message}
+###### $ex {message}
+##### Required Permissions
+###### LogBot Admin
+
+#### $excludechannel
+##### Info
+###### Excludes all messages in the mentioned channel(s) from the logs.
+##### Usage
+###### $excludechannel {channel_mention(s)}
+###### $exc {channel_mention(s)}
+##### Required Permissions
+###### LogBot Admin
+
+#### $includechannel
+##### Info
+###### Used to remove the exclusion of mention channel(s) from the logs.
+##### Usage
+###### $includechannel {channel_mention(s)}
+###### $inc {channel_mention(s)}
+##### Required Permissions
+###### LogBot Admin
+
+#### $mark
+##### Info
+###### Used to set aside logs for the mentioned channel(s).
+#### Usage
+###### $mark a {channel_mention(s)}
+###### $mark r {channel_mention(s)}
+##### Required Permissions
+###### LogBot Admin
+
+#### $admin
+##### Info
+###### Used to add, remove, or show the admins for this bot.
+###### Server owners are always an admin.
+##### Usage
+###### $admin a {mention(s)}
+###### $admin r {mention(s)}
+###### $admin s
+##### LogBot Admin
+
+#### $showlist
+##### Info
+###### Shows the list of excluded channels.
+##### Usage
+###### $showlist
+##### Required Permissions
+###### LogBot Member
+
+#### $showmarks
+##### Info
+###### Shows the list of marked channels.
+##### Usage
+###### $showmarks
+##### Required Permissions
+###### LogBot Member
+
+#### $help
+##### Info
+###### Shows the help dialog for a specific command, or, if no command was stated, shows a list of commands.
+##### Usage
+###### $help [command]
+##### Required Permissions
+###### LogBot Member.
+
 ## Features
 * Bible
   * Verse Recognition for three versions.
