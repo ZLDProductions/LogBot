@@ -1048,7 +1048,7 @@ async def on_message(message):
 											SET tier=tier+{gift}
 											WHERE server='{message.server.id}'
 											AND member='{member.id}';
-											""".replacE("\t", ""))
+											""".replace("\t", ""))
 											pass
 										pass
 									pass
