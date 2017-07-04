@@ -679,13 +679,13 @@ async def on_message(message):
 							""".replace("\t", ""))
 							sqlexecute(f"""
 							UPDATE levels
-							SET credits=credits-{floor(num*10000)}
+							SET credits=0
 							WHERE server='{message.server.id}'
 							AND member='{message.author.id}';
 							""".replace("\t", ""))
 							sqlexecute(f"""
 							UPDATE levels
-							SET rank=rank-{floor(num*100)}
+							SET rank=0
 							WHERE server='{message.server.id}'
 							AND member='{message.author.id}';
 							""".replace("\t", ""))
@@ -1026,14 +1026,46 @@ async def on_message(message):
 										pass
 									selection = ', '.join([str(u) for u in user])
 									pass
+								# if isinstance(user, list):
+								# 	sqlexecute(f"""
+								# 	UPDATE levels
+								# 	SET multiplier=multiplier+{gift}
+								# 	WHERE server='{message.server.id}'
+								# 	AND member='{u.id}';
+								# 	""".replace("\t", ""))
+								# 	selection = str(user)
+								# 	pass
+								pass
+							pass
+						elif _type == "tier":
+							_type = "tiers"
+							if len(role) >= 1:
+								for member in message.server.members:
+									for r in role:
+										if r in member.roles:
+											sqlexecute(f"""
+											UPDATE levels
+											SET tier=tier+{gift}
+											WHERE server='{message.server.id}'
+											AND member='{member.id}';
+											""".replacE("\t", ""))
+											pass
+										pass
+									pass
+								if isinstance(role, list): selection = ', '.join([str(r) for r in role])
+								else: selection = role.name
+								pass
+							else:
 								if isinstance(user, list):
-									sqlexecute(f"""
-									UPDATE levels
-									SET multiplier=multiplier+{gift}
-									WHERE server='{message.server.id}'
-									AND member='{u.id}';
-									""".replace("\t", ""))
-									selection = str(user)
+									for u in user:
+										sqlexecute(f"""
+										UPDATE levels
+										SET tier=tier+{gift}
+										WHERE server='{message.server.id}'
+										AND member='{u.id}';
+										""".replace("\t",""))
+										pass
+									selection = ', '.join([str(u) for u in user])
 									pass
 								pass
 							pass
