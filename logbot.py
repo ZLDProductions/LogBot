@@ -23,7 +23,7 @@ from colorama import Fore, init
 import argparser
 import sql
 from symbols import symbols
-from logbot_data import token
+from logbot_data import *
 
 # noinspection SpellCheckingInspection
 version = '15.3.3 Python'
@@ -40,13 +40,13 @@ planned = [
 bootup_time = datetime.now()
 owner_id = "239500860336373761"
 bot_id = "255379748828610561"
-hq_link = "https://discord.gg/82DYM3T"
-git_link = "https://github.com/ZLDProductions/LogBot"
+# hq_link = "https://discord.gg/82DYM3T"
+# git_link = "https://github.com/ZLDProductions/LogBot"
 
 client = discord.Client()
 init()
 # noinspection SpellCheckingInspection
-wclient = wolframalpha.Client(app_id='LXJXR5-K8TWRR63QA')
+wclient = wolframalpha.Client(app_id=wa_token)
 parser = configparser.ConfigParser()
 channel_parser = configparser.ConfigParser()
 pydict = PyDictionary()
@@ -1147,8 +1147,9 @@ class Commands:
 		@staticmethod
 		async def welcome(message: discord.Message):
 			content = message.content.replace(f"$welcome ", "")
-			db.write("Welcomes", {"server":message.server.id, "message":content})
-			db.update("Welcomes", message.server.id, content, message.server.id)
+			try: db.write("Welcomes", {"server":message.server.id, "message":content})
+			except: pass
+			db.update("Welcomes", "message", content, message.server.id)
 			await client.send_message(message.channel, "```Welcome message set!```")
 			del content
 			pass
@@ -2046,7 +2047,7 @@ async def on_message(message):
 			await client.send_message(message.channel, hq_link)
 			pass
 		elif startswith("$git"):
-			await client.send_message(message.channel, "https://github.com/ZLDProductions/LogBot")
+			await client.send_message(message.channel, git_link)
 			pass
 		elif startswith("$joinrole "):
 			if (admin_role in message.author.roles and not disables["welcome"]) or message.author.id == owner_id: await Commands.Admin.join_role(message)
@@ -2175,8 +2176,8 @@ async def on_member_join(member):
 		welcome_tmp = db.read("Welcomes", member.server.id)
 		welcome_tmp = re.sub("{server}", member.server.name, welcome_tmp, flags=2)
 		welcome_tmp = re.sub("{user}", member.mention, welcome_tmp, flags=2)
-		try: await client.add_roles(discord.utils.find(lambda r:r.id == join_roles[member.server.id], member.server.roles), member)
-		except: pass
+		try: await client.add_roles(member, discord.utils.find(lambda r: r.id == join_roles[member.server.id], member.server.roles))
+		except: print(traceback.format_exc())
 		await client.send_message(member.server.default_channel, welcome_tmp)
 		pass
 	pass
