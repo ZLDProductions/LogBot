@@ -181,6 +181,36 @@ Sends a message in the specific channel.
 **Required Permissions**  
 LogBot Admin
 
+---
+
+#### $member
+**Info**  
+Adds, removes, or shows the members of this bot.
+
+**Usage**
+
+    $member a {mention(s)}
+    $member r {mention(s)}
+    $member s
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### $planned
+**Info**  
+Shows what may come next in the bot.
+
+**Usage**
+
+    $planned
+
+**Required Permissions**  
+LogBot Member
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.
