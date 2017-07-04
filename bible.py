@@ -13,7 +13,6 @@ from colorama import Fore, init
 
 import sql_data
 import symbols
-from logbot import notify
 from logbot_data import token
 
 client = discord.Client()
@@ -2037,7 +2036,6 @@ async def on_ready():
 	await client.change_presence(game=None)
 	os.system("cls")
 	print(f"{Fore.MAGENTA}Ready!!!{Fore.RESET}")
-	notify("LogBot Update", "Bible plugin ready!")
 	pass
 
 client.run(token)

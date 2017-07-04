@@ -1,14 +1,13 @@
 import os
 import random
+import sqlite3
 import subprocess
 import traceback
 from datetime import datetime
 
 import discord
 from colorama import Fore, init
-import sqlite3
 
-from logbot import notify
 from logbot_data import token
 
 # noinspection SpellCheckingInspection
@@ -254,7 +253,6 @@ async def on_ready():
 	await client.change_presence()
 	os.system("cls")
 	print(f"{Fore.MAGENTA}Ready!{Fore.RESET}")
-	notify("LogBot Update", "Games plugin ready!")
 	try: _execute(f"""CREATE TABLE wordlist (word VARCHAR(1000) UNIQUE);""")
 	except: pass
 	try: _execute(f"""CREATE INDEX wordlist_index ON wordlist (word);""")

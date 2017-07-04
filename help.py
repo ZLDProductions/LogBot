@@ -5,7 +5,6 @@ from datetime import datetime
 import discord
 from colorama import Fore, init
 
-from logbot import notify
 from logbot_data import token
 
 client = discord.Client()
@@ -466,7 +465,6 @@ async def on_ready():
 	await client.change_presence(game=None)
 	os.system("cls")
 	print(f"{Fore.MAGENTA}Ready!!!{Fore.RESET}")
-	notify("LogBot Update", "Help plugin ready!")
 	pass
 
 @client.event
