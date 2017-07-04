@@ -6,6 +6,7 @@ import discord
 from colorama import Fore, init
 
 import argparser
+from logbot import notify
 from logbot_data import token
 
 client = discord.Client(max_messages=1000000)
@@ -149,6 +150,7 @@ async def on_message(message):
 async def on_ready():
 	os.system("cls")
 	print(f"{Fore.MAGENTA}Ready!!!{Fore.RESET}")
+	notify("LogBot Update", "Admin plugin ready!")
 	pass
 
 client.run(token)

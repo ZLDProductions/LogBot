@@ -7,6 +7,8 @@ import re
 import colorama
 import discord
 import requests
+
+from logbot import notify
 from logbot_data import token
 
 # noinspection SpellCheckingInspection
@@ -218,7 +220,8 @@ async def on_message_edit(before, after):
 async def on_ready():
 	await client.change_presence()
 	os.system("cls")
-	print("{}Ready!!!{}".format(colorama.Fore.MAGENTA, colorama.Fore.RESET))
+	print(f"{colorama.Fore.MAGENTA}Ready!!!{colorama.Fore.RESET}")
+	notify("LogBot Update", "Swearing Filter plugin ready!")
 	pass
 
 client.run(token)

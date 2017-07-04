@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from typing import Union
+from PyQt5.Qt import QSystemTrayIcon
 
 def startswith(*msgs: str, val: str = "") -> bool:
 	"""
@@ -64,4 +65,8 @@ def replace(message: str, *repls: tuple) -> str:
 	"""
 	for repl in repls: message = message.replace(repl[0], repl[1])
 	return message
+	pass
+
+def notify(header: str, body: str, sti: QSystemTrayIcon):
+	sti.showMessage(header, body)
 	pass

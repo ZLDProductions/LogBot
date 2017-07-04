@@ -9,6 +9,8 @@ from sys import exit
 
 import discord
 from colorama import Fore, init
+
+from logbot import notify
 from logbot_data import token
 
 # from symbols import symbols
@@ -1211,6 +1213,7 @@ async def on_ready():
 	if not os.path.exists(_disables): os.makedirs(_disables)
 	os.system("cls")
 	print(f"{Fore.MAGENTA}Ready!!!{Fore.RESET}")
+	notify("LogBot Update", "Levels plugin ready!")
 	try: sqlexecute(f"""
 	CREATE TABLE levels (server VARCHAR(50), member VARCHAR(50), tier LONG, rank INTEGER(3), xp LONG, xp_limit LONG, multiplier DECIMAL(50,1), credits LONG, cpm LONG, dm BOOLEAN);
 	""".replace("\t", ""))

@@ -7,6 +7,8 @@ import discord
 from colorama import Fore, init
 from discord import Client, Colour, Embed, Server
 from discord.utils import find
+
+from logbot import notify
 from logbot_data import token
 
 client = Client()
@@ -322,6 +324,7 @@ async def on_ready():
 	await client.change_presence()
 	os.system("cls")
 	print(f"{Fore.MAGENTA}Ready!{Fore.RESET}")
+	notify("LogBot Update", "Polling plugin ready!")
 	try: _execute("""
 			CREATE TABLE polls (server VARCHAR(50), topic_index INTEGER, topic VARCHAR(100), choice_index INTEGER, choice VARCHAR(50), result INTEGER, voted VARCHAR(19000000));
 			""".replace("\t", ""))

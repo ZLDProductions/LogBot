@@ -2,6 +2,8 @@ import asyncio
 import discord
 from colorama import Fore, init
 import os
+
+from logbot import notify
 from logbot_data import token
 
 client = discord.Client()
@@ -63,6 +65,7 @@ async def _exit():
 async def on_ready():
 	os.system("cls")
 	print(f"{Fore.MAGENTA}Ready!!!{Fore.RESET}")
+	notify("LogBot Update", "AI plugin ready!")
 	while not client.is_closed:
 		os.system("cls")
 		oper = input(f"{Fore.YELLOW}Operation:{Fore.RESET} ")
