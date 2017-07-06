@@ -1087,7 +1087,7 @@ async def on_message(message):
 						await client.send_message(message.channel, f"{content[0]}->{content[1]}\n{parse_num(total)} xp needed.")
 						pass
 					except:
-						await client.send_message(message.channel, f"Could not estimate the value of {content[0]}->{content[1]}")
+						await client.send_message(message.channel, f"∞")
 						pass
 					pass
 				pass
