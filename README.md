@@ -420,6 +420,32 @@ LogBot Admin
 
 ---
 
+#### $user
+**Info**  
+Shows public information about a user.
+
+**Usage**
+
+    $user {mention}
+
+**Required Permissions**  
+LogBot Member
+
+---
+
+#### $invite
+**Info**  
+Gives you an invite link.
+
+**Usage**
+
+    $invite
+
+**Required Permissions**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.
