@@ -239,6 +239,109 @@ LogBot Member
 
 ---
 
+#### $wiki
+**Info**  
+Fetches information from Wikipedia.
+
+**Usage**
+
+    $wiki {input}
+
+**Required Permissions**  
+LogBot Member
+
+---
+
+#### $verse
+**Info**  
+Fetches information from the Bible.
+
+**Usage**
+
+    $verse info {book}
+    $verse random
+    $verse help
+    $verse search {query}
+
+**Required Permissions**  
+LogBot Member
+
+---
+
+#### $disable
+**Info**  
+Disables a command.
+
+**Usage**
+
+    $disable {command}
+
+**Commands**  
+* $exclude
+* $excludechannel
+* $includechannel
+* $mark
+* $showlist
+* $showmarks
+* $channel
+* $cmd
+* $query
+* $wiki
+* $say
+* welcome
+* goodbye
+* $decide
+* $prune
+* $purge
+* $user
+* $translate
+* filter
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### $enable
+**Info**  
+Enables a disabled command.  
+All commands that work with disabled also work with this one.
+
+**Usage**
+
+    $enable {command}
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### $disables
+**Info**  
+Shows the disabled commands.
+
+**Usage**
+
+    $disables
+
+**Required Permissions**  
+LogBot Member
+
+---
+
+#### $prunes
+**Info**  
+Estimates the number of members who will be kicked by `$prune {days}`.
+
+**Usage**
+
+    $prunes {days}
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.
