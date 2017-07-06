@@ -211,6 +211,34 @@ LogBot Member
 
 ---
 
+#### $cmd
+**Info**  
+Creates, removes, or shows a list of the custom commands.
+
+**Usage**
+
+    $cmd a {key}|{value}
+    $cmd r {key}
+    $cmd s
+
+**Required Permissions**  
+LogBot Member
+
+---
+
+#### $query
+**Info**  
+Fetches information from Wolfram|Alpha.
+
+**Usage**
+
+    $query {query}
+
+**Required Permissions** 
+LogBot Member
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.
