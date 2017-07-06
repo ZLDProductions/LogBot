@@ -715,12 +715,10 @@ class Commands:
 		async def mute(message: discord.Message, muted_role: discord.Role):
 			users_to_mute = list()
 			for item in message.content.split(" "):
-				if "<" in item: users_to_mute.append(discord.utils.find(lambda u:u.mention == item, message.server.members))
-				else: users_to_mute.append(message.server.get_member_named(item))
+				if "<" in item: users_to_mute.append(discord.utils.find(lambda u:u.mention == item and not u.id == owner_id, message.server.members))
+				else: users_to_mute.append((message.server.get_member_named(item) if not message.server.get_member_named(item).id == owner_id else None))
 				pass
-			while None in users_to_mute:
-				users_to_mute.remove(None)
-				pass
+			while None in users_to_mute: users_to_mute.remove(None)
 			for u in users_to_mute: await client.add_roles(u, muted_role)
 			await client.send_message(message.channel, f"Muted {', '.join([str(x) for x in users_to_mute])} ({len(users_to_mute)}) users. :mute:")
 			del users_to_mute
