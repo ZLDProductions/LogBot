@@ -342,6 +342,84 @@ LogBot Admin
 
 ---
 
+#### $prune
+**Info**  
+Kicks members who have been offline for {days}.
+
+**Usage**
+
+    $prune {days}
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### $suggest
+**Info**  
+Saves a suggestion for the developer.
+
+**Usage**
+
+    $suggest {suggestion}
+
+**Required Permissions**  
+LogBot Member
+
+---
+
+#### $suggestions
+**Info**  
+Shows suggestions received so far unless they have been completed (and therefore removed).
+
+**Usage**
+
+    $suggestions
+
+**Required Permissions**  
+LogBot Member
+
+---
+
+#### $decide
+**Info**  
+Chooses a random value between the options given.
+
+**Usage**
+
+    $decide {option1|option2|...}
+
+**Required Permissions**  
+LogBot Member
+
+---
+
+#### $welcome
+**Info**  
+Either sets the current welcome message (if [msg] is present), or shows it.
+
+**Usage**
+
+    $welcome [msg]
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### $goodbye
+**Info**  
+Either sets the current goodbye message, or shows it.
+
+**Usage**
+
+    $goodbye [msg]
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.
