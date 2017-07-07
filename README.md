@@ -824,6 +824,137 @@ LogBot Admin
 
 ---
 
+#### $ping
+**Info**  
+Checks which modules, if any, are working properly.
+
+**Usage**
+
+    $ping
+
+**Required Permissions**  
+None
+
+---
+
+#### l$disabled
+**Info**  
+Shows if the levels module is disabled.
+
+**Usage**
+
+    l$disabled
+
+**Required Permissions**  
+None
+
+---
+
+#### l$disable
+**Info**  
+Disables the levels module for the server, until it is is re-enabled.
+
+**Usage**
+
+    l$disable
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### l$enable
+**Info**  
+Enables the levels system.
+
+**Usage**
+
+    l$enable
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### v$disable
+**Info**  
+Disables verse recognition for individual channels, if some were mentioned. If not, it disables VR for the channel the message was sent in.
+
+**Usage**
+
+    v$disable {channel}
+`channel` is one or more channel mentions.
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### v$enable
+**Info**  
+Enables verse recognition for the channel(s) mentioned. If none were mentioned, then it enables VR for the channel the message was sent in.
+
+**Usage**
+
+    v$enable {channel}
+`channel` is one or more channel mentions.
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### v$disables
+**Info**  
+Shows a list of the channels in this server where verse recognition is disabled.
+
+**Usage**
+
+    v$disables
+
+**Required Permissions**  
+None
+
+---
+
+#### g$rps
+**Info**  
+Plays a game of rock paper scissors.  
+Traditionally, the rules are:  
+rock beats scissors  
+scissors beats paper  
+paper beats rock
+
+**Usage**
+
+    g$rps {choice: [rock/paper/scissors]}
+`choice` is your choice between rock, paper, and scissors.
+
+**Required Permissions**  
+None
+
+---
+
+#### g$rpsls
+**Info**  
+Plays a game of rock, paper, scissors, lizard, Spock.  
+Traditionally, the rules are:  
+Rock crushes scissors and bludgeons lizard  
+Paper covers rock and blinds Spock  
+scissors cuts paper and decapitates lizard  
+lizard eats paper and poisons Spock  
+Spock destroys rock and disintegrates scissors
+
+**Usage**
+
+    g$rpsls {choice: [rock/paper/scissors/lizard/Spock]}
+`choice` is your choice between rock, paper, scissors, lizard, and Spock.
+
+**Required Permissions**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.

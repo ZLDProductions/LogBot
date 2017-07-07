@@ -284,11 +284,6 @@ infos = dict({
 		"Usage"               :"l$award {award: [cred/rank/xp/cpm/tier]} {amount} {mention}",
 		"Required Permissions":"LogBot Admin"
 	},
-	"l_clear"        :{
-		"Info"                :"Clears data about the user. Only do this if you are glitching out VERY badly (have too much XP, credits, etc.",
-		"Usage"               :"l$clear",
-		"Required Permissions":"None"
-	},
 	"_ping"          :{
 		"Info"                :"Checks which modules, if any, are working properly.",
 		"Usage"               :"$ping",
@@ -326,12 +321,12 @@ infos = dict({
 	},
 	"g_rps"          :{
 		"Info"                :"Plays a game of rock paper scissors.",
-		"Usage"               :"g$rps {choice}",
+		"Usage"               :"g$rps {choice: [rock/paper/scissors]}",
 		"Required Permissions":"None"
 	},
 	"g_rpsls"        :{
 		"Info"                :"Plays a game of rock paper scissors lizard Spock.",
-		"Usage"               :"g$rpsls {choice}",
+		"Usage"               :"g$rpsls {choice: [rock/paper/scissors/lizard/Spock]}",
 		"Required Permissions":"None"
 	},
 	"g_rules"        :{
