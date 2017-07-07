@@ -281,7 +281,7 @@ infos = dict({
 	},
 	"l_award"        :{
 		"Info"                :"Generates an award for the chosen user.",
-		"Usage"               :"l$award {award: [cred/rank/xp/cpm/tier} {amount} {mention}",
+		"Usage"               :"l$award {award: [cred/rank/xp/cpm/tier]} {amount} {mention}",
 		"Required Permissions":"LogBot Admin"
 	},
 	"l_clear"        :{

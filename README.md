@@ -27,6 +27,7 @@ Used to exclude a single message from the logs this bot creates.
 
     $exclude {message}
     $ex {message}
+`message` is the normal message you would have sent.
 
 **Required Permissions**  
 LogBot Admin
@@ -39,8 +40,9 @@ Excludes all messages in the mentioned channel(s) from the logs.
 
 **Usage**
 
-    $excludechannel {channel_mention(s)}
-    $exc {channel_mention(s)}
+    $excludechannel {channels}
+    $exc {channels}
+`channels` is one or more channel mentions (#channel-name).
 
 **Required Permissions**  
 LogBot Admin
@@ -53,8 +55,9 @@ Used to remove the exclusion of mention channel(s) from the logs.
 
 **Usage**
 
-    $includechannel {channel_mention(s)}
-    $inc {channel_mention(s)}
+    $includechannel {channels}
+    $inc {channels}
+`channels` is one or more channel mentions (#channel-name).
 
 **Required Permissions**  
 LogBot Admin
@@ -67,9 +70,10 @@ Used to set aside logs for the mentioned channel(s).
 
 **Usage**
 
-    $mark a {channel_mention(s)}
-    $mark r {channel_mention(s)}
-    
+    $mark a {channels}
+    $mark r {channels}
+`channels` is one or more channel mentions.
+
 **Required Permissions**      
 LogBot Admin
 
@@ -82,10 +86,11 @@ Server owners are always an admin.
 
 **Usage**
 
-    $admin a {mention(s)}
-    $admin r {mention(s)}
+    $admin a {users}
+    $admin r {users}
     $admin s
-    
+`users` is one or more user mentions (@user#0000)
+
 **Required Permissions**  
 LogBot Admin
 
@@ -124,6 +129,7 @@ Shows the help dialog for a specific command, or, if no command was stated, show
 **Usage**
 
     $help [command]
+`command` is a command for the bot.
     
 **Required Permissions**  
 LogBot Member.
@@ -150,12 +156,18 @@ Creates a channel, edits a channel, shows a list of channels created by the bot,
 **Usage**
 
     $channel new {type: [text/voice]} {name} {permission level: [admin/member/everyone]
-    $channel del {channel mention or name}
-    $channel edit {new permission level: [admin/member/everyone]} {channel mention or name}
+    $channel del {channels}
+    $channel edit {permission level: [admin/member/everyone]} {channel}
     $channel show
-    
+`type` is the type of the channel.  
+`name` is the name of the channel.  
+`permission level` is the permission level for the channel , regarding the bot.  
+`channels` is a channel mention (#channel-name) or the name of the channel.
+
 **Required Permissions**  
 LogBot Admin
+
+---
 
 #### $updates
 **Info**  
@@ -176,8 +188,11 @@ Sends a message in the specific channel.
 
 **Usage**
 
-    $say {text}|{channel_mention}|{tts [True/False]}
-    
+    $say {text}|{channel}|{tts: [True/False]}
+`text` is the text to say.  
+`channel` is a channel mention (#channel).  
+`tts` is a boolean (True or False) value, and describes whether the message is spoken through Discord's voice synthesis.
+
 **Required Permissions**  
 LogBot Admin
 
@@ -189,9 +204,10 @@ Adds, removes, or shows the members of this bot.
 
 **Usage**
 
-    $member a {mention(s)}
-    $member r {mention(s)}
+    $member a {user}
+    $member r {user}
     $member s
+`user` is one or more user mentions (@user#0000).
 
 **Required Permissions**  
 LogBot Admin
@@ -220,6 +236,8 @@ Creates, removes, or shows a list of the custom commands.
     $cmd a {key}|{value}
     $cmd r {key}
     $cmd s
+`key` is the command name. Include the prefix at the beginning.  
+`value` is the message that is sent once the command is triggered.
 
 **Required Permissions**  
 LogBot Member
@@ -233,6 +251,7 @@ Fetches information from Wolfram|Alpha.
 **Usage**
 
     $query {query}
+`query` is the statement searched on Wolfram|Alpha.
 
 **Required Permissions** 
 LogBot Member
@@ -246,6 +265,7 @@ Fetches information from Wikipedia.
 **Usage**
 
     $wiki {input}
+`input` is the topic for the wikipedia search.
 
 **Required Permissions**  
 LogBot Member
@@ -262,6 +282,8 @@ Fetches information from the Bible.
     $verse random
     $verse help
     $verse search {query}
+`book` is a book of the bible.  
+`query` is the search key.
 
 **Required Permissions**  
 LogBot Member
@@ -275,6 +297,7 @@ Disables a command.
 **Usage**
 
     $disable {command}
+`command` is one of the bot commands listed below.
 
 **Commands**  
 * $exclude
@@ -310,6 +333,7 @@ All commands that work with disabled also work with this one.
 **Usage**
 
     $enable {command}
+`command` is one of the bot commands listed in $disable.
 
 **Required Permissions**  
 LogBot Admin
@@ -336,6 +360,7 @@ Estimates the number of members who will be kicked by `$prune {days}`.
 **Usage**
 
     $prunes {days}
+`days` is the number of minimum offline days a member has to have in order to qualify for the prune.
 
 **Required Permissions**  
 LogBot Admin
@@ -349,6 +374,7 @@ Kicks members who have been offline for {days}.
 **Usage**
 
     $prune {days}
+`days` is the minimum number of days a member has to be offline in order to qualify for the prune.
 
 **Required Permissions**  
 LogBot Admin
@@ -362,6 +388,7 @@ Saves a suggestion for the developer.
 **Usage**
 
     $suggest {suggestion}
+`suggestion` is your suggestion for an addition or a change in the bot's features.
 
 **Required Permissions**  
 LogBot Member
@@ -387,7 +414,8 @@ Chooses a random value between the options given.
 
 **Usage**
 
-    $decide {option1|option2|...}
+    $decide {options}
+`options` is a list of options, separated by | (vertical bar), like this: `Yes|No`
 
 **Required Permissions**  
 LogBot Member
@@ -401,6 +429,7 @@ Either sets the current welcome message (if [msg] is present), or shows it.
 **Usage**
 
     $welcome [msg]
+`msg` is the new welcome message.
 
 **Required Permissions**  
 LogBot Admin
@@ -414,6 +443,7 @@ Either sets the current goodbye message, or shows it.
 **Usage**
 
     $goodbye [msg]
+`msg` is the new goodbye message.
 
 **Required Permissions**  
 LogBot Admin
@@ -426,7 +456,8 @@ Shows public information about a user.
 
 **Usage**
 
-    $user {mention}
+    $user {user}
+`user` is a user mention (@user#0000) or the name of the user.
 
 **Required Permissions**  
 LogBot Member
@@ -455,18 +486,25 @@ It can only delete messages if they are under 2 weeks old.
 **Usage**
 
     $purge [switches]
+`switches` is one or more (separated by &&) of the switches listed below.
 
 **Switches**
 
     limit={num}
     contains={text}
     from={mention}
-    attached={boolean: [True/False]}
-    embedded={boolean: [True/False]}
-    pinned={boolean: [True/False]}
+    attached={boolean}
+    embedded={boolean}
+    pinned={boolean}
     mentions={mention}
     mentions_channel={channel_mention}
     mentions_role={role_mention}
+`num` represents a number.  
+`text` represents a sequence of characters.  
+`mention` represents a user mention.  
+`channel_mention` represents a channel mention.  
+`role_mention` represents a role mention.  
+`boolean` represents a True or False (case-sensitive) value.
 
 **Required Permissions**  
 LogBot Admin
@@ -479,7 +517,8 @@ Kicks the mentioned user(s).
 
 **Usage**
 
-    $kick {mention(s)}
+    $kick {users}
+`users` is one or more mentions of users (@user#0000).
 
 **Required Permissions**  
 LogBot Admin
@@ -492,7 +531,8 @@ Bans the mentioned user(s) from the server.
 
 **Usage**
 
-    $ban {mention(s)}
+    $ban {users}
+`users` is one or more user mentions.
 
 **Required Permissions**  
 LogBot Admin
@@ -505,7 +545,9 @@ Shows the permissions of the user that sent it or the mentioned user, in the spe
 
 **Usage**
 
-    $permissions [channel-mention] [user-mention]
+    $permissions [channel] [user]
+`channel` is a channel mention.  
+`user` is a user mention.
 
 **Required Permissions**  
 LogBot Member
@@ -532,6 +574,9 @@ Translates text.
 **Usage**
 
     $translate {from}|{to}|{text}
+`from` is the language code `text` is written in.  
+`to` is the language code `text` will be translated to.  
+`text` is the text that will be translated.
 
 **Required Permissions**  
 LogBot Member
@@ -561,6 +606,7 @@ Adds, removes, or shows banned words for the server.
     $filter r {word}
     $filter c
     $filter s
+`word` is a word.
 
 **Required Permissions**  
 LogBot Admin
@@ -574,6 +620,8 @@ Converts a string to the encoded equivalent.
 **Usage**
 
     $convert {codec: [unicode/ascii/eom/utf-8]} {string}
+`codec` is the conversion codec to use. Unicode is used most often.  
+`string` is a sequence of characters.
 
 **Required Permissions**  
 LogBot Member
@@ -586,7 +634,8 @@ Mutes a person, deleting any and all messages sent by them in the channel the co
 
 **Usage**
 
-    $mute {mention(s)}
+    $mute {users}
+`users` is one or more user mentions.
 
 **Required Permissions**  
 LogBot Admin
@@ -599,7 +648,8 @@ Unmutes a person, allowing them to send a message in the channel the command was
 
 **Usage**
 
-    $unmute {mention(s)}
+    $unmute {users}
+`users` is one or more user mentions.
 
 **Required Permissions**  
 LogBot Admin
@@ -625,7 +675,8 @@ Sets the default channel for the daily verse.
 
 **Usage**
 
-    $setchannel {channel-mention}
+    $setchannel {channel}
+`channel` is a channel mention.
 
 **Required Permissions**  
 LogBot Admin
@@ -677,10 +728,99 @@ Shows the rank of the sender, or mentioned person.
 
 **Usage**
 
-    l$rank [mention]
+    l$rank [user]
+`user` is a user mention.
 
 **Required Permissions**  
 None
+
+---
+
+#### l$levels
+**Info**  
+Shows a list of everyone in the server, sorted by their ranks. Users with rank 0 are not listed.
+
+**Usage**
+
+    l$levels
+
+**Required Permissions**  
+None
+
+---
+
+#### l$place
+**Info**  
+Shows your server rank.
+
+**Usage**
+
+    l$place [user]
+`user` is a user mention.
+
+**Required Permissions**  
+None
+
+---
+
+#### l$buy
+**Info**  
+Purchases an item from the shop with credits earned in the bot.  
+`{item}` is an item from the shop.
+
+**Usage**
+
+    l$buy {item} [amount]
+`item` is the item to buy. This matches up with the first column provided when using `l$shop`.  
+`amount` is the amount to buy.
+
+**Required Permissions**  
+None
+
+---
+
+#### l$shop
+**Info**  
+Shows a list of items you can buy.
+
+**Usage**
+
+    l$shop
+
+**Required Permissions**  
+None
+
+---
+
+#### l$gift
+**Info**  
+Sends some of your chosen `{gift}` to the chosen user.
+
+**Usage**
+
+    l$gift {gift: [cred/xp/cpm/mul]} {amount} {user}
+`gift` is the item to give to `user`.  
+`amount` is the amount to give.  
+`user` is the user to give `gift` to.
+
+**Required Permissions**  
+None
+
+---
+
+#### l$award
+**Info**  
+Generates an award for the chosen user.
+
+**Usage**
+
+    l$award {award: [cred/rank/xp/cpm/tier]} {amount} {user}
+`award` is the item to award `user`.  
+`amount` is the amount of `award` to award.
+`user` is the user to award `award` to.
+
+**Required Permissions**  
+LogBot Admin
 
 ---
 
