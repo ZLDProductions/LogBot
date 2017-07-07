@@ -1040,6 +1040,89 @@ None
 
 ---
 
+#### p$save
+**Info**  
+Saves a poll for later use.
+
+**Usage**
+
+    p$save {index}
+`index` is the poll index, which can be fetched by using `p$polls`.
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### p$view
+**Info**  
+Views a specific saved poll.
+
+**Usage**
+
+    p$view {index}
+`index` is the poll index, which can be found by using `p$saved`.
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### p$remove
+**Info**  
+Removes a saved poll from the database.
+
+**Usage**
+
+    p$remove {index}
+`index` is the poll index, which can be fetched by using `p$saved`.
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### p$saved
+**Info**  
+Shows the saved polls.
+
+**Usage**
+
+    p$saved
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### l$dm
+**Info**  
+Sets whether or not to send level/tier up notifications in DM or a server channel.
+
+**Usage**
+
+    l$dm {val: [t/f]}
+`val` is a boolean (True or False) value.
+
+**Required Permissions**  
+None
+
+---
+
+#### $setversion
+**Info**  
+Sets your preferred bible version.
+
+**Usage**
+
+    $setversion [version: [kjv/akjv/web]}
+`version` is the bible version you want to set yours to. Currently only supports 3 versions.
+
+**Required Permissions**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.
