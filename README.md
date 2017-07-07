@@ -446,6 +446,72 @@ None
 
 ---
 
+#### $purge
+**Info**  
+Purges messages from the channel it is sent through.  
+It is restrained through the switches (listed below).  
+It can only delete messages if they are under 2 weeks old.
+
+**Usage**
+
+    $purge [switches]
+
+**Switches**
+
+    limit={num}
+    contains={text}
+    from={mention}
+    attached={boolean: [True/False]}
+    embedded={boolean: [True/False]}
+    pinned={boolean: [True/False]}
+    mentions={mention}
+    mentions_channel={channel_mention}
+    mentions_role={role_mention}
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### $kick
+**Info**  
+Kicks the mentioned user(s).
+
+**Usage**
+
+    $kick {mention(s)}
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### $ban
+**Info**  
+Bans the mentioned user(s) from the server.
+
+**Usage**
+
+    $ban {mention(s)}
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### $permissions
+**Info**  
+Shows the permissions of the user that sent it or the mentioned user, in the specified channel (if present) or in the entire server.
+
+**Usage**
+
+    $permissions [channel-mention] [user-mention]
+
+**Required Permissions**  
+LogBot Member
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.
