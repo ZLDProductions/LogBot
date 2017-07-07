@@ -1123,6 +1123,20 @@ None
 
 ---
 
+#### $settype
+**Info**  
+Sets the type of the bible verses.
+
+**Usage**
+
+    $settype {type: [embed/text]}
+`type` is the return format you wish to receive references in.
+
+**Required Permissions**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.
