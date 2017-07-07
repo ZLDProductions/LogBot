@@ -217,12 +217,12 @@ infos = dict({
 	"_mute"          :{
 		"Info"                :"Mutes a person, deleting any and all messages sent by them in the channel the command was sent in.",
 		"Usage"               :"$mute {mention(s)}",
-		"Required Permissions":"LogBot Member"
+		"Required Permissions":"LogBot Admin"
 	},
 	"_unmute"        :{
 		"Info"                :"Unmutes a person, allowing them to send a message in the channel the command was sent in.",
 		"Usage"               :"$unmute {mention(s)}",
-		"Required Permissions":"LogBot Member"
+		"Required Permissions":"LogBot Admin"
 	},
 	"_mutes"         :{
 		"Info"                :"Shows the people muted in the channel.",

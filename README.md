@@ -512,6 +512,178 @@ LogBot Member
 
 ---
 
+#### $translate.get
+**Info**  
+Shows the list of language codes.
+
+**Usage**
+
+    $translate.get
+
+**Required Permissions**  
+LogBot Member
+
+---
+
+#### $translate
+**Info**  
+Translates text.
+
+**Usage**
+
+    $translate {from}|{to}|{text}
+
+**Required Permissions**  
+LogBot Member
+
+---
+
+#### $dm
+**Info**  
+Starts a DM channel.
+
+**Usage**
+
+    $dm
+
+**Required Permissions**  
+LogBot Member
+
+---
+
+#### $filter
+**Info**  
+Adds, removes, or shows banned words for the server.
+
+**Usage**
+
+    $filter a {word}
+    $filter r {word}
+    $filter c
+    $filter s
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### $convert
+**Info**  
+Converts a string to the encoded equivalent.
+
+**Usage**
+
+    $convert {codec: [unicode/ascii/eom/utf-8]} {string}
+
+**Required Permissions**  
+LogBot Member
+
+---
+
+#### $mute
+**Info**  
+Mutes a person, deleting any and all messages sent by them in the channel the command was sent in.
+
+**Usage**
+
+    $mute {mention(s)}
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### $unmute
+**Info**  
+Unmutes a person, allowing them to send a message in the channel the command was sent in.
+
+**Usage**
+
+    $unmute {mention(s)}
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### $mutes
+**Info**  
+Shows the people muted in the server.
+
+**Usage**
+
+    $mutes
+
+**Required Permissions**  
+LogBot Member
+
+---
+
+#### $setchannel
+**Info**  
+Sets the default channel for the daily verse.
+
+**Usage**
+
+    $setchannel {channel-mention}
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### $getchannel
+**Info**  
+Gets the default channel for the daily verse.
+
+**Usage**
+
+    $getchannel
+
+**Required Permissions**  
+None
+
+---
+
+#### $votd
+**Info**  
+Shows the verse of the day.
+
+**Usage**
+
+    $votd
+
+**Required Permissions**  
+None
+
+---
+
+#### logbot.info
+**Info**  
+Shows information on the current running instance of LogBot.
+
+**Usage**
+
+    logbot.info
+
+**Required Permissions**  
+LogBot Member
+
+---
+
+#### l$rank
+**Info**  
+Shows the rank of the sender, or mentioned person.
+
+**Usage**
+
+    l$rank [mention]
+
+**Required Permissions**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.
