@@ -955,6 +955,91 @@ None
 
 ---
 
+#### g$rules
+**Info**  
+Shows rules for a game.
+
+**Usage**
+
+    g$rules {game: [rps/rpsls]}
+`game` is the game you want rules for. Currently, only rps and rpsls are supported.
+
+**Required Permissions**  
+None
+
+---
+
+#### p$start
+**Info**  
+Starts a vote and returns the index of the vote.
+
+**Usage**
+
+    p$start {prompt}|{choices: [1]|[2]|[3]|...}
+`prompt` is the topic of the vote.  
+`choices` is one or more choices for the users to choose from. Each one is separated by a vertical bar.
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### p$end
+**Info**  
+Ends a vote and returns the results.
+
+**Usage**
+
+    p$end {index}
+`index` is the vote index. This can be retrieved by using the `p$polls` command.
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### p$status
+**Info**  
+Shows the status of a poll.
+
+**Usage**
+
+    p$status {index}
+`index` is the poll index. This can be retrieved by using the `p$polls` command.
+
+**Required Permissions**  
+None
+
+---
+
+#### p$vote
+**Info**  
+Votes for a choice.
+
+**Usage**
+
+    p$vote {index} {choice}
+`index` is the poll index, which can be found by using `p$polls`.
+`choice` is the index of the choice. This can be found by viewing the status of the poll.
+
+**Required Permissions**  
+None
+
+---
+
+#### p$polls
+**Info**  
+Shows existing votes and their indices.
+
+**Usage**
+
+    p$polls
+
+**Required Permissions**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.

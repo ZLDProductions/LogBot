@@ -336,7 +336,7 @@ infos = dict({
 	},
 	"p_start"        :{
 		"Info"                :"Starts a vote and returns the vote_index.",
-		"Usage"               :"p$start {vote_name}|{choices: [1]/[2]/[3]/[4]/[...]}|",
+		"Usage"               :"p$start {vote_name}|{choices: [1]|[2]|[3]|[4]|[...]}",
 		"Required Permissions":"LogBot Admin"
 	},
 	"p_end"          :{
