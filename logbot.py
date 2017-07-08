@@ -800,20 +800,22 @@ class Commands:
 			pass
 		@staticmethod
 		async def disable(message: discord.Message):
-			content = message.content.replace(f"$disable ", "")
-			temp = content.replace(f"$", "")
-			disables[temp] = True
+			temp = message.content.replace(f"$disable ", "").replace("$", "")
+			if temp == "[all]":
+				for key in list(disables.keys()): disables[key] = True
+				pass
+			else: disables[temp] = True
 			await client.send_message(message.channel, f"Disabled {temp} :no_entry_sign:")
-			del content
 			del temp
 			pass
 		@staticmethod
 		async def enable(message: discord.Message):
-			content = message.content.split(" ")
-			temp = content[1].replace(f"$", "")
-			disables[temp] = True
+			temp = message.content.replace("$enable ", "").replace(f"$", "")
+			if temp == "[all]":
+				for key in list(disables.keys()): disables[key] = False
+				pass
+			else: disables[temp] = False
 			await client.send_message(message.channel, f"Enabled {temp} :white_check_mark:")
-			del content
 			del temp
 			pass
 		@staticmethod
