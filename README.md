@@ -1179,6 +1179,106 @@ LogBot Admin
 
 ---
 
+#### h$prefix
+**Info**  
+Much like $help, this command will either show a list of prefixes (if no prefix parameter is present), or the plugin for the provided prefix.
+
+**Usage**
+
+    h$prefix [prefix]
+`prefix` is the prefix that you wish to view.
+
+**Required Permissions**  
+None
+
+---
+
+#### $joinrole
+**Info**  
+Gets or sets the join role.
+
+**Usage**
+
+    $joinrole [role]
+`role` is a role mention.
+
+**Required Permissions**  
+LogBot Admin/Member
+
+---
+
+#### $git
+**Info**  
+Shows a link to the GitHub repository for this bot.
+
+**Usage**
+
+    $git
+
+**Required Permissions**  
+None
+
+---
+
+#### $guess
+**Info**  
+Take a guess at what the scrambled word is.
+
+**Usage**
+
+    $guess {word}
+`word` is the un-scrambled word that you are guessing.
+
+**Required Permissions**  
+None
+
+---
+
+#### $scramble
+**Info**  
+Adds a word, removes a word, searches for a word, lists all words, or starts word scramble.
+
+**Usage**
+
+    $scramble add {word}
+    $scramble rem {word}
+    $scramble find {word}
+    $scrambl list
+    $scramble
+`word` is the word you wish to add/remove/find.
+
+**Required Permissions**  
+LogBot Member
+
+---
+
+#### $giveup
+**Info**  
+Gives up a word scramble.
+
+**Usage**
+
+    $giveup
+
+**Required Permissions**  
+None
+
+---
+
+#### l$alert
+**Info**  
+Sets which channel you will be alerted in when DM is OFF.
+
+**Usage**
+
+    l$alert {channel}
+`channel` is a channel mention or `None` (case-sensitive).
+
+**Required Permissions**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.
