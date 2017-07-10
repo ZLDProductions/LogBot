@@ -1789,156 +1789,284 @@ async def on_message(message):
 	read(message.server.id)
 	bible_versions[message.author.id] = bible_versions[message.author.id] if not bible_versions.get(message.author.id) is None else "akjv"
 	bible_types[message.author.id] = bible_types[message.author.id] if not bible_types.get(message.author.id) is None else "embed"
-	if not message.server.id in verse_disable_list and not message.author.bot and not message.content.startswith(f"$verse ") and not message.channel.id in disabled_channels:
-		# try:
-		for mcont in message.content.split("\n"):
-			myembed = discord.Embed(title=bible_versions[message.author.id], colour=discord.Colour.purple())
-			encountered = []
-			tmp_content = mcont.replace(".", " ").replace("`", "").replace("*", "").replace("_", "")
-			verse = []
-			tmp_content = abbr(tmp_content)
-			for i in range(0, 17):
-				tmp_content = tmp_content.replace(akjv_books[i], akjv_books[i].replace(" ", "|"))
-				pass
-			mc = tmp_content.split(" ")
-			for i in range(0, len(mc)):
-				mc[i] = mc[i].replace("|", " ")
-				mc[i] = mc[i].capitalize()
-				mc[i] = abbr(mc[i])
-				pass
-			for b in akjv_books:
-				while b in mc:
-					if not mc.index(b) == len(mc) - 1:
-						index = mc.index(b)
-						if "," in mc[index + 1]:
-							for item in mc[index + 1].split(":")[1].split(","):
-								verse.append(mc[index] + " " + mc[index + 1].split(":")[0] + ":" + item)
+	if not message.server.id in verse_disable_list:
+		if not message.author.bot:
+			if not message.content.startswith(f"$verse "):
+				if not message.channel.id in disabled_channels:
+					for mcont in message.content.split("\n"):
+						e = discord.Embed(title=bible_versions[message.author.id], colour=discord.Colour.purple())
+						encountered = []
+						tmp_content = mcont.replace(".", " ")\
+							.replace("`", "")\
+							.replace("*", "")\
+							.replace("_", "")
+						verse = []
+						tmp_content = abbr(tmp_content)
+						for i in range(0, 17): tmp_content = tmp_content.replace(akjv_books[i], akjv_books[i].replace(" ", "|"))
+						mc = tmp_content.split(" ")
+						append = verse.append
+						for i in range(0, len(mc)): mc[i] = abbr(mc[i].replace("|", " ").capitalize())
+						for b in akjv_books:
+							while b in mc:
+								index = mc.index(b)
+								if not index == len(mc) - 1:
+									if "," in mc[index + 1]:
+										for item in mc[index + 1].split(":")[1].split(","): append(f"{mc[index]} {mc[index+1].split(':')[0]}:{item}")
+										pass
+									else: verse.append(f"{mc[index]} {mc[index+1]}")
+									pass
+								mc.remove(b)
 								pass
 							pass
-						else:
-							verse.append(mc[index] + " " + mc[index + 1])
-							pass
-						pass
-					mc.remove(b)
-					pass
-				pass
-			for v in verse:
-				if bible_types[message.author.id] == "text":
-					if "-" in v and not v in encountered:
-						if bible_versions[message.author.id] == "kjv":
-							for m in format_message(getPassage(v, ih=True)):
-								m = m.split("\n")
-								t = m[1]
-								m[1] = f"```{t}```"
-								m = '\n'.join(m)
-								await client.send_message(message.channel, m)
+						for v in verse:
+							if bible_types[message.author.id] == "text":
+								if "-" in v and not v in encountered:
+									if bible_versions[message.author.id] == "kjv":
+										for m in format_message(getPassage(v, ih=True)):
+											m = m.split('\n')
+											m[1] = f"```{m[1]}```"
+											m = '\n'.join(m)
+											await client.send_message(message.channel, m)
+											pass
+										pass
+									elif bible_versions[message.author.id] == "akjv":
+										for m in format_message(getAKJVPassage(v, ih=True)):
+											m = m.split('\n')
+											m[1] = f"```{m[1]}```"
+											m = '\n'.join(m)
+											await client.send_message(message.channel, m)
+											pass
+										pass
+									elif bible_versions[message.author.id] == "web":
+										for m in format_message(getWEBPassage(v, ih=True)):
+											m = m.split('\n')
+											m[1] = f"```{m[1]}```"
+											m = '\n'.join(m)
+											await client.send_message(message.channel, m)
+											pass
+										pass
+									pass
+								elif ":" in v and not v in encountered:
+									if bible_versions[message.author.id] == "kjv":
+										for m in format_message(getVerse(v, ih=True)):
+											m = m.split('\n')
+											m[1] = f"```{m[1]}```"
+											m = '\n'.join(m)
+											await client.send_message(message.channel, m)
+											pass
+										pass
+									elif bible_versions[message.author.id] == "akjv":
+										for m in format_message(getAKJVVerse(v, ih=True)):
+											m = m.split('\n')
+											m[1] = f"```{m[1]}```"
+											m = '\n'.join(m)
+											await client.send_message(message.channel, m)
+											pass
+										pass
+									elif bible_versions[message.author.id] == "web":
+										for m in format_message(getWEBVerse(v, ih=True)):
+											m = m.split('\n')
+											m[1] = f"```{m[1]}```"
+											m = '\n'.join(m)
+											await client.send_message(message.channel, m)
+											pass
+										pass
+									pass
 								pass
-							pass
-						elif bible_versions[message.author.id] == "akjv":
-							for m in format_message(getAKJVPassage(v, ih=True)):
-								m = m.split("\n")
-								t = m[1]
-								m[1] = f"```{t}```"
-								m = '\n'.join(m)
-								await client.send_message(message.channel, m)
+							else:
+								if "-" in v and not v in encountered:
+									if bible_versions[message.author.id] == "kjv": e.add_field(name=v, value=getPassage(v, ih=False))
+									elif bible_versions[message.author.id] == "akjv": e.add_field(name=v, value=getAKJVPassage(v, ih=False))
+									elif bible_versions[message.author.id] == "web": e.add_field(name=v, value=getWEBPassage(v, ih=False))
+									pass
+								elif ":" in v and not v in encountered:
+									if bible_versions[message.author.id] == "kjv": e.add_field(name=v, value=getVerse(v, ih=False))
+									elif bible_versions[message.author.id] == "akjv": e.add_field(name=v, value=getAKJVVerse(v, ih=False))
+									elif bible_versions[message.author.id] == "web": e.add_field(name=v, value=getWEBVerse(v, ih=False))
+									pass
 								pass
+							encountered.append(v)
 							pass
-						elif bible_versions[message.author.id] == "web":
-							for m in format_message(getWEBPassage(v, ih=True)):
-								m = m.split("\n")
-								t = m[1]
-								m[1] = f"```{t}```"
-								m = '\n'.join(m)
-								await client.send_message(message.channel, m)
+						if bible_types[message.author.id] == "embed" and len(e.fields) >= 1:
+							try:
+								# <editor-fold desc="Fetching Title...">
+								index = list(mcont).index('"')
+								title = ""
+								has_found = False
+								for i in range(index+1, len(mcont)):
+									if mcont[i] == "\"": has_found = True
+									if not has_found: title += mcont[i]
+									pass
+								title=' '.join([t for t in title.split(" ")])
+								# </editor-fold>
+								e.title = title
+								e.description = bible_versions[message.author.id]
 								pass
-							pass
-						pass
-					elif ":" in v and not v in encountered:
-						if bible_versions[message.author.id] == "kjv":
-							for m in format_message(getVerse(v, ih=True)):
-								m = m.split("\n")
-								t = m[1]
-								m[1] = f"```{t}```"
-								m = '\n'.join(m)
-								await client.send_message(message.channel, m)
-								pass
-							pass
-						elif bible_versions[message.author.id] == "akjv":
-							for m in format_message(getAKJVVerse(v, ih=True)):
-								m = m.split("\n")
-								t = m[1]
-								m[1] = f"```{t}```"
-								m = '\n'.join(m)
-								await client.send_message(message.channel, m)
-								pass
-							pass
-						elif bible_versions[message.author.id] == "web":
-							for m in format_message(getWEBVerse(v, ih=True)):
-								m = m.split("\n")
-								t = m[1]
-								m[1] = f"```{t}```"
-								m = '\n'.join(m)
-								await client.send_message(message.channel, m)
-								pass
-							pass
-						pass
-					pass
-				else:
-					if "-" in v and not v in encountered:
-						if bible_versions[message.author.id] == "kjv":
-							myembed.add_field(name=v, value=getPassage(v, ih=False))
-							pass
-						if bible_versions[message.author.id] == "akjv":
-							myembed.add_field(name=v, value=getAKJVPassage(v, ih=False))
-							pass
-						if bible_versions[message.author.id] == "web":
-							myembed.add_field(name=v, value=getWEBPassage(v, ih=False))
-							pass
-						pass
-					elif ":" in v and not v in encountered:
-						if bible_versions[message.author.id] == "kjv":
-							myembed.add_field(name=v, value=getVerse(v, ih=False))
-							pass
-						if bible_versions[message.author.id] == "akjv":
-							myembed.add_field(name=v, value=getAKJVVerse(v, ih=False))
-							pass
-						if bible_versions[message.author.id] == "web":
-							myembed.add_field(name=v, value=getWEBVerse(v, ih=False))
-							pass
-						pass
-					pass
+							except: pass
 
-				encountered.append(v)
-				pass
-			if bible_types[message.author.id] == "embed" and len(myembed.fields) >= 1:
-				try:
-					# <editor-fold desc="Fetching Title...">
-					index = list(mcont).index('"')
-					title = ""
-					has_found = False
-					for i in range(index + 1, len(mcont)):
-						if mcont[i] == "\"": has_found = True
-						if not has_found: title += mcont[i]
+							tm = datetime.now() - message.timestamp
+							# delay = int(divmod(tm.total_seconds(), 60)[1] * 1000)
+							# delay = int((tm.total_seconds() % 60) * 1000)
+							delay = int(tm.microseconds / 1000)
+							if delay > 999: delay = str(delay / 1000)
+							else: delay = f"0.{delay}"
+							await client.send_message(message.channel, f"Response in {delay} seconds! :smile:", embed=e)
+							print(f"Sending {', '.join(verse)} ~ Delay: {delay}s.")
+							pass
 						pass
-					title = ' '.join([t for t in title.split(" ")])
-					# </editor-fold>
-					myembed.title = title
-					myembed.description = bible_versions[message.author.id]
 					pass
-				except:
-					pass
-
-				tm = datetime.now() - message.timestamp
-				# delay = int(divmod(tm.total_seconds(), 60)[1] * 1000)
-				# delay = int((tm.total_seconds() % 60)*1000)
-				delay = int(tm.microseconds / 1000)
-				if delay > 999: delay = str(delay / 1000)
-				else: delay = "0." + str(delay)
-				await client.send_message(message.channel, f"Response in {delay} seconds! :smile:", embed=myembed)
-				print(f"sending {', '.join(verse)} ~ Delay: {delay}s")
 				pass
 			pass
 		pass
+	# if not message.server.id in verse_disable_list and not message.author.bot and not message.content.startswith(f"$verse ") and not message.channel.id in disabled_channels:
+	# 	# try:
+	# 	for mcont in message.content.split("\n"):
+	# 		myembed = discord.Embed(title=bible_versions[message.author.id], colour=discord.Colour.purple())
+	# 		encountered = []
+	# 		tmp_content = mcont.replace(".", " ").replace("`", "").replace("*", "").replace("_", "")
+	# 		verse = []
+	# 		tmp_content = abbr(tmp_content)
+	# 		for i in range(0, 17):
+	# 			tmp_content = tmp_content.replace(akjv_books[i], akjv_books[i].replace(" ", "|"))
+	# 			pass
+	# 		mc = tmp_content.split(" ")
+	# 		for i in range(0, len(mc)):
+	# 			mc[i] = mc[i].replace("|", " ")
+	# 			mc[i] = mc[i].capitalize()
+	# 			mc[i] = abbr(mc[i])
+	# 			pass
+	# 		for b in akjv_books:
+	# 			while b in mc:
+	# 				if not mc.index(b) == len(mc) - 1:
+	# 					index = mc.index(b)
+	# 					if "," in mc[index + 1]:
+	# 						for item in mc[index + 1].split(":")[1].split(","):
+	# 							verse.append(mc[index] + " " + mc[index + 1].split(":")[0] + ":" + item)
+	# 							pass
+	# 						pass
+	# 					else:
+	# 						verse.append(mc[index] + " " + mc[index + 1])
+	# 						pass
+	# 					pass
+	# 				mc.remove(b)
+	# 				pass
+	# 			pass
+	# 		for v in verse:
+	# 			if bible_types[message.author.id] == "text":
+	# 				if "-" in v and not v in encountered:
+	# 					if bible_versions[message.author.id] == "kjv":
+	# 						for m in format_message(getPassage(v, ih=True)):
+	# 							m = m.split("\n")
+	# 							t = m[1]
+	# 							m[1] = f"```{t}```"
+	# 							m = '\n'.join(m)
+	# 							await client.send_message(message.channel, m)
+	# 							pass
+	# 						pass
+	# 					elif bible_versions[message.author.id] == "akjv":
+	# 						for m in format_message(getAKJVPassage(v, ih=True)):
+	# 							m = m.split("\n")
+	# 							t = m[1]
+	# 							m[1] = f"```{t}```"
+	# 							m = '\n'.join(m)
+	# 							await client.send_message(message.channel, m)
+	# 							pass
+	# 						pass
+	# 					elif bible_versions[message.author.id] == "web":
+	# 						for m in format_message(getWEBPassage(v, ih=True)):
+	# 							m = m.split("\n")
+	# 							t = m[1]
+	# 							m[1] = f"```{t}```"
+	# 							m = '\n'.join(m)
+	# 							await client.send_message(message.channel, m)
+	# 							pass
+	# 						pass
+	# 					pass
+	# 				elif ":" in v and not v in encountered:
+	# 					if bible_versions[message.author.id] == "kjv":
+	# 						for m in format_message(getVerse(v, ih=True)):
+	# 							m = m.split("\n")
+	# 							t = m[1]
+	# 							m[1] = f"```{t}```"
+	# 							m = '\n'.join(m)
+	# 							await client.send_message(message.channel, m)
+	# 							pass
+	# 						pass
+	# 					elif bible_versions[message.author.id] == "akjv":
+	# 						for m in format_message(getAKJVVerse(v, ih=True)):
+	# 							m = m.split("\n")
+	# 							t = m[1]
+	# 							m[1] = f"```{t}```"
+	# 							m = '\n'.join(m)
+	# 							await client.send_message(message.channel, m)
+	# 							pass
+	# 						pass
+	# 					elif bible_versions[message.author.id] == "web":
+	# 						for m in format_message(getWEBVerse(v, ih=True)):
+	# 							m = m.split("\n")
+	# 							t = m[1]
+	# 							m[1] = f"```{t}```"
+	# 							m = '\n'.join(m)
+	# 							await client.send_message(message.channel, m)
+	# 							pass
+	# 						pass
+	# 					pass
+	# 				pass
+	# 			else:
+	# 				if "-" in v and not v in encountered:
+	# 					if bible_versions[message.author.id] == "kjv":
+	# 						myembed.add_field(name=v, value=getPassage(v, ih=False))
+	# 						pass
+	# 					if bible_versions[message.author.id] == "akjv":
+	# 						myembed.add_field(name=v, value=getAKJVPassage(v, ih=False))
+	# 						pass
+	# 					if bible_versions[message.author.id] == "web":
+	# 						myembed.add_field(name=v, value=getWEBPassage(v, ih=False))
+	# 						pass
+	# 					pass
+	# 				elif ":" in v and not v in encountered:
+	# 					if bible_versions[message.author.id] == "kjv":
+	# 						myembed.add_field(name=v, value=getVerse(v, ih=False))
+	# 						pass
+	# 					if bible_versions[message.author.id] == "akjv":
+	# 						myembed.add_field(name=v, value=getAKJVVerse(v, ih=False))
+	# 						pass
+	# 					if bible_versions[message.author.id] == "web":
+	# 						myembed.add_field(name=v, value=getWEBVerse(v, ih=False))
+	# 						pass
+	# 					pass
+	# 				pass
+	# 			encountered.append(v)
+	# 			pass
+	# 		if bible_types[message.author.id] == "embed" and len(myembed.fields) >= 1:
+	# 			try:
+	# 				# <editor-fold desc="Fetching Title...">
+	# 				index = list(mcont).index('"')
+	# 				title = ""
+	# 				has_found = False
+	# 				for i in range(index + 1, len(mcont)):
+	# 					if mcont[i] == "\"": has_found = True
+	# 					if not has_found: title += mcont[i]
+	# 					pass
+	# 				title = ' '.join([t for t in title.split(" ")])
+	# 				# </editor-fold>
+	# 				myembed.title = title
+	# 				myembed.description = bible_versions[message.author.id]
+	# 				pass
+	# 			except:
+	# 				pass
+	#
+	# 			tm = datetime.now() - message.timestamp
+	# 			# delay = int(divmod(tm.total_seconds(), 60)[1] * 1000)
+	# 			# delay = int((tm.total_seconds() % 60)*1000)
+	# 			delay = int(tm.microseconds / 1000)
+	# 			if delay > 999: delay = str(delay / 1000)
+	# 			else: delay = "0." + str(delay)
+	# 			await client.send_message(message.channel, f"Response in {delay} seconds! :smile:", embed=myembed)
+	# 			print(f"sending {', '.join(verse)} ~ Delay: {delay}s")
+	# 			pass
+	# 		pass
+	# 	pass
 	# except:pass
 	# pass
 
