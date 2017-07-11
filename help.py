@@ -331,7 +331,7 @@ infos = dict({
 	},
 	"g_rules"        :{
 		"Info"                :"Shows rules for a game.",
-		"Usage"               :"g$rules {game: [rps/rpsls]}",
+		"Usage"               :"g$rules {game: [rps/rpsls/scramble]}",
 		"Required Permissions":"None"
 	},
 	"p_start"        :{

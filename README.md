@@ -963,8 +963,8 @@ Shows rules for a game.
 
 **Usage**
 
-    g$rules {game: [rps/rpsls]}
-`game` is the game you want rules for. Currently, only rps and rpsls are supported.
+    g$rules {game: [rps/rpsls/scramble]}
+`game` is the game you want rules for.
 
 **Required Permissions**  
 None
