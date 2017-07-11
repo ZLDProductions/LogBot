@@ -149,48 +149,26 @@ async def on_message(message):
 		_content = message.content.replace(f"g$rpsls ", "").replace("spock", "Spock")
 		_choice = random.choice(_choices)
 		_winner = ""
-		if _choice == _content:
-			_winner = "No one"
-			pass
+		if _choice == _content: _winner = "No one"
 		elif _choice == "rock":
-			if _content == "Spock" or _content == "paper":
-				_winner = _content
-				pass
-			elif _content == "scissors" or _content == "lizard":
-				_winner = _choice
-				pass
+			if _content == "Spock" or _content == "paper": _winner = _content
+			elif _content == "scissors" or _content == "lizard": _winner = _choice
 			pass
 		elif _choice == "paper":
-			if _content == "lizard" or _content == "scissors":
-				_winner = _content
-				pass
-			elif _content == "Spock" or _content == "rock":
-				_winner = _choice
-				pass
+			if _content == "lizard" or _content == "scissors": _winner = _content
+			elif _content == "Spock" or _content == "rock": _winner = _choice
 			pass
 		elif _choice == "scissors":
-			if _content == "Spock" or _content == "rock":
-				_winner = _content
-				pass
-			elif _content == "lizard" or _content == "paper":
-				_winner = _choice
-				pass
+			if _content == "Spock" or _content == "rock": _winner = _content
+			elif _content == "lizard" or _content == "paper": _winner = _choice
 			pass
 		elif _choice == "lizard":
-			if _content == "scissors" or _content == "rock":
-				_winner = _content
-				pass
-			elif _content == "Spock" or _content == "paper":
-				_winner = _choice
-				pass
+			if _content == "scissors" or _content == "rock": _winner = _content
+			elif _content == "Spock" or _content == "paper": _winner = _choice
 			pass
 		elif _choice == "Spock":
-			if _content == "lizard" or _content == "paper":
-				_winner = _content
-				pass
-			elif _content == "rock" or _content == "scissors":
-				_winner = _choice
-				pass
+			if _content == "lizard" or _content == "paper": _winner = _content
+			elif _content == "rock" or _content == "scissors": _winner = _choice
 			pass
 
 		await client.send_message(message.channel, f"I chose {_choice}, you chose {_content}. {_winner} wins!")
@@ -203,6 +181,11 @@ async def on_message(message):
 			pass
 		elif content == "rpsls":
 			ret = """**rock** smashes **scissors** and crushes **lizard**\n**paper** covers **rock** and blinds **Spock**\n**scissors** cut **paper** and decapitate **lizard**\n**lizard** eats **paper** and poisons **Spock**\n**Spock** destroys **rock** and disintegrates **scissors**"""
+			await client.send_message(message.channel, ret)
+			pass
+		elif content == "scramble":
+			ret = """The bot will scramble a word.
+			You have to find the original word.""".replace("\t", "")
 			await client.send_message(message.channel, ret)
 			pass
 		pass
