@@ -1281,6 +1281,20 @@ None
 
 ---
 
+#### $logchannel
+**Info**  
+Gets or sets the logchannel for the server.
+
+**Usage**
+
+    $logchannel [channel]
+`channel` is a channel mention.
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.

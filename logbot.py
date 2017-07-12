@@ -91,6 +91,7 @@ disables = {
 custom_commands = {}
 times = []
 join_roles = {}
+log_channel = {}
 
 discord_logs = os.path.expanduser('~\\Documents\\Discord Logs')
 discord_settings = f"{discord_logs}\\SETTINGS"
@@ -2065,6 +2066,32 @@ async def on_message(message):
 		elif startswith(f"hello, <@{bot_id}>", f"hi, <@{bot_id}>", f"<@{bot_id}>", modifier="lower"):
 			await client.send_message(message.channel, f"Hello, {message.author.mention}!")
 			pass
+		elif startswith("$logchannel "):
+			if admin_role in message.author.roles:
+				cmentions = message.channel_mentions
+				if len(cmentions) > 0:
+					c = cmentions[0].id
+					parser[message.server.id]["logchannel"] = c
+					await client.send_message(message.channel, f"```Set the log channel to {cmentions[0]}```")
+					del c
+					pass
+				else:
+					parser[message.server.id]["logchannel"] = "None"
+					await client.send_message(message.channel, f"```Set the log channel to None```")
+					pass
+				del cmentions
+				pass
+			else: sendNoPerm(message)
+			pass
+		elif startswith("$logchannel"):
+			if admin_role in message.author.roles:
+				c = client.get_channel(parser[message.server.id]["logchannel"])
+				if c is None: await client.send_message(message.channel, "```There is no log channel.```")
+				else: await client.send_message(message.channel, f"```The log channel is {c}.```")
+				del c
+				pass
+			else: sendNoPerm(message)
+			pass
 
 		for item in list(custom_commands.keys()):
 			if startswith(item):
@@ -2137,6 +2164,16 @@ async def on_message_delete(message):
 		name = str(message.author)
 		ret = f"{message.channel} ~ \"{message.content}\" was deleted ~ {name} ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute} ~ {message.attachments}"
 		send(ret, message.server.name, message.channel.name)
+		c = client.get_channel(parser[message.server.id]["logchannel"])
+		if not c is None:
+			e = discord.Embed(title="Message Deleted!", description="A message was deleted!", colour=discord.Colour.red()) \
+				.add_field(name="Author", value=str(message.author), inline=False) \
+				.add_field(name="Content", value=message.content, inline=False) \
+				.add_field(name="ID", value=message.id, inline=False) \
+				.add_field(name="Channel", value=str(message.channel), inline=False) \
+				.set_footer(text=str(m))
+			await client.send_message(c, "", embed=e)
+			pass
 		pass
 	pass
 
@@ -2148,6 +2185,17 @@ async def on_message_edit(before, after):
 		attachments = after.attachments
 		ret = f"{before.channel.name} ~ \"{before.content}\" ~ \"{after.content}\" ~ {attachments} ~ {before.author} ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 		send(ret, after.server.name, after.channel.name)
+		c = client.get_channel(parser[before.server.id]["logchannel"])
+		if not c is None:
+			e = discord.Embed(title="Message Edited!", description="A message was edited!", colour=discord.Colour.red()) \
+				.add_field(name="Author", value=str(before.author), inline=False) \
+				.add_field(name="Old Content", value=before.content, inline=False) \
+				.add_field(name="New Content", value=after.content, inline=False) \
+				.add_field(name="ID", value=before.id, inline=False) \
+				.add_field(name="Channel", value=str(before.channel), inline=False) \
+				.set_footer(text=str(m))
+			await client.send_message(c, "", embed=e)
+			pass
 		pass
 	pass
 
@@ -2156,6 +2204,14 @@ async def on_channel_delete(channel):
 	m = datetime.now()
 	ret = f"\"{channel.name}\" was deleted ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(ret, channel.server.name)
+	c = client.get_channel(parser[channel.server.id]["logchannel"])
+	if not c is None:
+		e = discord.Embed(title="Channel Deleted!", description="A channel was deleted!", colour=discord.Colour.red())
+		e.add_field(name="Name", value=str(channel), inline=False)
+		e.add_field(name="ID", value=channel.id, inline=False)
+		e.set_footer(text=str(m))
+		await client.send_message(c, "", embed=e)
+		pass
 	pass
 
 @client.event
@@ -2164,6 +2220,14 @@ async def on_channel_create(channel):
 	ret = f"\"{channel.name}\" was created ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	if channel.server is not None: send(ret, channel.server.name)
 	else: send(ret, f"DM{channel.name}")
+	c = client.get_channel(parser[channel.server.id]["logchannel"])
+	if not c is None:
+		e = discord.Embed(title="Channel Created!", description="A channel was created!", colour=discord.Colour.red())
+		e.add_field(name="Name", value=str(channel), inline=False)
+		e.add_field(name="ID", value=channel.id, inline=False)
+		e.set_footer(text=str(m))
+		await client.send_message(c, "", embed=e)
+		pass
 	pass
 
 @client.event
@@ -2180,6 +2244,14 @@ async def on_member_join(member):
 		except: print(traceback.format_exc())
 		await client.send_message(member.server.default_channel, welcome_tmp)
 		pass
+	c = client.get_channel(parser[member.server.id]["logchannel"])
+	if not c is None:
+		e = discord.Embed(title="Member Joined!", description="A member joined!", colour=discord.Colour.red())
+		e.add_field(name="Name", value=str(member), inline=False)
+		e.add_field(name="ID", value=member.id, inline=False)
+		e.set_footer(text=str(m))
+		await client.send_message(c, "", embed=e)
+		pass
 	pass
 
 @client.event
@@ -2194,6 +2266,14 @@ async def on_member_remove(member):
 		goodbye_tmp = re.sub("{server}", member.server.name, goodbye_tmp, flags=2)
 		goodbye_tmp = re.sub("{user}", member.mention, goodbye_tmp, flags=2)
 		await client.send_message(member.server.default_channel, goodbye_tmp)
+		pass
+	c = client.get_channel(parser[member.server.id]["logchannel"])
+	if not c is None:
+		e = discord.Embed(title="Member Left!", description="A member left!", colour=discord.Colour.red())
+		e.add_field(name="Name", value=str(member), inline=False)
+		e.add_field(name="ID", value=member.id, inline=False)
+		e.set_footer(text=str(m))
+		await client.send_message(c, "", embed=e)
 		pass
 	pass
 
@@ -2223,6 +2303,17 @@ async def on_member_update(before, after):
 	if not sent_str == "":
 		sent_str += f" ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 		send(sent_str, before.server.name)
+		pass
+	c = client.get_channel(parser[before.server.id]["logchannel"])
+	if not c is None:
+		e = discord.Embed(title="Member Updated!", description="A member was updated!", colour=discord.Colour.red())
+		e.add_field(name="Old Name", value=str(before), inline=False)
+		e.add_field(name="New Name", value=str(after), inline=False)
+		e.add_field(name="ID", value=before.id, inline=False)
+		e.add_field(name="Old Nick", value=before.nick, inline=False)
+		e.add_field(name="New Nick", value=after.nick, inline=False)
+		e.set_footer(text=str(m))
+		await client.send_message(c, "", embed=e)
 		pass
 	pass
 
@@ -2256,6 +2347,14 @@ async def on_member_ban(member):
 	m = datetime.now()
 	sent_str = f"{check(member.nick, member.name, member.id)} was banned ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(sent_str, member.server.name)
+	c = client.get_channel(parser[channel.server.id]["logchannel"])
+	if not c is None:
+		e = discord.Embed(title="Member Banned!", description="A member was banned!", colour=discord.Colour.red())
+		e.add_field(name="Name", value=str(member), inline=False)
+		e.add_field(name="ID", value=member.id, inline=False)
+		e.set_footer(text=str(m))
+		await client.send_message(c, "", embed=e)
+		pass
 	pass
 
 @client.event
@@ -2263,6 +2362,14 @@ async def on_member_unban(server, user):
 	m = datetime.now()
 	sent_str = f"{check(user.display_name, user.name, user.id)} was unbanned ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(sent_str, server.name)
+	c = client.get_channel(parser[server.id]["logchannel"])
+	if not c is None:
+		e = discord.Embed(title="Member Unbanned!", description="A member was unbanned!", colour=discord.Colour.red())
+		e.add_field(name="Name", value=str(user), inline=False)
+		e.add_field(name="ID", value=user.id, inline=False)
+		e.set_footer(text=str(m))
+		await client.send_message(c, "", embed=e)
+		pass
 	pass
 
 @client.event

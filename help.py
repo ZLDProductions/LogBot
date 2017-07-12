@@ -443,6 +443,11 @@ infos = dict({
 		"Info"                :"Sets which channel you will be alerted in when DM is OFF.",
 		"Usage"               :"l$alert {channel}",
 		"Required Permissions":"None"
+	},
+	"_logchannel"    :{
+		"Info"                :"Gets or sets the logchannel for the server.",
+		"Usage"               :"$logchannel [channel-mention]",
+		"Required Permissions":"LogBot Admin"
 	}
 })
 prefixes = {
