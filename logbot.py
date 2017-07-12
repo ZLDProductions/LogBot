@@ -2240,7 +2240,7 @@ async def on_member_join(member):
 		welcome_tmp = db.read("Welcomes", member.server.id)
 		welcome_tmp = re.sub("{server}", member.server.name, welcome_tmp, flags=2)
 		welcome_tmp = re.sub("{user}", member.mention, welcome_tmp, flags=2)
-		try: await client.add_roles(member, discord.utils.find(lambda r: r.id == join_roles[member.server.id], member.server.roles))
+		try: await client.add_roles(member, discord.utils.find(lambda r:r.id == join_roles[member.server.id], member.server.roles))
 		except: print(traceback.format_exc())
 		await client.send_message(member.server.default_channel, welcome_tmp)
 		pass
@@ -2347,7 +2347,7 @@ async def on_member_ban(member):
 	m = datetime.now()
 	sent_str = f"{check(member.nick, member.name, member.id)} was banned ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(sent_str, member.server.name)
-	c = client.get_channel(parser[channel.server.id]["logchannel"])
+	c = client.get_channel(parser[member.server.id]["logchannel"])
 	if not c is None:
 		e = discord.Embed(title="Member Banned!", description="A member was banned!", colour=discord.Colour.red())
 		e.add_field(name="Name", value=str(member), inline=False)
@@ -2587,6 +2587,12 @@ async def on_ready():
 		pass
 	os.system('cls')
 	print(f"{Fore.MAGENTA}Signed in and waiting...\nRunning version: Logbot Version {version}{Fore.RESET}")
+	for server in client.servers:
+		if not server.id in parser.sections():
+			parser[server.id] = {
+				"logchannel":"None"
+			}
+		pass
 	# Updates bot icon, status, and game.
 	await client.change_presence(game=None, status=None)
 	avatar_tmp = open(selected_image, "rb")
