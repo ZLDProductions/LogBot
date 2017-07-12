@@ -2087,7 +2087,7 @@ async def on_message(message):
 			if admin_role in message.author.roles:
 				c = client.get_channel(parser[message.server.id]["logchannel"])
 				if c is None: await client.send_message(message.channel, "```There is no log channel.```")
-				else: await client.send_message(message.channel, f"```The log channel is {c}.```")
+				else: await client.send_message(message.channel, f"```The log channel is #{c}.```")
 				del c
 				pass
 			else: sendNoPerm(message)
@@ -2303,17 +2303,6 @@ async def on_member_update(before, after):
 	if not sent_str == "":
 		sent_str += f" ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 		send(sent_str, before.server.name)
-		pass
-	c = client.get_channel(parser[before.server.id]["logchannel"])
-	if not c is None:
-		e = discord.Embed(title="Member Updated!", description="A member was updated!", colour=discord.Colour.red())
-		e.add_field(name="Old Name", value=str(before), inline=False)
-		e.add_field(name="New Name", value=str(after), inline=False)
-		e.add_field(name="ID", value=before.id, inline=False)
-		e.add_field(name="Old Nick", value=before.nick, inline=False)
-		e.add_field(name="New Nick", value=after.nick, inline=False)
-		e.set_footer(text=str(m))
-		await client.send_message(c, "", embed=e)
 		pass
 	pass
 
