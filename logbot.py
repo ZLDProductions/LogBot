@@ -26,7 +26,7 @@ from symbols import symbols
 from logbot_data import *
 
 # noinspection SpellCheckingInspection
-version = '15.3.3 Python'
+version = '15.3.6 Python'
 whats_new = [
 	"•Added join roles.",
 	"•Updated help content.",
