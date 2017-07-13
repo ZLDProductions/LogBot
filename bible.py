@@ -1904,6 +1904,10 @@ async def on_message(message):
 								pass
 							except: pass
 
+							for i in range(0, len(e.fields)):
+								if e.fields[i].value == "No such verse!": e.remove_field(i)
+								pass
+
 							tm = datetime.now() - message.timestamp
 							# delay = int(divmod(tm.total_seconds(), 60)[1] * 1000)
 							# delay = int((tm.total_seconds() % 60) * 1000)
