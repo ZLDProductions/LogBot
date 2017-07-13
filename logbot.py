@@ -26,7 +26,7 @@ from symbols import symbols
 from logbot_data import *
 
 # noinspection SpellCheckingInspection
-version = '15.4.6 Python'
+version = '15.4.7 Python'
 whats_new = [
 	"•Added join roles.",
 	"•Updated help content.",
@@ -2587,6 +2587,7 @@ async def on_channel_update(before: discord.Channel, after: discord.Channel):
 			e.add_field(name="Old Name", value=str(before), inline=False)
 			e.add_field(name="New Name", value=str(after), inline=False)
 			pass
+		else: e.add_field(name="Name", value=str(after), inline=False)
 		e.add_field(name="ID", value=after.id, inline=False)
 		if not before.topic == after.topic:
 			e.add_field(name="Old Topic", value=str(before.topic), inline=False)
