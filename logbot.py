@@ -26,7 +26,7 @@ from symbols import symbols
 from logbot_data import *
 
 # noinspection SpellCheckingInspection
-version = '15.3.6 Python'
+version = '15.4.6 Python'
 whats_new = [
 	"•Added join roles.",
 	"•Updated help content.",
@@ -2215,17 +2215,21 @@ async def on_channel_delete(channel):
 	pass
 
 @client.event
-async def on_channel_create(channel):
+async def on_channel_create(channel: discord.Channel):
 	m = datetime.now()
 	ret = f"\"{channel.name}\" was created ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	if channel.server is not None: send(ret, channel.server.name)
 	else: send(ret, f"DM{channel.name}")
 	c = client.get_channel(parser[channel.server.id]["logchannel"])
 	if not c is None:
-		e = discord.Embed(title="Channel Created!", description="A channel was created!", colour=discord.Colour.red())
+		e = discord.Embed(title="Channel Created!", description="A channel was created!", colour=discord.Colour.green())
 		e.add_field(name="Name", value=str(channel), inline=False)
 		e.add_field(name="ID", value=channel.id, inline=False)
-		e.set_footer(text=str(m))
+		e.add_field(name="Position", value=str(channel.position), inline=False)
+		e.add_field(name="Bitrate", value=str(channel.bitrate), inline=False)
+		e.add_field(name="Topic", value=channel.topic, inline=False)
+		e.add_field(name="User Limit", value=str(channel.user_limit), inline=False)
+		e.set_footer(text=str(channel.created_at))
 		await client.send_message(c, "", embed=e)
 		pass
 	pass
@@ -2366,6 +2370,15 @@ async def on_server_role_create(role):
 	m = datetime.now()
 	sent_str = f"{role.name} was created ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(sent_str, role.server.name)
+	c = client.get_channel(parser[role.server.id]["logchannel"])
+	if not c is None:
+		e = discord.Embed(title="Role Created!", description="A role was created!", colour=discord.Colour.green())
+		e.add_field(name="Name", value=str(role), inline=False)
+		e.add_field(name="ID", value=role.id, inline=False)
+		e.add_field(name="Permissions", value=str(role.permissions), inline=False)
+		e.set_footer(text=str(role.created_at))
+		await client.send_message(c, "", embed=e)
+		pass
 	pass
 
 @client.event
@@ -2373,6 +2386,14 @@ async def on_server_role_delete(role):
 	m = datetime.now()
 	sent_str = f"{role.name} was deleted ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(sent_str, role.server.name)
+	c = client.get_channel(parser[role.server.id]["logchannel"])
+	if not c is None:
+		e = discord.Embed(title="Role Deleted!", description="A role was deleted!", colour=discord.Colour.red())
+		e.add_field(name="Name", value=str(role), inline=False)
+		e.add_field(name="ID", value=role.id, inline=False)
+		e.set_footer(text=str(m))
+		await client.send_message(c, "", embed=e)
+		pass
 	pass
 
 @client.event
@@ -2487,6 +2508,32 @@ async def on_server_role_update(before, after):
 
 	sent_str = f"{before} : {old} : {before.position} -> {after} : {new} : {after.position} ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(sent_str, before.server.name)
+
+	c = client.get_channel(parser[before.server.id]["logchannel"])
+	if not c is None:
+		e = discord.Embed(title="Role Updated!", description="A role was updated!", colour=discord.Colour.gold())
+		if not str(before) == str(after):
+			e.add_field(name="Old Name", value=str(before), inline=False)
+			e.add_field(name="New Name", value=str(after), inline=False)
+			pass
+		e.add_field(name="ID", value=after.id, inline=False)
+		if not old == new:
+			e.add_field(name="Old Permissions", value=str(old), inline=False)
+			e.add_field(name="New Permissions", value=str(new), inline=False)
+			pass
+		if not before.position == after.position:
+			e.add_field(name="Old Position", value=str(before.position), inline=False)
+			e.add_field(name="New Position", value=str(after.position), inline=False)
+			pass
+		e.set_footer(text=str(m))
+		await client.send_message(c, "", embed=e)
+		pass
+
+	del sent_str
+	del old
+	del new
+	del m
+	del c
 	pass
 
 @client.event
@@ -2515,7 +2562,8 @@ async def on_reaction_clear(message, reactions):
 	pass
 
 @client.event
-async def on_channel_update(before, after):
+async def on_channel_update(before: discord.Channel, after: discord.Channel):
+	m = datetime.now()
 	sent_str = ""
 	if before.name != after.name:
 		send(f"{after}'s name was changed from {before.name} to {after.name}", after.server.name)
@@ -2532,10 +2580,38 @@ async def on_channel_update(before, after):
 	elif before.bitrate is not after.bitrate: sent_str = f"{after.name}'s bitrate was changed from {before.bitrate} to {after.bitrate}"
 	else: sent_str = f"{after.name} was updated."
 	send(sent_str, after.server.name)
+	c = client.get_channel(parser[before.server.id]["logchannel"])
+	if not c is None:
+		e = discord.Embed(title="Channel Updated!", description="A channel was updated!", colour=discord.Colour.gold())
+		if not str(before) == str(after):
+			e.add_field(name="Old Name", value=str(before), inline=False)
+			e.add_field(name="New Name", value=str(after), inline=False)
+			pass
+		e.add_field(name="ID", value=after.id, inline=False)
+		if not before.topic == after.topic:
+			e.add_field(name="Old Topic", value=str(before.topic), inline=False)
+			e.add_field(name="New Topic", value=str(after.topic), inline=False)
+			pass
+		if not before.position == after.position:
+			e.add_field(name="Old Position", value=str(before.position), inline=False)
+			e.add_field(name="New Position", value=str(after.position), inline=False)
+			pass
+		if not before.bitrate == after.bitrate:
+			e.add_field(name="Old Bitrate", value=str(before.bitrate), inline=False)
+			e.add_field(name="New Bitrate", value=str(after.bitrate), inline=False)
+			pass
+		if not before.user_limit == after.user_limit:
+			e.add_field(name="Old User Limit", value=str(before.user_limit), inline=False)
+			e.add_field(name="New User Limit", value=str(after.user_limit), inline=False)
+			pass
+		e.set_footer(text=str(m))
+		await client.send_message(c, "", embed=e)
+		pass
 	pass
 
 @client.event
-async def on_server_update(before, after):
+async def on_server_update(before: discord.Server, after: discord.Server):
+	m = datetime.now()
 	# If the server's properties were changed, do the appropriate actions and log them.
 	if before.name != after.name:
 		with f"{discord_logs}\\{before.name}" as old_loc:
@@ -2556,6 +2632,29 @@ async def on_server_update(before, after):
 		pass
 	if before.verification_level != after.verification_level:
 		send(f"The server's verification level was changed from {before.verification_level} to {after.verification_level}.", after.name)
+		pass
+	c = client.get_channel(parser[before.id]["logchannel"])
+	if not c is None:
+		e = discord.Embed(title="Server Updated!", description="The server was updated!", colour=discord.Colour.gold())
+		if not str(before) == str(after):
+			e.add_field(name="Old Name", value=str(before), inline=False)
+			e.add_field(name="New Name", value=str(after), inline=False)
+			pass
+		e.add_field(name="ID", value=after.id, inline=False)
+		if not before.default_channel == after.default_channel:
+			e.add_field(name="Old Default Channel", value=str(before.default_channel), inline=False)
+			e.add_field(name="New Default Channel", value=str(after.default_channel), inline=False)
+			pass
+		if not before.afk_channel == after.afk_channel:
+			e.add_field(name="Old AFK Channel", value=str(before.afk_channel), inline=False)
+			e.add_field(name="New AFK Channel", value=str(after.afk_channel), inline=False)
+			pass
+		if not before.default_role == after.default_role:
+			e.add_field(name="Old Default Role", value=str(before.default_role), inline=False)
+			e.add_field(name="New Default Role", value=str(after.default_role), inline=False)
+			pass
+		e.set_footer(text=str(m))
+		await client.send_message(c, "", embed=e)
 		pass
 	pass
 
