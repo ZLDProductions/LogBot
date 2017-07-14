@@ -10,6 +10,7 @@ import traceback
 from asyncio import sleep
 from datetime import datetime, timezone
 from sys import argv
+from typing import List, Union
 
 import discord
 import psutil
@@ -26,7 +27,7 @@ from symbols import symbols
 from logbot_data import *
 
 # noinspection SpellCheckingInspection
-version = '15.4.7 Python'
+version = '15.4.8 Python'
 whats_new = [
 	"•Added join roles.",
 	"•Updated help content.",
@@ -1492,7 +1493,7 @@ async def sendDisabled(message: discord.Message):
 
 # noinspection PyShadowingNames
 @client.event
-async def on_message(message):
+async def on_message(message: discord.Message):
 	muted_role = discord.utils.find(lambda r:r.name == "LogBot Muted", message.server.roles)
 
 	try:
@@ -2157,7 +2158,7 @@ async def on_message(message):
 
 # noinspection PyShadowingNames
 @client.event
-async def on_message_delete(message):
+async def on_message_delete(message: discord.Message):
 	try: exclude_channel_list.index(message.channel.id)
 	except:
 		m = format_time(message.timestamp)
@@ -2178,7 +2179,7 @@ async def on_message_delete(message):
 	pass
 
 @client.event
-async def on_message_edit(before, after):
+async def on_message_edit(before: discord.Message, after: discord.Message):
 	try: exclude_channel_list.index(before.channel.id)
 	except:
 		m = format_time(after.timestamp)
@@ -2186,21 +2187,21 @@ async def on_message_edit(before, after):
 		ret = f"{before.channel.name} ~ \"{before.content}\" ~ \"{after.content}\" ~ {attachments} ~ {before.author} ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 		send(ret, after.server.name, after.channel.name)
 		c = client.get_channel(parser[before.server.id]["logchannel"])
-		if not c is None:
+		if not c is None and not before.content == after.content:
 			e = discord.Embed(title="Message Edited!", description="A message was edited!", colour=discord.Colour.red()) \
 				.add_field(name="Author", value=str(before.author), inline=False) \
 				.add_field(name="Old Content", value=before.content, inline=False) \
 				.add_field(name="New Content", value=after.content, inline=False) \
 				.add_field(name="ID", value=before.id, inline=False) \
 				.add_field(name="Channel", value=str(before.channel), inline=False) \
-				.set_footer(text=str(m))
+				.set_footer(text=f"edited on {after.edited_timestamp}")
 			await client.send_message(c, "", embed=e)
 			pass
 		pass
 	pass
 
 @client.event
-async def on_channel_delete(channel):
+async def on_channel_delete(channel: discord.Channel):
 	m = datetime.now()
 	ret = f"\"{channel.name}\" was deleted ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(ret, channel.server.name)
@@ -2235,7 +2236,7 @@ async def on_channel_create(channel: discord.Channel):
 	pass
 
 @client.event
-async def on_member_join(member):
+async def on_member_join(member: discord.Member):
 	m = datetime.now()
 	ret = f"{member} joined ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(ret, member.server.name)
@@ -2259,7 +2260,7 @@ async def on_member_join(member):
 	pass
 
 @client.event
-async def on_member_remove(member):
+async def on_member_remove(member: discord.Member):
 	m = datetime.now()
 	time = f"{m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	ret = f"{member} left ~ {time}"
@@ -2282,7 +2283,7 @@ async def on_member_remove(member):
 	pass
 
 @client.event
-async def on_member_update(before, after):
+async def on_member_update(before: discord.Member, after: discord.Member):
 	m = datetime.now()
 	sent_str = ""
 	if before.status != after.status: sent_str = f"{after} changed his/her status from {before.status} to {after.status}"
@@ -2311,7 +2312,7 @@ async def on_member_update(before, after):
 	pass
 
 @client.event
-async def on_voice_state_update(before, after):
+async def on_voice_state_update(before: discord.Member, after: discord.Member):
 	m = datetime.now()
 	sent_str = ""
 	if before.voice.deaf is not after.voice.deaf: sent_str = f"{before} was deafened by the server."
@@ -2336,7 +2337,7 @@ async def on_voice_state_update(before, after):
 	pass
 
 @client.event
-async def on_member_ban(member):
+async def on_member_ban(member: discord.Member):
 	m = datetime.now()
 	sent_str = f"{check(member.nick, member.name, member.id)} was banned ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(sent_str, member.server.name)
@@ -2351,7 +2352,7 @@ async def on_member_ban(member):
 	pass
 
 @client.event
-async def on_member_unban(server, user):
+async def on_member_unban(server: discord.Server, user: discord.User):
 	m = datetime.now()
 	sent_str = f"{check(user.display_name, user.name, user.id)} was unbanned ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(sent_str, server.name)
@@ -2366,7 +2367,7 @@ async def on_member_unban(server, user):
 	pass
 
 @client.event
-async def on_server_role_create(role):
+async def on_server_role_create(role: discord.Role):
 	m = datetime.now()
 	sent_str = f"{role.name} was created ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(sent_str, role.server.name)
@@ -2382,7 +2383,7 @@ async def on_server_role_create(role):
 	pass
 
 @client.event
-async def on_server_role_delete(role):
+async def on_server_role_delete(role: discord.Role):
 	m = datetime.now()
 	sent_str = f"{role.name} was deleted ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(sent_str, role.server.name)
@@ -2397,7 +2398,7 @@ async def on_server_role_delete(role):
 	pass
 
 @client.event
-async def on_server_role_update(before, after):
+async def on_server_role_update(before: discord.Role, after: discord.Role):
 	m = datetime.now()
 	old = {}
 	new = {}
@@ -2537,23 +2538,23 @@ async def on_server_role_update(before, after):
 	pass
 
 @client.event
-async def on_reaction_add(reaction, user):
+async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.User, discord.Member]):
 	emj = codecs.unicode_escape_encode(reaction.emoji, 'strict')
 	msgcont = reaction.message.content if is_ascii(reaction.message.content) else codecs.unicode_escape_encode(reaction.message.content, 'strict')
 	sent_str = f"{reaction.message.channel.name} ~ {'Custom ' if reaction.custom_emoji else ''}Reaction {emj} was added to message \"{msgcont}\" {reaction.count} time(s) by {user}"
-	send(sent_str, reaction.server.name)
+	send(sent_str, reaction.message.server.name)
 	pass
 
 @client.event
-async def on_reaction_remove(reaction, user):
+async def on_reaction_remove(reaction: discord.Reaction, user: Union[discord.User, discord.Member]):
 	emj = codecs.unicode_escape_encode(reaction.emoji, 'strict')
 	msgcont = reaction.message.content if is_ascii(reaction.message.content) else codecs.unicode_escape_encode(reaction.message.content, 'strict')
 	sent_str = f"{reaction.message.channel.name} ~ {'Custom ' if reaction.custom_emoji else ''}Reaction {emj} was removed from message \"{msgcont}\" {reaction.count} time(s) by {user}"
-	send(sent_str, reaction.server.name)
+	send(sent_str, reaction.message.server.name)
 	pass
 
 @client.event
-async def on_reaction_clear(message, reactions):
+async def on_reaction_clear(message: discord.Message, reactions: List[discord.Reaction]):
 	emjs = []
 	for item in reactions: emjs.append(codecs.unicode_escape_encode(item.emoji, 'strict'))
 	msgcont = message.content if is_ascii(message.content) else codecs.unicode_escape_encode(message.content, 'strict')
