@@ -265,14 +265,14 @@ async def on_message(message):
 						_t = _m.split(".")
 						if len(_t) == 1: _t.append("0")
 						e = discord.Embed(title=str(message.author), description=f"Ranking Information for {str(message.author)}", colour=message.author.colour) \
-							.add_field(name="Rank", value=str(u_data[1])) \
-							.add_field(name="XP", value=str(parse_num(round(u_data[2]))) + "/" + parse_num(round(int(u_data[3])))) \
-							.add_field(name="Credits", value=parse_num(u_data[5])) \
-							.add_field(name="Multiplier", value=f"{parse_num(_t[0])}.{_t[1]}") \
-							.add_field(name="CPM", value=parse_num(u_data[6])) \
-							.add_field(name="Tier", value=str(u_data[0])) \
-							.add_field(name="DM", value=str(u_data[7])) \
-							.add_field(name="Alert Channel", value=str(discord.utils.find(lambda c: c.id == u_data[8], message.server.channels)))
+							.add_field(name="Rank", value=str(u_data[1]), inline=False) \
+							.add_field(name="XP", value=str(parse_num(round(u_data[2]))) + "/" + parse_num(round(int(u_data[3]))), inline=False) \
+							.add_field(name="Credits", value=parse_num(u_data[5]), inline=False) \
+							.add_field(name="Multiplier", value=f"{parse_num(_t[0])}.{_t[1]}", inline=False) \
+							.add_field(name="CPM", value=parse_num(u_data[6]), inline=False) \
+							.add_field(name="Tier", value=str(u_data[0]), inline=False) \
+							.add_field(name="DM", value=str(u_data[7]), inline=False) \
+							.add_field(name="Alert Channel", value=str(discord.utils.find(lambda c: c.id == u_data[8], message.server.channels)), inline=False)
 						await client.send_message(message.channel, "Here you go!", embed=e)
 						pass
 					else:
@@ -289,14 +289,14 @@ async def on_message(message):
 						_t = _m.split(".")
 						if len(_t) == 1: _t.append("0")
 						e = discord.Embed(title=str(user), description=f"Ranking Information for {str(user)}", colour=user.colour) \
-							.add_field(name="Rank", value=str(u_data[1])) \
-							.add_field(name="XP", value=str(u_data[2]) + "/" + parse_num(tmp)) \
-							.add_field(name="Credits", value=parse_num(u_data[5])) \
-							.add_field(name="Multiplier", value=f"{parse_num(_t[0])}.{_t[1]}") \
-							.add_field(name="CPM", value=parse_num(u_data[6])) \
-							.add_field(name="Tier", value=str(u_data[0])) \
-							.add_field(name="DM", value=str(u_data[7])) \
-							.add_field(name="Alert Channel", value=str(discord.utils.find(lambda c: c.id == u_data[8], message.server.channels)))
+							.add_field(name="Rank", value=str(u_data[1]), inline=False) \
+							.add_field(name="XP", value=str(u_data[2]) + "/" + parse_num(tmp), inline=False) \
+							.add_field(name="Credits", value=parse_num(u_data[5]), inline=False) \
+							.add_field(name="Multiplier", value=f"{parse_num(_t[0])}.{_t[1]}", inline=False) \
+							.add_field(name="CPM", value=parse_num(u_data[6]), inline=False) \
+							.add_field(name="Tier", value=str(u_data[0]), inline=False) \
+							.add_field(name="DM", value=str(u_data[7]), inline=False) \
+							.add_field(name="Alert Channel", value=str(discord.utils.find(lambda c: c.id == u_data[8], message.server.channels)), inline=False)
 						await client.send_message(message.channel, "Here you go!", embed=e)
 						pass
 					pass
