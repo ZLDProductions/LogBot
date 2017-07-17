@@ -1295,6 +1295,19 @@ LogBot Admin
 
 ---
 
+#### $roll
+**Info**  
+Rolls a random number between 1 and 6.
+
+**Usage**  
+
+    $roll
+
+**Required Permissions**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.

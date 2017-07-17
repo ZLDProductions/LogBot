@@ -27,13 +27,14 @@ from symbols import symbols
 from logbot_data import *
 
 # noinspection SpellCheckingInspection
-version = '15.4.9 Python'
+version = '15.5.9 Python'
 whats_new = [
 	"•Added join roles.",
 	"•Updated help content.",
 	"•Added some user interaction with the bot.",
 	"•Added the ability to not only set DM level up alerts, but which channel they appear in when DM is off.",
-	"•Added a$clsserver, which deletes ALL messages in a server (or up to 1,000,000 in each channel) and returns the number deleted."
+	"•Added a$clsserver, which deletes ALL messages in a server (or up to 1,000,000 in each channel) and returns the number deleted.",
+	"•Added $roll command."
 ]
 planned = [
 	"•SQL storage, portable mode."
@@ -1528,22 +1529,26 @@ async def on_message(message: discord.Message):
 	if not message.channel.is_private and not muted_role in message.author.roles:
 		admin_role = discord.utils.find(lambda r:r.name == "LogBot Admin", message.server.roles)
 		member_role = discord.utils.find(lambda r:r.name == "LogBot Member", message.server.roles)
-		if admin_role is None: admin_role = await client.create_role(message.server, name="LogBot Admin")
-		if member_role is None: member_role = await client.create_role(message.server, name="LogBot Member")
-		if muted_role is None:
-			perms = discord.Permissions(send_messages=False)
-			muted_role = await client.create_role(message.server, name="LogBot Muted", permissions=perms)
-			pass
-		await client.move_role(message.server, muted_role, discord.utils.find(lambda u:u.id == bot_id, message.server.members).top_role.position - 1)
-		await client.add_roles(message.server.owner, admin_role, member_role)
-		if not owner_user is None:
-			await client.add_roles(owner_user, admin_role, member_role)
-			pass
-		for m in message.server.members:
-			if admin_role in m.roles and not member_role in m.roles:
-				await client.add_roles(m, member_role)
+
+		try:
+			if admin_role is None: admin_role = await client.create_role(message.server, name="LogBot Admin")
+			if member_role is None: member_role = await client.create_role(message.server, name="LogBot Member")
+			if muted_role is None:
+				perms = discord.Permissions(send_messages=False)
+				muted_role = await client.create_role(message.server, name="LogBot Muted", permissions=perms)
+				pass
+			await client.move_role(message.server, muted_role, discord.utils.find(lambda u:u.id == bot_id, message.server.members).top_role.position - 1)
+			await client.add_roles(message.server.owner, admin_role, member_role)
+			if not owner_user is None:
+				await client.add_roles(owner_user, admin_role, member_role)
+				pass
+			for m in message.server.members:
+				if admin_role in m.roles and not member_role in m.roles:
+					await client.add_roles(m, member_role)
+					pass
 				pass
 			pass
+		except: pass
 
 		sort()
 
@@ -2092,6 +2097,9 @@ async def on_message(message: discord.Message):
 				del c
 				pass
 			else: sendNoPerm(message)
+			pass
+		elif startswith("$roll"):
+			await client.send_message(message.channel, f"You rolled {random.choice([1, 2, 3, 4, 5, 6])}!")
 			pass
 
 		for item in list(custom_commands.keys()):

@@ -448,6 +448,11 @@ infos = dict({
 		"Info"                :"Gets or sets the logchannel for the server.",
 		"Usage"               :"$logchannel [channel-mention]",
 		"Required Permissions":"LogBot Admin"
+	},
+	"_roll"          :{
+		"Info"                :"Rolls a random number between 1 and 6.",
+		"$roll"               :"$roll",
+		"Required Permissions":"None"
 	}
 })
 prefixes = {
