@@ -300,13 +300,13 @@ async def on_message(message):
 					AND member='{message.author.id}';
 					""".replace("\t", ""))[0]
 					bar = """```
-					┌──────────┐
-					│          │
-					└──────────┘
+					┌────────────────────┐
+					│                    │
+					└────────────────────┘
 					```""".replace("\t", "")
 					curr_xp = round(u_data[2])
 					need_xp = round(u_data[3])
-					bar_len = round((curr_xp / need_xp) * 10)
+					bar_len = round(((curr_xp / need_xp) * 2) * 10)
 					bar = bar.replace(" ", "█", bar_len)
 					precision = len(str(u_data[4]).split('.')[0]) + 1
 					_m = f"{float(u_data[4]):1.{precision}}"
@@ -332,13 +332,13 @@ async def on_message(message):
 					AND member='{user.id}';
 					""".replace("\t", ""))[0]
 					bar = """```
-					┌──────────┐
-					│          │
-					└──────────┘
+					┌────────────────────┐
+					│                    │
+					└────────────────────┘
 					```""".replace("\t", "")
 					curr_xp = round(u_data[2])
 					need_xp = round(u_data[3])
-					bar_len = round((curr_xp / need_xp) * 10)
+					bar_len = round(((curr_xp / need_xp)*2) * 10)
 					bar = bar.replace(" ", "█", bar_len)
 					tmp = round(base * (multi ** u_data[1]))
 					precision = len(str(u_data[4]).split('.')[0]) + 1
