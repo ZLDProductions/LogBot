@@ -74,7 +74,8 @@ def save(sid: str):
 def parse_num(num) -> str:
 	_num = str(num)
 	_num = _num[::-1]
-	_num = ','.join([_num[i:i + 3] for i in range(0, len(_num), 3)])[::-1]
+	if "e" in _num: _num = _num[::-1]
+	else: _num = ','.join([_num[i:i + 3] for i in range(0, len(_num), 3)])[::-1]
 	return str(_num)
 	pass
 
@@ -245,7 +246,9 @@ async def on_message(message):
 						await client.send_message(alert_channel, f"Congrats, {message.author.mention}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
 						pass
 					else:
-						await client.send_message(message.channel, f"Congrats, {message.author.mention}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
+						if do_dm[1].lower() == "self":
+							await client.send_message(message.channel, f"Congrats, {message.author.mention}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
+							pass
 						pass
 					print(f"{Fore.GREEN}{message.author} has leveled up to {_tdat[0]}!{Fore.RESET}")
 					pass
@@ -847,7 +850,8 @@ async def on_message(message):
 						WHERE server='{message.server.id}'
 						AND member='{message.author.id}';
 						""".replace("\t", ""))
-						await client.send_message(message.channel, f"```Gifted {user} with {parse_num(str(gift).split('.')[0]) + str(gift).split('.')[1]} credits!```")
+						# await client.send_message(message.channel, f"```Gifted {user} with {parse_num(str(gift).split('.')[0]) + str(gift).split('.')[1]} credits!```")
+						await client.send_message(message.channel, f"```Gifted {user} with {parse_num(str(gift).split('.')[0])} credits!```")
 						pass
 					else: await client.send_message(message.channel, f"```You do not have enough credits to do that!```")
 					pass
@@ -889,8 +893,7 @@ async def on_message(message):
 						""".replace("\t", ""))
 						sqlexecute(f"""
 						UPDATE levels
-						UPDATE levels
-						SET multiplier=multiplier+{gift}
+						SET multiplier=multiplier-{gift}
 						WHERE server='{message.server.id}'
 						AND member='{message.author.id}';
 						""".replace("\t", ""))

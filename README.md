@@ -1274,7 +1274,7 @@ Sets which channel you will be alerted in when DM is OFF.
 **Usage**
 
     l$alert {channel}
-`channel` is a channel mention or `None` (case-sensitive).
+`channel` is a channel mention, `self`, or `None` (case-sensitive).
 
 **Required Permissions**  
 None
