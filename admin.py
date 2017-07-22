@@ -72,6 +72,7 @@ class Commands:
 					try:
 						item = await logs()
 						count += 1
+						del item
 						pass
 					except: break
 					pass
