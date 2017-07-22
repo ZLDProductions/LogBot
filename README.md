@@ -1308,6 +1308,19 @@ None
 
 ---
 
+#### $channels
+**Info**  
+Shows all of the voice and text channels in a server.
+
+**Usage**  
+
+    $channels
+
+**Required Permissions**  
+LogBot Member
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.

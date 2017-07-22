@@ -453,6 +453,11 @@ infos = dict({
 		"Info"                :"Rolls a random number between 1 and 6.",
 		"$roll"               :"$roll",
 		"Required Permissions":"None"
+	},
+	"_channels"      :{
+		"Info"                :"Shows a list of all voice and text channels in a server.",
+		"Usage"               :"$channels",
+		"Required Permissions":"LogBot Member"
 	}
 })
 prefixes = {
