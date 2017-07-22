@@ -283,6 +283,28 @@ def sort():
 class Commands:
 	class Member:
 		@staticmethod
+		async def channels(message: discord.Message):
+			_channels = [x for x in client.get_all_channels() if x.server == message.server]
+			voice_channels = []
+			text_channels = []
+			vappend = voice_channels.append
+			tappend = text_channels.append
+			for c in _channels:
+				if c.type == discord.ChannelType.voice: vappend(str(c))
+				else: tappend(str(c))
+				pass
+			voice_channels = [f"#{x}" for x in voice_channels]
+			voice_channels.sort()
+			text_channels = [f"#{x}" for x in text_channels]
+			text_channels.sort()
+			v_msg = format_message(f"Voice Channels:\n{', '.join(voice_channels)}")
+			t_msg = format_message(f"Text Channels:\n{', '.join(text_channels)}")
+			for msg in v_msg: await client.send_message(message.channel, msg)
+			for msg in t_msg: await client.send_message(message.channel, msg)
+			del vappend
+			del tappend
+			pass
+		@staticmethod
 		async def ping(message: discord.Message):
 			"""
 			Pings logbot.
@@ -2070,6 +2092,10 @@ async def on_message(message: discord.Message):
 				pass
 			elif startswith("$roll"):
 				await client.send_message(message.channel, f"You rolled {random.choice([1, 2, 3, 4, 5, 6])}!")
+				pass
+			elif startswith("$channels"):
+				if member_role in message.author.roles or message.author.id == owner_id: await Commands.Member.channels(message)
+				else: sendNoPerm(message)
 				pass
 			pass
 		elif startswith(f"hello, <@{bot_id}>", f"hi, <@{bot_id}>", f"<@{bot_id}>", modifier="lower"):
