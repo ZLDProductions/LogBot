@@ -115,10 +115,10 @@ async def on_message(message):
 	if not message.channel.is_private:
 		admin_role = discord.utils.find(lambda r:r.name == "LogBot Admin", message.server.roles)
 		if startswith("a$clear"):
-			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.a_clear(message)
+			if message.author == message.server.owner or message.author.id == owner_id: await Commands.Admin.a_clear(message)
 			pass
 		elif startswith("a$purge"):
-			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.at_clear(message)
+			if message.author == message.server.owner or message.author.id == owner_id: await Commands.Admin.at_clear(message)
 			pass
 		elif startswith("a$clsserver"):
 			if message.author == message.server.owner or message.author.id == owner_id: await Commands.Owner.a_server_clear(message)
