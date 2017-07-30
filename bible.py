@@ -1823,25 +1823,25 @@ async def on_message(message):
 								if "-" in v and not v in encountered:
 									if bible_versions[message.author.id] == "kjv":
 										for m in format_message(getPassage(v, ih=True)):
-											m = m.split('\n')
-											m[1] = f"```{m[1]}```"
-											m = '\n'.join(m)
+											m = m.replace("```", "").split('\n')
+											m[1] = f"```{m[1]}"
+											m = '\n'.join(m) + "```"
 											await client.send_message(message.channel, m)
 											pass
 										pass
 									elif bible_versions[message.author.id] == "akjv":
 										for m in format_message(getAKJVPassage(v, ih=True)):
-											m = m.split('\n')
-											m[1] = f"```{m[1]}```"
-											m = '\n'.join(m)
+											m = m.replace("```", "").split('\n')
+											m[1] = f"```{m[1]}"
+											m = '\n'.join(m) + "```"
 											await client.send_message(message.channel, m)
 											pass
 										pass
 									elif bible_versions[message.author.id] == "web":
 										for m in format_message(getWEBPassage(v, ih=True)):
-											m = m.split('\n')
-											m[1] = f"```{m[1]}```"
-											m = '\n'.join(m)
+											m = m.replace("```", "").split('\n')
+											m[1] = f"```{m[1]}"
+											m = '\n'.join(m) + "```"
 											await client.send_message(message.channel, m)
 											pass
 										pass
@@ -1849,25 +1849,25 @@ async def on_message(message):
 								elif ":" in v and not v in encountered:
 									if bible_versions[message.author.id] == "kjv":
 										for m in format_message(getVerse(v, ih=True)):
-											m = m.split('\n')
-											m[1] = f"```{m[1]}```"
-											m = '\n'.join(m)
+											m = m.replace("```", "").split('\n')
+											m[1] = f"```{m[1]}"
+											m = '\n'.join(m) + "```"
 											await client.send_message(message.channel, m)
 											pass
 										pass
 									elif bible_versions[message.author.id] == "akjv":
 										for m in format_message(getAKJVVerse(v, ih=True)):
-											m = m.split('\n')
-											m[1] = f"```{m[1]}```"
-											m = '\n'.join(m)
+											m = m.replace("```", "").split('\n')
+											m[1] = f"```{m[1]}"
+											m = '\n'.join(m) + "```"
 											await client.send_message(message.channel, m)
 											pass
 										pass
 									elif bible_versions[message.author.id] == "web":
 										for m in format_message(getWEBVerse(v, ih=True)):
-											m = m.split('\n')
-											m[1] = f"```{m[1]}```"
-											m = '\n'.join(m)
+											m = m.replace("```", "").split('\n')
+											m[1] = f"```{m[1]}"
+											m = '\n'.join(m) + "```"
 											await client.send_message(message.channel, m)
 											pass
 										pass
