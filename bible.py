@@ -2228,8 +2228,6 @@ async def on_message(message):
 				e.add_field(name=ret[0], value=ret[1], inline=False)
 				pass
 			elif line.startswith("&text="):
-				_title = ""
-				_text = ""
 				if "|" in line: _title = line.replace("&text=", "").split("|")[0]; _text = line.replace("&text=", "").split("|")[1]
 				else: _title = "` `"; _text = line.replace("&text=", "")
 				e.add_field(name=_title, value=_text, inline=False)
