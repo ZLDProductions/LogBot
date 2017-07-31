@@ -1765,14 +1765,14 @@ async def on_message(message: discord.Message):
 					await sendNoPerm(message)
 					pass
 				pass
-			elif startswith(f"$suggestions"):
-				if member_role in message.author.roles or message.author.id == owner_id:
-					await Commands.Member.suggestions(message)
-					pass
-				else:
-					await sendNoPerm(message)
-					pass
-				pass
+			# elif startswith(f"$suggestions"):
+			# 	if member_role in message.author.roles or message.author.id == owner_id:
+			# 		await Commands.Member.suggestions(message)
+			# 		pass
+			# 	else:
+			# 		await sendNoPerm(message)
+			# 		pass
+			# 	pass
 			elif startswith(f"$decide "):
 				if (member_role in message.author.roles and not disables["decide"]) or message.author.id == owner_id:
 					await Commands.Member.decide(message)
@@ -2160,7 +2160,7 @@ async def on_message(message: discord.Message):
 			if message.author.id == owner_id: await Commands.DM.update(message)
 			pass
 		elif message.content.startswith("$suggest "): await Commands.DM.suggest(message)
-		elif message.content.startswith("$suggestions"): await Commands.DM.suggestions(message)
+		# elif message.content.startswith("$suggestions"): await Commands.DM.suggestions(message)
 		elif message.content.startswith("$decide"):
 			content = message.content.split(' ')
 			content.remove(content[0])
