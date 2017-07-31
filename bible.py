@@ -1791,7 +1791,7 @@ async def on_message(message):
 	bible_types[message.author.id] = bible_types[message.author.id] if not bible_types.get(message.author.id) is None else "embed"
 	if not message.server.id in verse_disable_list:
 		if not message.author.bot:
-			if not message.content.startswith(f"$verse "):
+			if not message.content.startswith(f"$verse ") and not message.content.startswith("$devotional\n"):
 				if not message.channel.id in disabled_channels:
 					for mcont in message.content.split("\n"):
 						e = discord.Embed(title=bible_versions[message.author.id], colour=discord.Colour.purple())
@@ -2154,6 +2154,38 @@ async def on_message(message):
 		else: sendNoPerm(message)
 		pass
 	elif startswith(f"$ping"): await Commands.Member.ping(message)
+	elif startswith(f"$devotional\n"):
+		lines = message.content.replace("$devotional\n", "").split("\n")
+		e = discord.Embed(title="", description="", colour=discord.Colour.green())
+		for line in lines:
+			if line.startswith("&title="): e.title = line.replace("&title=", "")
+			elif line.startswith("&description="): e.description = line.replace("&description=", "")
+			elif line.startswith("&author="): e.set_footer(text=line.replace("&author=", ""))
+			elif line.startswith("&thumbnail="): e.set_thumbnail(url=line.replace("&thumbnail=", ""))
+			elif line.startswith("&passage="):
+				def analyzeVerse(text, version="kjv"):
+					if version == "kjv":
+						if "-" in text: return [text, getPassage(text, ih=False)]
+						else: return [text, getVerse(text, ih=False)]
+						pass
+					elif version == "akjv":
+						if "-" in text: return [text, getAKJVPassage(text, ih=False)]
+						else: return [text, getAKJVVerse(text, ih=False)]
+						pass
+					elif version == "web":
+						if "-" in text: return [text, getWEBPassage(text, ih=False)]
+						else: return [text, getWEBVerse(text, ih=False)]
+						pass
+					pass
+				_text = line.replace("&passage=", "")
+				version = bible_versions[message.author.id]
+				ret = analyzeVerse(_text, version=version)
+				e.add_field(name=ret[0], value=ret[1])
+				pass
+			elif line.startswith("&text="): e.add_field(name="...", value=line.replace("&text=", ""))
+			pass
+		await client.send_message(message.channel, "", embed=e)
+		pass
 
 	save(message.server.id)
 	if do_update:
