@@ -1321,6 +1321,31 @@ LogBot Member
 
 ---
 
+#### $devotional
+**Info**  
+Allows the user to create an embed with more personalized attributes.
+
+**Usage**  
+multi-line:  
+
+    $devotional
+    &title=[title]
+    &description=[description]
+    &thumbnail=[image-url]
+    &footer=[text]
+    &text=[text]
+    &passage=[ref]
+`title` is the title of the embed. This line is required and can only be used once.  
+`description` is the description of the embed. This line is optional and can only be used once.  
+`image-url` is the url of an image. This line is optional, and can only be used once.  
+`text` describes text. `&footer` is an optional, one-use line. `&text` can be added at any point, is optional, and can be used as many times as needed.  
+`ref` is a verse reference. This line is optional, and can be used as many times as is necessary.
+
+**Required Permissions**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.

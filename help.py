@@ -458,6 +458,9 @@ infos = dict({
 		"Info"                :"Shows a list of all voice and text channels in a server.",
 		"Usage"               :"$channels",
 		"Required Permissions":"LogBot Member"
+	},
+	"_devotional":{
+		"Error":"Since the help content is too large to display properly, please use the documentation on github (use `$git`)"
 	}
 })
 prefixes = {
