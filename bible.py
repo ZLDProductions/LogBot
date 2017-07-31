@@ -2160,7 +2160,7 @@ async def on_message(message):
 		for line in lines:
 			if line.startswith("&title="): e.title = line.replace("&title=", "")
 			elif line.startswith("&description="): e.description = line.replace("&description=", "")
-			elif line.startswith("&author="): e.set_footer(text=line.replace("&author=", ""))
+			elif line.startswith("&author=") or line.startswith("&footer="): e.set_footer(text=line.replace("&author=", "").replace("&footer=", ""))
 			elif line.startswith("&thumbnail="): e.set_thumbnail(url=line.replace("&thumbnail=", ""))
 			elif line.startswith("&passage="):
 				def analyzeVerse(text, _version="kjv"):
@@ -2179,10 +2179,14 @@ async def on_message(message):
 					pass
 				_text = line.replace("&passage=", "")
 				version = bible_versions[message.author.id]
-				ret = analyzeVerse(_text, _version=version)
+				ret = analyzeVerse(_text.capitalize(), _version=version)
 				e.add_field(name=ret[0], value=ret[1], inline=False)
 				pass
-			elif line.startswith("&text="): e.add_field(name="...", value=line.replace("&text=", ""), inline=False)
+			elif line.startswith("&text="):
+				if "|" in line: _title = line.replace("&text=", "").split("|")[0]; _text = line.replace("&text=", "").split("|")[1]
+				else: _title = "` `"; _text = line.replace("&text=", "")
+				e.add_field(name=_title, value=_text, inline=False)
+				pass
 			pass
 		await client.send_message(message.channel, "", embed=e)
 		pass
@@ -2224,7 +2228,7 @@ async def on_message(message):
 					pass
 				_text = line.replace("&passage=", "")
 				version = bible_versions[message.author.id]
-				ret = analyzeVerse(_text, _version=version)
+				ret = analyzeVerse(_text.capitalize(), _version=version)
 				e.add_field(name=ret[0], value=ret[1], inline=False)
 				pass
 			elif line.startswith("&text="):
