@@ -2163,28 +2163,82 @@ async def on_message(message):
 			elif line.startswith("&author="): e.set_footer(text=line.replace("&author=", ""))
 			elif line.startswith("&thumbnail="): e.set_thumbnail(url=line.replace("&thumbnail=", ""))
 			elif line.startswith("&passage="):
-				def analyzeVerse(text, version="kjv"):
-					if version == "kjv":
+				def analyzeVerse(text, _version="kjv"):
+					if _version == "kjv":
 						if "-" in text: return [text, getPassage(text, ih=False)]
 						else: return [text, getVerse(text, ih=False)]
 						pass
-					elif version == "akjv":
+					elif _version == "akjv":
 						if "-" in text: return [text, getAKJVPassage(text, ih=False)]
 						else: return [text, getAKJVVerse(text, ih=False)]
 						pass
-					elif version == "web":
+					elif _version == "web":
 						if "-" in text: return [text, getWEBPassage(text, ih=False)]
 						else: return [text, getWEBVerse(text, ih=False)]
 						pass
 					pass
 				_text = line.replace("&passage=", "")
 				version = bible_versions[message.author.id]
-				ret = analyzeVerse(_text, version=version)
-				e.add_field(name=ret[0], value=ret[1])
+				ret = analyzeVerse(_text, _version=version)
+				e.add_field(name=ret[0], value=ret[1], inline=False)
 				pass
-			elif line.startswith("&text="): e.add_field(name="...", value=line.replace("&text=", ""))
+			elif line.startswith("&text="): e.add_field(name="...", value=line.replace("&text=", ""), inline=False)
 			pass
 		await client.send_message(message.channel, "", embed=e)
+		pass
+	elif startswith(f"$devotional"):
+		_msgs = []
+		lines = []
+		mappend = _msgs.append
+		lappend = lines.append
+		cont = True
+		_msg = await client.wait_for_message(author=message.author)
+		mappend(_msg)
+		lappend(_msg.content)
+		while cont:
+			_msg = await client.wait_for_message(author=message.author)
+			if _msg.content == "&end": cont = False; mappend(_msg)
+			else: lappend(_msg.content); mappend(_msg)
+			pass
+		mappend(message)
+		e = discord.Embed(title="", description="", colour=discord.Colour.green())
+		for line in lines:
+			if line.startswith("&title="): e.title = line.replace("&title=", "")
+			elif line.startswith("&description="): e.description = line.replace("&description=", "")
+			elif line.startswith("&author=") or line.startswith("&footer="): e.set_footer(text=line.replace("&author=", "").replace("&footer=", ""))
+			elif line.startswith("&thumbnail="): e.set_thumbnail(url=line.replace("&thumbnail=", ""))
+			elif line.startswith("&passage="):
+				def analyzeVerse(text, _version="kjv"):
+					if _version == "kjv":
+						if "-" in text: return [text, getPassage(text, ih=False)]
+						else: return [text, getVerse(text, ih=False)]
+						pass
+					elif _version == "akjv":
+						if "-" in text: return [text, getAKJVPassage(text, ih=False)]
+						else: return [text, getAKJVVerse(text, ih=False)]
+						pass
+					elif _version == "web":
+						if "-" in text: return [text, getWEBPassage(text, ih=False)]
+						else: return [text, getWEBVerse(text, ih=False)]
+						pass
+					pass
+				_text = line.replace("&passage=", "")
+				version = bible_versions[message.author.id]
+				ret = analyzeVerse(_text, _version=version)
+				e.add_field(name=ret[0], value=ret[1], inline=False)
+				pass
+			elif line.startswith("&text="):
+				_title = ""
+				_text = ""
+				if "|" in line: _title = line.replace("&text=", "").split("|")[0]; _text = line.replace("&text=", "").split("|")[1]
+				else: _title = "` `"; _text = line.replace("&text=", "")
+				e.add_field(name=_title, value=_text, inline=False)
+				pass
+			pass
+		await client.send_message(message.channel, "", embed=e)
+		for m in _msgs:
+			await client.delete_message(m)
+			pass
 		pass
 
 	save(message.server.id)
