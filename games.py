@@ -22,6 +22,12 @@ left = ""
 logs = os.path.expanduser('~\\Documents\\Discord Logs')
 settings = f"{logs}\\SETTINGS"
 
+challenges = [
+	"Type no capital letters.",
+	"Type no lower-case letters.",
+	"Use one word sentences"
+]
+
 def _read(cmd: str):
 	cursor.execute(cmd)
 	return cursor.fetchall()
@@ -221,6 +227,9 @@ async def on_message(message):
 				pass
 			except: await client.send_message(message.channel, f"```Execution Failed.\n{traceback.format_exc()}```")
 			pass
+		pass
+	elif startswith("g$challenge"):
+		await client.send_message(message.channel, random.choice(challenges))
 		pass
 
 	if do_update:
