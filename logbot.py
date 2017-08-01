@@ -27,17 +27,14 @@ from symbols import symbols
 from logbot_data import *
 
 # noinspection SpellCheckingInspection
-version = '15.5.10 Python'
+version = '15.5.12 Python'
 whats_new = [
-	"•Added join roles.",
-	"•Updated help content.",
-	"•Added some user interaction with the bot.",
-	"•Added the ability to not only set DM level up alerts, but which channel they appear in when DM is off.",
-	"•Added a$clsserver, which deletes ALL messages in a server (or up to 1,000,000 in each channel) and returns the number deleted.",
-	"•Added $roll command."
+	"•Added $devotional.",
+	"•Bug fixes.",
+	"•Help content updated."
 ]
 planned = [
-	"•SQL storage, portable mode."
+	"There is nothing planned at the moment."
 ]
 bootup_time = datetime.now()
 owner_id = "239500860336373761"
