@@ -1250,7 +1250,8 @@ class Commands:
 		async def join_role(message: discord.Message):
 			cnt = message.content.replace("$joinrole ", "")
 			role = discord.utils.find(lambda r:r.name == cnt or r.id == cnt or r.mention == cnt, message.server.roles)
-			join_roles[message.server.id] = role.id
+			try: join_roles[message.server.id] = role.id
+			except: join_roles[message.server.id] = "None"
 			await client.send_message(message.channel, f"```Set the join role to {role}.```")
 			pass
 		pass
