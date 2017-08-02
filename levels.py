@@ -1202,7 +1202,7 @@ async def on_message(message: discord.Message):
 					pass
 				pass
 			elif startswith("l$slots "):
-				cnt = message.content.replace("l$slots ", "").replace("max", sqlread(f"SELECT credits FROM levels WHERE server='{message.server.id}' AND member='{message.author.id}'")[0][0])
+				cnt = message.content.replace("l$slots ", "").replace("max", str(sqlread(f"SELECT credits FROM levels WHERE server='{message.server.id}' AND member='{message.author.id}'")[0][0]))
 				bid = int(cnt)
 				if 5 <= bid <= sqlread(f"""SELECT credits FROM levels WHERE server='{message.server.id}' AND member='{message.author.id}'""")[0][0]:
 					grid = [random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns)]
@@ -1275,7 +1275,7 @@ async def on_message(message: discord.Message):
 						WHERE server="{message.server.id}"
 						AND member="{message.author.id}";
 						""".replace("\t", ""))
-						machine_text += f"{message.author.mention} You lost {bid} Credits!"
+						machine_text += f"{message.author.mention} You lost {parse_num(bid)} Credits!"
 						pass
 					await client.send_message(message.channel, machine_text)
 					pass
