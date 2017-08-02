@@ -36,6 +36,25 @@ base = 200
 multi = 1.5
 disabled = False
 
+slots_rules = """2 Consecutive Symbols : Bid\\*2
+3 Consecutive Symbols : Bid\\*3
+3 :atm: : Bid\\*10
+3 :free: : Bid
+3 :dollar: : +300
+3 :moneybag: : +3000
+3 :gem: : +30000"""
+slots_patterns = [
+	":one:",
+    ":two:",
+	":three:",
+	":four:",
+	":atm:",
+	":free:",
+	":dollar:",
+	":moneybag:",
+	":gem:"
+]
+
 def read(sid: str):
 	"""
 	Reads server data.
@@ -91,7 +110,7 @@ def format_message(cont: str) -> list:
 
 # noinspection PyTypeChecker
 @client.event
-async def on_message(message):
+async def on_message(message: discord.Message):
 	global base, disabled
 	if not message.server is None:
 		try:
@@ -293,6 +312,38 @@ async def on_message(message):
 						pass
 					pass
 				pass
+
+			# <editor-fold desc="milestones">
+			try:
+				_milestone_tmp = sqlread(f"""
+				SELECT *
+				FROM milestones
+				WHERE server="{message.server.id}";
+				""".replace("\t", ""))
+				for _server_, _item_, _limit_, _role_ in _milestone_tmp:
+					if _item_ == "tier":
+						tmp_role = discord.utils.find(lambda r: r.id == _role_, message.server.roles)
+						_tmp_res = sqlread(f"""
+						SELECT tier
+						FROM levels
+						WHERE server="{message.server.id}"
+						AND member="{message.author.id}";
+						""".replace("\t", ""))[0][0]
+						if _tmp_res >= _limit_: await client.add_roles(message.author, tmp_role)
+						pass
+					elif _item_ == "rank":
+						tmp_role = discord.utils.find(lambda r:r.id == _role_, message.server.roles)
+						_tmp_res = sqlread(f"""
+						SELECT rank
+						FROM levels
+						WHERE server="{message.server.id}"
+						AND member="{message.author.id}";
+						""".replace("\t", ""))[0][0]
+						if _tmp_res >= _limit_: await client.add_roles(message.author, tmp_role)
+						pass
+					pass
+			except: traceback.format_exc()
+			# </editor-fold>
 
 			if startswith(f"l$rank"):
 				if len(message.mentions) == 0:
@@ -1150,6 +1201,142 @@ async def on_message(message):
 					await client.send_message(message.channel, f"∞")
 					pass
 				pass
+			elif startswith("l$slots "):
+				cnt = message.content.replace("l$slots ", "")
+				bid = int(cnt)
+				if bid >= 5:
+					grid = [random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns)]
+					machine_text = f"--{grid[0]} {grid[1]} {grid[2]}\n>>{grid[3]} {grid[4]} {grid[5]}\n--{grid[6]} {grid[7]} {grid[8]}\n"
+					if grid[3] == grid[4] and grid[4] == grid[5]:
+						if grid[3] == ":atm:":
+							bid *= 10
+							sqlexecute(f"""
+							UPDATE levels
+							SET credits=credits+{bid}
+							WHERE server="{message.server.id}"
+							AND member="{message.author.id}"
+							""".replace("\t", ""))
+							machine_text += f"{message.author.mention} Bid x10!"
+							pass
+						elif grid[3] == ":free:":
+							machine_text = f"{message.author.mention} Nothing!"
+							pass
+						elif grid[3] == ":dollar:":
+							sqlexecute(f"""
+							UPDATE levels
+							SET credits=credits+300
+							WHERE server="{message.server.id}"
+							AND member="{message.author.id}";
+							""".replace("\t", ""))
+							machine_text += f"{message.author.mention} +300 Credits!"
+							pass
+						elif grid[3] == ":moneybag:":
+							sqlexecute(f"""
+							UPDATE levels
+							SET credits=credits+3000
+							WHERE server="{message.server.id}"
+							AND member="{message.author.id}";
+							""".replace("\t", ""))
+							machine_text += f"{message.author.mention} +3,000 Credits!"
+							pass
+						elif grid[3] == ":gem:":
+							sqlexecute(f"""
+							UPDATE levels
+							SET credits=credits+30000
+							WHERE server="{message.server.id}"
+							AND member="{message.author.id}";
+							""".replace("\t", ""))
+							machine_text += f"{message.author.mention} +30,000 Credits!"
+							pass
+						else:
+							bid *= 3
+							sqlexecute(f"""
+							UPDATE levels
+							SET credits=credits+{bid}
+							WHERE server="{message.server.id}"
+							AND member="{message.author.id}";
+							""".replace("\t", ""))
+							machine_text += f"{message.author.mention} Bid x3!"
+							pass
+						pass
+					elif grid[3] == grid[4] or grid[4] == grid[5]:
+						sqlexecute(f"""
+						UPDATE levels
+						SET credits=credits+{bid*2}
+						WHERE server="{message.server.id}"
+						AND member="{message.author.id}";
+						""".replace("\t", ""))
+						machine_text += f"{message.author.mention} Bid x2!"
+						pass
+					else:
+						sqlexecute(f"""
+						UPDATE levels
+						SET credits=credits-{bid}
+						WHERE server="{message.server.id}"
+						AND member="{message.author.id}";
+						""".replace("\t", ""))
+						machine_text += f"{message.author.mention} You lost {bid} Credits!"
+						pass
+					await client.send_message(message.channel, machine_text)
+					pass
+				else:
+					await client.send_message(message.channel, "Your bid must be greater than or equal to 5.")
+					pass
+			elif startswith("l$slots"):
+				await client.send_message(message.channel, slots_rules)
+				pass
+			elif startswith("l$milestone "):
+				if admin_role in message.author.roles or message.author.id == owner_id:
+					cnt = message.content.replace("l$milestone ", "").split(" ")
+					if startswith("a", val=cnt[0]):
+						cnt.remove(cnt[0])
+						_role = message.role_mentions[0]
+						_item = cnt[0]
+						_lim = int(cnt[1])
+						res = sqlread(f"""
+						SELECT COUNT(*)
+						FROM milestones
+						WHERE server="{message.server.id}"
+						AND item="{_item}"
+						AND role="{_role.id}"
+						AND _limit={_lim};
+						""".replace("\t", ""))[0]
+						if res[0] == 0:
+							sqlexecute(f"""
+							INSERT INTO milestones (server, item, _limit, role)
+							VALUES ("{message.server.id}", "{_item}", {_lim}, "{_role.id}");
+							""".replace("\t", ""))
+							await client.send_message(message.channel, "```Added milestone {_item} : {_lim} : {_role}")
+							pass
+						else: await client.send_message(message.channel, "```That milestone already exists!```")
+						pass
+					elif startswith("r", val=cnt[0]):
+						cnt.remove(cnt[0])
+						_role = message.role_mentions[0]
+						_lim = int(cnt[1])
+						_item = cnt[0]
+						sqlexecute(f"""
+						DELETE FROM milestones
+						WHERE server="{message.server.id}"
+						AND item="{_item}"
+						AND _limit={_lim}
+						AND role="{_role.id}";
+						""".replace("\t", ""))
+						await client.send_message(message.channel, "```Removed milestone(s)```")
+						pass
+					elif startswith("s", val=cnt[0]):
+						cnt.remove(cnt[0])
+						ms = sqlread(f"""
+						SELECT *
+						FROM milestones
+						WHERE server="{message.server.id}";
+						""".replace("\t", ""))
+						stuffs = [f"{item} {limit} {discord.utils.find(lambda r: r.id == role, message.server.roles)}" for server, item, limit, role in ms]
+						await client.send_message(message.channel, '\n'.join(stuffs))
+						pass
+					pass
+				else: await client.send_message(message.channel, "```You do not have permission to use this command.```")
+				pass
 			pass
 		if startswith(f"$update", "logbot.levels.update"):
 			if message.author.id == owner_id: do_update = True
@@ -1288,6 +1475,15 @@ async def on_ready():
 	CREATE INDEX di
 	ON disables (server, disabled);
 	""".replace("\t", ""))
+	except: pass
+	try: sqlexecute(f"""
+	CREATE TABLE milestones (server VARCHAR(50), item VARCHAR(20), _limit INTEGER, role VARCHAR(50));
+	""".replace("\t", ""))
+	except: pass
+	try: sqlexecute(f"""
+	CREATE INDEX mi
+	ON milestones (server, item, _limit, role);
+	""".replace("\t",""))
 	except: pass
 	pass
 
