@@ -86,6 +86,7 @@
       <w>sqlread</w>
       <w>sqlweb</w>
       <w>strikethrough</w>
+      <w>tappend</w>
       <w>tdat</w>
       <w>thessalonica</w>
       <w>totalmessages</w>
@@ -100,6 +101,7 @@
       <w>unmutes</w>
       <w>uobj</w>
       <w>vals</w>
+      <w>vappend</w>
       <w>vindex</w>
       <w>votd</w>
       <w>wclient</w>

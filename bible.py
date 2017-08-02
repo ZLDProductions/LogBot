@@ -111,7 +111,7 @@ top_verses = ["Psalms 23:4", "Psalms 34:8", "Psalms 34:19", "Psalms 37:4", "Psal
               "Ephesians 6:10-11", "Philippians 3:7-9", "Philippians 4:19", "Colossians 3:15", "2 Thessalonians 3:3",
               "2 Timothy 1:7", "2 Timothy 3:16-17", "2 Timothy 4:18", "Hebrews 2:18", "Hebrews 3:6",
               "Hebrews 4:12", "Hebrews 10:19-23", "Hebrews 13:5", "James 1:2-4", "James 1:12-15",
-              "James 4:7-8", "1 Peter 5:7", "1 John 4:4", "1 John 4:18", "1 John 5:14-15", "Revelations 14:12"]
+              "James 4:7-8", "1 Peter 5:7", "1 John 4:4", "1 John 4:18", "1 John 5:14-15", "Revelation 14:12"]
 disabled_channels = []
 
 discord_settings = os.path.expanduser("~\\Documents\\Discord Logs\\SETTINGS")
