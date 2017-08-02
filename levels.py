@@ -1306,7 +1306,7 @@ async def on_message(message: discord.Message):
 							INSERT INTO milestones (server, item, _limit, role)
 							VALUES ("{message.server.id}", "{_item}", {_lim}, "{_role.id}");
 							""".replace("\t", ""))
-							await client.send_message(message.channel, "```Added milestone {_item} : {_lim} : {_role}")
+							await client.send_message(message.channel, f"```Added milestone {_item} : {_lim} : {_role}```")
 							pass
 						else: await client.send_message(message.channel, "```That milestone already exists!```")
 						pass
