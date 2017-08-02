@@ -45,7 +45,7 @@ slots_rules = """2 Consecutive Symbols : Bid\\*2
 3 :gem: : +30000"""
 slots_patterns = [
 	":one:",
-    ":two:",
+	":two:",
 	":three:",
 	":four:",
 	":atm:",
@@ -322,7 +322,7 @@ async def on_message(message: discord.Message):
 				""".replace("\t", ""))
 				for _server_, _item_, _limit_, _role_ in _milestone_tmp:
 					if _item_ == "tier":
-						tmp_role = discord.utils.find(lambda r: r.id == _role_, message.server.roles)
+						tmp_role = discord.utils.find(lambda _r:_r.id == _role_, message.server.roles)
 						_tmp_res = sqlread(f"""
 						SELECT tier
 						FROM levels
@@ -332,7 +332,7 @@ async def on_message(message: discord.Message):
 						if _tmp_res >= _limit_: await client.add_roles(message.author, tmp_role)
 						pass
 					elif _item_ == "rank":
-						tmp_role = discord.utils.find(lambda r:r.id == _role_, message.server.roles)
+						tmp_role = discord.utils.find(lambda _r:_r.id == _role_, message.server.roles)
 						_tmp_res = sqlread(f"""
 						SELECT rank
 						FROM levels
@@ -392,7 +392,7 @@ async def on_message(message: discord.Message):
 					```""".replace("\t", "")
 					curr_xp = round(u_data[2])
 					need_xp = round(u_data[3])
-					bar_len = round(((curr_xp / need_xp)*2) * 10)
+					bar_len = round(((curr_xp / need_xp) * 2) * 10)
 					bar = bar.replace(" ", "█", bar_len)
 					tmp = round(base * (multi ** u_data[1]))
 					precision = len(str(u_data[4]).split('.')[0]) + 1
@@ -1202,9 +1202,9 @@ async def on_message(message: discord.Message):
 					pass
 				pass
 			elif startswith("l$slots "):
-				cnt = message.content.replace("l$slots ", "")
+				cnt = message.content.replace("l$slots ", "").replace("max", sqlread(f"SELECT credits FROM levels WHERE server='{message.server.id}' AND member='{message.author.id}'")[0][0])
 				bid = int(cnt)
-				if bid >= 5 and bid <= sqlread(f"""SELECT credits FROM levels WHERE server='{message.server.id}' AND member='{message.author.id}'""")[0][0]:
+				if 5 <= bid <= sqlread(f"""SELECT credits FROM levels WHERE server='{message.server.id}' AND member='{message.author.id}'""")[0][0]:
 					grid = [random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns)]
 					machine_text = f"--{grid[0]} {grid[1]} {grid[2]}\n>>{grid[3]} {grid[4]} {grid[5]}\n--{grid[6]} {grid[7]} {grid[8]}\n"
 					if grid[3] == grid[4] and grid[4] == grid[5]:
@@ -1483,7 +1483,7 @@ async def on_ready():
 	try: sqlexecute(f"""
 	CREATE INDEX mi
 	ON milestones (server, item, _limit, role);
-	""".replace("\t",""))
+	""".replace("\t", ""))
 	except: pass
 	pass
 
