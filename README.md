@@ -1346,6 +1346,40 @@ None
 
 ---
 
+#### l$milestone
+**Info**  
+Adds, removes, or shows all milestones within the levels system.
+
+**Usage**  
+
+    l$milestone a {type: [tier/rank]} {limit} {role}
+    l$milestone r {type: [tier/rank]} {limit} {role}
+    l$milestone s
+`type` is the type of the milestone. Once the users reaches `limit` of the type, they get the role.  
+`limit` is the number needed to complete the milestone.  
+`role` is a role mention.
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### l$slots
+**Info**  
+Plays slots, or shows the rules for slots.
+
+**Usage**  
+
+    l$slots {bid}
+    l$slots
+`bid` is how many credits you bet.
+
+
+**Required Permissions**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.
