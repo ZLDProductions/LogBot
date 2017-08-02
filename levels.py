@@ -1204,7 +1204,7 @@ async def on_message(message: discord.Message):
 			elif startswith("l$slots "):
 				cnt = message.content.replace("l$slots ", "")
 				bid = int(cnt)
-				if bid >= 5:
+				if bid >= 5 and bid <= sqlread(f"""SELECT credits FROM levels WHERE server='{message.server.id}' AND member='{message.author.id}'""")[0][0]:
 					grid = [random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns)]
 					machine_text = f"--{grid[0]} {grid[1]} {grid[2]}\n>>{grid[3]} {grid[4]} {grid[5]}\n--{grid[6]} {grid[7]} {grid[8]}\n"
 					if grid[3] == grid[4] and grid[4] == grid[5]:
