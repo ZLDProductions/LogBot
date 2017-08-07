@@ -334,7 +334,7 @@ async def on_message(message: discord.Message):
 					elif _item_ == "rank":
 						tmp_role = discord.utils.find(lambda _r:_r.id == _role_, message.server.roles)
 						_tmp_res = sqlread(f"""
-						SELECT rank
+						SELECT rank+((tier-1)*100)
 						FROM levels
 						WHERE server="{message.server.id}"
 						AND member="{message.author.id}";
@@ -1336,6 +1336,15 @@ async def on_message(message: discord.Message):
 						pass
 					pass
 				else: await client.send_message(message.channel, "```You do not have permission to use this command.```")
+				pass
+			elif startswith("l$milestones"):
+				ms = sqlread(f"""
+				SELECT *
+				FROM milestones
+				WHERE server="{message.server.id}";
+				""".replace("\t", ""))
+				stuffs = [f"{item} {limit} {discord.utils.find(lambda r: r.id == role, message.server.roles)}" for server, item, limit, role in ms]
+				await client.send_message(message.channel, '\n'.join(stuffs))
 				pass
 			pass
 		if startswith(f"$update", "logbot.levels.update"):
