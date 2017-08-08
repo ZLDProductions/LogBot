@@ -14,7 +14,8 @@ my_str = """0. logbot.py
 7. games.py
 8. swearing_filter.py
 9. swearing_filter_v2.py
-A. dev.py"""
+A. dev.py
+B. security.py"""
 programs = {
 	"0":"logbot.py",
 	"1":"bible.py",
@@ -26,7 +27,8 @@ programs = {
 	"7":"games.py",
 	"8":"swearing_filter.py",
 	"9":"swearing_filter_v2.py",
-	"A":"dev.py"
+	"A":"dev.py",
+	"B":"security.py"
 }
 titles = {
 	"0":"LogBot Main",
@@ -39,7 +41,8 @@ titles = {
 	"7":"Games Plugin",
 	"8":"Swearing Filter Plugin",
 	"9":"Swearing Filter V2 Plugin",
-	"A":"Dev Plugin"
+	"A":"Dev Plugin",
+	"B":"Security Plugin"
 }
 
 # <editor-fold desc="Standard initialization">
