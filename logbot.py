@@ -1525,15 +1525,7 @@ async def sendDisabled(message: discord.Message):
 async def on_message(message: discord.Message):
 	muted_role = discord.utils.find(lambda r:r.name == "LogBot Muted", message.server.roles)
 
-	try:
-		await client.remove_roles(discord.utils.find(lambda r:r.id == bot_id, message.server.members), muted_role)
-		await client.remove_roles(message.server.owner, muted_role)
-		if muted_role in message.author.roles and not message.author == message.server.owner: await client.delete_message(message)
-		pass
-	except: notify("There was an exception!", traceback.format_exc())
-
-	u = await client.get_user_info(owner_id)
-	owner_user = discord.utils.find(lambda m:m == u, message.server.members)
+	if muted_role in message.author.roles and not message.author == message.server.owner: await client.delete_message(message)
 
 	msgcont = message.content if is_ascii(message.content) else u"{}".format(message.content)
 	# noinspection PyShadowingNames
@@ -1557,26 +1549,6 @@ async def on_message(message: discord.Message):
 	if not message.channel.is_private and not muted_role in message.author.roles:
 		admin_role = discord.utils.find(lambda r:r.name == "LogBot Admin", message.server.roles)
 		member_role = discord.utils.find(lambda r:r.name == "LogBot Member", message.server.roles)
-
-		try:
-			if admin_role is None: admin_role = await client.create_role(message.server, name="LogBot Admin")
-			if member_role is None: member_role = await client.create_role(message.server, name="LogBot Member")
-			if muted_role is None:
-				perms = discord.Permissions(send_messages=False)
-				muted_role = await client.create_role(message.server, name="LogBot Muted", permissions=perms)
-				pass
-			await client.move_role(message.server, muted_role, discord.utils.find(lambda u:u.id == bot_id, message.server.members).top_role.position - 1)
-			await client.add_roles(message.server.owner, admin_role, member_role)
-			if not owner_user is None:
-				await client.add_roles(owner_user, admin_role, member_role)
-				pass
-			for m in message.server.members:
-				if admin_role in m.roles and not member_role in m.roles:
-					await client.add_roles(m, member_role)
-					pass
-				pass
-			pass
-		except: pass
 
 		sort()
 
