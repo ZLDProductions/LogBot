@@ -10,7 +10,7 @@ from sys import exit
 import discord
 from colorama import Fore, init
 
-from logbot_data import token
+from logbot_data import token, bot_id
 
 # from symbols import symbols
 
@@ -114,23 +114,20 @@ async def on_message(message: discord.Message):
 	global base, disabled
 	if not message.server is None:
 		try:
-			if not message.server is None:
-				read(message.server.id)
-				for m in message.server.members:
-					if sqlread(f"""
-					SELECT COUNT(*)
-					FROM levels
-					WHERE server='{message.server.id}'
-					AND member='{m.id}';
-					""".replace("\t", ""))[0][0] == 0:
-						sqlexecute(f"""
-						INSERT INTO levels (server, member, tier, rank, xp, xp_limit, multiplier, credits, cpm, dm)
-						VALUES ('{message.server.id}', '{m.id}', 1, 0, 0, 200, 1.0, 0, 0, 'TRUE');
-						""".replace("\t", ""))
-						pass
+			read(message.server.id)
+			with message.author as m:
+				if sqlread(f"""
+				SELECT COUNT(*)
+				FROM levels
+				WHERE server='{message.server.id}'
+				AND member='{m.id}';
+				""".replace("\t", ""))[0][0] == 0:
+					sqlexecute(f"""
+					INSERT INTO levels (server, member, tier, rank, xp, xp_limit, multiplier, credits, cpm, dm)
+					VALUES ('{message.server.id}', '{m.id}', 1, 0, 0, 200, 1.0, 0, 0, 'TRUE');
+					""".replace("\t", ""))
 					pass
 				pass
-			else: read(message.channel.id)
 			pass
 		except:
 			for member in message.server.members: sqlexecute(f"""
@@ -154,7 +151,6 @@ async def on_message(message: discord.Message):
 			return False
 		admin_role = discord.utils.find(lambda ro:ro.name == "LogBot Admin", message.server.roles)
 		do_update = False
-		bot = await client.get_user_info("255379748828610561")
 		print(f"{message.author} : {message.server} : {message.content}")
 
 		disabled = sqlread(f"""
@@ -271,7 +267,7 @@ async def on_message(message: discord.Message):
 						pass
 					print(f"{Fore.GREEN}{message.author} has leveled up to {_tdat[0]}!{Fore.RESET}")
 					pass
-				if message.author == bot:
+				if message.author.id == bot_id:
 					if _tdat[0] >= 100:
 						sqlexecute(f"""
 						UPDATE levels
@@ -671,7 +667,7 @@ async def on_message(message: discord.Message):
 							WHERE server='{message.server.id}'
 							AND member='{message.author.id}';
 							""".replace("\t", ""))
-							if not message.author == bot:
+							if not message.author.id == bot_id:
 								do_dm = sqlread(f"""
 								SELECT dm, tier
 								FROM levels
@@ -749,7 +745,7 @@ async def on_message(message: discord.Message):
 							WHERE server='{message.server.id}'
 							AND member='{message.author.id}';
 							""".replace("\t", ""))
-							if not message.author == bot:
+							if not message.author.id == bot_id:
 								do_dm = sqlread(f"""
 								SELECT dm, tier
 								FROM levels
@@ -819,7 +815,7 @@ async def on_message(message: discord.Message):
 						WHERE server='{message.server.id}'
 						AND member='{message.author.id}';
 						""".replace("\t", ""))
-						if not message.author == bot:
+						if not message.author.id == bot_id:
 							do_dm = sqlread(f"""
 							SELECT dm, tier
 							FROM levels
