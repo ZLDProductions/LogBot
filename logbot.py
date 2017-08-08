@@ -1849,7 +1849,7 @@ async def on_message(message: discord.Message):
 				pass
 			elif startswith(f"$invite"):
 				if member_role in message.author.roles or message.author.id == owner_id:
-					await client.send_message(message.channel, "https://discordapp.com/oauth2/authorize?client_id=255379748828610561&scope=bot&permissions=2146958463")
+					await client.send_message(message.channel, "https://discordapp.com/oauth2/authorize?client_id=255379748828610561&scope=bot&permissions=268696670")
 					pass
 				else:
 					await sendNoPerm(message)
