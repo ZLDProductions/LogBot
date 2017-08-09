@@ -252,17 +252,17 @@ async def on_message(message: discord.Message):
 				AND member='{message.author.id}';
 				""".replace("\t", ""))[0]
 				if do_dm[0].lower() == "true":
-					await client.send_message(message.author, f"Congrats, {message.author.mention}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits in {message.server.name}!")
+					await client.send_message(message.author, f"Congrats, {message.author}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits in {message.server.name}!")
 					print(f"{Fore.GREEN}{message.author} has leveled up to {_tdat[0]}!{Fore.RESET}")
 					pass
 				else:
 					alert_channel = discord.utils.find(lambda c:c.id == do_dm[1], message.server.channels)
 					if not alert_channel is None:
-						await client.send_message(alert_channel, f"Congrats, {message.author.mention}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
+						await client.send_message(alert_channel, f"Congrats, {message.author}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
 						pass
 					else:
 						if do_dm[1].lower() == "self":
-							await client.send_message(message.channel, f"Congrats, {message.author.mention}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
+							await client.send_message(message.channel, f"Congrats, {message.author}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
 							pass
 						pass
 					print(f"{Fore.GREEN}{message.author} has leveled up to {_tdat[0]}!{Fore.RESET}")

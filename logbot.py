@@ -1274,6 +1274,13 @@ class Commands:
 			_members = list(client.get_all_members())
 			_servers = list(client.servers)
 			_messages = list(client.messages)
+			_users = []
+			uapp = _users.append
+			for mem in _members:
+				if not mem.id in _users:
+					uapp(mem.id)
+					pass
+				pass
 			time_t = 0.0
 			for t in times: time_t += t
 			print(time_t)
@@ -1292,7 +1299,8 @@ class Commands:
 				.add_field(name="Average Response Time", value=f"{time_t:1.5} seconds") \
 				.add_field(name="Discord Version", value=discord.__version__) \
 				.add_field(name="LogBot Version", value=version) \
-				.add_field(name="Online For", value=str((dt - bootup_time)).split(".")[0].replace(":", "h ", 1).replace(":", "m ", 1) + "s")
+				.add_field(name="Online For", value=str((dt - bootup_time)).split(".")[0].replace(":", "h ", 1).replace(":", "m ", 1) + "s") \
+				.add_field(name="Total Users", value=str(len(_users)))
 			await client.send_message(message.channel, "My Information:", embed=e)
 			del _channels
 			del _members
@@ -2069,7 +2077,7 @@ async def on_message(message: discord.Message):
 				else: sendNoPerm(message)
 				pass
 			elif startswith("$roll"):
-				await client.send_message(message.channel, f"You rolled {random.choice([1, 2, 3, 4, 5, 6])}!")
+				await client.send_message(message.channel, f"You rolled {random.choice(range(1, int(message.content.replace('$roll ', ''))))}!")
 				pass
 			elif startswith("$channels"):
 				if member_role in message.author.roles or message.author.id == owner_id: await Commands.Member.channels(message)
