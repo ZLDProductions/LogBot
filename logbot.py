@@ -23,7 +23,6 @@ from colorama import Fore, init
 
 import argparser
 import sql
-from symbols import symbols
 from logbot_data import *
 
 # noinspection SpellCheckingInspection
@@ -684,7 +683,8 @@ class Commands:
 			content = message.content.replace(f"$translate ", "", 1).split("|")
 			ts = translate.Translator(to_lang=content[1])
 			ts.from_lang = content[0]
-			tmp = ts.translate(content[2])
+			tmp = str(ts.translate(content[2]))
+			tmp = str(tmp).replace('["', "").replace('"]', "").replace("\\n", "\n")
 			await client.send_message(message.channel, format_message(tmp))
 			del content
 			del ts
@@ -1140,12 +1140,8 @@ class Commands:
 				before=_before,
 				after=_after
 			)
-			tmp = await client.send_message(message.channel, f"```Purged {len(purged_messages)} messages!\n{symbols['block'] * 3}```")
-			await sleep(1)
-			tmp = await client.edit_message(tmp, f"```Purged {len(purged_messages)} messages!\n{symbols['block'] * 2}```")
-			await sleep(1)
-			tmp = await client.edit_message(tmp, f"```Purged {len(purged_messages)} messages!\n{symbols['block'] * 1}```")
-			await sleep(1)
+			tmp = await client.send_message(message.channel, f"```Purged {len(purged_messages)} messages!```")
+			await sleep(3)
 			await client.delete_message(tmp)
 			del tmp
 			del _from
@@ -1164,12 +1160,8 @@ class Commands:
 		async def loose_purge(message: discord.Message):
 			# noinspection PyUnresolvedReferences
 			purged_messages = await client.purge_from(message.channel, limit=100)
-			tmp = await client.send_message(message.channel, f"```Purged {len(purged_messages)} messages!\n{symbols['block'] * 3}```")
-			await sleep(1)
-			tmp = await client.edit_message(tmp, f"```Purged {len(purged_messages)} messages!\n{symbols['block'] * 2}```")
-			await sleep(1)
-			tmp = await client.edit_message(tmp, f"```Purged {len(purged_messages)} messages!\n{symbols['block'] * 1}```")
-			await sleep(1)
+			tmp = await client.send_message(message.channel, f"```Purged {len(purged_messages)} messages!```")
+			await sleep(3)
 			await client.delete_message(tmp)
 			del purged_messages
 			del tmp
@@ -1177,9 +1169,20 @@ class Commands:
 		@staticmethod
 		async def welcome(message: discord.Message):
 			content = message.content.replace(f"$welcome ", "")
-			try: db.write("Welcomes", {"server":message.server.id, "message":content})
-			except: pass
-			db.update("Welcomes", "message", content, message.server.id)
+			if content.startswith("read("):
+				content = content.replace("read(", "")
+				_file_cnt = content[0:len(content)-1]
+				_file_path = f"{message.server.id}.txt"
+				open(_file_path, 'w').write(_file_cnt)
+				try: db.write("Welcomes", {"server":message.server.id, "message":f"read( {_file_path} )"})
+				except: pass
+				db.update("Welcomes", "message", f"read( {_file_path} )", message.server.id)
+				pass
+			else:
+				try: db.write("Welcomes", {"server":message.server.id, "message":content})
+				except: pass
+				db.update("Welcomes", "message", content, message.server.id)
+				pass
 			await client.send_message(message.channel, "```Welcome message set!```")
 			del content
 			pass
@@ -2254,8 +2257,13 @@ async def on_member_join(member: discord.Member):
 	read(member.server.id)
 	if not disables["welcome"]:
 		welcome_tmp = db.read("Welcomes", member.server.id)
-		welcome_tmp = re.sub("{server}", member.server.name, welcome_tmp, flags=2)
-		welcome_tmp = re.sub("{user}", member.mention, welcome_tmp, flags=2)
+		if welcome_tmp.startswith("read("):
+			welcome_tmp = open(welcome_tmp[6:len(welcome_tmp)-2], 'r').read()
+			pass
+		else:
+			welcome_tmp = re.sub("{server}", member.server.name, welcome_tmp, flags=2)
+			welcome_tmp = re.sub("{user}", member.mention, welcome_tmp, flags=2)
+			pass
 		try: await client.add_roles(member, discord.utils.find(lambda r:r.id == join_roles[member.server.id], member.server.roles))
 		except: print(traceback.format_exc())
 		await client.send_message(member.server.default_channel, welcome_tmp)

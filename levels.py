@@ -28,7 +28,8 @@ def sqlread(cmd: str):
 	pass
 
 def sqlexecute(cmd: str):
-	_sql_cursor.execute(cmd)
+	try: _sql_cursor.execute(cmd)
+	except: _sql_cursor.executescript(cmd)
 	_sql.commit()
 	pass
 
@@ -115,19 +116,15 @@ async def on_message(message: discord.Message):
 	if not message.server is None:
 		try:
 			read(message.server.id)
-			with message.author as m:
-				if sqlread(f"""
-				SELECT COUNT(*)
-				FROM levels
-				WHERE server='{message.server.id}'
-				AND member='{m.id}';
-				""".replace("\t", ""))[0][0] == 0:
-					sqlexecute(f"""
-					INSERT INTO levels (server, member, tier, rank, xp, xp_limit, multiplier, credits, cpm, dm)
-					VALUES ('{message.server.id}', '{m.id}', 1, 0, 0, 200, 1.0, 0, 0, 'TRUE');
-					""".replace("\t", ""))
-					pass
-				pass
+			if sqlread(f"""
+			SELECT COUNT(*)
+			FROM levels
+			WHERE server='{message.server.id}'
+			AND member='{message.author.id}';
+			""".replace("\t", ""))[0][0] == 0: sqlexecute(f"""
+				INSERT INTO levels (server, member, tier, rank, xp, xp_limit, multiplier, credits, cpm, dm)
+				VALUES ('{message.server.id}', '{message.author.id}', 1, 0, 0, 200, 1.0, 0, 0, 'TRUE');
+				""".replace("\t", ""))
 			pass
 		except:
 			for member in message.server.members: sqlexecute(f"""
@@ -1385,7 +1382,7 @@ async def on_message(message: discord.Message):
 				pass
 			pass
 		elif startswith(f"l$execute\n", "```sql\n--execute"):
-			if message.author.id == owner_id:
+			if message.author.id == owner_id or message.author.id == bot_id:
 				sqlexecute(message.content.replace("l$execute\n", "").replace("```sql\n--execute", "").replace("```", "").replace("{sid}", message.server.id).replace("{uid}", message.author.id))
 				await client.send_message(message.channel, "```Execution Successful.```")
 				pass
@@ -1395,7 +1392,7 @@ async def on_message(message: discord.Message):
 				pass
 			pass
 		elif startswith(f"l$get\n", "```sql\n--get\n"):
-			if message.author.id == owner_id:
+			if message.author.id == owner_id or message.author.id == bot_id:
 				try:
 					res = sqlread(message.content.replace("l$get\n", "").replace("```sql\n--get\n", "").replace("```", "").replace("{sid}", message.server.id).replace("{uid}", message.author.id))
 					_res = str(res)
@@ -1471,7 +1468,11 @@ async def on_ready():
 		CREATE INDEX i
 		ON levels (server, member, tier, rank, xp, xp_limit, multiplier, credits, cpm, dm);
 		""".replace("\t", ""))
-	except: pass
+	except: sqlexecute(f"""
+	DROP INDEX i;
+	""".replace("\t", "")); sqlexecute(f"""
+	CREATE INDEX i
+	ON levels (server, member, tier, rank, xp, xp_limit, multiplier, credits, cpm, dm, alert_channel);""".replace("\t", ""))
 	try: sqlexecute(f"""
 	CREATE TABLE disables (server VARCHAR(50), disabled INTEGER);
 	""".replace("\t", ""))
@@ -1480,7 +1481,7 @@ async def on_ready():
 	CREATE INDEX di
 	ON disables (server, disabled);
 	""".replace("\t", ""))
-	except: pass
+	except: sqlexecute(f"DROP INDEX di;"); sqlexecute(f"CREATE INDEX di ON disables (server, disabled);")
 	try: sqlexecute(f"""
 	CREATE TABLE milestones (server VARCHAR(50), item VARCHAR(20), _limit INTEGER, role VARCHAR(50));
 	""".replace("\t", ""))
@@ -1489,7 +1490,7 @@ async def on_ready():
 	CREATE INDEX mi
 	ON milestones (server, item, _limit, role);
 	""".replace("\t", ""))
-	except: pass
+	except: sqlexecute(f"DROP INDEX mi;"); sqlexecute(f"CREATE INDEX mi ON milestones (server, item, _limit, role);")
 	pass
 
 client.run(token)
