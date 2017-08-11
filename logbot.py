@@ -26,7 +26,7 @@ import sql
 from logbot_data import *
 
 # noinspection SpellCheckingInspection
-version = '15.5.12 Python'
+version = '15.5.14 Python'
 whats_new = [
 	"•Added $devotional.",
 	"•Bug fixes.",
