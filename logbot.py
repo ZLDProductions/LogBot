@@ -685,7 +685,8 @@ class Commands:
 			ts.from_lang = content[0]
 			tmp = str(ts.translate(content[2]))
 			tmp = str(tmp).replace('["', "").replace('"]', "").replace("\\n", "\n")
-			await client.send_message(message.channel, format_message(tmp))
+			msg = await client.send_message(message.channel, format_message(tmp))
+			await client.edit_message(msg, msg.content.replace("\\n", "\n").replace("['", '').replace("']", ""))
 			del content
 			del ts
 			del tmp
@@ -2703,7 +2704,7 @@ async def on_ready():
 			}
 		pass
 	# Updates bot icon, status, and game.
-	await client.change_presence(game=None, status=None)
+	await client.change_presence(game=discord.Game(name="Prefix: $"), status=None)
 	avatar_tmp = open(selected_image, "rb")
 	await client.edit_profile(avatar=avatar_tmp.read())
 	avatar_tmp.close()
