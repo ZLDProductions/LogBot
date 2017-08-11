@@ -614,6 +614,7 @@ async def on_message(message):
 		all_commands = list(infos.keys())
 		all_commands.sort()
 		all_commands = ', '.join(all_commands).replace("_", "$")
+		await client.send_message(message.channel, f"```Use $help to get the list of commands.\nUse $help [command] to get more information on [command].\nUse $git to visit the GitHub Documentation.\nThe prefix is $```")
 		await client.send_message(message.channel, f"```Commands:\n{all_commands}```")
 		pass
 	elif startswith(f"h$prefix "):
