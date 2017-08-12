@@ -18,6 +18,8 @@
       <w>creds</w>
       <w>customcmds</w>
       <w>cycwf</w>
+      <w>dchannel</w>
+      <w>defaultchannel</w>
       <w>divmod</w>
       <w>edom</w>
       <w>emjs</w>
@@ -79,7 +81,9 @@
       <w>showlist</w>
       <w>showmarks</w>
       <w>shuff</w>
+      <w>simgoodbye</w>
       <w>similarily</w>
+      <w>simwelcome</w>
       <w>sqld</w>
       <w>sqlexecute</w>
       <w>sqlkjv</w>
@@ -91,6 +95,7 @@
       <w>thessalonica</w>
       <w>totalmessages</w>
       <w>twrr</w>
+      <w>uapp</w>
       <w>udat</w>
       <w>unban</w>
       <w>undeafened</w>

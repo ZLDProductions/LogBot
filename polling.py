@@ -14,7 +14,7 @@ client = Client()
 # noinspection SpellCheckingInspection
 init()
 
-poll_path = os.path.expanduser("~\\Documents\\Discord Logs\\SETTINGS\\Polling")
+poll_path = f"{os.getcwd()}\\Discord Logs\\SETTINGS\\Polling"
 _sql = sqlite3.connect(f"{poll_path}\\polling.db")
 _sql_cursor = _sql.cursor()
 

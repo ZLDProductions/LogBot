@@ -114,7 +114,7 @@ top_verses = ["Psalms 23:4", "Psalms 34:8", "Psalms 34:19", "Psalms 37:4", "Psal
               "James 4:7-8", "1 Peter 5:7", "1 John 4:4", "1 John 4:18", "1 John 5:14-15", "Revelation 14:12"]
 disabled_channels = []
 
-discord_settings = os.path.expanduser("~\\Documents\\Discord Logs\\SETTINGS")
+discord_settings = f"{os.getcwd()}\\Discord Logs\\SETTINGS"
 verse_disables = f"{discord_settings}\\verse_disable_list.txt"
 version_list = f"{discord_settings}\\bible_version.txt"
 type_list = f"{discord_settings}\\bible_types.txt"

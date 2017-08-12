@@ -19,7 +19,7 @@ cursor = sql.cursor()
 ret = ""
 left = ""
 
-logs = os.path.expanduser('~\\Documents\\Discord Logs')
+logs = f'{os.getcwd()}\\Discord Logs'
 settings = f"{logs}\\SETTINGS"
 
 challenges = [

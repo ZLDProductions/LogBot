@@ -50,7 +50,7 @@ channel_parser = configparser.ConfigParser()
 pydict = PyDictionary()
 purge_parser = argparser.ArgParser("&&", "=")
 
-selected_image = os.path.expanduser(f"~\\Documents\\Discord Logs\\SETTINGS\\avatar5.jpg")
+selected_image = f"{os.getcwd()}\\Discord Logs\\SETTINGS\\avatar5.jpg"
 app = Qt.QApplication(argv)
 sti = Qt.QSystemTrayIcon(Qt.QIcon(selected_image), app)
 icon = Qt.QIcon(selected_image)
@@ -90,8 +90,9 @@ custom_commands = {}
 times = []
 join_roles = {}
 log_channel = {}
+default_channel = {}
 
-discord_logs = os.path.expanduser('~\\Documents\\Discord Logs')
+discord_logs = f"{os.getcwd()}\\Discord Logs"
 discord_settings = f"{discord_logs}\\SETTINGS"
 server_settings = f"{discord_settings}\\SERVER SETTINGS"
 channel_whitelist = f"{discord_settings}\\channel_whitelist.txt"
@@ -102,6 +103,7 @@ customcmds = f"{discord_settings}\\commands.txt"
 suggestions = f"{discord_settings}\\suggestions.txt"
 channel_settings = f"{discord_settings}\\channel_settings.ini"
 _join_roles = f"{discord_settings}\\join_roles.txt"
+_defaults = f"{discord_settings}\\default_channels.txt"
 
 if not os.path.exists(discord_settings): os.makedirs(discord_settings)
 
@@ -110,6 +112,14 @@ parser.read(f'{discord_settings}\\data.ini')
 try:
 	reader = open(_join_roles, 'r')
 	join_roles = ast.literal_eval(reader.read())
+	reader.close()
+	del reader
+	pass
+except: pass
+
+try:
+	reader = open(_defaults, 'r')
+	default_channel = ast.literal_eval(reader.read())
 	reader.close()
 	del reader
 	pass
@@ -140,7 +150,7 @@ if "SETTINGS" in parser.sections():
 
 def send(message: str, servername: str, channel: str = "event"):
 	"""
-	:param message: The string message to send to the writer. 
+	:param message: The string message to send to the writer.
 	:param servername: The server to write to. This is a folder.
 	:param channel: The channel to write to. This is the actually log file. Defaults to "event".
 	"""
@@ -198,6 +208,12 @@ def save(sid: str):
 	writer.close()
 	del writer
 	# </editor-fold>
+	# <editor-fold desc="Default Channel">
+	writer = open(_defaults, 'w')
+	writer.write(str(default_channel))
+	writer.close()
+	del writer
+	# </editor-fold>
 
 	# <editor-fold desc="ini file">
 	with open(f"{discord_settings}\\data.ini", 'w') as configfile: parser.write(configfile)
@@ -207,7 +223,7 @@ def save(sid: str):
 def check(*args) -> str:
 	"""
 	Checks strings for non-ASCII characters.
-	:param args: A list of strings. 
+	:param args: A list of strings.
 	:return: The first string in args that passes inspection.
 	"""
 	for item in args:
@@ -271,7 +287,7 @@ def notify(header: str, body: str):
 
 def sort():
 	"""
-	Sorts all of the lists in the bot. This is an organizational tactic that allows for faster iterations of said lists. 
+	Sorts all of the lists in the bot. This is an organizational tactic that allows for faster iterations of said lists.
 	"""
 	times.sort()
 	pass
@@ -1266,6 +1282,17 @@ class Commands:
 			except: join_roles[message.server.id] = "None"
 			await client.send_message(message.channel, f"```Set the join role to {role}.```")
 			pass
+		@staticmethod
+		async def defaultchannel(message: discord.Message):
+			channel = message.channel_mentions[0]
+			default_channel[message.server.id] = channel.id
+			await client.send_message(message.channel, f"Default channel set to #{channel}.")
+			del channel
+			pass
+		@staticmethod
+		async def get_defaultchannel(message: discord.Message):
+			await client.send_message(message.channel, f"Default channel is #{client.get_channel(default_channel[message.server.id])}")
+			pass
 		pass
 	class Owner:
 		@staticmethod
@@ -1527,7 +1554,7 @@ async def sendNoPerm(message: discord.Message):
 async def sendDisabled(message: discord.Message):
 	"""
 	Sends a message to a user to tell them that the command has been disabled.
-	:param message: The Message object from on_message. 
+	:param message: The Message object from on_message.
 	"""
 	await client.send_message(message.channel, "```That command has been disabled!```")
 	pass
@@ -1535,6 +1562,9 @@ async def sendDisabled(message: discord.Message):
 # noinspection PyShadowingNames
 @client.event
 async def on_message(message: discord.Message):
+
+	if default_channel.get(message.server.id) is None: default_channel[message.server.id] = message.server.default_channel.id
+
 	muted_role = discord.utils.find(lambda r:r.name == "LogBot Muted", message.server.roles)
 
 	if muted_role in message.author.roles and not message.author == message.server.owner: await client.delete_message(message)
@@ -1544,7 +1574,7 @@ async def on_message(message: discord.Message):
 	def startswith(*msg: str, val: str = message.content, modifier: str = "") -> bool:
 		"""
 		Checks if `val` starts with any string in `msg`.
-		:param msg: Several str type parameters. 
+		:param msg: Several str type parameters.
 		:param val: The string to compare msg to.
 		:param modifier: A special operation to perform on val. Can be "lower", "upper", or "capitalize"
 		:return: True if a value in msg is at the beginning of val, False if not.
@@ -2087,6 +2117,20 @@ async def on_message(message: discord.Message):
 				if member_role in message.author.roles or message.author.id == owner_id: await Commands.Member.channels(message)
 				else: sendNoPerm(message)
 				pass
+			elif startswith("$defaultchannel "):
+				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.defaultchannel(message)
+				else: sendNoPerm(message)
+				pass
+			elif startswith("$defaultchannel"):
+				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.get_defaultchannel(message)
+				else: sendNoPerm(message)
+				pass
+			elif startswith("$simwelcome"):
+				if message.author.id == owner_id: await on_member_join(message.author)
+				pass
+			elif startswith("$simgoodbye"):
+				if message.author.id == owner_id: await on_member_remove(message.author)
+				pass
 			pass
 		elif startswith(f"hello, <@{bot_id}>", f"hi, <@{bot_id}>", f"<@{bot_id}>", modifier="lower"):
 			await client.send_message(message.channel, f"Hello, {message.author.mention}!")
@@ -2258,6 +2302,7 @@ async def on_member_join(member: discord.Member):
 	read(member.server.id)
 	if not disables["welcome"]:
 		welcome_tmp = db.read("Welcomes", member.server.id)
+
 		if welcome_tmp.startswith("read("):
 			welcome_tmp = open(welcome_tmp[6:len(welcome_tmp)-2], 'r').read()
 			pass
@@ -2267,7 +2312,12 @@ async def on_member_join(member: discord.Member):
 			pass
 		try: await client.add_roles(member, discord.utils.find(lambda r:r.id == join_roles[member.server.id], member.server.roles))
 		except: print(traceback.format_exc())
-		await client.send_message(member.server.default_channel, welcome_tmp)
+		try:
+			_dchannel = client.get_channel(default_channel[member.server.id])
+			if _dchannel is None: _dchannel = member.server.default_channel
+			await client.send_message(_dchannel, welcome_tmp)
+			pass
+		except: await client.send_message(member.server.default_channel, welcome_tmp)
 		pass
 	c = client.get_channel(parser[member.server.id]["logchannel"])
 	if not c is None:

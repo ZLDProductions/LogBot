@@ -15,7 +15,7 @@ from logbot_data import token
 client = discord.Client()
 colorama.init()
 
-discord_settings = os.path.expanduser('~\\Documents\\Discord Logs\\SETTINGS')
+discord_settings = f'{os.getcwd()}\\Discord Logs\\SETTINGS'
 filter_disables = f"{discord_settings}\\filter_disable_list.txt"
 filter_disable_list = {}
 

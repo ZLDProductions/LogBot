@@ -4,7 +4,7 @@ import random
 
 class SQL:
 	def __init__(self, file: str = "logbot"):
-		self.settings = os.path.expanduser("~\\Documents\\Discord Logs\\SETTINGS")
+		self.settings = f"{os.getcwd()}\\Discord Logs\\SETTINGS"
 		self.connection = sqlite3.connect(f"{self.settings}\\{file}.db")
 		self.cursor = self.connection.cursor()
 		pass

@@ -10,14 +10,14 @@ from sys import exit
 import discord
 from colorama import Fore, init
 
-from logbot_data import token, bot_id
+from logbot_data import token
 
 # from symbols import symbols
 
 init()
 client = discord.Client()
 owner_id = "239500860336373761"
-_data = os.path.expanduser("~\\Documents\\Discord Logs\\SETTINGS\\level_data")
+_data = f"{os.getcwd()}\\Discord Logs\\SETTINGS\\level_data"
 _disables = f"{_data}\\disables\\"
 _sql = sqlite3.connect(f"{_data}\\data.db")
 _sql_cursor = _sql.cursor()
@@ -28,8 +28,7 @@ def sqlread(cmd: str):
 	pass
 
 def sqlexecute(cmd: str):
-	try: _sql_cursor.execute(cmd)
-	except: _sql_cursor.executescript(cmd)
+	_sql_cursor.execute(cmd)
 	_sql.commit()
 	pass
 
@@ -115,16 +114,23 @@ async def on_message(message: discord.Message):
 	global base, disabled
 	if not message.server is None:
 		try:
-			read(message.server.id)
-			if sqlread(f"""
-			SELECT COUNT(*)
-			FROM levels
-			WHERE server='{message.server.id}'
-			AND member='{message.author.id}';
-			""".replace("\t", ""))[0][0] == 0: sqlexecute(f"""
-				INSERT INTO levels (server, member, tier, rank, xp, xp_limit, multiplier, credits, cpm, dm)
-				VALUES ('{message.server.id}', '{message.author.id}', 1, 0, 0, 200, 1.0, 0, 0, 'TRUE');
-				""".replace("\t", ""))
+			if not message.server is None:
+				read(message.server.id)
+				for m in message.server.members:
+					if sqlread(f"""
+					SELECT COUNT(*)
+					FROM levels
+					WHERE server='{message.server.id}'
+					AND member='{m.id}';
+					""".replace("\t", ""))[0][0] == 0:
+						sqlexecute(f"""
+						INSERT INTO levels (server, member, tier, rank, xp, xp_limit, multiplier, credits, cpm, dm)
+						VALUES ('{message.server.id}', '{m.id}', 1, 0, 0, 200, 1.0, 0, 0, 'TRUE');
+						""".replace("\t", ""))
+						pass
+					pass
+				pass
+			else: read(message.channel.id)
 			pass
 		except:
 			for member in message.server.members: sqlexecute(f"""
@@ -148,6 +154,7 @@ async def on_message(message: discord.Message):
 			return False
 		admin_role = discord.utils.find(lambda ro:ro.name == "LogBot Admin", message.server.roles)
 		do_update = False
+		bot = await client.get_user_info("255379748828610561")
 		print(f"{message.author} : {message.server} : {message.content}")
 
 		disabled = sqlread(f"""
@@ -249,22 +256,22 @@ async def on_message(message: discord.Message):
 				AND member='{message.author.id}';
 				""".replace("\t", ""))[0]
 				if do_dm[0].lower() == "true":
-					await client.send_message(message.author, f"Congrats, {message.author}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits in {message.server.name}!")
+					await client.send_message(message.author, f"Congrats, {message.author.mention}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits in {message.server.name}!")
 					print(f"{Fore.GREEN}{message.author} has leveled up to {_tdat[0]}!{Fore.RESET}")
 					pass
 				else:
 					alert_channel = discord.utils.find(lambda c:c.id == do_dm[1], message.server.channels)
 					if not alert_channel is None:
-						await client.send_message(alert_channel, f"Congrats, {message.author}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
+						await client.send_message(alert_channel, f"Congrats, {message.author.mention}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
 						pass
 					else:
 						if do_dm[1].lower() == "self":
-							await client.send_message(message.channel, f"Congrats, {message.author}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
+							await client.send_message(message.channel, f"Congrats, {message.author.mention}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
 							pass
 						pass
 					print(f"{Fore.GREEN}{message.author} has leveled up to {_tdat[0]}!{Fore.RESET}")
 					pass
-				if message.author.id == bot_id:
+				if message.author == bot:
 					if _tdat[0] >= 100:
 						sqlexecute(f"""
 						UPDATE levels
@@ -327,7 +334,7 @@ async def on_message(message: discord.Message):
 					elif _item_ == "rank":
 						tmp_role = discord.utils.find(lambda _r:_r.id == _role_, message.server.roles)
 						_tmp_res = sqlread(f"""
-						SELECT rank+((tier-1)*100)
+						SELECT rank
 						FROM levels
 						WHERE server="{message.server.id}"
 						AND member="{message.author.id}";
@@ -664,7 +671,7 @@ async def on_message(message: discord.Message):
 							WHERE server='{message.server.id}'
 							AND member='{message.author.id}';
 							""".replace("\t", ""))
-							if not message.author.id == bot_id:
+							if not message.author == bot:
 								do_dm = sqlread(f"""
 								SELECT dm, tier
 								FROM levels
@@ -742,7 +749,7 @@ async def on_message(message: discord.Message):
 							WHERE server='{message.server.id}'
 							AND member='{message.author.id}';
 							""".replace("\t", ""))
-							if not message.author.id == bot_id:
+							if not message.author == bot:
 								do_dm = sqlread(f"""
 								SELECT dm, tier
 								FROM levels
@@ -812,7 +819,7 @@ async def on_message(message: discord.Message):
 						WHERE server='{message.server.id}'
 						AND member='{message.author.id}';
 						""".replace("\t", ""))
-						if not message.author.id == bot_id:
+						if not message.author == bot:
 							do_dm = sqlread(f"""
 							SELECT dm, tier
 							FROM levels
@@ -1299,7 +1306,7 @@ async def on_message(message: discord.Message):
 							INSERT INTO milestones (server, item, _limit, role)
 							VALUES ("{message.server.id}", "{_item}", {_lim}, "{_role.id}");
 							""".replace("\t", ""))
-							await client.send_message(message.channel, f"```Added milestone {_item} : {_lim} : {_role}```")
+							await client.send_message(message.channel, "```Added milestone {_item} : {_lim} : {_role}")
 							pass
 						else: await client.send_message(message.channel, "```That milestone already exists!```")
 						pass
@@ -1329,15 +1336,6 @@ async def on_message(message: discord.Message):
 						pass
 					pass
 				else: await client.send_message(message.channel, "```You do not have permission to use this command.```")
-				pass
-			elif startswith("l$milestones"):
-				ms = sqlread(f"""
-				SELECT *
-				FROM milestones
-				WHERE server="{message.server.id}";
-				""".replace("\t", ""))
-				stuffs = [f"{item} {limit} {discord.utils.find(lambda r: r.id == role, message.server.roles)}" for server, item, limit, role in ms]
-				await client.send_message(message.channel, '\n'.join(stuffs))
 				pass
 			pass
 		if startswith(f"$update", "logbot.levels.update"):
@@ -1382,7 +1380,7 @@ async def on_message(message: discord.Message):
 				pass
 			pass
 		elif startswith(f"l$execute\n", "```sql\n--execute"):
-			if message.author.id == owner_id or message.author.id == bot_id:
+			if message.author.id == owner_id:
 				sqlexecute(message.content.replace("l$execute\n", "").replace("```sql\n--execute", "").replace("```", "").replace("{sid}", message.server.id).replace("{uid}", message.author.id))
 				await client.send_message(message.channel, "```Execution Successful.```")
 				pass
@@ -1392,7 +1390,7 @@ async def on_message(message: discord.Message):
 				pass
 			pass
 		elif startswith(f"l$get\n", "```sql\n--get\n"):
-			if message.author.id == owner_id or message.author.id == bot_id:
+			if message.author.id == owner_id:
 				try:
 					res = sqlread(message.content.replace("l$get\n", "").replace("```sql\n--get\n", "").replace("```", "").replace("{sid}", message.server.id).replace("{uid}", message.author.id))
 					_res = str(res)
@@ -1468,11 +1466,7 @@ async def on_ready():
 		CREATE INDEX i
 		ON levels (server, member, tier, rank, xp, xp_limit, multiplier, credits, cpm, dm);
 		""".replace("\t", ""))
-	except: sqlexecute(f"""
-	DROP INDEX i;
-	""".replace("\t", "")); sqlexecute(f"""
-	CREATE INDEX i
-	ON levels (server, member, tier, rank, xp, xp_limit, multiplier, credits, cpm, dm, alert_channel);""".replace("\t", ""))
+	except: pass
 	try: sqlexecute(f"""
 	CREATE TABLE disables (server VARCHAR(50), disabled INTEGER);
 	""".replace("\t", ""))
@@ -1481,7 +1475,7 @@ async def on_ready():
 	CREATE INDEX di
 	ON disables (server, disabled);
 	""".replace("\t", ""))
-	except: sqlexecute(f"DROP INDEX di;"); sqlexecute(f"CREATE INDEX di ON disables (server, disabled);")
+	except: pass
 	try: sqlexecute(f"""
 	CREATE TABLE milestones (server VARCHAR(50), item VARCHAR(20), _limit INTEGER, role VARCHAR(50));
 	""".replace("\t", ""))
@@ -1490,7 +1484,7 @@ async def on_ready():
 	CREATE INDEX mi
 	ON milestones (server, item, _limit, role);
 	""".replace("\t", ""))
-	except: sqlexecute(f"DROP INDEX mi;"); sqlexecute(f"CREATE INDEX mi ON milestones (server, item, _limit, role);")
+	except: pass
 	pass
 
 client.run(token)

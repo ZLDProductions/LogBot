@@ -14,8 +14,7 @@ my_str = """0. logbot.py
 7. games.py
 8. swearing_filter.py
 9. swearing_filter_v2.py
-A. dev.py
-B. security.py"""
+A. dev.py"""
 programs = {
 	"0":"logbot.py",
 	"1":"bible.py",
@@ -27,8 +26,7 @@ programs = {
 	"7":"games.py",
 	"8":"swearing_filter.py",
 	"9":"swearing_filter_v2.py",
-	"A":"dev.py",
-	"B":"security.py"
+	"A":"dev.py"
 }
 titles = {
 	"0":"LogBot Main",
@@ -41,8 +39,7 @@ titles = {
 	"7":"Games Plugin",
 	"8":"Swearing Filter Plugin",
 	"9":"Swearing Filter V2 Plugin",
-	"A":"Dev Plugin",
-	"B":"Security Plugin"
+	"A":"Dev Plugin"
 }
 
 # <editor-fold desc="Standard initialization">
@@ -65,7 +62,7 @@ def getRunPackages():
 	res = cursor.fetchall()
 	for pkg in res: print(f"{res.index(pkg)}. {pkg[0]} - {pkg[1]}")
 	seq = res[int(input("Sequence to run: "))][1]
-	for c in seq: os.system(f"start \"{titles[c]}\" /MAX /HIGH python {os.getcwd()}\\{programs[c]}")
+	for c in seq: os.system(f"start \"{titles[c]}\" /MAX /HIGH python \"{os.getcwd()}\\{programs[c]}\"")
 	pass
 
 def main():
@@ -75,7 +72,7 @@ def main():
 		print(my_str)
 		files = input("Programs to launch: ")
 		for c in files:
-			os.system(f"start \"{titles[c]}\" /MAX /HIGH python {os.getcwd()}\\{programs[c]}")
+			os.system(f"start \"{titles[c]}\" /MAX /HIGH python \"{os.getcwd()}\\{programs[c]}\"")
 			pass
 		pass
 	elif choice == 2:
