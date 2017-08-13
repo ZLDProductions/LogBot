@@ -2078,7 +2078,6 @@ async def on_message(message):
 
 	owner_id = "239500860336373761"
 
-	member_role = discord.utils.find(lambda r:r.name == "LogBot Member", message.server.roles)
 	admin_role = discord.utils.find(lambda r:r.name == "LogBot Admin", message.server.roles)
 	def startswith(*msg, val=message.content):
 		# noinspection PyShadowingNames
@@ -2096,27 +2095,27 @@ async def on_message(message):
 		else: sendNoPerm(message)
 		pass
 	elif startswith(f"$verse help"):
-		if (member_role in message.author.roles and not message.server.id in verse_disable_list) or message.author.id == owner_id: await Commands.Member.verse_help(message)
+		if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_help(message)
 		elif message.server.id in verse_disable_list: sendDisabled(message)
 		else: sendNoPerm(message)
 		pass
 	elif startswith(f"$verse info "):
-		if (member_role in message.author.roles and not message.server.id in verse_disable_list) or message.author.id == owner_id: await Commands.Member.verse_info(message, bi)
+		if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_info(message, bi)
 		elif message.server.id in verse_disable_list: sendDisabled(message)
 		else: sendNoPerm(message)
 		pass
 	elif startswith(f"$verse random"):
-		if (member_role in message.author.roles and not message.server.id in verse_disable_list) or message.author.id == owner_id: await Commands.Member.verse_random(message)
+		if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_random(message)
 		elif message.server.id in verse_disable_list: sendDisabled(message)
 		else: sendNoPerm(message)
 		pass
 	elif startswith(f"$verse search"):
-		if (member_role in message.author.roles and not message.server.id in verse_disable_list) or message.author.id == owner_id: await Commands.Member.verse_search(message)
+		if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_search(message)
 		elif message.server.id in verse_disable_list: sendDisabled(message)
 		else: sendNoPerm(message)
 		pass
 	elif startswith(f"$verse compare "):
-		if (member_role in message.author.roles and not message.server.id in verse_disable_list) or message.author.id == owner_id: await Commands.Member.verse_compare(message)
+		if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_compare(message)
 		elif message.server.id in verse_disable_list: sendDisabled(message)
 		else: sendNoPerm(message)
 		pass

@@ -43,7 +43,6 @@ def format_message(msg: str): return [f"```{msg[n:n+1993]}```" for n in range(0,
 async def on_message(message):
 	global ret, left
 
-	member_role = discord.utils.find(lambda r:r.name == "LogBot Member", message.server.roles)
 	do_update = False
 	def startswith(*msgs, val=message.content):
 		for m in msgs:
@@ -69,40 +68,37 @@ async def on_message(message):
 		except: await client.send_message(message.channel, "```No scramble exists.```")
 		pass
 	elif startswith(f"$scramble "):
-		if member_role in message.author.roles:
-			content = message.content.replace("$scramble ", "", 1)
-			if startswith("add", val=content):
-				content = content.replace("add ", "", 1)
-				try:
-					_execute(f"""INSERT INTO wordlist (word) VALUES ('{content}');""")
-					await client.send_message(message.channel, f"```Added \"{content}\".```")
-					pass
-				except: await client.send_message(message.channel, f"```That word/phrase already exists in the database!```")
+		content = message.content.replace("$scramble ", "", 1)
+		if startswith("add", val=content):
+			content = content.replace("add ", "", 1)
+			try:
+				_execute(f"""INSERT INTO wordlist (word) VALUES ('{content}');""")
+				await client.send_message(message.channel, f"```Added \"{content}\".```")
 				pass
-			elif startswith("rem", val=content):
-				content = content.replace("rem ", "", 1)
-				try:
-					_execute(f"""
-					DELETE FROM wordlist
-					WHERE word='{content}';
-					""".replace("\t", ""))
-					await client.send_message(message.channel, f"```Removed \"{content}\"```")
-					pass
-				except: await client.send_message(message.channel, f"```\"{content}\" is not in the database!```")
-			elif startswith("find", val=content):
-				content = content.replace("find ", "", 1)
-				res = _read(f"""SELECT word FROM wordlist WHERE word LIKE '%{content}%'""")
-				ret = "```Results:\n```"
-				for item in res: ret += item[0]
-				await client.send_message(message.channel, ret)
-				pass
-			elif startswith("list", val=content):
-				res = _read(f"""SELECT * FROM wordlist ORDER BY word DESC;""")
-				res = [item[0] for item in res]
-				for msg in format_message(', '.join(res)): await client.send_message(message.channel, msg)
-				pass
+			except: await client.send_message(message.channel, f"```That word/phrase already exists in the database!```")
 			pass
-		else: await client.send_message(message.channel, "```You don't have permission to use this command.```")
+		elif startswith("rem", val=content):
+			content = content.replace("rem ", "", 1)
+			try:
+				_execute(f"""
+				DELETE FROM wordlist
+				WHERE word='{content}';
+				""".replace("\t", ""))
+				await client.send_message(message.channel, f"```Removed \"{content}\"```")
+				pass
+			except: await client.send_message(message.channel, f"```\"{content}\" is not in the database!```")
+		elif startswith("find", val=content):
+			content = content.replace("find ", "", 1)
+			res = _read(f"""SELECT word FROM wordlist WHERE word LIKE '%{content}%'""")
+			ret = "```Results:\n```"
+			for item in res: ret += item[0]
+			await client.send_message(message.channel, ret)
+			pass
+		elif startswith("list", val=content):
+			res = _read(f"""SELECT * FROM wordlist ORDER BY word DESC;""")
+			res = [item[0] for item in res]
+			for msg in format_message(', '.join(res)): await client.send_message(message.channel, msg)
+			pass
 		pass
 	elif startswith(f"$scramble"):
 		try:

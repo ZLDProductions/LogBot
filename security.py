@@ -25,21 +25,16 @@ async def on_message(message: Message):
 		if admin is None:
 			admin = await client.create_role(message.server, name="LogBot Admin")
 			pass
-		if member is None:
-			member = await client.create_role(message.server, name="LogBot Member")
-			await client.move_role(message.server, muted, bot.top_role.position - 1)
+		if not member is None:
+			await client.delete_role(message.server, member)
 			pass
+		await client.move_role(message.server, muted, bot.top_role.position - 1)
 		# </editor-fold>
 		# <editor-fold desc="Add Roles">
-		await client.add_roles(message.server.owner, admin, member)
-		await client.add_roles(bot, admin, member)
-		try: await client.add_roles(owner, admin, member)
+		await client.add_roles(message.server.owner, admin)
+		await client.add_roles(bot, admin)
+		try: await client.add_roles(owner, admin)
 		except: pass
-		for mem in message.server.members:
-			if admin in mem.roles:
-				await client.add_roles(mem, member)
-				pass
-			pass
 		# </editor-fold>
 		# <editor-fold desc="Remove Roles">
 		await client.remove_roles(message.server.owner, muted)
@@ -47,7 +42,6 @@ async def on_message(message: Message):
 		except: pass
 		await client.remove_roles(bot, muted)
 		# </editor-fold>
-
 		pass
 	pass
 

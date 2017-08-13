@@ -258,8 +258,6 @@ class Commands:
 async def on_message(message):
 	owner_id = "239500860336373761"
 	admin_role = find(lambda r:r.name == "LogBot Admin", message.server.roles)
-	# noinspection PyUnusedLocal
-	member_role = find(lambda r:r.name == "LogBot Member", message.server.roles)
 	do_update = False
 	def startswith(*msgs: str, val: str = message.content):
 		"""
