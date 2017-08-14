@@ -107,7 +107,7 @@ Shows the list of excluded channels.
     $showlist
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -120,7 +120,7 @@ Shows the list of marked channels.
     $showmarks
     
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -134,7 +134,7 @@ Shows the help dialog for a specific command, or, if no command was stated, show
 `command` is a command for the bot.
     
 **Required Permissions**  
-LogBot Member.
+None.
 
 ---
 
@@ -147,7 +147,7 @@ Shows the current bot version, and what programming language it was written in.
     $version
     
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -180,7 +180,7 @@ Shows what is new with the bot.
     $updates
     
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -225,7 +225,7 @@ Shows what may come next in the bot.
     $planned
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -242,7 +242,7 @@ Creates, removes, or shows a list of the custom commands.
 `value` is the message that is sent once the command is triggered.
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -256,7 +256,7 @@ Fetches information from Wolfram|Alpha.
 `query` is the statement searched on Wolfram|Alpha.
 
 **Required Permissions** 
-LogBot Member
+None
 
 ---
 
@@ -270,7 +270,7 @@ Fetches information from Wikipedia.
 `input` is the topic for the wikipedia search.
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -288,7 +288,7 @@ Fetches information from the Bible.
 `query` is the search key.
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -351,7 +351,7 @@ Shows the disabled commands.
     $disables
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -393,7 +393,7 @@ Saves a suggestion for the developer.
 `suggestion` is your suggestion for an addition or a change in the bot's features.
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -406,7 +406,7 @@ Shows suggestions received so far unless they have been completed (and therefore
     $suggestions
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -420,7 +420,7 @@ Chooses a random value between the options given.
 `options` is a list of options, separated by | (vertical bar), like this: `Yes|No`
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -462,7 +462,7 @@ Shows public information about a user.
 `user` is a user mention (@user#0000) or the name of the user.
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -552,7 +552,7 @@ Shows the permissions of the user that sent it or the mentioned user, in the spe
 `user` is a user mention.
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -565,7 +565,7 @@ Shows the list of language codes.
     $translate.get
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -581,7 +581,7 @@ Translates text.
 `text` is the text that will be translated.
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -594,7 +594,7 @@ Starts a DM channel.
     $dm
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -626,7 +626,7 @@ Converts a string to the encoded equivalent.
 `string` is a sequence of characters.
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -667,7 +667,7 @@ Shows the people muted in the server.
     $mutes
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -720,7 +720,7 @@ Shows information on the current running instance of LogBot.
     logbot.info
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -1250,7 +1250,7 @@ Adds a word, removes a word, searches for a word, lists all words, or starts wor
 `word` is the word you wish to add/remove/find.
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
@@ -1317,7 +1317,7 @@ Shows all of the voice and text channels in a server.
     $channels
 
 **Required Permissions**  
-LogBot Member
+None
 
 ---
 
