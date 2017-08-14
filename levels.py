@@ -1,3 +1,4 @@
+import ast
 import os
 import random
 import sqlite3
@@ -10,7 +11,7 @@ from sys import exit
 import discord
 from colorama import Fore, init
 
-from logbot_data import token
+from logbot_data import token, bot_id
 
 # from symbols import symbols
 
@@ -22,13 +23,29 @@ _disables = f"{_data}\\disables\\"
 _sql = sqlite3.connect(f"{_data}\\data.db")
 _sql_cursor = _sql.cursor()
 
+defaults = {}
+_defaults = f"{_data}\\defaults.txt"
+
+try:
+	reader = open(_defaults, 'r')
+	defaults = ast.literal_eval(reader.read())
+	reader.close()
+	del reader
+	pass
+except:
+	writer = open(_defaults, 'w')
+	writer.write(str(defaults))
+	writer.close()
+	del writer
+	pass
+
 def sqlread(cmd: str):
 	_sql_cursor.execute(cmd)
 	return _sql_cursor.fetchall()
 	pass
 
 def sqlexecute(cmd: str):
-	_sql_cursor.execute(cmd)
+	_sql_cursor.executescript(cmd)
 	_sql.commit()
 	pass
 
@@ -73,6 +90,9 @@ def read(sid: str):
 		VALUES ('{sid}', 0);
 		""".replace("\t", ""))
 	# </editor-fold>
+	# <editor-fold desc="Defaults">
+	if not sid in defaults.keys(): defaults[sid] = {"DM":"FALSE", "AlertChannel":"None"}
+	# </editor-fold>
 	pass
 
 def save(sid: str):
@@ -87,6 +107,9 @@ def save(sid: str):
 	SET disabled={1 if disabled == True else 0}
 	WHERE server='{sid}';
 	""".replace("\t", ""))
+	# </editor-fold>
+	# <editor-fold desc="Defaults">
+	open(_defaults, 'w').write(str(defaults))
 	# </editor-fold>
 	pass
 
@@ -123,9 +146,13 @@ async def on_message(message: discord.Message):
 					WHERE server='{message.server.id}'
 					AND member='{m.id}';
 					""".replace("\t", ""))[0][0] == 0:
-						sqlexecute(f"""
-						INSERT INTO levels (server, member, tier, rank, xp, xp_limit, multiplier, credits, cpm, dm)
-						VALUES ('{message.server.id}', '{m.id}', 1, 0, 0, 200, 1.0, 0, 0, 'TRUE');
+						try: sqlexecute(f"""
+						INSERT INTO levels (server, member, tier, rank, xp, xp_limit, multiplier, credits, cpm, dm, alert_channel)
+						VALUES ('{message.server.id}', '{m.id}', 1, 0, 0, 200, 1.0, 0, 0, '{defaults[message.server.id]['DM']}', '{defaults[message.server.id]['AlertChannel']}');
+						""".replace("\t", ""))
+						except: sqlexecute(f"""
+						INSERT INTO levels (server, member, tier, rank, xp, xp_limit, multiplier, credits, cpm, dm, alert_channel)
+						VALUES ('{message.server.id}', '{m.id}', 1, 0, 0, 200, 1.0, 0, 0, 'TRUE', 'None');
 						""".replace("\t", ""))
 						pass
 					pass
@@ -256,17 +283,17 @@ async def on_message(message: discord.Message):
 				AND member='{message.author.id}';
 				""".replace("\t", ""))[0]
 				if do_dm[0].lower() == "true":
-					await client.send_message(message.author, f"Congrats, {message.author.mention}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits in {message.server.name}!")
+					await client.send_message(message.author, f"Congrats, {message.author}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits in {message.server.name}!")
 					print(f"{Fore.GREEN}{message.author} has leveled up to {_tdat[0]}!{Fore.RESET}")
 					pass
 				else:
 					alert_channel = discord.utils.find(lambda c:c.id == do_dm[1], message.server.channels)
 					if not alert_channel is None:
-						await client.send_message(alert_channel, f"Congrats, {message.author.mention}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
+						await client.send_message(alert_channel, f"Congrats, {message.author}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
 						pass
 					else:
 						if do_dm[1].lower() == "self":
-							await client.send_message(message.channel, f"Congrats, {message.author.mention}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
+							await client.send_message(message.channel, f"Congrats, {message.author}, you just leveled up to rank {_tdat[0]} from rank {prev_rank} and have earned {parse_num((_tdat[0] - prev_rank) * _tdat[1])} credits!")
 							pass
 						pass
 					print(f"{Fore.GREEN}{message.author} has leveled up to {_tdat[0]}!{Fore.RESET}")
@@ -1337,6 +1364,60 @@ async def on_message(message: discord.Message):
 					pass
 				else: await client.send_message(message.channel, "```You do not have permission to use this command.```")
 				pass
+			elif startswith("l$leaderboards "):
+				await client.send_typing(message.channel)
+				_lim = int(message.content.split(" ")[1])
+				ret = []
+				user_rank = 0
+				tmp = []
+				result = sqlread(f"""
+				SELECT member, tier-1, rank
+				FROM levels
+				WHERE ((tier - 1) * 100) + rank > 0
+				AND server = '{message.server.id}'
+				ORDER BY ((tier - 1) * 100) + rank DESC, xp DESC;
+				""".replace("\t", ""))
+				append = ret.append
+				for i in range(0, _lim if len(result) > _lim else len(result)):
+					if result[i][0] == message.author.id: user_rank = i + 1
+					user = await client.get_user_info(result[i][0])
+					append(f"{user} : {(result[i][1]*100)+result[i][2]}")
+					pass
+				append = tmp.append
+				for i in range(0, len(ret)):
+					if i % 5 == 0: append(ret[i] + '\n')
+					else: tmp[len(tmp) - 1] += ret[i] + "\n"
+					pass
+				for item in tmp: await client.send_message(message.channel, f"```{item}```")
+				await client.send_message(message.channel, f"```You are ranked: #{user_rank}```")
+				pass
+				pass
+			elif startswith("l$leaderboards"):
+				await client.send_typing(message.channel)
+				ret = []
+				user_rank = 0
+				tmp = []
+				result = sqlread(f"""
+								SELECT member, tier-1, rank
+								FROM levels
+								WHERE ((tier - 1) * 100) + rank > 0
+								AND server = '{message.server.id}'
+								ORDER BY ((tier - 1) * 100) + rank DESC, xp DESC;
+								""".replace("\t", ""))
+				append = ret.append
+				for i in range(0, 10 if len(result) > 10 else len(result)):
+					if result[i][0] == message.author.id: user_rank = i + 1
+					user = await client.get_user_info(result[i][0])
+					append(f"{user} : {(result[i][1]*100)+result[i][2]}")
+					pass
+				append = tmp.append
+				for i in range(0, len(ret)):
+					if i % 5 == 0: append(ret[i] + '\n')
+					else: tmp[len(tmp) - 1] += ret[i] + "\n"
+					pass
+				for item in tmp: await client.send_message(message.channel, f"```{item}```")
+				await client.send_message(message.channel, f"```You are ranked: #{user_rank}```")
+				pass
 			pass
 		if startswith(f"$update", "logbot.levels.update"):
 			if message.author.id == owner_id: do_update = True
@@ -1380,7 +1461,7 @@ async def on_message(message: discord.Message):
 				pass
 			pass
 		elif startswith(f"l$execute\n", "```sql\n--execute"):
-			if message.author.id == owner_id:
+			if message.author.id == owner_id or message.author.id == bot_id:
 				sqlexecute(message.content.replace("l$execute\n", "").replace("```sql\n--execute", "").replace("```", "").replace("{sid}", message.server.id).replace("{uid}", message.author.id))
 				await client.send_message(message.channel, "```Execution Successful.```")
 				pass
@@ -1440,6 +1521,39 @@ async def on_message(message: discord.Message):
 			AND member="{message.author.id}";
 			""".replace("\t", ""))
 			await client.send_message(message.channel, f"```Updated Alert Channel```")
+			pass
+		elif startswith("l$default "):
+			if admin_role in message.author.roles or message.author.id == owner_id:
+				cnt = message.content.split(" ")
+				cnt.remove(cnt[0])
+				if cnt[0] == "DM":
+					if cnt[1].lower() == "on" or cnt[1].lower() == "true" or cnt[1].lower() == "1": defaults[message.server.id]["DM"] = "TRUE"; await client.send_message(message.channel, f"```Set the DM default to TRUE```")
+					else: defaults[message.server.id]["DM"] = "FALSE"; await client.send_message(message.channel, f"```Set the DM default to FALSE```")
+					pass
+				elif cnt[0] == "AlertChannel":
+					c = message.channel_mentions
+					if len(c) > 0: c = c[0].id
+					else: c = "None"
+					defaults[message.server.id]["AlertChannel"] = c
+					await client.send_message(message.channel, f"```Set the alert channel to {client.get_channel(c)}```")
+					pass
+				pass
+			pass
+		elif startswith("l$defaults"):
+			await client.send_message(message.channel, f"```DM: {defaults[message.server.id]['DM']}\nAlert Channel: {client.get_channel(defaults[message.server.id]['AlertChannel'])}```")
+			pass
+		elif startswith("l$reset"):
+			if admin_role in message.author.roles or message.author.id == owner_id:
+				sqlexecute(f"""
+				UPDATE levels
+				SET dm='{defaults[message.server.id]['DM']}'
+				WHERE server='{message.server.id}';
+				UPDATE levels
+				SET alert_channel='{defaults[message.server.id]['AlertChannel']}'
+				WHERE server='{message.server.id}';
+				""".replace("\t", ""))
+				await client.send_message(message.channel, f"```Reset DM and AlertChannel to their default server values.```")
+				pass
 			pass
 
 		save(message.server.id if not message.server is None else message.channel.id)
