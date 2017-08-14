@@ -26,7 +26,7 @@ import sql
 from logbot_data import *
 
 # noinspection SpellCheckingInspection
-version = '16.0.0 Python'
+version = '16.1.0 Python'
 whats_new = [
 	"•Added $devotional.",
 	"•Bug fixes.",
@@ -831,7 +831,6 @@ class Commands:
 			del tmp_msg
 			del tmp_channels
 			del tmp_admin_users
-			del tmp_members_users
 			del tmp_mark_channels
 			del tmp_welcome
 			del tmp_goodbye
@@ -1146,9 +1145,12 @@ class Commands:
 				db.update("Welcomes", "message", f"read( {_file_path} )", message.server.id)
 				pass
 			else:
-				try: db.write("Welcomes", {"server":message.server.id, "message":content})
-				except: pass
-				db.update("Welcomes", "message", content, message.server.id)
+				if not content == "None":
+					try: db.write("Welcomes", {"server":message.server.id, "message":content})
+					except: pass
+					db.update("Welcomes", "message", content, message.server.id)
+					pass
+				else: db.update("Welcomes", "message", "", message.server.id)
 				pass
 			await client.send_message(message.channel, "```Welcome message set!```")
 			del content
