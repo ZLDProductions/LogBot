@@ -1380,6 +1380,49 @@ None
 
 ---
 
+#### l$default
+**Info**  
+Sets the DM or AlertChannel default values for the server.
+
+**Usage**
+
+    l$default DM {val: [on/true/1/off/false/0]}
+    l$default AlertChannel {channel}
+`val` is the value for the DM value. Must be either on/true/1 or off/false/0. False is default.  
+`channel` is a channel mention.
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### l$defaults
+**Info**  
+Gets the default values for the server.
+
+**Usage**  
+
+    l$defaults
+
+**Required Permissions**  
+None
+
+---
+
+#### l$defaultchannel
+**Info**  
+Gets or sets the server's default welcoming channel.
+
+**Usage**
+
+    l$defaultchannel [channel]
+`channel` is a channel mention.
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.

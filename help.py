@@ -561,6 +561,24 @@ infos = dict({
 		"Usage"               :"l$slots {bid}\nl$slots",
 		"Required Permissions":"None",
 		"Type"                :"Fun"
+	},
+	"l$default"      :{
+		"Info"                :"Sets the default values for DM or Alertchannel in the server.",
+		"Usage"               :"l$default DM {val: [on/off]}\nl$default AlertChannel {channel-mention}",
+		"Required Permissions":"LogBot Admin",
+		"Type"                :"Utility"
+	},
+	"l$defaults"     :{
+		"Info"                :"Shows the default settings for DM and AlertChannel in the server.",
+		"Usage"               :"l$defaults",
+		"Required Permissions":"None",
+		"Type"                :"Utility"
+	},
+	"$defaultchannel":{
+		"Info"                :"Gets or sets the default welcome/goodbye channel in the server.",
+		"Usage"               :"$defaultchannel [channel-mention]",
+		"Required Permissions":"LogBot Admin",
+		"Type"                :"Utility"
 	}
 })
 prefixes = {
