@@ -26,18 +26,21 @@ import sql
 from logbot_data import *
 
 # noinspection SpellCheckingInspection
-version = '16.1.0 Python'
+version = '16.1.1 Python'
 whats_new = [
 	"•Added $devotional.",
 	"•Bug fixes.",
-	"•Help content updated."
+	"•Help content updated.",
+	"•Removed a$purge, a$clsserver, and a$clear.",
+	"•Updated README docs.",
+	"•Added the 'all' switch to $excludechannel and $includechannel to exclude/include all channels in the server."
 ]
 planned = [
 	"There is nothing planned at the moment."
 ]
 bootup_time = datetime.now()
-owner_id = "239500860336373761"
-bot_id = "255379748828610561"
+# owner_id = "239500860336373761"
+# bot_id = "255379748828610561"
 # hq_link = "https://discord.gg/82DYM3T"
 # git_link = "https://github.com/ZLDProductions/LogBot"
 
