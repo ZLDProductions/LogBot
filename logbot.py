@@ -1017,21 +1017,41 @@ class Commands:
 			pass
 		@staticmethod
 		async def excludechannel(message: discord.Message):
+			eapp = exclude_channel_list.append
 			for channel in message.channel_mentions:
 				if not channel.id in exclude_channel_list:
-					exclude_channel_list.append(channel.id)
+					eapp(channel.id)
 					await client.send_message(message.channel, f"Excluding {channel.mention} from the logs.")
 					send(f"Excluding {channel.id} from the logs.", message.server.name)
+					pass
+				pass
+			if "all" in message.content.lower:
+				for channel in message.server.channels:
+					if not channel.id in exclude_channel_list:
+						eapp(channel.id)
+						await client.send_message(message.channel, f"Excluding {channel.mention} from the logs.")
+						send(f"Excluding {channel.id} from the logs.", message.server.name)
+						pass
 					pass
 				pass
 			pass
 		@staticmethod
 		async def includechannel(message: discord.Message):
+			erem = exclude_channel_list.remove
 			for channel in message.channel_mentions:
 				if channel.id in exclude_channel_list:
-					exclude_channel_list.remove(channel.id)
+					erem(channel.id)
 					await client.send_message(message.channel, f"Including {channel.mention} in the logs.")
 					send(f"Including {channel.mention} in the logs.", message.server.name)
+					pass
+				pass
+			if "all" in message.content.lower:
+				for channel in message.server.channels:
+					if channel.id in exclude_channel_list:
+						erem(channel.id)
+						await client.send_message(message.channel, f"Including {channel.mention} in the logs.")
+						send(f"Including {channel.mention} in the logs.", message.server.name)
+						pass
 					pass
 				pass
 			pass
@@ -1514,8 +1534,10 @@ async def sendDisabled(message: discord.Message):
 # noinspection PyShadowingNames
 @client.event
 async def on_message(message: discord.Message):
-
-	if default_channel.get(message.server.id) is None: default_channel[message.server.id] = message.server.default_channel.id
+	global default_channel
+	try:
+		if default_channel.get(message.server.id) is None: default_channel[message.server.id] = message.server.default_channel.id
+	except:pass
 
 	muted_role = discord.utils.find(lambda r:r.name == "LogBot Muted", message.server.roles)
 

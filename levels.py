@@ -131,7 +131,7 @@ def format_message(cont: str) -> list:
 	else: return [f"```dos\n{cont}```"]
 	pass
 
-# noinspection PyTypeChecker
+# noinspection PyTypeChecker,PyShadowingNames
 @client.event
 async def on_message(message: discord.Message):
 	global base, disabled
