@@ -1146,20 +1146,6 @@ None
 
 ---
 
-#### a$clear
-**Info**  
-Deletes all messages (in this instance of the bot) sent in the same channel as the command message.
-
-**Usage**
-
-    a$clear
-    $clear
-
-**Required Permissions**  
-LogBot Admin
-
----
-
 #### $hq
 **Info**  
 Sends the LogBot HQ Instant Invite Link through chat.

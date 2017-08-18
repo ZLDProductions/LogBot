@@ -469,12 +469,6 @@ infos = dict({
 		"Required Permissions":"None",
 		"Type"                :"Fun"
 	},
-	"a_clear"        :{
-		"Info"                :"Deletes all messages (in this instance of the bot) sent in the same channel as the command message.",
-		"Usage"               :"a$clear",
-		"Required Permissions":"LogBot Admin",
-		"Type"                :"Moderation"
-	},
 	"_hq"            :{
 		"Info"                :"Sends the LogBot HQ Instant Invite Link through chat.",
 		"Usage"               :"$hq",
