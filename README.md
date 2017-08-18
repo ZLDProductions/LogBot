@@ -14,6 +14,8 @@ I originally created LogBot to log events, such as message editing, deletion, et
 Because the log channel is optional, the logs are stored locally (but not checked by me, whatsoever). The logs contain events such as status change, server updates, channel updates, messages, etc.  
 Using `$excludechannel all` will cause the bot to ignore logging events.
 
+The bot also stores data (level data, polling data, etc.). This data is not checked in any way (it's not even easily readable).
+
 ## Commands
 Use `$help` to view a list of all documented commands, and use `$help [command]` for more specific documentation.
 
