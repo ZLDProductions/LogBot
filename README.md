@@ -9,6 +9,11 @@ Have questions? Ask them here: [LogBot HQ](https://discord.gg/82DYM3T)
 
 ---
 
+## Logging Notice
+I originally created LogBot to log events, such as message editing, deletion, etc.
+Because the log channel is optional, the logs are stored locally (but not checked by me, whatsoever). The logs contain events such as status change, server updates, channel updates, messages, etc.  
+Using `$excludechannel all` will cause the bot to ignore logging events.
+
 ## Commands
 Use `$help` to view a list of all documented commands, and use `$help [command]` for more specific documentation.
 
