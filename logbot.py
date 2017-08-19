@@ -162,19 +162,19 @@ def send(message: str, servername: str, channel: str = "event"):
 	try:
 		marklist.index(channel)
 		writer = open(f"{discord_logs}\\{servername}\\{channel}.mark.txt", 'a')
-		writer.write(f"{servername} ~ {message if is_ascii else codecs.unicode_escape_encode(message, 'ignore')[0]}\n")
+		writer.write(f"{message if is_ascii else codecs.unicode_escape_encode(message, 'ignore')[0]}\n")
 		writer.close()
 		del writer
 		pass
 	except:
 		writer = open(f"{discord_logs}\\{servername}\\{channel}.txt", 'a')
-		writer.write(f"{servername} ~ {message if is_ascii(message) else codecs.unicode_escape_encode(message, 'ignore')[0]}\n")
+		writer.write(f"{message if is_ascii(message) else codecs.unicode_escape_encode(message, 'ignore')[0]}\n")
 		writer.close()
 		del writer
 		pass
 	try:
 		message = u"{}".format(message)
-		print(f"{servername} ~ {message}")
+		print(message)
 		pass
 	except: print(f"{servername} ~ {Fore.LIGHTRED_EX}There was an error with the encoding of the message.{Fore.RESET}")
 	pass
@@ -2064,7 +2064,7 @@ async def on_message(message: discord.Message):
 			pass
 		except:
 			if not message.content.startswith(f"$exclude ") and not message.content.startswith(f"$ex "):
-				ret = f"{message.channel} ~ \"{msgcont}\" ~ {message.author} ~ {time.day}.{time.month}.{time.year} {time.hour}:{time.minute} ~ {message.attachments}"
+				ret = f"Message Sent: {message.server.name} ~ {message.channel} ~ \"{msgcont}\" ~ {message.author} ~ {time.day}.{time.month}.{time.year} {time.hour}:{time.minute} ~ {message.attachments}"
 				send(ret, message.server.name, message.channel.name)
 				pass
 			pass
@@ -2116,7 +2116,7 @@ async def on_message_delete(message: discord.Message):
 	except:
 		m = format_time(message.timestamp)
 		name = str(message.author)
-		ret = f"{message.channel} ~ \"{message.content}\" was deleted ~ {name} ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute} ~ {message.attachments}"
+		ret = f"Message Deleted: {message.server.name} ~ {message.channel} ~ \"{message.content}\" was deleted ~ {name} ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute} ~ {message.attachments}"
 		send(ret, message.server.name, message.channel.name)
 		c = client.get_channel(parser[message.server.id]["logchannel"])
 		if not c is None:
@@ -2137,7 +2137,7 @@ async def on_message_edit(before: discord.Message, after: discord.Message):
 	except:
 		m = format_time(after.timestamp)
 		attachments = after.attachments
-		ret = f"{before.channel.name} ~ \"{before.content}\" ~ \"{after.content}\" ~ {attachments} ~ {before.author} ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
+		ret = f"Message Edited: {after.server.name} ~ {before.channel.name} ~ \"{before.content}\" ~ \"{after.content}\" ~ {attachments} ~ {before.author} ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 		send(ret, after.server.name, after.channel.name)
 		c = client.get_channel(parser[before.server.id]["logchannel"])
 		if not c is None and not before.content == after.content:
@@ -2156,7 +2156,7 @@ async def on_message_edit(before: discord.Message, after: discord.Message):
 @client.event
 async def on_channel_delete(channel: discord.Channel):
 	m = datetime.now()
-	ret = f"\"{channel.name}\" was deleted ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
+	ret = f"Channel Deleted: {channel.server.name} ~ \"{channel.name}\" was deleted ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(ret, channel.server.name)
 	c = client.get_channel(parser[channel.server.id]["logchannel"])
 	if not c is None:
@@ -2171,7 +2171,7 @@ async def on_channel_delete(channel: discord.Channel):
 @client.event
 async def on_channel_create(channel: discord.Channel):
 	m = datetime.now()
-	ret = f"\"{channel.name}\" was created ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
+	ret = f"Channel Created: {channel.server.name} ~ \"{channel.name}\" was created ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	if channel.server is not None: send(ret, channel.server.name)
 	else: send(ret, f"DM{channel.name}")
 	c = client.get_channel(parser[channel.server.id]["logchannel"])
@@ -2191,7 +2191,7 @@ async def on_channel_create(channel: discord.Channel):
 @client.event
 async def on_member_join(member: discord.Member):
 	m = datetime.now()
-	ret = f"{member} joined ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
+	ret = f"Member Joined: {member.server.name} ~ {member} joined ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(ret, member.server.name)
 	read(member.server.id)
 	if not disables["welcome"]:
@@ -2227,7 +2227,7 @@ async def on_member_join(member: discord.Member):
 async def on_member_remove(member: discord.Member):
 	m = datetime.now()
 	time = f"{m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
-	ret = f"{member} left ~ {time}"
+	ret = f"Member Left: {member.server.name} ~ {member} left ~ {time}"
 	send(ret, member.server.name)
 	read(member.server.id)
 	if not disables["goodbye"]:
@@ -2250,10 +2250,10 @@ async def on_member_remove(member: discord.Member):
 async def on_member_update(before: discord.Member, after: discord.Member):
 	m = datetime.now()
 	sent_str = ""
-	if before.status != after.status: sent_str = f"{after} changed his/her status from {before.status} to {after.status}"
-	elif before.game != after.game: sent_str = f"{after} changed his/her game from {before.game} to {after.game}"
-	elif before.avatar != after.avatar: sent_str = f"{after} changed his/her avatar."
-	elif before.nick != after.nick: sent_str = f"{after}'s nickname was changed to {after.nick}"
+	if before.status != after.status: sent_str = f"Member Updated: {after.server.name} ~ {after} changed his/her status from {before.status} to {after.status}"
+	elif before.game != after.game: sent_str = f"Member Updated: {after.server.name} ~ {after} changed his/her game from {before.game} to {after.game}"
+	elif before.avatar != after.avatar: sent_str = f"Member Updated: {after.server.name} ~ {after} changed his/her avatar."
+	elif before.nick != after.nick: sent_str = f"Member Updated: {after.server.name} ~ {after}'s nickname was changed to {after.nick}"
 	elif before.roles != after.roles:
 		if not discord.utils.find(lambda r:r.name == "LogBot Admin" or r.name == "LogBot Member", after.server.roles) in after.roles:
 			is_role_added = False
@@ -2265,8 +2265,8 @@ async def on_member_update(before: discord.Member, after: discord.Member):
 			for item in after.roles:
 				if not item in before.roles: is_role_added = True; role = item
 				pass
-			if is_role_added: sent_str = f"Role {role} was added to {before}."
-			elif is_role_removed: sent_str = f"Role {role} was removed from {before}."
+			if is_role_added: sent_str = f"Member Updated: {after.server.name} ~ Role {role} was added to {before}."
+			elif is_role_removed: sent_str = f"Member Updated: {after.server.name} ~ Role {role} was removed from {before}."
 			pass
 		pass
 	if not sent_str == "":
@@ -2278,7 +2278,7 @@ async def on_member_update(before: discord.Member, after: discord.Member):
 @client.event
 async def on_voice_state_update(before: discord.Member, after: discord.Member):
 	m = datetime.now()
-	sent_str = ""
+	sent_str = "Voice Status Updated: {after.server.name} ~ "
 	if before.voice.deaf is not after.voice.deaf: sent_str = f"{before} was deafened by the server."
 	elif before.voice.mute is not after.voice.mute:
 		if after.voice.mute: sent_str = f"{before} was muted by the server."
@@ -2303,7 +2303,7 @@ async def on_voice_state_update(before: discord.Member, after: discord.Member):
 @client.event
 async def on_member_ban(member: discord.Member):
 	m = datetime.now()
-	sent_str = f"{check(member.nick, member.name, member.id)} was banned ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
+	sent_str = f"Member Banned: {member.server.name} ~ {check(member.nick, member.name, member.id)} was banned ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(sent_str, member.server.name)
 	c = client.get_channel(parser[member.server.id]["logchannel"])
 	if not c is None:
@@ -2318,7 +2318,7 @@ async def on_member_ban(member: discord.Member):
 @client.event
 async def on_member_unban(server: discord.Server, user: discord.User):
 	m = datetime.now()
-	sent_str = f"{check(user.display_name, user.name, user.id)} was unbanned ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
+	sent_str = f"Member Unbanned: {server.name} ~ {check(user.display_name, user.name, user.id)} was unbanned ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(sent_str, server.name)
 	c = client.get_channel(parser[server.id]["logchannel"])
 	if not c is None:
@@ -2333,7 +2333,7 @@ async def on_member_unban(server: discord.Server, user: discord.User):
 @client.event
 async def on_server_role_create(role: discord.Role):
 	m = datetime.now()
-	sent_str = f"{role.name} was created ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
+	sent_str = f"Role Created: {role.server.name} ~ {role.name} was created ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(sent_str, role.server.name)
 	c = client.get_channel(parser[role.server.id]["logchannel"])
 	if not c is None:
@@ -2349,7 +2349,7 @@ async def on_server_role_create(role: discord.Role):
 @client.event
 async def on_server_role_delete(role: discord.Role):
 	m = datetime.now()
-	sent_str = f"{role.name} was deleted ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
+	sent_str = f"Role Deleted: {role.server.name} ~ {role.name} was deleted ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(sent_str, role.server.name)
 	c = client.get_channel(parser[role.server.id]["logchannel"])
 	if not c is None:
@@ -2471,7 +2471,7 @@ async def on_server_role_update(before: discord.Role, after: discord.Role):
 		new['manage_emojis'] = nperms.manage_emojis
 		pass
 
-	sent_str = f"{before} : {old} : {before.position} -> {after} : {new} : {after.position} ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
+	sent_str = f"Role Updated: {before.server.name} ~ {before} : {old} : {before.position} -> {after} : {new} : {after.position} ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send(sent_str, before.server.name)
 
 	c = client.get_channel(parser[before.server.id]["logchannel"])
@@ -2505,7 +2505,7 @@ async def on_server_role_update(before: discord.Role, after: discord.Role):
 async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.User, discord.Member]):
 	emj = codecs.unicode_escape_encode(reaction.emoji, 'strict')
 	msgcont = reaction.message.content if is_ascii(reaction.message.content) else codecs.unicode_escape_encode(reaction.message.content, 'strict')
-	sent_str = f"{reaction.message.channel.name} ~ {'Custom ' if reaction.custom_emoji else ''}Reaction {emj} was added to message \"{msgcont}\" {reaction.count} time(s) by {user}"
+	sent_str = f"Reaction Added: {reaction.message.server.name} ~ {reaction.message.channel.name} ~ {'Custom ' if reaction.custom_emoji else ''}Reaction {emj} was added to message \"{msgcont}\" {reaction.count} time(s) by {user}"
 	send(sent_str, reaction.message.server.name)
 	pass
 
@@ -2513,7 +2513,7 @@ async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.User, 
 async def on_reaction_remove(reaction: discord.Reaction, user: Union[discord.User, discord.Member]):
 	emj = codecs.unicode_escape_encode(reaction.emoji, 'strict')
 	msgcont = reaction.message.content if is_ascii(reaction.message.content) else codecs.unicode_escape_encode(reaction.message.content, 'strict')
-	sent_str = f"{reaction.message.channel.name} ~ {'Custom ' if reaction.custom_emoji else ''}Reaction {emj} was removed from message \"{msgcont}\" {reaction.count} time(s) by {user}"
+	sent_str = f"Reaction Removed: {reaction.message.server.name} ~ {reaction.message.channel.name} ~ {'Custom ' if reaction.custom_emoji else ''}Reaction {emj} was removed from message \"{msgcont}\" {reaction.count} time(s) by {user}"
 	send(sent_str, reaction.message.server.name)
 	pass
 
@@ -2522,16 +2522,15 @@ async def on_reaction_clear(message: discord.Message, reactions: List[discord.Re
 	emjs = []
 	for item in reactions: emjs.append(codecs.unicode_escape_encode(item.emoji, 'strict'))
 	msgcont = message.content if is_ascii(message.content) else codecs.unicode_escape_encode(message.content, 'strict')
-	sent_str = f"{message.channel.name} ~ Reactions [{','.join(emjs)}] were cleared from message \"{msgcont}\""
+	sent_str = f"Reaction(s) Cleared: {message.server.name} ~ {message.channel.name} ~ Reactions [{','.join(emjs)}] were cleared from message \"{msgcont}\""
 	send(sent_str, message.server.name)
 	pass
 
 @client.event
 async def on_channel_update(before: discord.Channel, after: discord.Channel):
 	m = datetime.now()
-	sent_str = ""
 	if before.name != after.name:
-		send(f"{after}'s name was changed from {before.name} to {after.name}", after.server.name)
+		send(f"Channel Updated: {after.server.name} ~ {after}'s name was changed from {before.name} to {after.name}", after.server.name)
 		with f"{discord_logs}\\{before.server.name}\\{before.name}.mark.txt" as old_loc:
 			if os.path.exists(old_loc): os.rename(old_loc, f"{discord_logs}\\{before.server.name}\\{after.name}.mark.txt")
 			pass
@@ -2539,12 +2538,11 @@ async def on_channel_update(before: discord.Channel, after: discord.Channel):
 			if os.path.exists(old_loc_unmarked): os.rename(old_loc_unmarked, f"{discord_logs}\\{before.server.name}\\{after.name}.txt")
 			pass
 		pass
-	elif before.topic is not after.topic: send(f"{after}'s topic was changed from \"{before.topic}\" to \"{after.topic}\"", after.server.name)
-	elif before.position is not after.position: send(f"{after}'s position was changed from {before.position} to {after.position}", after.server.name)
-	elif before.user_limit is not after.user_limit: send(f"{after}'s user limit was changed from {before.user_limit} to {after.user_limit}", after.server.name)
-	elif before.bitrate is not after.bitrate: sent_str = f"{after.name}'s bitrate was changed from {before.bitrate} to {after.bitrate}"
-	else: sent_str = f"{after.name} was updated."
-	send(sent_str, after.server.name)
+	elif before.topic is not after.topic: send(f"Channel Updated: {after.server.name} ~ {after}'s topic was changed from \"{before.topic}\" to \"{after.topic}\"", after.server.name)
+	elif before.position is not after.position: send(f"Channel Updated: {after.server.name} ~ {after}'s position was changed from {before.position} to {after.position}", after.server.name)
+	elif before.user_limit is not after.user_limit: send(f"Channel Updated: {after.server.name} ~ {after}'s user limit was changed from {before.user_limit} to {after.user_limit}", after.server.name)
+	elif before.bitrate is not after.bitrate: send(f"Channel Updated: {after.server.name} ~ {after.name}'s bitrate was changed from {before.bitrate} to {after.bitrate}", after.server.name)
+	else: send(f"Channel Updated: {after.server.name} ~ {after.name} was updated.", after.server.name)
 	c = client.get_channel(parser[before.server.id]["logchannel"])
 	if not c is None:
 		e = discord.Embed(title="Channel Updated!", description="A channel was updated!", colour=discord.Colour.gold())
@@ -2575,6 +2573,7 @@ async def on_channel_update(before: discord.Channel, after: discord.Channel):
 		pass
 	pass
 
+# noinspection PyShadowingNames
 @client.event
 async def on_server_update(before: discord.Server, after: discord.Server):
 	m = datetime.now()
@@ -2585,19 +2584,19 @@ async def on_server_update(before: discord.Server, after: discord.Server):
 				os.rename(old_loc, new_loc)
 				pass
 			pass
-		send(f"The server name was changed from {before.name} to {after.name}.", after.name)
+		send(f"Server Updated: {after.name} ~ The server name was changed from {before.name} to {after.name}.", after.name)
 		pass
 	if before.default_channel != after.default_channel:
-		send(f"The server's default channel was changed from {before.default_channel} to {after.default_channel}.", after.name)
+		send(f"Server Updated: {after.name} ~ The server's default channel was changed from {before.default_channel} to {after.default_channel}.", after.name)
 		pass
 	if before.afk_channel != after.afk_channel:
-		send(f"The server's AFK channel was changed from {before.afk_channel} to {after.afk_channel}.", after.name)
+		send(f"Server Updated: {after.name} ~ The server's AFK channel was changed from {before.afk_channel} to {after.afk_channel}.", after.name)
 		pass
 	if before.default_role != after.default_role:
-		send(f"The server's default role was changed from {before.default_role} to {after.default_role}.", after.name)
+		send(f"Server Updated: {after.name} ~ The server's default role was changed from {before.default_role} to {after.default_role}.", after.name)
 		pass
 	if before.verification_level != after.verification_level:
-		send(f"The server's verification level was changed from {before.verification_level} to {after.verification_level}.", after.name)
+		send(f"Server Updated: {after.name} ~ The server's verification level was changed from {before.verification_level} to {after.verification_level}.", after.name)
 		pass
 	c = client.get_channel(parser[before.id]["logchannel"])
 	if not c is None:
