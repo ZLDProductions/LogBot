@@ -8,8 +8,9 @@ from logbot_data import token, owner_id
 client = discord.Client()
 init()
 
-discord_settings = os.path.expanduser("~\\Documents\\Discord Logs\\SETTINGS")
+discord_settings = f"{os.getcwd()}\\Discord Logs\\SETTINGS"
 suggestions = f"{discord_settings}\\suggestions.txt"
+reports = f"{discord_settings}\\bugs.txt"
 
 def format_message(msg: str, _tag: str) -> list:
 	"""
@@ -27,8 +28,8 @@ def format_message(msg: str, _tag: str) -> list:
 
 @client.event
 async def on_message(message: discord.Message):
+	begins = message.content.startswith
 	if message.author.id == owner_id:
-		begins = message.content.startswith
 		if begins("$suggestions"):
 			# <editor-fold desc="READER: suggestions">
 			# noinspection PyShadowingNames
@@ -40,6 +41,33 @@ async def on_message(message: discord.Message):
 			del ret
 			del reader
 			pass
+		pass
+	elif begins("$report "):
+		cnt = "-" + message.content.replace('$report ', '').replace("```", "'''")
+		reader = open(reports, 'r')
+		text = reader.read()
+		reader.close()
+		if f"{cnt}\n" in text:
+			await client.send_message(message.channel, f"```There is already a report for \"{cnt}\"```")
+			pass
+		else:
+			writer = open(reports, 'a')
+			writer.write(f"{cnt}\n")
+			writer.close()
+			await client.send_message(message.channel, f"```Thank you for your report.```")
+			del writer
+			pass
+		del text
+		del cnt
+		del reader
+		pass
+	elif begins("$reports"):
+		reader = open(reports, 'r')
+		text = reader.read()
+		reader.close()
+		msgs = format_message(text, "```")
+		for msg in msgs: await client.send_message(message.channel, msg)
+		del reader
 		pass
 	pass
 
