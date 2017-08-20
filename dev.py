@@ -1,9 +1,10 @@
 import os
+import subprocess
 
 import discord
 from colorama import Fore, init
 
-from logbot_data import token, owner_id
+from logbot_data import owner_id, token
 
 client = discord.Client()
 init()
@@ -23,7 +24,7 @@ def format_message(msg: str, _tag: str) -> list:
 		len_str = 2000 - len_tag
 		ret = [f"{_tag}{msg[i:i+len_str]}{_tag}" for i in range(0, len(msg), len_str)]
 		pass
-	else: ret = [msg[i:i+2000] for i in range(0, len(msg), 2000)]
+	else: ret = [msg[i:i + 2000] for i in range(0, len(msg), 2000)]
 	return ret
 
 @client.event
@@ -40,6 +41,12 @@ async def on_message(message: discord.Message):
 			for item in format_message(ret, "```"): await client.send_message(message.channel, item)
 			del ret
 			del reader
+			pass
+		elif begins("d$update") or begins("logbot.dev.update"):
+			print("{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}")
+			await client.close()
+			subprocess.Popen("python " + os.getcwd() + "\\swearing_filter.py", False)
+			exit(0)
 			pass
 		pass
 	elif begins("$report "):
@@ -65,8 +72,13 @@ async def on_message(message: discord.Message):
 		reader = open(reports, 'r')
 		text = reader.read()
 		reader.close()
-		msgs = format_message(text, "```")
-		for msg in msgs: await client.send_message(message.channel, msg)
+		if len(text) > 0:
+			msgs = format_message(text, "```")
+			for msg in msgs: await client.send_message(message.channel, msg)
+			pass
+		else:
+			await client.send_message(message.channel, f"```There are no bug reports yet.```")
+			pass
 		del reader
 		pass
 	pass
