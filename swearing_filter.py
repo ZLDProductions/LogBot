@@ -17,11 +17,21 @@ colorama.init()
 
 discord_settings = f'{os.getcwd()}\\Discord Logs\\SETTINGS'
 filter_disables = f"{discord_settings}\\filter_disable_list.txt"
+_setting = f"{discord_settings}\\filter_setting.txt"
 filter_disable_list = {}
+filter_setting = {}
 
 try:
 	reader = open(filter_disables, 'r')
 	filter_disable_list = ast.literal_eval(reader.read())
+	reader.close()
+	del reader
+	pass
+except: pass
+
+try:
+	reader = open(_setting, 'r')
+	filter_setting = ast.literal_eval(reader.read())
 	reader.close()
 	del reader
 	pass
@@ -57,6 +67,7 @@ def checkForSymbols(m: str) -> list:
 
 @client.event
 async def on_message(message):
+	if not message.server.id in list(filter_setting.keys()): filter_setting[message.server.id] = 1
 	do_update = False
 	if message.content == "":
 		mcont = 'lol'
@@ -121,7 +132,9 @@ async def on_message(message):
 			repl = repl.replace(f"`{i}`", role_mentions[i])
 			pass
 		await client.delete_message(message)
-		await client.send_message(message.channel, "[{}] ".format(message.author.mention) + repl)
+		if filter_setting[message.server.id] == 1:
+			await client.send_message(message.channel, "[{}] ".format(message.author.mention) + repl)
+			pass
 
 		identifier = str(message.author)
 		print(f"{colorama.Fore.LIGHTMAGENTA_EX}{identifier} just swore!{colorama.Fore.RESET}")
@@ -131,7 +144,17 @@ async def on_message(message):
 			if val.startswith(m): return True
 			pass
 		return False
-	if startswith(f"$update", "logbot.filter.update"):
+	if startswith(f"$filter settype "):
+		cnt = message.content.replace("$filter settype ", "")
+		if startswith("d", val=cnt): filter_setting[message.server.id] = 0
+		elif startswith("e", val=cnt): filter_setting[message.server.id] = 1
+		await client.send_message(message.channel, f"```Set the filter type!```")
+		pass
+	elif startswith(f"$filter"):
+		_stng = f'Type: {str(filter_setting[message.server.id]).replace("0", "Delete").replace("1", "Edit and Replace")}'
+		await client.send_message(message.channel, _stng)
+		pass
+	elif startswith(f"$update", "logbot.filter.update"):
 		if message.author.id == "239500860336373761":
 			do_update = True
 			pass
@@ -149,6 +172,10 @@ async def on_message(message):
 		tm = datetime.now() - message.timestamp
 		await client.send_message(message.channel, f"```LogBot Swearing Filter Online ~ {round(tm.microseconds / 1000)}```")
 		pass
+	writer = open(_setting, 'w')
+	writer.write(str(filter_setting))
+	writer.close()
+	del writer
 	if do_update:
 		print(colorama.Fore.LIGHTCYAN_EX + "Updating..." + colorama.Fore.RESET)
 		await client.close()
