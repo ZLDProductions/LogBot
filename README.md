@@ -607,15 +607,13 @@ None
 
 #### $filter
 **Info**  
-Adds, removes, or shows banned words for the server.
+Alters or shows the filter settings.
 
 **Usage**
 
-    $filter a {word}
-    $filter r {word}
-    $filter c
-    $filter s
-`word` is a word.
+    $filter settype {type: [edit/delete]}
+    $filter
+`type` is the new filter type. This is for setting whether or not the bot should replace filtered messages with their censored versions.
 
 **Required Permissions**  
 LogBot Admin

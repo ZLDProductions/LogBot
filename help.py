@@ -242,8 +242,8 @@ infos = dict({
 		"Type"                :"Utility"
 	},
 	"_filter"        :{
-		"Info"                :"Adds, removes, or shows banned words for this server.",
-		"Usage"               :"$filter a {word}\n$filter r {word}\n$filter c\n$filter s",
+		"Info"                :"Changes or shows the filter settings.",
+		"Usage"               :"$filter settype {type: [edit/delete]}\n$filter",
 		"Required Permissions":"LogBot Admin",
 		"Type"                :"Moderation"
 	},
@@ -596,6 +596,7 @@ prefixes = {
 	"p$":"Polling Plugin",
 	"h$":"Help Plugin"
 }
+url = "https://github.com/ZLDProductions/LogBot#"
 
 @client.event
 async def on_ready():
@@ -628,6 +629,7 @@ async def on_message(message):
 			if item.replace("_", "") == content.replace("$", ""): items = infos[item]
 			pass
 		for item in list(items.keys()): myembed.add_field(name=item, value=items[item])
+		myembed.set_footer(text=f"GitHub URL: {url}{content.replace('$', '')}")
 		if not len(items.keys()) == 0: await client.send_message(message.channel, "Here you go!", embed=myembed)
 		else: await client.send_message(message.channel, f"```There is no command for {content} at this time.```")
 		del content
