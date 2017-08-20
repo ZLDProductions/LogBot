@@ -1416,6 +1416,33 @@ LogBot Admin
 
 ---
 
+#### $report
+**Info**  
+Reports a bug with the bot.
+
+**Usage**  
+
+    $report {bug}
+`message` is your bug report. Please try to include as detailed a description as possible.
+
+**Required Permissions**  
+None
+
+---
+
+#### $reports
+**Info**  
+Shows the bug reports with the bot.
+
+**Usage**  
+
+    $reports
+
+**Required Permissions**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.

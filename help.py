@@ -573,6 +573,18 @@ infos = dict({
 		"Usage"               :"$defaultchannel [channel-mention]",
 		"Required Permissions":"LogBot Admin",
 		"Type"                :"Utility"
+	},
+	"$report"        :{
+		"Info"                :"Reports a bug with the bot. Please try to include as detailed a description as possible.",
+		"Usage"               :"$report {bug}",
+		"Required Permissions":"None",
+		"Type"                :"Feedback"
+	},
+	"$reports"       :{
+		"Info"                :"Shows the bug reports made so far.",
+		"Usage"               :"$reports",
+		"Required Permissions":"None",
+		"Type"                :"Feedback"
 	}
 })
 prefixes = {
