@@ -550,37 +550,37 @@ infos = dict({
 		"Required Permissions":"LogBot Admin",
 		"Type"                :"Utility"
 	},
-	"l$slots"        :{
+	"l_slots"        :{
 		"Info"                :"Plays slots or shows the slots rules.",
 		"Usage"               :"l$slots {bid}\nl$slots",
 		"Required Permissions":"None",
 		"Type"                :"Fun"
 	},
-	"l$default"      :{
+	"l_default"      :{
 		"Info"                :"Sets the default values for DM or Alertchannel in the server.",
 		"Usage"               :"l$default DM {val: [on/off]}\nl$default AlertChannel {channel-mention}",
 		"Required Permissions":"LogBot Admin",
 		"Type"                :"Utility"
 	},
-	"l$defaults"     :{
+	"l_defaults"     :{
 		"Info"                :"Shows the default settings for DM and AlertChannel in the server.",
 		"Usage"               :"l$defaults",
 		"Required Permissions":"None",
 		"Type"                :"Utility"
 	},
-	"$defaultchannel":{
+	"_defaultchannel":{
 		"Info"                :"Gets or sets the default welcome/goodbye channel in the server.",
 		"Usage"               :"$defaultchannel [channel-mention]",
 		"Required Permissions":"LogBot Admin",
 		"Type"                :"Utility"
 	},
-	"$report"        :{
+	"_report"        :{
 		"Info"                :"Reports a bug with the bot. Please try to include as detailed a description as possible.",
 		"Usage"               :"$report {bug}",
 		"Required Permissions":"None",
 		"Type"                :"Feedback"
 	},
-	"$reports"       :{
+	"_reports"       :{
 		"Info"                :"Shows the bug reports made so far.",
 		"Usage"               :"$reports",
 		"Required Permissions":"None",
@@ -630,7 +630,7 @@ async def on_message(message):
 			pass
 		for item in list(items.keys()): myembed.add_field(name=item, value=items[item])
 		myembed.set_footer(text=f"GitHub URL: {url}{content.replace('$', '')}")
-		if not len(items.keys()) == 0: await client.send_message(message.channel, "Here you go!", embed=myembed)
+		if not len(items.keys()) == 0: await client.send_message(message.channel, f"GitHub URL: {url}{content.replace('$', '')}", embed=myembed)
 		else: await client.send_message(message.channel, f"```There is no command for {content} at this time.```")
 		del content
 		del myembed
