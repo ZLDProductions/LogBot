@@ -1015,9 +1015,14 @@ class Commands:
 			pass
 		@staticmethod
 		async def say(message: discord.Message):
-			content = message.content.replace(f"$say ", "", 1).split("|")
-			for item in message.channel_mentions: await client.send_message(item, content[0], tts=ast.literal_eval(content[2].capitalize()))
-			del content
+			if not bot_id in message.content:
+				content = message.content.replace(f"$say ", "", 1).split("|")
+				for item in message.channel_mentions: await client.send_message(item, content[0], tts=ast.literal_eval(content[2].capitalize()))
+				del content
+				pass
+			else:
+				await client.send_message(message.channel, f"```Please don't mention the bot in your message.```")
+				pass
 			pass
 		@staticmethod
 		async def excludechannel(message: discord.Message):
