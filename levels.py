@@ -7,6 +7,7 @@ import traceback
 from datetime import datetime
 from math import floor
 from sys import exit
+from typing import Union
 
 import discord
 from colorama import Fore, init

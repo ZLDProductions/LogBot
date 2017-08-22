@@ -45,15 +45,19 @@ async def on_message(message: discord.Message):
 		elif begins("d$update") or begins("logbot.dev.update"):
 			print("{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}")
 			await client.close()
-			subprocess.Popen("python " + os.getcwd() + "\\swearing_filter.py", False)
+			subprocess.Popen("python " + os.getcwd() + "\\dev.py", False)
 			exit(0)
 			pass
 		pass
-	elif begins("$report "):
+
+	if begins("$report "):
 		cnt = "-" + message.content.replace('$report ', '').replace("```", "'''")
-		reader = open(reports, 'r')
-		text = reader.read()
-		reader.close()
+		try:
+			reader = open(reports, 'r')
+			text = reader.read()
+			reader.close()
+			pass
+		except: text = ""
 		if f"{cnt}\n" in text:
 			await client.send_message(message.channel, f"```There is already a report for \"{cnt}\"```")
 			pass
@@ -66,7 +70,6 @@ async def on_message(message: discord.Message):
 			pass
 		del text
 		del cnt
-		del reader
 		pass
 	elif begins("$reports"):
 		reader = open(reports, 'r')
