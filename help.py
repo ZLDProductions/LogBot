@@ -631,7 +631,7 @@ async def on_message(message):
 		for item in list(items.keys()): myembed.add_field(name=item, value=items[item])
 		myembed.set_footer(text=f"GitHub URL: {url}{content.replace('$', '')}")
 		if not len(items.keys()) == 0: await client.send_message(message.channel, f"GitHub URL: {url}{content.replace('$', '')}", embed=myembed)
-		else: await client.send_message(message.channel, f"```There is no command for {content} at this time.```")
+		else: await client.send_message(message.channel, f"```There is no command for \"{content}\" at this time.```")
 		del content
 		del myembed
 		del items
