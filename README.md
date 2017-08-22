@@ -1441,6 +1441,49 @@ None
 
 ---
 
+#### m$strikes
+**Info**  
+Views the strikes on a person.
+
+**Usage**  
+
+    m$strikes [user]
+`user` is a mention. If not included, the bot will consider you as the user.
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### m$strike
+**Info**  
+Strikes a person.
+
+**Usage**  
+
+    m$strike {user}|{reason}
+`user` is a user mention.  
+`reason` is the reason you struck this user.
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### m$destrike
+**Info**  
+Removes a strike from a person.
+
+**Usage**  
+
+    m$destrike {code}
+`code` is the strike code. It can be retrieved by viewing a user's strikes.
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.

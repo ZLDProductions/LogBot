@@ -585,6 +585,24 @@ infos = dict({
 		"Usage"               :"$reports",
 		"Required Permissions":"None",
 		"Type"                :"Feedback"
+	},
+	"m_strikes"      :{
+		"Info"                :"Shows a user's strikes.",
+		"Usage"               :"m$strikes [user]",
+		"Required Permissions":"LogBot Admin",
+		"Type"                :"Moderation"
+	},
+	"m_strike"       :{
+		"Info"                :"Strikes a user.",
+		"Usage"               :"m$strike {user}|{reason}",
+		"Required Permissions":"LogBot Admin",
+		"Type"                :"Moderation"
+	},
+	"m_destrike"     :{
+		"Info"                :"Removes a strike.",
+		"Usage"               :"m$destrike {code}",
+		"Required Permissions":"LogBot Admin",
+		"Type"                :"Moderation"
 	}
 })
 prefixes = {
