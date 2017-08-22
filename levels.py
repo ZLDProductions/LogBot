@@ -131,6 +131,12 @@ def format_message(cont: str) -> list:
 	else: return [f"```dos\n{cont}```"]
 	pass
 
+def clamp(_min: Union[int, float], _max: Union[int, float], val: Union[int, float]) -> int:
+	if val < _min: val = _min
+	elif val > _max: val = _max
+	return val
+	pass
+
 # noinspection PyTypeChecker,PyShadowingNames
 @client.event
 async def on_message(message: discord.Message):
@@ -194,12 +200,12 @@ async def on_message(message: discord.Message):
 		if not disabled or message.author.id == owner_id:
 			content = message.content
 			if not len(content) > 0: content = " "
-			earned = round(random.choice(range(15, 31)) * int(sqlread(f"""
+			earned = round(random.choice(range(15, 26)) * int(sqlread(f"""
 			SELECT multiplier
 			FROM levels
 			WHERE server='{message.server.id}'
 			AND member='{message.author.id}';
-			""".replace("\t", ""))[0][0]) * len(content) / 5)
+			""".replace("\t", ""))[0][0]) * clamp(0.0, 1.0, len(content) / 5))
 			sqlexecute(f"""
 			UPDATE levels
 			SET xp = xp+{earned}
