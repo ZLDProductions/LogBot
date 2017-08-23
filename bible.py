@@ -2246,12 +2246,14 @@ async def on_message(message):
 		crem = channels.remove
 		while None in channels: crem(None)
 
+		dchan = client.get_channel(str(default_channel.get(message.server.id)))
+
 		_personal = discord.Embed(title="Personal", description="Verse Module Settings", colour=discord.Colour.dark_blue())
 		_personal.add_field(name="Type", value=bible_types[message.author.id])
 		_personal.add_field(name="Version", value=bible_versions[message.author.id])
 		_server = discord.Embed(title="Server", description="Verse Module Settings", colour=discord.Colour.dark_blue())
-		_server.add_field(name="Verse Channel", value=default_channel[message.server.id])
-		_server.add_field(name="Disabled Channels", value=''.join(channels))
+		_server.add_field(name="Verse Channel", value=str(dchan))
+		_server.add_field(name="Disabled Channels", value=', '.join(channels) if len(channels) > 0 else "None")
 
 		await client.send_message(message.channel, "", embed=_personal)
 		await client.send_message(message.channel, "", embed=_server)
