@@ -1484,6 +1484,19 @@ LogBot Admin
 
 ---
 
+#### v$settings
+**Info**  
+Shows the Verse Module's settings for the server and you.
+
+**Usage**  
+
+    v$settings
+
+**Required Permissions**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.

@@ -603,6 +603,12 @@ infos = dict({
 		"Usage"               :"m$destrike {code}",
 		"Required Permissions":"LogBot Admin",
 		"Type"                :"Moderation"
+	},
+	"v_settings"     :{
+		"Info"                :"Shows the Verse Module's settings for the server and you.",
+		"Usage"               :"v$settings",
+		"Required Permissions":"None",
+		"Type"                :"Fun"
 	}
 })
 prefixes = {
