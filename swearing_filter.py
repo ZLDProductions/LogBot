@@ -8,7 +8,7 @@ import colorama
 import discord
 import requests
 
-from logbot_data import token
+from logbot_data import token, owner_id
 
 # noinspection SpellCheckingInspection
 
@@ -67,6 +67,7 @@ def checkForSymbols(m: str) -> list:
 
 @client.event
 async def on_message(message):
+	admin_role = discord.utils.find(lambda r: r.name == "LogBot Admin", message.server.roles)
 	if not message.server.id in list(filter_setting.keys()): filter_setting[message.server.id] = 1
 	do_update = False
 	if message.content == "":
@@ -145,10 +146,15 @@ async def on_message(message):
 			pass
 		return False
 	if startswith(f"$filter settype "):
-		cnt = message.content.replace("$filter settype ", "")
-		if startswith("d", val=cnt): filter_setting[message.server.id] = 0
-		elif startswith("e", val=cnt): filter_setting[message.server.id] = 1
-		await client.send_message(message.channel, f"```Set the filter type!```")
+		if admin_role in message.author.roles or message.author.id == owner_id:
+			cnt = message.content.replace("$filter settype ", "")
+			if startswith("d", val=cnt): filter_setting[message.server.id] = 0
+			elif startswith("e", val=cnt): filter_setting[message.server.id] = 1
+			await client.send_message(message.channel, f"```Set the filter type!```")
+			pass
+		else:
+			await client.send_message(message.channel, f"```You do not have permission to use this command.```")
+			pass
 		pass
 	elif startswith(f"$filter"):
 		_stng = f'Type: {str(filter_setting[message.server.id]).replace("0", "Delete").replace("1", "Edit and Replace")}'
@@ -171,6 +177,32 @@ async def on_message(message):
 	elif startswith(f"$ping"):
 		tm = datetime.now() - message.timestamp
 		await client.send_message(message.channel, f"```LogBot Swearing Filter Online ~ {round(tm.microseconds / 1000)}```")
+		pass
+	elif startswith(f"f$disable"):
+		if admin_role in message.author.roles or message.author.id == owner_id:
+			filter_disable_list.append(message.server.id)
+			await client.send_message(message.channel, f"Disabled filter...")
+			pass
+		else:
+			await client.send_message(message.channel, f"```You do not have permission to use this command.```")
+			pass
+		pass
+	elif startswith(f"f$enable"):
+		if admin_role in message.author.roles or message.author.id == owner_id:
+			filter_disable_list.remove(message.server.id)
+			await client.send_message(message.channel, f"Enabled filter...")
+			pass
+		else:
+			await client.send_message(message.channel, f"```You do not have permission to use this command.```")
+			pass
+		pass
+	elif startswith(f"f$disabled"):
+		if admin_role in message.author.roles or message.author.id == owner_id:
+			await client.send_message(message.channel, str(message.server.id in filter_disable_list))
+			pass
+		else:
+			await client.send_message(message.channel, f"```You do not have permission to use this command.```")
+			pass
 		pass
 	writer = open(_setting, 'w')
 	writer.write(str(filter_setting))

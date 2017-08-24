@@ -2,10 +2,13 @@
   <dictionary name="emsav_000">
     <words>
       <w>akjv</w>
+      <w>bangla</w>
+      <w>bhutani</w>
       <w>bindex</w>
       <w>bitrate</w>
       <w>bootup</w>
       <w>buyable</w>
+      <w>byelorussian</w>
       <w>channelname</w>
       <w>chapers</w>
       <w>clsserver</w>
@@ -17,6 +20,7 @@
       <w>configparser</w>
       <w>creds</w>
       <w>crem</w>
+      <w>cstm</w>
       <w>customcmds</w>
       <w>cycwf</w>
       <w>dchan</w>
@@ -30,25 +34,33 @@
       <w>emojis</w>
       <w>encouragin</w>
       <w>excludechannel</w>
+      <w>faeroese</w>
       <w>fmany</w>
       <w>galatian</w>
       <w>galations</w>
+      <w>galician</w>
       <w>gbbke</w>
       <w>getchannel</w>
       <w>getcwd</w>
       <w>getversion</w>
       <w>giveup</w>
+      <w>gozt</w>
       <w>includechannel</w>
       <w>infos</w>
+      <w>iyvd</w>
       <w>joinrole</w>
       <w>jvod</w>
+      <w>kinyarwanda</w>
+      <w>laothian</w>
       <w>lappend</w>
       <w>leaderboard</w>
+      <w>lettish</w>
       <w>lightcyan</w>
       <w>lightgreen</w>
       <w>lightmagenta</w>
       <w>lightred</w>
       <w>lihu</w>
+      <w>lingala</w>
       <w>logbot</w>
       <w>logchannel</w>
       <w>lxjxr</w>
@@ -60,27 +72,33 @@
       <w>mordechai</w>
       <w>msgcont</w>
       <w>myembed</w>
+      <w>mzcz</w>
       <w>ninevah</w>
       <w>numc</w>
       <w>numm</w>
       <w>occs</w>
       <w>occurences</w>
       <w>oper</w>
+      <w>pashto</w>
       <w>peole</w>
       <w>permparse</w>
       <w>philippi</w>
       <w>prefs</w>
+      <w>pushto</w>
       <w>reconcilation</w>
       <w>repl</w>
       <w>retpre</w>
       <w>rets</w>
       <w>retu</w>
       <w>rpsls</w>
+      <w>selfbot</w>
       <w>servanthood</w>
       <w>servername</w>
+      <w>sesotho</w>
       <w>setchannel</w>
       <w>settype</w>
       <w>setversion</w>
+      <w>shona</w>
       <w>showlist</w>
       <w>showmarks</w>
       <w>shuff</w>
@@ -95,6 +113,7 @@
       <w>strikethrough</w>
       <w>tappend</w>
       <w>tdat</w>
+      <w>tegulu</w>
       <w>thessalonica</w>
       <w>totalmessages</w>
       <w>twrr</w>
@@ -114,6 +133,7 @@
       <w>votd</w>
       <w>wclient</w>
       <w>wikipedia</w>
+      <w>wolof</w>
       <w>wordlist</w>
       <w>ymrx</w>
       <w>zech</w>
