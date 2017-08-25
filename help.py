@@ -200,9 +200,8 @@ infos = dict({
 	},
 	"_purge"         :{
 		"Info"                :"Purges messages from the channel it is sent through. Restraint through the switches.",
-		"Usage"               :"$purge [switches]",
+		"Usage"               :"$purge limit=[num]&&contains=[text]&&from=[mention]&&attached=[True/False]&&embedded=[True/False]&&pinned=[True/False]&&mentions=[mention]&&mentions_channel=[channel_mention]&&mentions_role=[role_mention]",
 		"Required Permissions":"LogBot Admin",
-		"Switches"            :"{limit=[num]}, {contains=[text]}, {from=[mention]}, {attached=[True/False]}, {embedded=[True/False]}, {pinned=[True/False]}, {mentions=[mention]}, {mentions_channel=[channel_mention]}, {mentions_role=[role_mention]}",
 		"Type"                :"Moderation"
 	},
 	"_kick"          :{
