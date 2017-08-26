@@ -779,6 +779,14 @@ try:
 	pass
 except: pass
 
+try:
+	reader = open(_votd_version, 'r')
+	votd_versions = ast.literal_eval(reader.read())
+	reader.close()
+	del reader
+	pass
+except: pass
+
 def parse_num(num: int) -> str:
 	_num = str(num)
 	_num = _num[::-1]
