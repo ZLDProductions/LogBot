@@ -113,7 +113,6 @@ top_verses = ["Psalms 23:4", "Psalms 34:8", "Psalms 34:19", "Psalms 37:4", "Psal
               "Hebrews 4:12", "Hebrews 10:19-23", "Hebrews 13:5", "James 1:2-4", "James 1:12-15",
               "James 4:7-8", "1 Peter 5:7", "1 John 4:4", "1 John 4:18", "1 John 5:14-15", "Revelation 14:12"]
 disabled_channels = []
-votd_versions = {}
 
 discord_settings = f"{os.getcwd()}\\Discord Logs\\SETTINGS"
 verse_disables = f"{discord_settings}\\verse_disable_list.txt"
@@ -123,7 +122,6 @@ c_list = f"{discord_settings}\\default_channel.txt"
 d_last_day = f"{discord_settings}\\last_day.txt"
 votd_d = f"{discord_settings}\\votd.txt"
 _disabled_channels = f"{discord_settings}\\bible_plugin\\Disabled Channels\\"
-_votd_version = f"{discord_settings}\\votd_version_list.txt"
 
 sqld = sql_data.sql_data(akjv_books)
 sqlkjv = sql_data.kjv_sql(akjv_books)
@@ -779,14 +777,6 @@ try:
 	pass
 except: pass
 
-try:
-	reader = open(_votd_version, 'r')
-	votd_versions = ast.literal_eval(reader.read())
-	reader.close()
-	del reader
-	pass
-except: pass
-
 def parse_num(num: int) -> str:
 	_num = str(num)
 	_num = _num[::-1]
@@ -805,7 +795,7 @@ def is_ascii(msg: str):
 def check(*msgs: str):
 	"""
 	Checks for non-ascii characters in each string in the parameters.
-	:param msgs: 
+	:param msgs:
 	:return: The first instance of non-ascii string, or the last if none is found.
 	"""
 	for M in msgs:
@@ -846,11 +836,6 @@ def save(sid: str):
 	# <editor-fold desc="votd_d">
 	writer = open(votd_d, 'w')
 	writer.write(votd)
-	writer.close()
-	# </editor-fold>
-	# <editor-fold desc="votd_versions">
-	writer = open(_votd_version, 'w')
-	writer.write(str(votd_versions))
 	writer.close()
 	# </editor-fold>
 
@@ -1114,7 +1099,7 @@ def getWEBPassage(key: str, ih: bool = True) -> str:
 	Fetch a passage from the WEB Bible.
 	:param key: The passage to fetch.
 	:param ih: Whether or not to include `key` in the reference.
-	:return: The referred passage. 
+	:return: The referred passage.
 	"""
 	stuffs = key.split(":")
 	start = int(stuffs[1].split("-")[0])
@@ -1221,7 +1206,7 @@ def searchForVerse(key: str, p: int = 0, v: str = "kjv") -> str:
 def format_message(cont: str) -> list:
 	"""
 	Format a message to use with discord, splitting it into sections each 2000 characters long, including ``` on each side.
-	:param cont: The string to format. 
+	:param cont: The string to format.
 	:return: A list of strings with each section of text.
 	"""
 	if len(cont) > 1994: return [f"{item}" for item in [cont[i:i + 1000] for i in range(0, len(cont), 1000)]]
@@ -1262,9 +1247,9 @@ class formatting:
 		pass
 	@staticmethod
 	def apply_formatting(string: str, indices: list, types: list) -> str:
-		""" 
+		"""
 		:param string: The string to format.
-		:param indices: A list of indexes at which to apply the formatting. Will push any items to the right. To have this work properly, items have to be listed in numerical order. 
+		:param indices: A list of indexes at which to apply the formatting. Will push any items to the right. To have this work properly, items have to be listed in numerical order.
 		:param types: A list of the format types to use. Use BOLD, ITALIC, UNDERLINE, STRIKETHROUGH, CODE_BLOCK, or INLINE_CODE for the formatting types. Each item can be combined.
 		:return: The string, with formatting applied.
 		"""
@@ -1756,7 +1741,7 @@ class Commands:
 	pass
 
 @asyncio.coroutine
-def trigger_votd(server: discord.Server):
+def trigger_votd():
 	"""
 	Sends the verse of the day in each channel set for each server.
 	"""
@@ -1765,22 +1750,18 @@ def trigger_votd(server: discord.Server):
 		last_day = datetime.now().day
 		key = random.choice(top_verses)
 		votd = key
-		_version = votd_versions[server.id]
-		e = discord.Embed(title="Verse of the Day", description=f"Version: {_version}", colour=discord.Colour.dark_blue())
-		if _version == "kjv":
-			if "-" in key: e.add_field(name=key, value=getPassage(key, ih=False))
-			else: e.add_field(name=key, value=getVerse(key, ih=False))
+		e = discord.Embed(title="Verse of the Day", description="Version: akjv", colour=discord.Colour.dark_blue())
+		if "-" in key: e.add_field(name=key, value=getAKJVPassage(key, ih=False))
+		else: e.add_field(name=key, value=getAKJVVerse(key, ih=False))
+		encountered = []
+		for channel in client.get_all_channels():
+			server = channel.server
+			if server.id in list(default_channel.keys()) and not server.id in encountered:
+				channel = client.get_channel(default_channel[server.id])
+				yield from client.send_message(channel, "Here is the VotD! :calendar_spiral:", embed=e)
+				encountered.append(server.id)
+				pass
 			pass
-		elif _version == "web":
-			if "-" in key: e.add_field(name=key, value=getWEBPassage(key, ih=False))
-			else: e.add_field(name=key, value=getWEBVerse(key, ih=False))
-			pass
-		else:
-			if "-" in key: e.add_field(name=key, value=getAKJVPassage(key, ih=False))
-			else: e.add_field(name=key, value=getAKJVPassage(key, ih=False))
-			pass
-		channel = client.get_channel(default_channel[server.id])
-		yield from client.send_message(channel, "Here is the VotD! :calendar_spiral:", embed=e)
 		pass
 	pass
 
@@ -1804,10 +1785,7 @@ async def sendDisabled(message: discord.Message):
 
 @client.event
 async def on_message(message):
-	for server in client.servers:
-		if votd_versions.get(server.id) is None: votd_versions[server.id] = "akjv"
-		await trigger_votd(server)
-		pass
+	await trigger_votd()
 	read(message.server.id)
 	bible_versions[message.author.id] = bible_versions[message.author.id] if not bible_versions.get(message.author.id) is None else "akjv"
 	bible_types[message.author.id] = bible_types[message.author.id] if not bible_types.get(message.author.id) is None else "embed"
@@ -1818,9 +1796,9 @@ async def on_message(message):
 					for mcont in message.content.split("\n"):
 						e = discord.Embed(title=bible_versions[message.author.id], colour=discord.Colour.purple())
 						encountered = []
-						tmp_content = mcont.replace(".", " ") \
-							.replace("`", "") \
-							.replace("*", "") \
+						tmp_content = mcont.replace(".", " ")\
+							.replace("`", "")\
+							.replace("*", "")\
 							.replace("_", "")
 						verse = []
 						tmp_content = abbr(tmp_content)
@@ -1915,11 +1893,11 @@ async def on_message(message):
 								index = list(mcont).index('"')
 								title = ""
 								has_found = False
-								for i in range(index + 1, len(mcont)):
+								for i in range(index+1, len(mcont)):
 									if mcont[i] == "\"": has_found = True
 									if not has_found: title += mcont[i]
 									pass
-								title = ' '.join([t for t in title.split(" ")])
+								title=' '.join([t for t in title.split(" ")])
 								# </editor-fold>
 								e.title = title
 								e.description = bible_versions[message.author.id]
@@ -2268,14 +2246,12 @@ async def on_message(message):
 		crem = channels.remove
 		while None in channels: crem(None)
 
-		dchan = client.get_channel(str(default_channel.get(message.server.id)))
-
 		_personal = discord.Embed(title="Personal", description="Verse Module Settings", colour=discord.Colour.dark_blue())
 		_personal.add_field(name="Type", value=bible_types[message.author.id])
 		_personal.add_field(name="Version", value=bible_versions[message.author.id])
 		_server = discord.Embed(title="Server", description="Verse Module Settings", colour=discord.Colour.dark_blue())
-		_server.add_field(name="Verse Channel", value=str(dchan))
-		_server.add_field(name="Disabled Channels", value=', '.join(channels) if len(channels) > 0 else "None")
+		_server.add_field(name="Verse Channel", value=default_channel[message.server.id])
+		_server.add_field(name="Disabled Channels", value=''.join(channels))
 
 		await client.send_message(message.channel, "", embed=_personal)
 		await client.send_message(message.channel, "", embed=_server)
@@ -2283,24 +2259,6 @@ async def on_message(message):
 		del crem
 		del _personal
 		del _server
-		pass
-	elif startswith(f"$defversion "):
-		if admin_role in message.author.roles or message.author.id == owner_id:
-			cnt = message.content.replace("$defversion ", "").lower()
-			if cnt == "akjv" or cnt == "kjv" or cnt == "web":
-				votd_versions[message.server.id] = cnt
-				await client.send_message(message.channel, f"```Set the default VOTD version to {cnt}.```")
-				pass
-			else:
-				await client.send_messagE(message.channel, f"```That is not a valid version.```")
-				pass
-			pass
-		else:
-			sendNoPerm(message)
-			pass
-		pass
-	elif startswith(f"$defversion"):
-		await client.send_message(message.channel, f"```{votd_versions[message.server.id]}```")
 		pass
 
 	save(message.server.id)
