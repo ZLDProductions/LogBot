@@ -1779,7 +1779,6 @@ def trigger_votd(server: discord.Server):
 			if "-" in key: e.add_field(name=key, value=getAKJVPassage(key, ih=False))
 			else: e.add_field(name=key, value=getAKJVPassage(key, ih=False))
 			pass
-		encountered = []
 		channel = client.get_channel(default_channel[server.id])
 		yield from client.send_message(channel, "Here is the VotD! :calendar_spiral:", embed=e)
 		pass
