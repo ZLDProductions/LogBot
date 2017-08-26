@@ -26,15 +26,15 @@ import sql
 from logbot_data import *
 
 # noinspection SpellCheckingInspection
-version = '16.1.3 Python'
+version = '16.1.4 Python'
 whats_new = [
-	"•Added $devotional.",
+	"•Memory usage lessened.",
 	"•Bug fixes.",
-	"•Help content updated.",
-	"•Removed a$purge, a$clsserver, and a$clear.",
-	"•Updated README docs.",
-	"•Added the 'all' switch to $excludechannel and $includechannel to exclude/include all channels in the server.",
-	"•Added `$report` and `$reports`, which enable you to report bugs and whatnot in the bot."
+	"•Added $defversion.",
+	"•Updated help content.",
+	"•Updated help content again.",
+	"•More bug fixes.",
+	"•Even more bug fixes."
 ]
 planned = [
 	"There is nothing planned at the moment."
