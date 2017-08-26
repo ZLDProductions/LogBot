@@ -1497,20 +1497,6 @@ None
 
 ---
 
-#### $defversion
-**Info**  
-Gets or sets the default VOTD version for the server.
-
-**Usage**  
-
-    $defversion [version: [akjv/kjv/web]]
-`version` is the bible version to set it to. Must be an accepted bot version.
-
-**Required Permissions**  
-LogBot Admin
-
----
-
 ## Features
 * Bible
   * Verse Recognition for three versions.

@@ -608,12 +608,6 @@ infos = dict({
 		"Usage"               :"v$settings",
 		"Required Permissions":"None",
 		"Type"                :"Fun"
-	},
-	"$defversion"    :{
-		"Info"                :"Gets or sets the default VOTD version for the server.",
-		"Usage"               :"$defversion [version: [kjv/akjv/web]]",
-		"Required Permissions":"LogBot Admin",
-		"Type"                :"Fun"
 	}
 })
 prefixes = {
