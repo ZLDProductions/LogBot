@@ -3,6 +3,7 @@ import subprocess
 from datetime import datetime
 
 import discord
+import sqlite3
 from colorama import Fore, init
 
 from logbot_data import token
@@ -621,6 +622,13 @@ prefixes = {
 }
 url = "https://github.com/ZLDProductions/LogBot#"
 
+sql = sqlite3.connect(f"{os.getcwd()}\\Discord Logs\\SETTINGS\\logbot.db")
+cursor = sql.cursor()
+
+def sqlread(cmd: str):
+	cursor.execute(cmd)
+	return cursor.fetchall()
+
 @client.event
 async def on_ready():
 	await client.change_presence(game=None)
@@ -644,30 +652,32 @@ async def on_message(message):
 	owner_id = "239500860336373761"
 	do_update = False
 
-	if startswith(f"$help "):
-		content = message.content.replace(f"$help ", "", 1)
+	prefix = sqlread(f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';")[0][0]
+
+	if startswith(f"{prefix}help "):
+		content = message.content.replace(f"{prefix}help ", "", 1)
 		myembed = discord.Embed(title=content, description=f"Command Information for {content}\n{key}", colour=discord.Colour.dark_gold())
 		items = {}
 		for item in infos.keys():
-			if item.replace("_", "") == content.replace("$", ""): items = infos[item]
+			if item.replace("_", "") == content.replace(prefix, "").replace("$", ""): items = infos[item]
 			pass
-		for item in list(items.keys()): myembed.add_field(name=item, value=items[item])
-		myembed.set_footer(text=f"GitHub URL: {url}{content.replace('$', '')}")
-		if not len(items.keys()) == 0: await client.send_message(message.channel, f"GitHub URL: {url}{content.replace('$', '')}", embed=myembed)
+		for item in list(items.keys()): myembed.add_field(name=item, value=items[item].replace("$", prefix))
+		myembed.set_footer(text=f"GitHub URL: {url}{content.replace(prefix, '')}")
+		if not len(items.keys()) == 0: await client.send_message(message.channel, f"GitHub URL: {url}{content.replace(prefix, '')}", embed=myembed)
 		else: await client.send_message(message.channel, f"```There is no command for \"{content}\" at this time.```")
 		del content
 		del myembed
 		del items
 		pass
-	elif startswith(f"$help"):
+	elif startswith(f"{prefix}help"):
 		all_commands = list(infos.keys())
 		all_commands.sort()
-		all_commands = ', '.join(all_commands).replace("_", "$")
-		await client.send_message(message.channel, f"```Use $help to get the list of commands.\nUse $help [command] to get more information on [command].\nUse $git to visit the GitHub Documentation.\nThe prefix is $```")
+		all_commands = ', '.join(all_commands).replace("_", prefix)
+		await client.send_message(message.channel, f"```Use {prefix}help to get the list of commands.\nUse {prefix}help [command] to get more information on [command].\nUse {prefix}git to visit the GitHub Documentation.\nThe prefix is {prefix}```")
 		await client.send_message(message.channel, f"```Commands:\n{all_commands}```")
 		pass
-	elif startswith(f"h$prefix "):
-		prefix = message.content.replace("h$prefix ", "")
+	elif startswith(f"h{prefix}prefix "):
+		prefix = message.content.replace("h{prefix}prefix ", "")
 		data = prefixes.get(prefix)
 		if data is None:
 			await client.send_message(message.channel, f"```There is no prefix \"{prefix}\"")
@@ -681,7 +691,7 @@ async def on_message(message):
 		del prefix
 		del data
 		pass
-	elif startswith(f"h$prefix"):
+	elif startswith(f"h{prefix}prefix"):
 		prefs = list(prefixes.keys())
 		prefs.sort()
 		await client.send_message(message.channel, f"```{', '.join(prefs)}```")
@@ -693,7 +703,7 @@ async def on_message(message):
 	elif startswith("logbot.settings exit", "logbot.help.exit"):
 		if message.author.id == owner_id: exit(0)
 		pass
-	elif startswith(f"$ping"):
+	elif startswith(f"{prefix}ping"):
 		tm = datetime.now() - message.timestamp
 		await client.send_message(message.channel, f"```LogBot Help Online ~ {round(tm.microseconds / 1000)}```")
 		pass
