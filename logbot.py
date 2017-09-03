@@ -26,7 +26,7 @@ import sql
 from logbot_data import *
 
 # base variables
-version = '16.1.4 Python'
+version = '16.2.0 Python'
 whats_new = [
 	"•Memory usage lessened.",
 	"•Bug fixes.",
@@ -34,7 +34,8 @@ whats_new = [
 	"•Updated help content.",
 	"•Updated help content again.",
 	"•More bug fixes.",
-	"•Even more bug fixes."
+	"•Even more bug fixes.",
+	"•Custom prefixes."
 ] # list of recent changes to the code.
 planned = [
 	"There is nothing planned at the moment."
