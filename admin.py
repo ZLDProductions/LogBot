@@ -1,17 +1,19 @@
 import os
+import sqlite3
 import subprocess
-from asyncio import sleep
 
+from colorama import Fore, init
 from discord import Client, Message
 from discord.utils import find
-from colorama import Fore, init
 
 import argparser
-from logbot_data import token, owner_id
+from logbot_data import owner_id, token
 
 client = Client(max_messages=1000000)
 init()
 purge_parser = argparser.ArgParser("&&", "=")
+sql = sqlite3.connect(f"{os.getcwd()}\\Discord Logs\\SETTINGS\\logbot.db")
+cursor = sql.cursor()
 
 class Commands:
 	class Admin:
@@ -45,8 +47,8 @@ class Commands:
 			pass
 		# noinspection PyShadowingNames
 		@staticmethod
-		async def a_count_param(message: Message):
-			_cnt = message.content.replace("a$count ", "").split(" ")
+		async def a_count_param(message: Message, prefix: str):
+			_cnt = message.content.replace(f"a{prefix}count ", "").split(" ")
 			_type = _cnt[0].lower()
 			_param = _cnt[1]
 			user = find(lambda m:m.id == _param or m.name == _param or str(m) == _param or m.mention == _param, message.server.members)
@@ -74,6 +76,10 @@ class Commands:
 		pass
 	pass
 
+def sqlread(cmd: str):
+	cursor.execute(cmd)
+	return cursor.fetchall()
+
 @client.event
 async def on_message(message: Message):
 	do_update = False
@@ -82,15 +88,16 @@ async def on_message(message: Message):
 			if val.startswith(arg): return True
 			pass
 		return False
+	prefix = sqlread(f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';")[0][0]
 	if not message.channel.is_private:
 		admin_role = find(lambda r:r.name == "LogBot Admin", message.server.roles)
-		if startswith("a$count "):
-			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.a_count_param(message)
+		if startswith(f"a{prefix}count "):
+			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.a_count_param(message, prefix)
 			pass
-		elif startswith("a$count"):
+		elif startswith(f"a{prefix}count"):
 			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.a_count(message)
 			pass
-		elif startswith("a$total"):
+		elif startswith(f"a{prefix}total"):
 			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.a_total(message)
 			pass
 		pass

@@ -74,7 +74,7 @@ def checkForSymbols(m: str) -> list:
 
 @client.event
 async def on_message(message):
-	prefix = sqlread(f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';")
+	prefix = sqlread(f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';")[0][0]
 	admin_role = discord.utils.find(lambda r: r.name == "LogBot Admin", message.server.roles)
 	if not message.server.id in list(filter_setting.keys()): filter_setting[message.server.id] = 1
 	do_update = False
