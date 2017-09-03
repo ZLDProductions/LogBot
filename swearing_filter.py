@@ -7,6 +7,7 @@ from datetime import datetime
 import colorama
 import discord
 import requests
+import sqlite3
 
 from logbot_data import token, owner_id
 
@@ -20,6 +21,8 @@ filter_disables = f"{discord_settings}\\filter_disable_list.txt"
 _setting = f"{discord_settings}\\filter_setting.txt"
 filter_disable_list = {}
 filter_setting = {}
+sql = sqlite3.connect(f"{discord_settings}\\logbot.db")
+cursor = sql.cursor()
 
 try:
 	reader = open(filter_disables, 'r')
@@ -36,6 +39,10 @@ try:
 	del reader
 	pass
 except: pass
+
+def sqlread(cmd: str):
+	cursor.execute(cmd)
+	return cursor.fetchall()
 
 def check(*args: str):
 	"""
@@ -67,6 +74,7 @@ def checkForSymbols(m: str) -> list:
 
 @client.event
 async def on_message(message):
+	prefix = sqlread(f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';")
 	admin_role = discord.utils.find(lambda r: r.name == "LogBot Admin", message.server.roles)
 	if not message.server.id in list(filter_setting.keys()): filter_setting[message.server.id] = 1
 	do_update = False
@@ -145,9 +153,9 @@ async def on_message(message):
 			if val.startswith(m): return True
 			pass
 		return False
-	if startswith(f"$filter settype "):
+	if startswith(f"{prefix}filter settype "):
 		if admin_role in message.author.roles or message.author.id == owner_id:
-			cnt = message.content.replace("$filter settype ", "")
+			cnt = message.content.replace(f"{prefix}filter settype ", "")
 			if startswith("d", val=cnt): filter_setting[message.server.id] = 0
 			elif startswith("e", val=cnt): filter_setting[message.server.id] = 1
 			await client.send_message(message.channel, f"```Set the filter type!```")
@@ -174,11 +182,11 @@ async def on_message(message):
 			print("{Fore.LIGHTGREEN_EX}{message.author.name} attempted to turn off the swearing filter!{Fore.RESET}")
 			pass
 		pass
-	elif startswith(f"$ping"):
+	elif startswith(f"{prefix}ping"):
 		tm = datetime.now() - message.timestamp
 		await client.send_message(message.channel, f"```LogBot Swearing Filter Online ~ {round(tm.microseconds / 1000)}```")
 		pass
-	elif startswith(f"f$disabled"):
+	elif startswith(f"f{prefix}disabled"):
 		if admin_role in message.author.roles or message.author.id == owner_id:
 			await client.send_message(message.channel, str(message.server.id in filter_disable_list))
 			pass
@@ -186,7 +194,7 @@ async def on_message(message):
 			await client.send_message(message.channel, f"```You do not have permission to use this command.```")
 			pass
 		pass
-	elif startswith(f"f$disable"):
+	elif startswith(f"f{prefix}disable"):
 		if admin_role in message.author.roles or message.author.id == owner_id:
 			filter_disable_list.append(message.server.id)
 			await client.send_message(message.channel, f"Disabled filter...")
@@ -195,7 +203,7 @@ async def on_message(message):
 			await client.send_message(message.channel, f"```You do not have permission to use this command.```")
 			pass
 		pass
-	elif startswith(f"f$enable"):
+	elif startswith(f"f{prefix}enable"):
 		if admin_role in message.author.roles or message.author.id == owner_id:
 			filter_disable_list.remove(message.server.id)
 			await client.send_message(message.channel, f"Enabled filter...")
