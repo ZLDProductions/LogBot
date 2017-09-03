@@ -44,6 +44,7 @@
       <w>gbbke</w>
       <w>getchannel</w>
       <w>getcwd</w>
+      <w>getprefix</w>
       <w>getversion</w>
       <w>giveup</w>
       <w>gozt</w>

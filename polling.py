@@ -18,6 +18,13 @@ poll_path = f"{os.getcwd()}\\Discord Logs\\SETTINGS\\Polling"
 _sql = sqlite3.connect(f"{poll_path}\\polling.db")
 _sql_cursor = _sql.cursor()
 
+__sql = sqlite3.connect(f"{os.getcwd()}\\Discord Logs\\SETTINGS\\logbot.db")
+__cursor = __sql.cursor()
+
+def getprefix(server: str) -> str:
+	__cursor.execute(f"SELECT prefix FROM Prefixes WHERE server='{server}';")
+	return __cursor.fetchall()[0][0]
+
 def _read(cmd):
 	_sql_cursor.execute(cmd)
 	return _sql_cursor.fetchall()
@@ -47,8 +54,8 @@ async def sendNoPerm(message: discord.Message):
 class Commands:
 	class Member:
 		@staticmethod
-		async def p_status(message: discord.Message):
-			content = message.content.replace("p$status ", "")
+		async def p_status(message: discord.Message, prefix: str):
+			content = message.content.replace(f"p{prefix}status ", "")
 			dat = _read(f"""
 					SELECT *
 					FROM polls
@@ -57,12 +64,6 @@ class Commands:
 					""".replace("\t", ""))
 			e = Embed(title=dat[0][2], description=f"Poll status for poll [{dat[0][1]}].", colour=Colour.dark_purple())
 			for item in dat: e.add_field(name=f"{item[4]} ({item[3]})", value=str(item[5]))
-			# _sum = _read("""
-			# SELECT SUM(result)
-			# FROM polls
-			# WHERE server = "{message.server.id}"
-			# AND topic_index = "{content}"
-			# """.replace("\t", ""))[0][0]
 			_sum = 0
 			for item in dat: _sum += item[5]
 			if _sum is None: _sum = "No"
@@ -72,8 +73,8 @@ class Commands:
 			await client.send_message(message.channel, "Poll status...", embed=e)
 			pass
 		@staticmethod
-		async def p_vote(message: discord.Message):
-			vote = message.content.replace("p$vote ", "", 1).split(" ")
+		async def p_vote(message: discord.Message, prefix: str):
+			vote = message.content.replace(f"p{prefix}vote ", "", 1).split(" ")
 			res = _read(f"""
 			SELECT voted
 			FROM polls
@@ -111,9 +112,6 @@ class Commands:
 			append = stuffs.append
 			for item in res:
 				if not f"{item[0]} : {item[1]}" in stuffs: append(f"{item[0]} : {item[1]}")
-			# for item in res:
-			#   if not f"{item[0] : {item[1]}" in stuffs: stuffs.append(f"{item[0]} : {item[1]}")
-			#   pass
 			ret = []
 			for index, item in enumerate(stuffs):
 				if index % 5 == 0: ret.append(f"{item}\n")
@@ -123,6 +121,7 @@ class Commands:
 			if len(ret) == 0: await client.send_message(message.channel, "```There are no polls so far...```")
 			pass
 		pass
+	# noinspection PyUnusedLocal
 	class Admin:
 		@staticmethod
 		async def p_saved(message: discord.Message):
@@ -142,21 +141,21 @@ class Commands:
 			if len(ret) == 0: await client.send_message(message.channel, f"```There are no saved polls so far...```")
 			pass
 		@staticmethod
-		async def p_remove(message: discord.Message):
+		async def p_remove(message: discord.Message, prefix: str):
 			_execute(f"""
 			DELETE FROM old_polls
 			WHERE server="{message.server.id}"
-			AND topic_index="{message.content.replace("p$remove ", "")}";
+			AND topic_index="{message.content.replace(f"p{prefix}remove ", "")}";
 			""".replace("\t", ""))
-			await client.send_message(message.channel, f"```Removed \"{message.content.replace('p$remove ', '')}\"```")
+			await client.send_message(message.channel, f"```Removed \"{message.content.replace(f'p{prefix}remove ', '')}\"```")
 			pass
 		@staticmethod
-		async def p_view(message: discord.Message):
+		async def p_view(message: discord.Message, prefix: str):
 			dat = _read(f"""
 			SELECT *
 			FROM old_polls
 			WHERE server="{message.server.id}"
-			AND topic_index="{message.content.replace("p$view ", "")}";
+			AND topic_index="{message.content.replace(f"p{prefix}view ", "")}";
 			""".replace("\t", ""))
 			e = Embed(title=dat[0][2], description=f"Poll status for poll [{dat[0][1]}].", colour=Colour.dark_purple())
 			for item in dat: e.add_field(name=f"{item[4]} ({item[3]})", value=str(item[5]))
@@ -169,8 +168,8 @@ class Commands:
 			await client.send_message(message.channel, "Poll status... :clipboard:", embed=e)
 			pass
 		@staticmethod
-		async def p_save(message: discord.Message):
-			content = message.content.replace("p$save ", "")
+		async def p_save(message: discord.Message, prefix: str):
+			content = message.content.replace(f"p{prefix}save ", "")
 			res = _read(f"""
 			SELECT topic_index
 			FROM old_polls
@@ -190,8 +189,8 @@ class Commands:
 			await client.send_message(message.channel, ":floppy_disk: Saved the poll!")
 			pass
 		@staticmethod
-		async def p_start(message: discord.Message):
-			content = message.content.replace("p$start ", "").split("|")
+		async def p_start(message: discord.Message, prefix: str):
+			content = message.content.replace(f"p{prefix}start ", "").split("|")
 			topic = content[0]
 			content.remove(content[0])
 			choices = content
@@ -219,8 +218,8 @@ class Commands:
 			else: await client.send_message(message.channel, "```That poll already exists!```")
 			pass
 		@staticmethod
-		async def p_end(message: discord.Message):
-			content = message.content.replace("p$end ", "")
+		async def p_end(message: discord.Message, prefix: str):
+			content = message.content.replace(f"p{prefix}end ", "")
 			dat = _read(f"""
 			SELECT *
 			FROM polls
@@ -230,12 +229,6 @@ class Commands:
 			""".replace("\t", ""))
 			e = Embed(title=dat[0][2], description=f"Poll results for poll {dat[0][1]}.", colour=Colour.dark_purple())
 			for item in dat: e.add_field(name=f"{item[4]} ({item[3]})", value=str(item[5]))
-			# _sum = _read("""
-			# SELECT COUNT(*)
-			# FROM polls
-			# WHERE server = "{message.server.id}"
-			# AND topic_index = "{content}"
-			# """.replace("\t", ""))[0][0]
 			_sum = 0
 			for item in dat: _sum += item[5]
 			if _sum is None: _sum = "No"
@@ -256,6 +249,7 @@ class Commands:
 
 @client.event
 async def on_message(message):
+	prefix = getprefix(message.server.id)
 	owner_id = "239500860336373761"
 	admin_role = find(lambda r:r.name == "LogBot Admin", message.server.roles)
 	do_update = False
@@ -271,30 +265,30 @@ async def on_message(message):
 			pass
 		return False
 	if isinstance(message.server, Server):
-		if startswith("p$start "):
-			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.p_start(message)
+		if startswith(f"p{prefix}start "):
+			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.p_start(message, prefix)
 			else: sendNoPerm(message)
 			pass
-		elif startswith("p$end "):
-			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.p_end(message)
+		elif startswith(f"p{prefix}end "):
+			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.p_end(message, prefix)
 			else: sendNoPerm(message)
 			pass
-		elif startswith("p$status "): await Commands.Member.p_status(message)
-		elif startswith("p$vote "): await Commands.Member.p_vote(message)
-		elif startswith("p$polls"): await Commands.Member.p_polls(message)
-		elif startswith("p$save "):
-			if admin_role in message.author.roles: await Commands.Admin.p_save(message)
+		elif startswith(f"p{prefix}status "): await Commands.Member.p_status(message, prefix)
+		elif startswith(f"p{prefix}vote "): await Commands.Member.p_vote(message, prefix)
+		elif startswith(f"p{prefix}polls"): await Commands.Member.p_polls(message)
+		elif startswith(f"p{prefix}save "):
+			if admin_role in message.author.roles: await Commands.Admin.p_save(message, prefix)
 			else: sendNoPerm(message)
 			pass
-		elif startswith("p$view "):
-			if admin_role in message.author.roles: await Commands.Admin.p_view(message)
+		elif startswith(f"p{prefix}view "):
+			if admin_role in message.author.roles: await Commands.Admin.p_view(message, prefix)
 			else: sendNoPerm(message)
 			pass
-		elif startswith("p$remove "):
-			if admin_role in message.author.roles: await Commands.Admin.p_remove(message)
+		elif startswith(f"p{prefix}remove "):
+			if admin_role in message.author.roles: await Commands.Admin.p_remove(message, prefix)
 			else: sendNoPerm(message)
 			pass
-		elif startswith("p$saved"):
+		elif startswith(f"p{prefix}saved"):
 			if admin_role in message.author.roles: await Commands.Admin.p_saved(message)
 			else: sendNoPerm(message)
 			pass
@@ -302,7 +296,7 @@ async def on_message(message):
 			if message.author.id == owner_id: do_update = True
 			else: sendNoPerm(message)
 			pass
-		elif startswith("$ping"):
+		elif startswith(f"{prefix}ping"):
 			tm = datetime.now() - message.timestamp
 			await client.send_message(message.channel, f"```LogBot Polling Online ~ {round(tm.microseconds / 1000)}```")
 			pass

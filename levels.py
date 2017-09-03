@@ -24,6 +24,9 @@ _disables = f"{_data}\\disables\\"
 _sql = sqlite3.connect(f"{_data}\\data.db")
 _sql_cursor = _sql.cursor()
 
+__sql = sqlite3.connect(f"{os.getcwd()}\\Discord Logs\\SETTINGS\\logbot.db")
+__cursor = __sql.cursor()
+
 defaults = {}
 _defaults = f"{_data}\\defaults.txt"
 
@@ -49,6 +52,10 @@ def sqlexecute(cmd: str):
 	_sql_cursor.executescript(cmd)
 	_sql.commit()
 	pass
+
+def getprefix(server: str) -> str:
+	__cursor.execute(f"SELECT prefix FROM Prefixes WHERE server='{server}';")
+	return __cursor.fetchall()[0][0]
 
 base = 200
 multi = 1.5
@@ -143,6 +150,7 @@ def clamp(_min: Union[int, float], _max: Union[int, float], val: Union[int, floa
 async def on_message(message: discord.Message):
 	global base, disabled
 	if not message.server is None:
+		prefix = getprefix(message.server.id)
 		try:
 			if not message.server is None:
 				read(message.server.id)
@@ -379,7 +387,7 @@ async def on_message(message: discord.Message):
 			except: traceback.format_exc()
 			# </editor-fold>
 
-			if startswith(f"l$rank"):
+			if startswith(f"l{prefix}rank"):
 				if len(message.mentions) == 0:
 					u_data = sqlread(f"""
 					SELECT tier, rank, xp, xp_limit, multiplier, credits, cpm, dm, alert_channel
@@ -445,7 +453,7 @@ async def on_message(message: discord.Message):
 					await client.send_message(message.channel, bar, embed=e)
 					pass
 				pass
-			elif startswith(f"l$levels"):
+			elif startswith(f"l{prefix}levels"):
 				await client.send_typing(message.channel)
 				ret = []
 				user_rank = 0
@@ -471,7 +479,7 @@ async def on_message(message: discord.Message):
 				for item in tmp: await client.send_message(message.channel, f"```{item}```")
 				await client.send_message(message.channel, f"```You are ranked: #{user_rank}```")
 				pass
-			elif startswith(f"l$place"):
+			elif startswith(f"l{prefix}place"):
 				leaderboard = sqlread(f"""
 				SELECT member, ((tier - 1) * 100), rank
 				FROM levels
@@ -505,8 +513,8 @@ async def on_message(message: discord.Message):
 					else: await client.send_message(message.channel, f"```{message.author} is not ranked.```")
 					pass
 				pass
-			elif startswith(f"l$buy "):
-				content = message.content.replace(f"l$buy ", "").split(" ")
+			elif startswith(f"l{prefix}buy "):
+				content = message.content.replace(f"l{prefix}buy ", "").split(" ")
 				if content[0].lower() == "mul" or content[0].lower() == "multiplier":
 					if len(content) > 1:
 						if sqlread(f"""
@@ -873,7 +881,7 @@ async def on_message(message: discord.Message):
 						pass
 					pass
 				pass
-			elif startswith(f"l$shop"):
+			elif startswith(f"l{prefix}shop"):
 				udat = sqlread(f"""
 				SELECT credits, rank
 				FROM levels
@@ -893,8 +901,8 @@ async def on_message(message: discord.Message):
 				""".replace("\t", "")
 				await client.send_message(message.channel, string)
 				pass
-			elif startswith(f"l$gift "):
-				content = message.content.replace(f"l$gift ", "").split(" ")
+			elif startswith(f"l{prefix}gift "):
+				content = message.content.replace(f"l{prefix}gift ", "").split(" ")
 				gift = float(content[1])
 				user = message.mentions[0]
 				_type = content[0]
@@ -987,9 +995,9 @@ async def on_message(message: discord.Message):
 					else: await client.send_message(message.channel, f"```You do not have enough credits to do that!```")
 					pass
 				pass
-			elif startswith(f"l$award "):
+			elif startswith(f"l{prefix}award "):
 				if admin_role in message.author.roles or message.author.id == owner_id:
-					content = message.content.replace(f"l$award ", "")
+					content = message.content.replace(f"l{prefix}award ", "")
 					content = content.split(" ")
 					selection = None
 					_type = content[0].lower()
@@ -1221,8 +1229,8 @@ async def on_message(message: discord.Message):
 					pass
 				else: await client.send_message(message.channel, "```Only admins can award users!```")
 				pass
-			elif startswith(f"l$estimate "):
-				content = message.content.replace(f"l$estimate ", "")
+			elif startswith(f"l{prefix}estimate "):
+				content = message.content.replace(f"l{prefix}estimate ", "")
 				content = content.split("->")
 				try:
 					total = 0
@@ -1235,8 +1243,8 @@ async def on_message(message: discord.Message):
 					await client.send_message(message.channel, f"∞")
 					pass
 				pass
-			elif startswith("l$slots "):
-				cnt = message.content.replace("l$slots ", "").replace("max", str(sqlread(f"SELECT credits FROM levels WHERE server='{message.server.id}' AND member='{message.author.id}'")[0][0]))
+			elif startswith(f"l{prefix}slots "):
+				cnt = message.content.replace(f"l{prefix}slots ", "").replace("max", str(sqlread(f"SELECT credits FROM levels WHERE server='{message.server.id}' AND member='{message.author.id}'")[0][0]))
 				bid = int(cnt)
 				if 5 <= bid <= sqlread(f"""SELECT credits FROM levels WHERE server='{message.server.id}' AND member='{message.author.id}'""")[0][0]:
 					grid = [random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns), random.choice(slots_patterns)]
@@ -1316,12 +1324,12 @@ async def on_message(message: discord.Message):
 				else:
 					await client.send_message(message.channel, "Your bid must be greater than or equal to 5.")
 					pass
-			elif startswith("l$slots"):
+			elif startswith(f"l{prefix}slots"):
 				await client.send_message(message.channel, slots_rules)
 				pass
-			elif startswith("l$milestone "):
+			elif startswith(f"l{prefix}milestone "):
 				if admin_role in message.author.roles or message.author.id == owner_id:
-					cnt = message.content.replace("l$milestone ", "").split(" ")
+					cnt = message.content.replace(f"l{prefix}milestone ", "").split(" ")
 					if startswith("a", val=cnt[0]):
 						cnt.remove(cnt[0])
 						_role = message.role_mentions[0]
@@ -1371,7 +1379,7 @@ async def on_message(message: discord.Message):
 					pass
 				else: await client.send_message(message.channel, "```You do not have permission to use this command.```")
 				pass
-			elif startswith("l$leaderboards "):
+			elif startswith(f"l{prefix}leaderboards "):
 				await client.send_typing(message.channel)
 				_lim = int(message.content.split(" ")[1])
 				ret = []
@@ -1399,7 +1407,7 @@ async def on_message(message: discord.Message):
 				await client.send_message(message.channel, f"```You are ranked: #{user_rank}```")
 				pass
 				pass
-			elif startswith("l$leaderboards"):
+			elif startswith(f"l{prefix}leaderboards"):
 				await client.send_typing(message.channel)
 				ret = []
 				user_rank = 0
@@ -1440,14 +1448,14 @@ async def on_message(message: discord.Message):
 				print(f"{Fore.LIGHTGREEN_EX}{str(message.author)} attempted to use a command.{Fore.RESET}")
 				pass
 			pass
-		elif startswith(f"$ping"):
+		elif startswith(f"{prefix}ping"):
 			tm = datetime.now() - message.timestamp
 			await client.send_message(message.channel, f"```LogBot Levels Online ~ {round(tm.microseconds / 1000)}```")
 			pass
-		elif startswith(f"l$disabled"):
+		elif startswith(f"l{prefix}disabled"):
 			await client.send_message(message.channel, f"```{disabled}```")
 			pass
-		elif startswith(f"l$disable"):
+		elif startswith(f"l{prefix}disable"):
 			if admin_role in message.author.roles or message.author.id == owner_id:
 				disabled = True
 				await client.send_message(message.channel, "```Disabled levels plugin for this server.```")
@@ -1457,7 +1465,7 @@ async def on_message(message: discord.Message):
 				print(f"{Fore.LIGHTGREEN_EX}{str(message.author)} attempted to use a command.{Fore.RESET}")
 				pass
 			pass
-		elif startswith(f"l$enable"):
+		elif startswith(f"l{prefix}enable"):
 			if admin_role in message.author.roles or message.author.id == owner_id:
 				disabled = False
 				await client.send_message(message.channel, "```Enabled levels plugin for this server.```")
@@ -1467,9 +1475,9 @@ async def on_message(message: discord.Message):
 				print(f"{Fore.LIGHTGREEN_EX}{str(message.author)} attempted to use a command.{Fore.RESET}")
 				pass
 			pass
-		elif startswith(f"l$execute\n", "```sql\n--execute"):
+		elif startswith(f"l{prefix}execute\n", "```sql\n--execute"):
 			if message.author.id == owner_id or message.author.id == bot_id:
-				sqlexecute(message.content.replace("l$execute\n", "").replace("```sql\n--execute", "").replace("```", "").replace("{sid}", message.server.id).replace("{uid}", message.author.id))
+				sqlexecute(message.content.replace(f"l{prefix}execute\n", "").replace("```sql\n--execute", "").replace("```", "").replace("{sid}", message.server.id).replace("{uid}", message.author.id))
 				await client.send_message(message.channel, "```Execution Successful.```")
 				pass
 			else:
@@ -1477,10 +1485,10 @@ async def on_message(message: discord.Message):
 				print(f"{Fore.LIGHTGREEN_EX}{str(message.author)} attempted to use a command.{Fore.RESET}")
 				pass
 			pass
-		elif startswith(f"l$get\n", "```sql\n--get\n"):
+		elif startswith(f"l{prefix}get\n", "```sql\n--get\n"):
 			if message.author.id == owner_id:
 				try:
-					res = sqlread(message.content.replace("l$get\n", "").replace("```sql\n--get\n", "").replace("```", "").replace("{sid}", message.server.id).replace("{uid}", message.author.id))
+					res = sqlread(message.content.replace(f"l{prefix}get\n", "").replace("```sql\n--get\n", "").replace("```", "").replace("{sid}", message.server.id).replace("{uid}", message.author.id))
 					_res = str(res)
 					if startswith("```sql\n--get\n--format_id\n"):
 						for server in client.servers: _res = _res.replace(server.id, str(server))
@@ -1500,8 +1508,8 @@ async def on_message(message: discord.Message):
 				print(f"{Fore.LIGHTGREEN_EX}{str(message.author)} attempted to use a command.{Fore.RESET}")
 				pass
 			pass
-		elif startswith(f"l$dm "):
-			content = message.content.replace("l$dm ", "")
+		elif startswith(f"l{prefix}dm "):
+			content = message.content.replace(f"l{prefix}dm ", "")
 			if "t" in content.lower(): sqlexecute(f"""
 				UPDATE levels
 				SET dm='TRUE'
@@ -1516,8 +1524,8 @@ async def on_message(message: discord.Message):
 				""".replace("\t", ""))
 			await client.send_message(message.channel, "```Updated DM Channel.```")
 			pass
-		elif startswith(f"l$alert "):
-			cnt = message.content.replace("l$alert ", "")
+		elif startswith(f"l{prefix}alert "):
+			cnt = message.content.replace(f"l{prefix}alert ", "")
 			if cnt.capitalize() == "None": new_alert = None
 			else: new_alert = discord.utils.find(lambda c:c.id == cnt or c.name == cnt or str(c) == cnt or c.mention == cnt, message.server.channels)
 			if isinstance(new_alert, discord.Channel): new_alert = new_alert.id
@@ -1529,7 +1537,7 @@ async def on_message(message: discord.Message):
 			""".replace("\t", ""))
 			await client.send_message(message.channel, f"```Updated Alert Channel```")
 			pass
-		elif startswith("l$default "):
+		elif startswith(f"l{prefix}default "):
 			if admin_role in message.author.roles or message.author.id == owner_id:
 				cnt = message.content.split(" ")
 				cnt.remove(cnt[0])
@@ -1546,10 +1554,10 @@ async def on_message(message: discord.Message):
 					pass
 				pass
 			pass
-		elif startswith("l$defaults"):
+		elif startswith(f"l{prefix}defaults"):
 			await client.send_message(message.channel, f"```DM: {defaults[message.server.id]['DM']}\nAlert Channel: {client.get_channel(defaults[message.server.id]['AlertChannel'])}```")
 			pass
-		elif startswith("l$reset"):
+		elif startswith(f"l{prefix}reset"):
 			if admin_role in message.author.roles or message.author.id == owner_id:
 				sqlexecute(f"""
 				UPDATE levels

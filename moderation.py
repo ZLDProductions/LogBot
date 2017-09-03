@@ -15,6 +15,9 @@ init()
 sql = sqlite3.connect(f"{os.getcwd()}\\moderation.db")
 cursor = sql.cursor()
 
+_sql = sqlite3.connect(f"{os.getcwd()}\\Discord Logs\\SETTINGS\\logbot.db")
+_cursor = _sql.cursor()
+
 def exe(cmd: str):
 	cursor.executescript(cmd)
 	sql.commit()
@@ -24,13 +27,19 @@ def read(cmd: str):
 	cursor.execute(cmd)
 	return cursor.fetchall()
 
+def getprefix(server: str) -> str:
+	_cursor.execute(f"SELECT prefix FROM Prefixes WHERE server='{server}';")
+	return _cursor.fetchall()[0][0]
+
 @client.event
 async def on_message(message: Message):
 	admin_role = find(lambda r:r.name == "LogBot Admin", message.server.roles)
 	begins = message.content.startswith
 
+	prefix = getprefix(message.server.id)
+
 	if admin_role in message.author.roles:
-		if begins("m$strikes"):
+		if begins(f"m{prefix}strikes"):
 			if " " in message.content: user = message.mentions[0]
 			else: user = message.author
 			tmp = read(f"""SELECT * FROM _moderation WHERE server='{message.server.id}' AND member='{user.id}';""")
@@ -41,8 +50,8 @@ async def on_message(message: Message):
 				pass
 			await client.send_message(message.channel, "", embed=e)
 			pass
-		elif begins("m$strike "):
-			cnt = message.content.replace("m$strike ", "")
+		elif begins(f"m{prefix}strike "):
+			cnt = message.content.replace(f"m{prefix}strike ", "")
 			reason = cnt.split("|")[1]
 			user = message.mentions[0]
 			exe(f"""
@@ -51,10 +60,10 @@ async def on_message(message: Message):
 			""".replace("\t", ""))
 			await client.send_message(message.channel, f"I have stricken {user}.")
 			pass
-		elif begins("m$destrike "):
+		elif begins(f"m{prefix}destrike "):
 			exe(f"""
 			DELETE FROM _moderation
-			WHERE strike={message.content.replace('m$destrike ', '')}
+			WHERE strike={message.content.replace(f'm{prefix}destrike ', '')}
 			""".replace("\t", ""))
 			await client.send_message(message.channel, f"Removed strike {message.content.replace('m$destrike ', '')}.")
 			pass
