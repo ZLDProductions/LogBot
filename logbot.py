@@ -2048,16 +2048,19 @@ async def on_message(message: discord.Message):
 				if message.author.id == owner_id: await on_member_remove(message.author)
 				pass
 			elif startswith(f"{prefix}changeprefix "):
-				new_prefix = message.content.replace(f"{prefix}changeprefix ", "")
-				if not new_prefix == "```":
-					try: db.write("Prefixes", {"server":message.server.id, "prefix":new_prefix})
-					except: pass
-					db.update("Prefixes", "prefix", new_prefix, message.server.id)
-					await client.send_message(message.channel, f"Changed the prefix to {new_prefix}")
+				if admin_role in message.author.roles or message.author.id == owner_id:
+					new_prefix = message.content.replace(f"{prefix}changeprefix ", "")
+					if not new_prefix == "```":
+						try: db.write("Prefixes", {"server":message.server.id, "prefix":new_prefix})
+						except: pass
+						db.update("Prefixes", "prefix", new_prefix, message.server.id)
+						await client.send_message(message.channel, f"Changed the prefix to {new_prefix}")
+						pass
+					else:
+						await client.send_message(message.channel, f"The prefix cannot be ``` because it messes up the bot's message formatting.")
+						pass
 					pass
-				else:
-					await client.send_message(message.channel, f"The prefix cannot be ``` because it messes up the bot's message formatting.")
-					pass
+				else: sendNoPerm(message)
 				pass
 			elif startswith(f"{prefix}prefix"):
 				await client.send_message(message.channel, f"The prefix is {prefix}")
