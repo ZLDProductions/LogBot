@@ -1497,6 +1497,33 @@ None
 
 ---
 
+#### $changeprefix
+**Info**  
+Changes the server's prefix.
+
+**Usage**
+
+    $changeprefix {prefix}
+`prefix` is the new prefix.
+
+**Required Permissions**  
+LogBot Admin
+
+---
+
+#### $prefix
+**Info**  
+Shows the server's prefix. Works with both the default ($) prefix as well as the server's original prefix.
+
+**Usage**  
+
+    $prefix
+
+**Required Permissions**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.

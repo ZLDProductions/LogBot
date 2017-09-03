@@ -609,6 +609,18 @@ infos = dict({
 		"Usage"               :"v$settings",
 		"Required Permissions":"None",
 		"Type"                :"Fun"
+	},
+	"_changeprefix"  :{
+		"Info"                :"Changes the server's prefix.",
+		"Usage"               :"$changeprefix {prefix}",
+		"Required Permissions":"LogBot Admin",
+		"Type"                :"Customization"
+	},
+	"_prefix"        :{
+		"Info"                :"Shows the server's prefix. Always works with the default prefix.",
+		"Usage"               :"$prefix",
+		"Required Permissions":"None",
+		"Type"                :"Customization"
 	}
 })
 prefixes = {
