@@ -21,6 +21,13 @@ left = ""
 
 logs = f'{os.getcwd()}\\Discord Logs'
 settings = f"{logs}\\SETTINGS"
+_sql = sqlite3.connect(f"{settings}\\logbot.db")
+_cursor = sql.cursor()
+
+def getprefix(server: str) -> str:
+	_cursor.execute(f"SELECT prefix FROM Prefixes WHERE server='{server}';")
+	return _cursor.fetchall()[0][0]
+	pass
 
 challenges = [
 	"Type no capital letters.",
@@ -43,6 +50,8 @@ def format_message(msg: str): return [f"```{msg[n:n+1993]}```" for n in range(0,
 async def on_message(message):
 	global ret, left
 
+	prefix = getprefix(message.server.id)
+
 	do_update = False
 	def startswith(*msgs, val=message.content):
 		for m in msgs:
@@ -53,9 +62,9 @@ async def on_message(message):
 		for s in stuffs: val = val.replace(s, repl)
 		return val
 		pass
-	if startswith(f"$guess "):
+	if startswith(f"{prefix}guess "):
 		try:
-			content = message.content[7:]
+			content = message.content.replace(f"{prefix}guess ", "")
 			if content == _read(f"""SELECT * FROM scrambles WHERE sid='{message.server.id}'""")[0][0]:
 				await client.send_message(message.channel, "You are correct!")
 				_execute(f"""DELETE FROM scrambles WHERE sid='{message.server.id}' AND word='{content}'""")
@@ -67,8 +76,8 @@ async def on_message(message):
 			pass
 		except: await client.send_message(message.channel, "```No scramble exists.```")
 		pass
-	elif startswith(f"$scramble "):
-		content = message.content.replace("$scramble ", "", 1)
+	elif startswith(f"{prefix}scramble "):
+		content = message.content.replace(f"{prefix}scramble ", "", 1)
 		if startswith("add", val=content):
 			content = content.replace("add ", "", 1)
 			try:
@@ -100,7 +109,7 @@ async def on_message(message):
 			for msg in format_message(', '.join(res)): await client.send_message(message.channel, msg)
 			pass
 		pass
-	elif startswith(f"$scramble"):
+	elif startswith(f"{prefix}scramble"):
 		try:
 			res = _read(f"""SELECT * FROM wordlist;""")
 			word = random.choice(res)[0]
@@ -122,16 +131,16 @@ async def on_message(message):
 			pass
 		except: await client.send_message(message.channel, "```A scramble already exists!```")
 		pass
-	elif startswith(f"$giveup"):
+	elif startswith(f"{prefix}giveup"):
 		try:
 			await client.send_message(message.channel, "```The word was: \"" + _read(f"SELECT word FROM scrambles WHERE sid='{message.server.id}'")[0][0] + "\"```")
 			_execute(f"""DELETE FROM scrambles WHERE sid='{message.server.id}'""")
 			pass
 		except: await client.send_message(message.channel, "```No scramble exists.```")
 		pass
-	elif startswith(f"g$rps "):
+	elif startswith(f"g{prefix}rps "):
 		_choices = ["rock", "paper", "scissors"]
-		_content = message.content.replace(f"g$rps ", "")
+		_content = message.content.replace(f"g{prefix}rps ", "")
 		_choice = random.choice(_choices)
 		def _check_winner(c1: str, c2: str) -> str:
 			if c1 == c2:
@@ -146,9 +155,9 @@ async def on_message(message):
 		del _content
 		del _choice
 		pass
-	elif startswith(f"g$rpsls "):
+	elif startswith(f"g{prefix}rpsls "):
 		_choices = ["rock", "paper", "scissors", "lizard", "Spock"]
-		_content = message.content.replace(f"g$rpsls ", "").replace("spock", "Spock")
+		_content = message.content.replace(f"g{prefix}rpsls ", "").replace("spock", "Spock")
 		_choice = random.choice(_choices)
 		_winner = ""
 		if _choice == _content: _winner = "No one"
@@ -175,8 +184,8 @@ async def on_message(message):
 
 		await client.send_message(message.channel, f"I chose {_choice}, you chose {_content}. {_winner} wins!")
 		pass
-	elif startswith(f"g$rules "):
-		content = message.content.replace(f"g$rules ", "")
+	elif startswith(f"g{prefix}rules "):
+		content = message.content.replace(f"g{prefix}rules ", "")
 		if content == "rps":
 			ret = """**rock** smashes **scissors**\n**paper** covers **rock**\n**scissors** cut **paper**"""
 			await client.send_message(message.channel, ret)
@@ -202,29 +211,29 @@ async def on_message(message):
 			do_update = True
 			pass
 		pass
-	elif startswith(f"$ping"):
+	elif startswith(f"{prefix}ping"):
 		tm = datetime.now() - message.timestamp
 		await client.send_message(message.channel, f"```LogBot Games Online ~ {round(tm.microseconds / 1000)}```")
 		pass
-	elif startswith(f"g$get\n", "```sql\n--games\n--get"):
+	elif startswith(f"g{prefix}get\n", "```sql\n--games\n--get"):
 		if message.author.id == "239500860336373761":
 			try:
-				msg = "```Execution Successful. Result:\n" + str(_read(replace("{uid}", repl=message.author.id, val=replace("{sid}", repl=message.server.id, val=replace("g$get\n", "```sql", "```", repl=""))))) + "```"
+				msg = "```Execution Successful. Result:\n" + str(_read(replace("{uid}", repl=message.author.id, val=replace("{sid}", repl=message.server.id, val=replace(f"g{prefix}get\n", "```sql", "```", repl=""))))) + "```"
 				for _msg in format_message(msg): await client.send_message(message.channel, _msg)
 				pass
 			except: await client.send_message(message.channel, f"```Execution Failed.\n{traceback.format_exc()}```")
 			pass
 		pass
-	elif startswith("g$execute\n", "```sql\n--games\n--execute"):
+	elif startswith(f"g{prefix}execute\n", "```sql\n--games\n--execute"):
 		if message.author.id == "239500860336373761":
 			try:
-				_execute(replace("g$execute\n", "```sql", "```", repl="").replace("{sid}", message.server.id).replace("{uid}", message.author.id))
+				_execute(replace(f"g{prefix}execute\n", "```sql", "```", repl="").replace("{sid}", message.server.id).replace("{uid}", message.author.id))
 				await client.send_message(message.channel, f"```Execution Successful.```")
 				pass
 			except: await client.send_message(message.channel, f"```Execution Failed.\n{traceback.format_exc()}```")
 			pass
 		pass
-	elif startswith("g$challenge"):
+	elif startswith("g{prefix}challenge"):
 		await client.send_message(message.channel, random.choice(challenges))
 		pass
 
