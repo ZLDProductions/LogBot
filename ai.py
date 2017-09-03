@@ -35,25 +35,6 @@ async def _send():
 	return
 
 @asyncio.coroutine
-async def _presence():
-	"""
-	Changes the presence of the bot.
-	"""
-	os.system("cls")
-	game = input(f"{Fore.RED}Game:{Fore.LIGHTGREEN_EX} ")
-	print(Fore.RESET)
-	if game == 'None':
-		game = None
-		pass
-	if not game is None:
-		await client.change_presence(status="online", game=discord.Game(name=game), afk=False)
-		pass
-	else:
-		await client.change_presence(status="online", game=None)
-		pass
-	return
-
-@asyncio.coroutine
 async def _exit():
 	"""
 	Logs out of the bot account.
@@ -70,9 +51,6 @@ async def on_ready():
 		oper = input(f"{Fore.YELLOW}Operation:{Fore.RESET} ")
 		if oper == 'send':
 			await _send()
-			pass
-		elif oper == 'pres':
-			await _presence()
 			pass
 		elif oper == 'exit':
 			await _exit()

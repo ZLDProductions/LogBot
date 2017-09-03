@@ -21,12 +21,15 @@ async def on_message(message: Message):
 		if muted is None:
 			perms = Permissions(send_messages=False)
 			muted = await client.create_role(message.server, name="LogBot Muted", permissions=perms)
+			print("Created LogBot Muted")
 			pass
 		if admin is None:
 			admin = await client.create_role(message.server, name="LogBot Admin")
+			print("Created LogBot Admin")
 			pass
 		if not member is None:
 			await client.delete_role(message.server, member)
+			print("Removed LogBot Member")
 			pass
 		await client.move_role(message.server, muted, bot.top_role.position - 1)
 		# </editor-fold>

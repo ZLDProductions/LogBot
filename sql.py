@@ -53,7 +53,7 @@ class SQL:
 		:param arg: constraint
 		:return: data retrieved.
 		"""
-		self.cursor.execute(f"SELECT * FROM {table} WHERE {arg} IN ('{server}');")
+		self.cursor.execute(f"SELECT * FROM {table} WHERE {arg}='{server}';")
 		result = self.cursor.fetchall()
 		return result[0][1]
 		pass

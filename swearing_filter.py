@@ -178,6 +178,14 @@ async def on_message(message):
 		tm = datetime.now() - message.timestamp
 		await client.send_message(message.channel, f"```LogBot Swearing Filter Online ~ {round(tm.microseconds / 1000)}```")
 		pass
+	elif startswith(f"f$disabled"):
+		if admin_role in message.author.roles or message.author.id == owner_id:
+			await client.send_message(message.channel, str(message.server.id in filter_disable_list))
+			pass
+		else:
+			await client.send_message(message.channel, f"```You do not have permission to use this command.```")
+			pass
+		pass
 	elif startswith(f"f$disable"):
 		if admin_role in message.author.roles or message.author.id == owner_id:
 			filter_disable_list.append(message.server.id)
@@ -196,14 +204,7 @@ async def on_message(message):
 			await client.send_message(message.channel, f"```You do not have permission to use this command.```")
 			pass
 		pass
-	elif startswith(f"f$disabled"):
-		if admin_role in message.author.roles or message.author.id == owner_id:
-			await client.send_message(message.channel, str(message.server.id in filter_disable_list))
-			pass
-		else:
-			await client.send_message(message.channel, f"```You do not have permission to use this command.```")
-			pass
-		pass
+
 	writer = open(_setting, 'w')
 	writer.write(str(filter_setting))
 	writer.close()

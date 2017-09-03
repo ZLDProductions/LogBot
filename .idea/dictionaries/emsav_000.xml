@@ -9,6 +9,7 @@
       <w>bootup</w>
       <w>buyable</w>
       <w>byelorussian</w>
+      <w>changeprefix</w>
       <w>channelname</w>
       <w>chapers</w>
       <w>clsserver</w>
@@ -86,6 +87,7 @@
       <w>philippi</w>
       <w>prefs</w>
       <w>pushto</w>
+      <w>pyconsole</w>
       <w>reconcilation</w>
       <w>repl</w>
       <w>retpre</w>
