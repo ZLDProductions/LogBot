@@ -26,7 +26,7 @@ import sql
 from logbot_data import *
 
 # base variables
-version = '16.2.0 Python'
+version = '16.4.0 Python'
 whats_new = [
 	"•Memory usage lessened.",
 	"•Bug fixes.",
@@ -35,7 +35,9 @@ whats_new = [
 	"•Updated help content again.",
 	"•More bug fixes.",
 	"•Even more bug fixes.",
-	"•Custom prefixes."
+	"•Custom prefixes.",
+	"•Added $role",
+	"•Admins can now disable a user's ability to use verse recognition."
 ] # list of recent changes to the code.
 planned = [
 	"There is nothing planned at the moment."
@@ -116,6 +118,7 @@ if not os.path.exists(discord_settings): os.makedirs(discord_settings)
 # <editor-fold desc="data loading">
 parser.read(f'{discord_settings}\\data.ini')
 
+# Load the join roles.
 try:
 	reader = open(_join_roles, 'r')
 	join_roles = ast.literal_eval(reader.read())
@@ -124,6 +127,7 @@ try:
 	pass
 except: pass
 
+# Load the default channels.
 try:
 	reader = open(_defaults, 'r')
 	default_channel = ast.literal_eval(reader.read())
@@ -154,10 +158,13 @@ if "SETTINGS" in parser.sections():
 		pass
 	except: pass
 	pass
+
 # </editor-fold>
 
+# noinspection PyShadowingNames
 def send(message: str, servername: str, channel: str = "event"):
 	"""
+	Sends an event to a filestream to be written to a file.
 	:param message: The string message to send to the writer.
 	:param servername: The server to write to. This is a folder.
 	:param channel: The channel to write to. This is the actually log file. Defaults to "event".
@@ -188,10 +195,21 @@ def send(message: str, servername: str, channel: str = "event"):
 	pass
 
 def is_ascii(s: str) -> bool:
+	"""
+	Determines if a string, `s`, is non-unicode.
+	:param s: The string to analyze.
+	:return: True if `s` is not unicode, otherwise False.
+	"""
 	return all(ord(c) < 128 for c in s)
 
+# Changes the time from UTC to PST (-8 hrs)
 def format_time(time_stamp: datetime) -> datetime:
-	return time_stamp.replace(tzinfo=timezone.utc).astimezone(tz=None) # formats the times from discord's UTC to US PST
+	"""
+	Converts the time from UTC +0 to PST -8.
+	:param time_stamp: A UTC timestamp.
+	:return: A PST timestamp.
+	"""
+	return time_stamp.replace(tzinfo=timezone.utc).astimezone(tz=None)
 
 def save(sid: str):
 	"""
@@ -431,7 +449,7 @@ class Commands:
 			del e
 			pass
 		@staticmethod
-		async def disables(message: discord.Message, prefix:str):
+		async def disables(message: discord.Message, prefix: str):
 			"""
 			Sends a message with an embed of all disabled features for the `message`'s server
 			:param message: A discord.Message object from on_message.
@@ -1178,7 +1196,7 @@ class Commands:
 			content = message.content.replace(f"{prefix}welcome ", "")
 			if content.startswith("read("):
 				content = content.replace("read(", "")
-				_file_cnt = content[0:len(content)-1]
+				_file_cnt = content[0:len(content) - 1]
 				_file_path = f"{message.server.id}.txt"
 				open(_file_path, 'w').write(_file_cnt)
 				try: db.write("Welcomes", {"server":message.server.id, "message":f"read( {_file_path} )"})
@@ -1235,7 +1253,7 @@ class Commands:
 			del pruned_members
 			pass
 		@staticmethod
-		async def user(message: discord.Message, prefix:str):
+		async def user(message: discord.Message, prefix: str):
 			cnt = message.content.replace(f"{prefix}user ", "")
 			user = discord.utils.find(lambda u:u.id == cnt or u.name == cnt or str(u) == cnt or u.mention == cnt, message.server.members)
 			m = format_time(user.created_at)
@@ -1558,7 +1576,7 @@ async def on_message(message: discord.Message):
 	global default_channel
 	try:
 		if default_channel.get(message.server.id) is None: default_channel[message.server.id] = message.server.default_channel.id
-	except:pass
+	except: pass
 
 	muted_role = discord.utils.find(lambda r:r.name == "LogBot Muted", message.server.roles)
 
@@ -1591,8 +1609,8 @@ async def on_message(message: discord.Message):
 		# save( message.server.id )
 		time = format_time(message.timestamp)
 
-		try:prefix = db.read("Prefixes", message.server.id)
-		except:prefix = "$"; traceback.format_exc(); db.write("Prefixes", {"server":message.server.id, "prefix":"$"})
+		try: prefix = db.read("Prefixes", message.server.id)
+		except: prefix = "$"; traceback.format_exc(); db.write("Prefixes", {"server":message.server.id, "prefix":"$"})
 
 		if startswith(prefix):
 			if startswith(f"{prefix}exclude ", f"{prefix}ex "):
@@ -2066,6 +2084,45 @@ async def on_message(message: discord.Message):
 			elif startswith(f"{prefix}prefix"):
 				await client.send_message(message.channel, f"The prefix is {prefix}")
 				pass
+			elif startswith(f"{prefix}role "):
+				_cnt_ = message.content.replace(f"{prefix}role ", "")
+				if len(message.role_mentions) > 0: _role = message.role_mentions[0]
+				else: _role = discord.utils.find(lambda r:r.name == _cnt_ or r.id == _cnt_, message.server.roles)
+				_members_in_role = [str(m) for m in message.server.members if _role in m.roles]
+				_position = _role.position
+				p = _role.permissions
+				_id = _role.id
+				_name = str(_role)
+				_created_at = _role.created_at
+				_colour = _role.colour
+				_mentionable = _role.mentionable
+				e = discord.Embed(title="Role Information", description=_name, colour=_colour) \
+					.add_field(name="Members", value=', '.join(_members_in_role), inline=False) \
+					.add_field(name="Position", value=str(_position), inline=False) \
+					.add_field(name="ID", value=_id, inline=False) \
+					.add_field(name="Mentionable", value=str(_mentionable), inline=False) \
+					.add_field(name="Create Instant Invite", value=str(p.create_instant_invite), inline=True) \
+					.add_field(name="Kick Members", value=str(p.kick_members), inline=True) \
+					.add_field(name="Ban Members", value=str(p.ban_members), inline=True) \
+					.add_field(name="Administrator", value=str(p.administrator), inline=True) \
+					.add_field(name="Manage Channels", value=str(p.manage_channels), inline=True) \
+					.add_field(name="Manage Server", value=str(p.manage_server), inline=True) \
+					.add_field(name="Read Messages", value=str(p.read_messages), inline=True) \
+					.add_field(name="Send Messages", value=str(p.send_messages), inline=True) \
+					.add_field(name="Send TTS Messages", value=str(p.send_tts_messages), inline=True) \
+					.add_field(name="Manage Messages", value=str(p.manage_messages), inline=True) \
+					.add_field(name="Embed Links", value=str(p.embed_links), inline=True) \
+					.add_field(name="Attach Files", value=str(p.attach_files), inline=True) \
+					.add_field(name="Read Message History", value=str(p.read_message_history), inline=True) \
+					.add_field(name="Mention Everyone", value=str(p.mention_everyone), inline=True) \
+					.add_field(name="Use External Emojis", value=str(p.external_emojis), inline=True) \
+					.add_field(name="Change Nickname", value=str(p.change_nickname), inline=True) \
+					.add_field(name="Manage Nicknames", value=str(p.manage_nicknames), inline=True) \
+					.add_field(name="Manage Roles", value=str(p.manage_roles), inline=True) \
+					.add_field(name="Manage Emojis", value=str(p.manage_emojis), inline=True) \
+					.set_footer(text=f"Created at {_created_at}")
+				await client.send_message(message.channel, f"Here you go!", embed=e)
+				pass
 			pass
 		elif startswith(f"hello, <@{bot_id}>", f"hi, <@{bot_id}>", f"<@{bot_id}>", modifier="lower"):
 			await client.send_message(message.channel, f"Hello, {message.author.mention}!")
@@ -2241,7 +2298,7 @@ async def on_member_join(member: discord.Member):
 		welcome_tmp = db.read("Welcomes", member.server.id)
 
 		if welcome_tmp.startswith("read("):
-			welcome_tmp = open(welcome_tmp[6:len(welcome_tmp)-2], 'r').read()
+			welcome_tmp = open(welcome_tmp[6:len(welcome_tmp) - 2], 'r').read()
 			pass
 		else:
 			welcome_tmp = re.sub("{server}", member.server.name, welcome_tmp, flags=2)
