@@ -621,6 +621,12 @@ infos = dict({
 		"Usage"               :"$prefix",
 		"Required Permissions":"None",
 		"Type"                :"Customization"
+	},
+	"_role"          :{
+		"Info"                :"Shows information about a role.",
+		"Usage"               :"$role {name}\n$role {id}\n$role {mention}",
+		"Required Permissions":"None",
+		"Type"                :"Fun"
 	}
 })
 prefixes = {

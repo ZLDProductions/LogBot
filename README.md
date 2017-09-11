@@ -141,7 +141,7 @@ Shows the help dialog for a specific command, or, if no command was stated, show
 `command` is a command for the bot.
     
 **Required Permissions**  
-None.
+None
 
 ---
 
@@ -1518,6 +1518,20 @@ Shows the server's prefix. Works with both the default ($) prefix as well as the
 **Usage**  
 
     $prefix
+
+**Required Permissions**  
+None
+
+---
+
+#### $role
+**Info**  
+Shows information about a role.
+
+**Usage**  
+
+    $role {role}
+`role` can be a role's name, id, or mention.
 
 **Required Permissions**  
 None
