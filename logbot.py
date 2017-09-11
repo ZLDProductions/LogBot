@@ -125,7 +125,7 @@ try:
 	reader.close()
 	del reader
 	pass
-except: pass
+except: traceback.format_exc()
 
 # Load the default channels.
 try:
@@ -134,7 +134,7 @@ try:
 	reader.close()
 	del reader
 	pass
-except: pass
+except: traceback.format_exc()
 
 if not "SETTINGS" in parser.sections():
 	parser["SETTINGS"] = {
@@ -156,7 +156,7 @@ if "SETTINGS" in parser.sections():
 		marklist = ast.literal_eval(parser["SETTINGS"]["mark_list"])
 		channels = ast.literal_eval(parser["SETTINGS"]["channel_list"])
 		pass
-	except: pass
+	except: traceback.format_exc()
 	pass
 
 # </editor-fold>
@@ -423,7 +423,7 @@ class Commands:
 					.add_field(name="Default Channel", value=str(server.default_channel)) \
 					.set_thumbnail(url=server.icon_url)
 				try: e.add_field(name="Role Hierarchy", value='\n'.join(roles))
-				except: pass
+				except: traceback.format_exc()
 				# </editor-fold>
 				await client.send_message(message.channel, "", embed=e)
 				pass

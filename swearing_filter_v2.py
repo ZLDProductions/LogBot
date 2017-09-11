@@ -1,22 +1,29 @@
 import ast
-from datetime import datetime
 import os
+import sqlite3
 import subprocess
-import re
+from datetime import datetime
 
-from colorama import init, Fore
-from discord import Client
-import nltk
-import requests
-from logbot_data import token
+from colorama import Fore, init
+from discord import Client, Message
+from discord.utils import find
+
+from logbot_data import *
 
 client = Client()
 init()
-owner_id = "239500860336373761"
 
-discord_settings = os.path.expanduser("~\\Documents\\Discord Logs\\SETTINGS")
-filter_disables = f"{discord_settings}\\filter_disable_list.txt"
+dict_words = []
 filter_disable_list = {}
+filter_settings = {}
+
+discord_settings = f"{os.getcwd()}\\Discord Logs\\SETTINGS"
+dictionary = f"{discord_settings}\\censored_words.txt"
+filter_disables = f"{discord_settings}\\filter_disable_list.txt"
+_settings = f"{discord_settings}\\filter_setting.txt"
+
+sql = sqlite3.connect(f"{discord_settings}\\logbot.db")
+cursor = sql.cursor()
 
 try:
 	reader = open(filter_disables, 'r')
@@ -26,140 +33,110 @@ try:
 	pass
 except: pass
 
-def check(*args: str) -> str:
-	"""
-	Compares each string to check which one is ascii.
-	:param args: Several string parameters.
-	:return: The first ascii instance, or "Unknown String." if none are ascii.
-	"""
-	for item in args:
-		if item is not None and all(ord(c) for c in item): return item
-		pass
-	return "Unknown String."
-
-def checkForSymbols(m: str) -> list:
-	"""
-	Filters disallowed symbols out of a message.
-	:param m: The message content.
-	:return: An enumeration of the filtered message and the symbols.
-	"""
-	symbols = ['+', '#', '&']
-	repl = "\{i\}"
-	for i in symbols: m = m.replace(i, repl.replace("i", str(symbols.index(i))))
-	return [m, symbols]
-
-def filter_message(msg: str) -> tuple:
-	"""
-	Filters `msg` and replaces banned words.
-	:param msg: The message to filter.
-	:return: `msg`, but with all banned words replaced in index 0, and with a list of the words replaced (in the order replaced) at index 1.
-	"""
-	base_words = """ass
-	asses
-	assface
-	assfaces
-	asshole
-	assholes
-	bastard
-	bastards
-	bitch
-	bitches
-	bitchy
-	bullshit
-	cocksucker
-	cocksuckers
-	cocksucking
-	cunt
-	cunts
-	dickhead
-	dickheads
-	faggot
-	faggots
-	fuc
-	fuck
-	fucked
-	fuckedup
-	fucker
-	fuckers
-	fucking
-	fuckoff
-	fucks
-	fuckup
-	fuk
-	fukker
-	fukkers
-	fuq
-	goddamn
-	goddamnit
-	jackass
-	jackasses
-	motherfucker
-	motherfuckers
-	motherfucking
-	nigger
-	niggers
-	pussy
-	shit
-	shithead
-	shitheads
-	shits
-	shittier
-	shittiest
-	shitting
-	shitty
-	smartass
-	smartasses
-	tities
-	tits
-	titties
-	wiseass
-	wiseasses""".replace("\t", "").split("\n")
-	res = ""
-	repl_words = []
-	for item in msg.split("\n"):
-		message_words = nltk.tokenize.word_tokenize(item, preserve_line=True)
-		repl_words = []
-		for i in range(0, len(message_words)):
-			for bw in base_words:
-				if bw == message_words[i].lower().replace("$", "s").replace("@", "a"):
-					repl_words.append(message_words[i]); r = "\\*"
-					res += f" {repl_char * len(message_words[i])}"
-					pass
-				else: res += f" {message_words[i]}"
-				pass
-			pass
-		pass
-	return res, repl_words
+try:
+	reader = open(_settings, 'r')
+	filter_settings = ast.literal_eval(reader.read())
+	reader.close()
+	del reader
 	pass
+except: pass
+
+try:
+	reader = open(dictionary, 'r')
+	dict_words = reader.read().split("\n")
+	reader.close()
+	del reader
+	pass
+except: pass
+
+def sqlread(cmd: str):
+	cursor.execute(cmd)
+	return cursor.fetchall()
 
 @client.event
-async def on_message(message):
-	do_update = False
-	ocont = message.content
-	result = filter_message(ocont)
-	ncont = result[0]
-	print(f"\"{ocont}\" -> \"{ncont}\"")
-
-	if f" {ocont}" != ncont:
+async def on_message(message: Message):
+	if not message.server.id in list(filter_settings.keys()): filter_settings[message.server.id] = 1
+	words = message.content.split(" ")
+	for word in words:
+		if word.lower() in dict_words:
+			words[words.index(word)] = "\\*" * len(word)
+			pass
+		pass
+	if not ' '.join(words) == message.content:
 		await client.delete_message(message)
-		await client.send_message(message.channel, f"[{message.author.mention}] {ncont}")
+		if filter_settings[message.server.id] == 1:
+			await client.send_message(message.channel, f"[{message.author.mention}] {' '.join(words)}")
+			pass
+		print(f"{Fore.LIGHTMAGENTA_EX}{str(message.author)} just swore!{Fore.RESET}")
 		pass
 
+	do_update = False
+	prefix = sqlread(f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';")[0][0]
+	admin_role = find(lambda r: r.name == "LogBot Admin", message.server.roles)
 	def startswith(*msgs, val=message.content):
-		for m in msgs:
-			if val.startswith(m): return True
+		for msg in msgs:
+			if val.startswith(msg):
+				return True
 			pass
 		return False
-	if startswith("$update", "logbot.filter.update"):
-		if message.author.id == owner_id: do_update = True
+	if startswith(f"{prefix}filter settype "):
+		if admin_role in message.author.roles or message.author.id == owner_id:
+			cnt = message.content.replace(f"{prefix}filter settype ", "")
+			if startswith("d", val=cnt): filter_settings[message.server.id] = 0
+			elif startswith("e", val=cnt): filter_settings[message.server.id] = 1
+			await client.send_message(message.channel, f"```Set the filter type!```")
+			pass
+		else:
+			await client.send_message(message.channel, f"```You do not have permission to use this command.```")
+			pass
+		pass
+	elif startswith(f"{prefix}filter"):
+		_stng = f"Type: {str(filter_settings[message.server.id]).replace('0', 'Delete').replace('1', 'Edit and Replace')}"
+		await client.send_message(message.channel, _stng)
+		pass
+	elif startswith("$update", "logbot.filter.update"):
+		if message.author.id == owner_id:
+			do_update = True
+			pass
 		pass
 	elif startswith("logbot.settings exit", "logbot.filter.exit"):
-		if message.author.id == owner_id: exit(0)
+		if message.author.id == owner_id:
+			exit(0)
+			pass
 		pass
-	elif startswith("$ping"):
+	elif startswith(f"{prefix}ping"):
 		tm = datetime.now() - message.timestamp
 		await client.send_message(message.channel, f"```LogBot Swearing Filter Online ~ {round(tm.microseconds / 1000)}```")
 		pass
+	elif startswith(f"f{prefix}disabled"):
+		await client.send_message(message.channel, str(message.server.id in filter_disable_list))
+		pass
+	elif startswith(f"f{prefix}disable"):
+		if admin_role in message.author.roles or message.author.id == owner_id:
+			filter_disable_list.append(message.server.id)
+			await client.send_message(message.channel, f"Disabled filter...")
+			pass
+		else:
+			await client.send_message(message.channel, f"```You do not have permission to use this command.```")
+			pass
+		pass
+	elif startswith(f"f{prefix}enable"):
+		if admin_role in message.author.roles or message.author.id == owner_id:
+			filter_disable_list.remove(message.server.id)
+			await client.send_message(message.channel, f"Enabled filter...")
+			pass
+		else:
+			await client.send_message(message.channel, f"```You do not have permission to use this command.```")
+			pass
+		pass
+
+	writer = open(_settings, 'w')
+	writer.write(str(filter_settings))
+	writer.close()
+	writer = open(filter_disables, 'w')
+	writer.write(str(filter_disable_list))
+	writer.close()
+	del writer
 	if do_update:
 		print(f"{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}")
 		await client.close()
@@ -168,8 +145,28 @@ async def on_message(message):
 		pass
 	pass
 
+# noinspection PyUnusedLocal
+@client.event
+async def on_message_edit(before: Message, after: Message):
+	if not after.server.id in list(filter_settings.keys()): filter_settings[after.server.id] = 1
+	words = after.content.split(" ")
+	for word in words:
+		if word.lower() in dict_words:
+			words[words.index(word)] = "\\*" * len(word)
+			pass
+		pass
+	if not ' '.join(words) == after.content:
+		await client.delete_message(after)
+		if filter_settings[after.server.id] == 1:
+			await client.send_message(after.channel, f"[{after.author.mention}] {' '.join(words)}")
+			pass
+		print(f"{Fore.LIGHTMAGENTA_EX}{str(after.author)} just swore!{Fore.RESET}")
+		pass
+	pass
+
 @client.event
 async def on_ready():
+	os.system("cls")
 	print(f"{Fore.MAGENTA}Ready!!!{Fore.RESET}")
 	pass
 

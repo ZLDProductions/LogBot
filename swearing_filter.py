@@ -164,7 +164,7 @@ async def on_message(message):
 			await client.send_message(message.channel, f"```You do not have permission to use this command.```")
 			pass
 		pass
-	elif startswith(f"$filter"):
+	elif startswith(f"{prefix}filter"):
 		_stng = f'Type: {str(filter_setting[message.server.id]).replace("0", "Delete").replace("1", "Edit and Replace")}'
 		await client.send_message(message.channel, _stng)
 		pass
