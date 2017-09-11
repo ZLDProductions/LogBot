@@ -5,6 +5,7 @@ import os
 import random
 import re
 import subprocess
+import traceback
 from datetime import datetime
 from sys import exit
 
@@ -114,6 +115,7 @@ top_verses = ["Psalms 23:4", "Psalms 34:8", "Psalms 34:19", "Psalms 37:4", "Psal
               "Hebrews 4:12", "Hebrews 10:19-23", "Hebrews 13:5", "James 1:2-4", "James 1:12-15",
               "James 4:7-8", "1 Peter 5:7", "1 John 4:4", "1 John 4:18", "1 John 5:14-15", "Revelation 14:12"]
 disabled_channels = []
+disabled_users = []
 
 discord_settings = f"{os.getcwd()}\\Discord Logs\\SETTINGS"
 verse_disables = f"{discord_settings}\\verse_disable_list.txt"
@@ -123,6 +125,7 @@ c_list = f"{discord_settings}\\default_channel.txt"
 d_last_day = f"{discord_settings}\\last_day.txt"
 votd_d = f"{discord_settings}\\votd.txt"
 _disabled_channels = f"{discord_settings}\\bible_plugin\\Disabled Channels\\"
+_disabled_users = f"{discord_settings}\\bible_plugin\\Disabled Users\\"
 
 sqld = sql_data.sql_data(akjv_books)
 sqlkjv = sql_data.kjv_sql(akjv_books)
@@ -851,10 +854,20 @@ def save(sid: str):
 		os.makedirs(_disabled_channels)
 		pass
 	# </editor-fold>
+	# <editor-fold desc="PATH CHECK: _disabled_users">
+	if not os.path.exists(_disabled_users):
+		os.makedirs(_disabled_users)
+		pass
+	# </editor-fold>
 
 	# <editor-fold desc="_disabled_channels">
 	writer = open(f"{_disabled_channels}{sid}.txt", 'w')
 	writer.write(str(disabled_channels))
+	writer.close()
+	# </editor-fold>
+	# <editor-fold desc="_disabled_users">
+	writer = open(f"{_disabled_users}{sid}.txt", 'w')
+	writer.write(str(disabled_users))
 	writer.close()
 	# </editor-fold>
 	del writer
@@ -1226,6 +1239,7 @@ def read(sid: str):
 	:param sid: The id of the server to read data from.
 	"""
 	global disabled_channels
+	global disabled_users
 	try:
 		# noinspection PyShadowingNames
 		reader = open(f"{_disabled_channels}{sid}.txt", 'r')
@@ -1235,6 +1249,16 @@ def read(sid: str):
 		pass
 	except:
 		disabled_channels = []
+		pass
+	try:
+		# noinspection PyShadowingNames
+		reader = open(f"{_disabled_users}{sid}.txt", 'r')
+		disabled_users = ast.literal_eval(reader.read())
+		reader.close()
+		del reader
+		pass
+	except:
+		disabled_users = []
 		pass
 
 	if not os.path.exists(f"{discord_settings}\\SERVER SETTINGS\\{sid}\\"): os.makedirs(f"{discord_settings}\\SERVER SETTINGS\\{sid}\\")
@@ -1672,13 +1696,22 @@ class Commands:
 			pass
 		@staticmethod
 		async def disables(message: discord.Message):
-			ret = [str(client.get_channel(_id)) if client.get_channel(_id).server == message.server else None for _id in disabled_channels]
-			remove = ret.remove
-			while None in ret: remove(None)
+			ret = [str(await client.get_channel(_id)) for _id in disabled_channels if client.get_channel(_id).server == message.server]
 			ret = ', '.join(ret)
 			try: await client.send_message(message.channel, ret)
 			except: await client.send_message(message.channel, "```No channels have been disabled!```")
-			del remove
+			del ret
+			ret = []
+			for _id in disabled_users:
+				try:
+					tmp_user = await client.get_user_info(_id)
+					if not discord.utils.find(lambda u: u.id == _id, message.server.members) is None: ret.append(str(tmp_user))
+					pass
+				except: traceback.format_exc()
+				pass
+			ret = ', '.join(ret)
+			try: await client.send_message(message.channel, ret)
+			except: await client.send_message(message.channel, "```No users have been disabled!```")
 			del ret
 			pass
 		pass
@@ -1712,6 +1745,13 @@ class Commands:
 					pass
 				ret = f"```Disabled {', '.join(ret)}```"
 				pass
+			elif len(message.mentions) > 0:
+				for u in message.mentions:
+					ret.append(str(u))
+					disabled_users.append(u.id)
+					pass
+				ret = f"```Disabled {', '.join(ret)}```"
+				pass
 			else:
 				disabled_channels.append(message.channel.id)
 				ret = f"```Disabled {str(message.channel)}```"
@@ -1729,6 +1769,13 @@ class Commands:
 					disabled_channels.remove(c.id)
 					pass
 				ret = "```Enabled " + ret[2:] + "```"
+				pass
+			elif len(message.mentions) > 0:
+				for u in message.mentions:
+					ret += ", " + str(u)
+					disabled_users.remove(u.id)
+					pass
+				ret = f"```Enabled {ret[2:]}```"
 				pass
 			else:
 				disabled_channels.remove(message.channel.id)
@@ -1800,7 +1847,7 @@ async def on_message(message):
 	if not message.server.id in verse_disable_list:
 		if not message.author.bot:
 			if not message.content.startswith(f"{prefix}verse ") and not message.content.startswith(f"{prefix}devotional\n"):
-				if not message.channel.id in disabled_channels:
+				if not message.channel.id in disabled_channels and not message.author.id in disabled_users:
 					for mcont in message.content.split("\n"):
 						e = discord.Embed(title=bible_versions[message.author.id], colour=discord.Colour.purple())
 						encountered = []
