@@ -1538,6 +1538,20 @@ None
 
 ---
 
+#### $urban
+**Info**  
+Shows information about a role.
+
+**Usage**  
+
+    $urban {word}
+`word` is the word you would like to look up.
+
+**Required Permissions**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.

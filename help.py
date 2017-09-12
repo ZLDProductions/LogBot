@@ -627,6 +627,12 @@ infos = dict({
 		"Usage"               :"$role {name}\n$role {id}\n$role {mention}",
 		"Required Permissions":"None",
 		"Type"                :"Fun"
+	},
+	"_urban"         :{
+		"Info"                :"Shows the UrbanDictionary definition, examples, upvotes, and downvotes of a word.",
+		"Usage"               :"$urban {word}",
+		"Required Permissions":"None",
+		"Type"                :"Fun"
 	}
 })
 prefixes = {
