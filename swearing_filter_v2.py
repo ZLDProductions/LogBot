@@ -56,13 +56,13 @@ def sqlread(cmd: str):
 @client.event
 async def on_message(message: Message):
 	if not message.server.id in list(filter_settings.keys()): filter_settings[message.server.id] = 1
-	words = message.content.split(" ")
+	words = message.content.replace(".", " ").replace(",", "").split(" ")
 	for word in words:
 		if word.lower() in dict_words:
 			words[words.index(word)] = "\\*" * len(word)
 			pass
 		pass
-	if not ' '.join(words) == message.content:
+	if not ' '.join(words) == message.content.replace(".", " ").replace(",", ""):
 		await client.delete_message(message)
 		if filter_settings[message.server.id] == 1:
 			await client.send_message(message.channel, f"[{message.author.mention}] {' '.join(words)}")
