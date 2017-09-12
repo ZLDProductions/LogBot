@@ -644,7 +644,7 @@ prefixes = {
 	"p$":"Polling Plugin",
 	"h$":"Help Plugin"
 }
-url = "https://github.com/ZLDProductions/LogBot#"
+url = "http://bit.ly/logbot_repo#"
 
 sql = sqlite3.connect(f"{os.getcwd()}\\Discord Logs\\SETTINGS\\logbot.db")
 cursor = sql.cursor()
