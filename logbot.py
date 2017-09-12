@@ -164,7 +164,7 @@ if "SETTINGS" in parser.sections():
 # noinspection PyShadowingNames
 def send(message: str, servername: str, channel: str = "event"):
 	"""
-	Sends an event to a filestream to be written to a file.
+	Sends an event to a file-stream to be written to a file.
 	:param message: The string message to send to the writer.
 	:param servername: The server to write to. This is a folder.
 	:param channel: The channel to write to. This is the actually log file. Defaults to "event".
