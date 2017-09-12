@@ -15,6 +15,8 @@ from typing import List, Union
 import discord
 import psutil
 import translate
+# import unirest
+import urbandictionary
 import wikipedia
 import wolframalpha
 from PyDictionary import PyDictionary
@@ -2123,6 +2125,37 @@ async def on_message(message: discord.Message):
 					.set_footer(text=f"Created at {_created_at}")
 				await client.send_message(message.channel, f"Here you go!", embed=e)
 				pass
+			elif startswith(f"{prefix}urban "):
+				_def = urbandictionary.define(message.content.replace(f"{prefix}urban ", ""))[0]
+				_text = f"""```
+				{_def.word}
+				
+				Definition:
+				{_def.definition}
+				
+				Example:
+				{_def.example}
+				
+				------
+				
+				{_def.upvotes} Upvotes
+				{_def.downvotes} Downvotes
+				```
+				""".replace("\t", "")
+				await client.send_message(message.channel, _text)
+				pass
+
+			# elif startswith(f"{prefix}yoda "):
+			# 	cnt = message.content.replace(f"{prefix}yoda ", "").replace(" ", "+")
+			# 	response = unirest.get(f"https://yoda.p.mashape.com/yoda?sentence={cnt}",
+			# 		headers={
+			# 			"X-Mashape-Key":"RGua7KFPvXmshXY96pU0btMbDbmyp1yIZkpjsnC2za8zQ3OzgV",
+			# 			"Accept"       :"text/plain"
+			# 		}
+			# 	)
+			# 	_body = response.raw_body
+			# 	print(_body)
+			# 	pass
 			pass
 		elif startswith(f"hello, <@{bot_id}>", f"hi, <@{bot_id}>", f"<@{bot_id}>", modifier="lower"):
 			await client.send_message(message.channel, f"Hello, {message.author.mention}!")
