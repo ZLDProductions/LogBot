@@ -56,13 +56,13 @@ def sqlread(cmd: str):
 @client.event
 async def on_message(message: Message):
 	if not message.server.id in list(filter_settings.keys()): filter_settings[message.server.id] = 1
-	words = message.content.replace(".", " ").replace(",", "").split(" ")
+	words = message.content.replace(".", "").replace(",", "").split(" ")
 	for word in words:
 		if word.lower() in dict_words:
 			words[words.index(word)] = "\\*" * len(word)
 			pass
 		pass
-	if not ' '.join(words) == message.content.replace(".", " ").replace(",", ""):
+	if not ' '.join(words) == message.content.replace(".", "").replace(",", ""):
 		await client.delete_message(message)
 		if filter_settings[message.server.id] == 1:
 			await client.send_message(message.channel, f"[{message.author.mention}] {' '.join(words)}")
@@ -72,7 +72,7 @@ async def on_message(message: Message):
 
 	do_update = False
 	prefix = sqlread(f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';")[0][0]
-	admin_role = find(lambda r: r.name == "LogBot Admin", message.server.roles)
+	admin_role = find(lambda r:r.name == "LogBot Admin", message.server.roles)
 	def startswith(*msgs, val=message.content):
 		for msg in msgs:
 			if val.startswith(msg):
@@ -149,13 +149,13 @@ async def on_message(message: Message):
 @client.event
 async def on_message_edit(before: Message, after: Message):
 	if not after.server.id in list(filter_settings.keys()): filter_settings[after.server.id] = 1
-	words = after.content.split(" ")
+	words = after.content.replace(",", "").replace(".", "").split(" ")
 	for word in words:
 		if word.lower() in dict_words:
 			words[words.index(word)] = "\\*" * len(word)
 			pass
 		pass
-	if not ' '.join(words) == after.content:
+	if not ' '.join(words) == after.content.replace(",", "").replace(".", ""):
 		await client.delete_message(after)
 		if filter_settings[after.server.id] == 1:
 			await client.send_message(after.channel, f"[{after.author.mention}] {' '.join(words)}")
