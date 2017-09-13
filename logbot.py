@@ -100,6 +100,7 @@ times = []
 join_roles = {}
 log_channel = {}
 default_channel = {}
+dict_words = []
 
 # paths
 discord_logs = f"{os.getcwd()}\\Discord Logs"
@@ -114,6 +115,7 @@ suggestions = f"{discord_settings}\\suggestions.txt"
 channel_settings = f"{discord_settings}\\channel_settings.ini"
 _join_roles = f"{discord_settings}\\join_roles.txt"
 _defaults = f"{discord_settings}\\default_channels.txt"
+_dictionary = f"{discord_settings}\\censored_words.txt"
 
 if not os.path.exists(discord_settings): os.makedirs(discord_settings)
 
@@ -137,6 +139,15 @@ try:
 	del reader
 	pass
 except: traceback.format_exc()
+
+# Load the banned words.
+try:
+	reader = open(_dictionary, 'r')
+	dict_words = reader.read().split("\n")
+	reader.close()
+	del reader
+	pass
+except: pass
 
 if not "SETTINGS" in parser.sections():
 	parser["SETTINGS"] = {
@@ -277,7 +288,7 @@ def update(mid: str, cid: str):
 	:param mid: The message id of the update message.
 	:param cid: The channel of the message. Necessary for client.get_message() to work.
 	"""
-	subprocess.Popen(f"python {os.getcwd()}\\logbot.py -m {mid} -c {cid}", False)
+	subprocess.Popen(f"python {os.getcwd()}\\logbot.py -m {mid} -c {cid} -t {bootup_time.month}.{bootup_time.day}.{bootup_time.year}.{bootup_time.hour}.{bootup_time.minute}.{bootup_time.second}.{bootup_time.microsecond}", False)
 	exit(0)
 	pass
 
@@ -321,6 +332,17 @@ def sort():
 	Sorts all of the lists in the bot. This is an organizational tactic that allows for faster iterations of said lists.
 	"""
 	times.sort()
+	pass
+
+def _filter(text: str) -> str:
+	words = text.replace(",", "").replace(".", "").split(" ")
+	for word in words:
+		if word.lower() in dict_words:
+			words[words.index(word)] = "\\*" * len(word)
+			pass
+		pass
+	if "\\*" in ' '.join(words): return ' '.join(words)
+	else: return text
 	pass
 
 class Commands:
@@ -2127,22 +2149,29 @@ async def on_message(message: discord.Message):
 				pass
 			elif startswith(f"{prefix}urban "):
 				_def = urbandictionary.define(message.content.replace(f"{prefix}urban ", ""))[0]
-				_text = f"""```
-				{_def.word}
-				
-				Definition:
-				{_def.definition}
-				
-				Example:
-				{_def.example}
-				
-				------
-				
-				{_def.upvotes} Upvotes
-				{_def.downvotes} Downvotes
-				```
-				""".replace("\t", "")
-				await client.send_message(message.channel, _text)
+				# _text = f"""```
+				# {_def.word}
+				#
+				# Definition:
+				# {_def.definition}
+				#
+				# Example:
+				# {_def.example}
+				#
+				# ------
+				#
+				# {_def.upvotes} Upvotes
+				# {_def.downvotes} Downvotes
+				# ```
+				# """.replace("\t", "")
+				__definition = _filter(_def.definition)
+				__example = _filter(_def.example)
+				e = discord.Embed(title=_def.word, description="Definition(s) of {_def.word}", colour=discord.Colour.blue()) \
+					.add_field(name="Definition", value=__definition, inline=False) \
+					.add_field(name="Example", value=__example, inline=False) \
+					.add_field(name="Upvotes", value=_def.upvotes) \
+					.add_field(name="Downvotes", value=_def.downvotes)
+				await client.send_message(message.channel, "Here you go!", embed=e)
 				pass
 
 			# elif startswith(f"{prefix}yoda "):
@@ -2758,7 +2787,7 @@ async def on_server_update(before: discord.Server, after: discord.Server):
 
 @client.event
 async def on_ready():
-	global icon
+	global icon, bootup_time
 	# gets and deletes the Update message from the parameters.
 	if not len(argv) == 0:
 		index = -1
@@ -2770,6 +2799,9 @@ async def on_ready():
 			m = await client.get_message(c, argv[index + 1])
 			await client.delete_message(m)
 			pass
+
+		t = argv[argv.index("-t")+1].split(".")
+		if "-t" in argv: bootup_time = datetime(year=int(t[2]), month=int(t[0]), day=int(t[1]), hour=int(t[3]), minute=int(t[4]), second=int(t[5]), microsecond=int(t[6]))
 		pass
 	os.system('cls')
 	print(f"{Fore.MAGENTA}Signed in and waiting...\nRunning version: Logbot Version {version}{Fore.RESET}")
