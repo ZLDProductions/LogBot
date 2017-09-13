@@ -633,6 +633,12 @@ infos = dict({
 		"Usage"               :"$urban {word}",
 		"Required Permissions":"None",
 		"Type"                :"Fun"
+	},
+	"_dict"          :{
+		"Info"                :"Shows the definition, antonyms, or synonyms of a word.",
+		"Usage"               :"$dict def {word}\n$dict ant {word}\n$dict syn {word}",
+		"Required Permissions":"None",
+		"Type"                :"Fun"
 	}
 })
 prefixes = {

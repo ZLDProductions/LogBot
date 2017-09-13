@@ -1552,6 +1552,22 @@ None
 
 ---
 
+#### $dict
+**info**  
+Shows the definitions, antonyms, or synonyms of a word.
+
+**Usage**  
+
+    $dict def {word}
+    $dict ant {word}
+    $dict syn {word}
+`word` is the word you want information on.
+
+**Required Permissions**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.

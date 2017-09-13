@@ -2149,29 +2149,31 @@ async def on_message(message: discord.Message):
 				pass
 			elif startswith(f"{prefix}urban "):
 				_def = urbandictionary.define(message.content.replace(f"{prefix}urban ", ""))[0]
-				# _text = f"""```
-				# {_def.word}
-				#
-				# Definition:
-				# {_def.definition}
-				#
-				# Example:
-				# {_def.example}
-				#
-				# ------
-				#
-				# {_def.upvotes} Upvotes
-				# {_def.downvotes} Downvotes
-				# ```
-				# """.replace("\t", "")
+				_text = f"""```
+				{_def.word}
+
+				Definition:
+				{_def.definition}
+
+				Example:
+				{_def.example}
+
+				------
+
+				{_def.upvotes} Upvotes
+				{_def.downvotes} Downvotes
+				```
+				""".replace("\t", "")
 				__definition = _filter(_def.definition)
 				__example = _filter(_def.example)
-				e = discord.Embed(title=_def.word, description="Definition(s) of {_def.word}", colour=discord.Colour.blue()) \
+				if len(__example) == 0: __example = "No available examples..."
+				e = discord.Embed(title=_def.word, description=f"Definition(s) of {_def.word}", colour=discord.Colour.blue()) \
 					.add_field(name="Definition", value=__definition, inline=False) \
 					.add_field(name="Example", value=__example, inline=False) \
 					.add_field(name="Upvotes", value=_def.upvotes) \
 					.add_field(name="Downvotes", value=_def.downvotes)
-				await client.send_message(message.channel, "Here you go!", embed=e)
+				try: await client.send_message(message.channel, "Here you go!", embed=e)
+				except: await client.send_message(message.channel, _text)
 				pass
 
 			# elif startswith(f"{prefix}yoda "):
