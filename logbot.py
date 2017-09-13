@@ -2802,8 +2802,10 @@ async def on_ready():
 			await client.delete_message(m)
 			pass
 
-		t = argv[argv.index("-t")+1].split(".")
-		if "-t" in argv: bootup_time = datetime(year=int(t[2]), month=int(t[0]), day=int(t[1]), hour=int(t[3]), minute=int(t[4]), second=int(t[5]), microsecond=int(t[6]))
+		if "-t" in argv:
+			t = argv[argv.index("-t")+1].split(".")
+			bootup_time = datetime(year=int(t[2]), month=int(t[0]), day=int(t[1]), hour=int(t[3]), minute=int(t[4]), second=int(t[5]), microsecond=int(t[6]))
+			pass
 		pass
 	os.system('cls')
 	print(f"{Fore.MAGENTA}Signed in and waiting...\nRunning version: Logbot Version {version}{Fore.RESET}")
