@@ -324,6 +324,11 @@ def send_notification(_nick: str, _name: str, _id: str, _server: str, _content: 
 	pass
 
 def notify(header: str, body: str):
+	"""
+	Sends a windows notification.
+	:param header: The header for the notification.
+	:param body: The body for the notification.
+	"""
 	sti.showMessage(header, body)
 	pass
 
@@ -335,6 +340,11 @@ def sort():
 	pass
 
 def _filter(text: str) -> str:
+	"""
+	Filters censored words out of text. Used mainly with the UrbanDictionary
+	:param text: The uncensored text.
+	:return: The censored text.
+	"""
 	words = text.replace(",", "").replace(".", "").split(" ")
 	for word in words:
 		if word.lower() in dict_words:

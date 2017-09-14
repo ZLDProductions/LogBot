@@ -730,7 +730,7 @@ async def on_message(message):
 	elif startswith(f"$update", "logbot.help.update"):
 		if message.author.id == owner_id: do_update = True
 		pass
-	elif startswith("logbot.settings exit", "logbot.help.exit"):
+	elif startswith("h$exit", "logbot.help.exit"):
 		if message.author.id == owner_id: exit(0)
 		pass
 	elif startswith(f"{prefix}ping"):
