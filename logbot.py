@@ -28,7 +28,7 @@ import sql
 from logbot_data import *
 
 # base variables
-version = '16.4.0 Python'
+version = '16.5.0 Python'
 whats_new = [
 	"•Memory usage lessened.",
 	"•Bug fixes.",
