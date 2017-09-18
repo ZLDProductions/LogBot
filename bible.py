@@ -2092,6 +2092,7 @@ async def on_message(message):
 	elif startswith(f"{prefix}devotional\n"):
 		lines = message.content.replace("{prefix}devotional\n", "").split("\n")
 		e = discord.Embed(title="", description="", colour=discord.Colour.green())
+		text = ""
 		for line in lines:
 			if line.startswith("&title="): e.title = line.replace("&title=", "")
 			elif line.startswith("&description="): e.description = line.replace("&description=", "")
@@ -2122,8 +2123,10 @@ async def on_message(message):
 				else: _title = "` `"; _text = line.replace("&text=", "")
 				e.add_field(name=_title, value=_text, inline=False)
 				pass
+			elif line.startswith("&keyword="): text = line.replace("&keyword=", "")
 			pass
-		await client.send_message(message.channel, "", embed=e)
+		if text == "": text = e.title
+		await client.send_message(message.channel, text, embed=e)
 		pass
 	elif startswith(f"{prefix}devotional"):
 		_msgs = []
@@ -2140,6 +2143,7 @@ async def on_message(message):
 			else: lappend(_msg.content); mappend(_msg)
 			pass
 		mappend(message)
+		text = ""
 		e = discord.Embed(title="", description="", colour=discord.Colour.green())
 		for line in lines:
 			if line.startswith("&title="): e.title = line.replace("&title=", "")
@@ -2171,8 +2175,10 @@ async def on_message(message):
 				else: _title = "` `"; _text = line.replace("&text=", "")
 				e.add_field(name=_title, value=_text, inline=False)
 				pass
+			elif line.startswith("&keyword="): text = line.replace("&keyword=", "")
 			pass
-		await client.send_message(message.channel, "", embed=e)
+		if text == "": text = e.title
+		await client.send_message(message.channel, text, embed=e)
 		for m in _msgs:
 			await client.delete_message(m)
 			pass
