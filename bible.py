@@ -1344,12 +1344,9 @@ class Commands:
 			pass
 		@staticmethod
 		async def verse_info(message: discord.Message, bi: BibleInfo, prefix: str):
-			content = message.content.split(" ")
-			content.remove(f"{prefix}verse")
-			content.remove("info")
-			cont = ' '.join(content)
-			ret = ""
-			if not " " in cont:
+			if ":book" in message.content:
+				cont = message.content.replace(f"{prefix}verse info:book ", "")
+				ret = ""
 				if cont == "Genesis":
 					ret += f"Genesis\nAuthor: {bi.getGenesisAuthor()}\nChapters: {bi.getGenesisChapters()}\n{bi.getGenesisSummary()}"
 					pass
@@ -1548,11 +1545,46 @@ class Commands:
 				elif cont == "Revelation":
 					ret = "Revelation\nAuthor: {}\nChapters: {}\n{}".format(bi.getRevelationAuthor(), bi.getRevelationChapters(), bi.getRevelationSummary())
 					pass
+				for item in format_message(ret): await client.send_message(message.channel, item)
+				del cont
+				del ret
 				pass
-			for item in format_message(ret): await client.send_message(message.channel, item)
-			del content
-			del cont
-			del ret
+			elif ":chapter" in message.content:
+				cont = message.content.replace(f"{prefix}verse info:chapter ", "")
+				ret = {
+					"Verses":0,
+					"Words":0,
+					"Characters":0
+				}
+				stuffs = []
+				stapp = stuffs.append
+				index = 0
+				while True:
+					index += 1
+					try: stapp(sqlkjv.read(cont.split(" ")[0], cont.split(" ")[1], str(index)))
+					except: break
+					pass
+				ret["Verses"] = len(stuffs)
+				# noinspection PyUnusedLocal
+				for item in stuffs:
+					ret["Words"] += len(item.split(" "))
+					ret["Characters"] += len(item)
+					pass
+				await client.send_message(message.channel, f"```Info for {cont}\nVerses: {ret['Verses']}\nWords: {ret['Words']}\nCharacters: {ret['Characters']}```")
+				del cont
+				del stuffs
+				del ret
+				del stapp
+				del index
+				pass
+			elif ":verse" in message.content:
+				cont = message.content.replace(f"{prefix}verse info:verse ", "")
+				v = getVerse(cont, ih=False)
+				words = len(v.split(" "))
+				characters = len(v)
+				await client.send_message(message.channel, f"```Info for {cont}\nWords: {words}\nCharacters: {characters}```")
+				del cont
+				pass
 			pass
 		@staticmethod
 		async def verse_help(message: discord.Message):
@@ -1705,7 +1737,7 @@ class Commands:
 			for _id in disabled_users:
 				try:
 					tmp_user = await client.get_user_info(_id)
-					if not discord.utils.find(lambda u: u.id == _id, message.server.members) is None: ret.append(str(tmp_user))
+					if not discord.utils.find(lambda u:u.id == _id, message.server.members) is None: ret.append(str(tmp_user))
 					pass
 				except: traceback.format_exc()
 				pass
@@ -1851,9 +1883,9 @@ async def on_message(message):
 					for mcont in message.content.split("\n"):
 						e = discord.Embed(title=bible_versions[message.author.id], colour=discord.Colour.purple())
 						encountered = []
-						tmp_content = mcont.replace(".", " ")\
-							.replace("`", "")\
-							.replace("*", "")\
+						tmp_content = mcont.replace(".", " ") \
+							.replace("`", "") \
+							.replace("*", "") \
 							.replace("_", "")
 						verse = []
 						tmp_content = abbr(tmp_content)
@@ -1948,11 +1980,11 @@ async def on_message(message):
 								index = list(mcont).index('"')
 								title = ""
 								has_found = False
-								for i in range(index+1, len(mcont)):
+								for i in range(index + 1, len(mcont)):
 									if mcont[i] == "\"": has_found = True
 									if not has_found: title += mcont[i]
 									pass
-								title=' '.join([t for t in title.split(" ")])
+								title = ' '.join([t for t in title.split(" ")])
 								# </editor-fold>
 								e.title = title
 								e.description = bible_versions[message.author.id]
@@ -2003,7 +2035,7 @@ async def on_message(message):
 		elif message.server.id in verse_disable_list: sendDisabled(message)
 		else: sendNoPerm(message)
 		pass
-	elif startswith(f"{prefix}verse info "):
+	elif startswith(f"{prefix}verse info"):
 		if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_info(message, bi, prefix)
 		elif message.server.id in verse_disable_list: sendDisabled(message)
 		else: sendNoPerm(message)
