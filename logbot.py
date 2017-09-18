@@ -39,7 +39,8 @@ whats_new = [
 	"•Even more bug fixes.",
 	"•Custom prefixes.",
 	"•Added $role",
-	"•Admins can now disable a user's ability to use verse recognition."
+	"•Admins can now disable a user's ability to use verse recognition.",
+	"•$verse has been updated. View the docs in the help command."
 ] # list of recent changes to the code.
 planned = [
 	"There is nothing planned at the moment."
@@ -1306,17 +1307,17 @@ class Commands:
 			del e
 			pass
 		@staticmethod
-		async def kick(message: discord.Message, bot_id: str):
+		async def kick(message: discord.Message, admin_role: discord.Role):
 			for user in message.mentions:
-				if not user.id == bot_id: await client.kick(user); await client.send_message(message.channel, f"{user} has been kicked!")
-				else: await client.send_message(message.channel, "You cannot kick LogBot!")
+				if not admin_role in user.roles: await client.kick(user); await client.send_message(message.channel, f"{user} has been kicked!")
+				else: await client.send_message(message.channel, "You cannot kick bot admins!")
 				pass
 			pass
 		@staticmethod
-		async def ban(message: discord.Message, bot_id: str):
+		async def ban(message: discord.Message, admin_role: discord.Role):
 			for item in message.mentions:
-				if not item.id == bot_id: await client.ban(item); await client.send_message(message.channel, f"{item} has been banned.")
-				else: await client.send_message(message.channel, f"You cannot ban the bot!")
+				if not admin_role in item.roles: await client.ban(item); await client.send_message(message.channel, f"{item} has been banned.")
+				else: await client.send_message(message.channel, f"You cannot ban bot admins!")
 				pass
 			pass
 		@staticmethod
@@ -1924,7 +1925,7 @@ async def on_message(message: discord.Message):
 				pass
 			elif startswith(f"{prefix}kick "):
 				if admin_role in message.author.roles or message.author.id == owner_id:
-					await Commands.Admin.kick(message, bot_id)
+					await Commands.Admin.kick(message, admin_role)
 					pass
 				else:
 					await sendNoPerm(message)
@@ -1932,7 +1933,7 @@ async def on_message(message: discord.Message):
 				pass
 			elif startswith(f"{prefix}ban "):
 				if admin_role in message.author.roles or message.author.id == owner_id:
-					await Commands.Admin.ban(message, bot_id)
+					await Commands.Admin.ban(message, admin_role)
 					pass
 				else:
 					await sendNoPerm(message)
