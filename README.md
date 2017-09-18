@@ -1330,11 +1330,13 @@ multi-line:
     &footer=[text]
     &text=[text]
     &passage=[ref]
+    &keyword=[word]
 `title` is the title of the embed. This line is required and can only be used once.  
 `description` is the description of the embed. This line is optional and can only be used once.  
 `image-url` is the url of an image. This line is optional, and can only be used once.  
 `text` describes text. `&footer` is an optional, one-use line. `&text` can be added at any point, is optional, and can be used as many times as needed.  
-`ref` is a verse reference. This line is optional, and can be used as many times as is necessary.
+`ref` is a verse reference. This line is optional, and can be used as many times as is necessary.  
+`word` is a word or phrase.
 
 **Required Permissions**  
 None
