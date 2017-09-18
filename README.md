@@ -287,11 +287,15 @@ Fetches information from the Bible.
 
 **Usage**
 
-    $verse info {book}
+    $verse info:book {book}
+    $verse info:chapter {book} {chapter}
+    $verse info:verse {book} {chapter}:{verse}
     $verse random
     $verse help
     $verse search {query}
 `book` is a book of the bible.  
+`chapter` is a number describing the chapter of the `book`.  
+`verse` is a number describing the verse of the `chapter` of the `book`.  
 `query` is the search key.
 
 **Required Permissions**  

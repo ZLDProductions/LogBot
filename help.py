@@ -123,7 +123,7 @@ infos = dict({
 	},
 	"_verse"         :{
 		"Info"                :"Fetches information from the Bible.",
-		"Usage"               :"$verse info {book}\n$verse random\n$verse help\n$verse search {query}",
+		"Usage"               :"$verse info:book {book}\n$verse info:chapter {book} {chapter}\n$verse info:verse {book} {chapter}:{verse}\n$verse random\n$verse help\n$verse search {query}",
 		"Required Permissions":"LogBot Member",
 		"Type"                :"Fun"
 	},
