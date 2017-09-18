@@ -40,7 +40,8 @@ whats_new = [
 	"•Custom prefixes.",
 	"•Added $role",
 	"•Admins can now disable a user's ability to use verse recognition.",
-	"•$verse has been updated. View the docs in the help command."
+	"•$verse has been updated. View the docs in the help command.",
+	"•Users can now specify a key-word or key-phrase for devotionals, to search them easily."
 ] # list of recent changes to the code.
 planned = [
 	"There is nothing planned at the moment."
