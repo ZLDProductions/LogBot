@@ -200,7 +200,7 @@ async def on_message(message):
 			await client.send_message(message.channel, ret)
 			pass
 		pass
-	elif startswith("logbot.settings exit", "logbot.games.exit"):
+	elif startswith("$exit", "logbot.games.exit"):
 		if message.author.id == "239500860336373761":
 			await client.logout()
 			exit(0)

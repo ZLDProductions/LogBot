@@ -45,6 +45,12 @@ async def on_message(message: Message):
 		except: pass
 		await client.remove_roles(bot, muted)
 		# </editor-fold>
+
+		if message.content.startswith("$exit") or message.content.startswith("logbot.security.exit"):
+			if message.author.id == owner_id:
+				await client.logout()
+				pass
+			pass
 		pass
 	pass
 

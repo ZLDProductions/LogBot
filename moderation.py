@@ -75,6 +75,9 @@ async def on_message(message: Message):
 			client.close()
 			subprocess.Popen(f"{os.getcwd()}\\moderation.py")
 			pass
+		elif begins("$exit") or begins("logbot.mod.exit"):
+			await client.logout()
+			pass
 		pass
 	pass
 

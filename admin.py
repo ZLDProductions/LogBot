@@ -105,8 +105,8 @@ async def on_message(message: Message):
 	if startswith("a$update", "logbot.admin.update", "$update"):
 		if message.author.id == owner_id: do_update = True
 		pass
-	elif startswith("a$exit", "logbot.admin.exit"):
-		if message.author.id == owner_id: client.logout()
+	elif startswith("logbot.admin.exit", "$exit"):
+		if message.author.id == owner_id: await client.logout()
 		pass
 
 	if do_update is True:

@@ -300,6 +300,11 @@ async def on_message(message):
 			tm = datetime.now() - message.timestamp
 			await client.send_message(message.channel, f"```LogBot Polling Online ~ {round(tm.microseconds / 1000)}```")
 			pass
+		elif startswith("$prefix", "logbot.polling.exit"):
+			if message.author.id == owner_id:
+				await client.logout()
+				pass
+			pass
 		pass
 
 	if do_update:

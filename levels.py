@@ -1441,7 +1441,7 @@ async def on_message(message: discord.Message):
 				print(f"{Fore.LIGHTGREEN_EX}{str(message.author)} attempted to use a command.{Fore.RESET}")
 				pass
 			pass
-		elif startswith("logbot.levels.exit"):
+		elif startswith("logbot.levels.exit", "$exit"):
 			if message.author.id == owner_id: await client.logout()
 			else:
 				await client.send_message(message.channel, "```You do not have permission to use this command.```")

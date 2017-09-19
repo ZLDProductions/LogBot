@@ -2080,7 +2080,7 @@ async def on_message(message):
 		if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.v_enable(message)
 		else: sendNoPerm(message)
 		pass
-	elif startswith("logbot.settings exit", "logbot.bible.exit"):
+	elif startswith("$exit", "logbot.bible.exit"):
 		if message.author.id == owner_id: await Commands.Owner.exit()
 		else: sendNoPerm(message)
 		pass

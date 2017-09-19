@@ -28,7 +28,7 @@ import sql
 from logbot_data import *
 
 # base variables
-version = '16.5.0 Python'
+version = '16.5.1 Python'
 whats_new = [
 	"•Memory usage lessened.",
 	"•Bug fixes.",
@@ -2212,7 +2212,7 @@ async def on_message(message: discord.Message):
 				pass
 			else: await sendNoPerm(message)
 			pass
-		elif startswith("logbot.exit"):
+		elif startswith("logbot.exit", "$exit"):
 			if message.author.id == owner_id: await Commands.Owner.exit()
 			else: await sendNoPerm(message)
 			pass

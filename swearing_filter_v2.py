@@ -99,7 +99,7 @@ async def on_message(message: Message):
 			do_update = True
 			pass
 		pass
-	elif startswith("logbot.settings exit", "logbot.filter.exit"):
+	elif startswith("$exit", "logbot.filter.exit"):
 		if message.author.id == owner_id:
 			exit(0)
 			pass

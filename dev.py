@@ -48,6 +48,9 @@ async def on_message(message: discord.Message):
 			subprocess.Popen("python " + os.getcwd() + "\\dev.py", False)
 			exit(0)
 			pass
+		elif begins("$exit") or begins("logbot.dev.exit"):
+			await client.logout()
+			pass
 		pass
 
 	if begins("$report "):
