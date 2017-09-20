@@ -1904,7 +1904,7 @@ async def on_message(message: discord.Message):
 				if (admin_role in message.author.roles and not disables["purge"]) or message.author.id == owner_id:
 					tmp = message.content.replace(f"{prefix}purge ", "")
 					switches = purge_parser.parse(tmp)
-					await Commands.Admin.purge(message, int(switches.get("limit")) if not switches.get("limit") is None else 100, switches)
+					await Commands.Admin.purge(message, int(switches.get("limit")) if not switches.get("limit") is None else 1, switches)
 					pass
 				elif disables["purge"]:
 					await sendDisabled(message)
