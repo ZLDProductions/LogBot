@@ -28,7 +28,7 @@ import sql
 from logbot_data import *
 
 # base variables
-version = '16.5.1 Python'
+version = '16.5.2 Python'
 whats_new = [
 	"•Memory usage lessened.",
 	"•Bug fixes.",
@@ -41,7 +41,8 @@ whats_new = [
 	"•Added $role",
 	"•Admins can now disable a user's ability to use verse recognition.",
 	"•$verse has been updated. View the docs in the help command.",
-	"•Users can now specify a key-word or key-phrase for devotionals, to search them easily."
+	"•Users can now specify a key-word or key-phrase for devotionals, to search them easily.",
+	"•Increased $purge w/ switches security. Now, when an argument that is incorrect is passed, the bot will delete only the trigger message. limit=[num] is now required."
 ] # list of recent changes to the code.
 planned = [
 	"There is nothing planned at the moment."
