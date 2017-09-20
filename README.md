@@ -499,7 +499,7 @@ It can only delete messages if they are under 2 weeks old.
 **Usage**
 
     $purge [switches]
-`switches` is one or more (separated by &&) of the switches listed below.
+`switches` is one or more (separated by &&) of the switches listed below. `limit=[num]` is required if you use switches.
 
 **Switches**
 

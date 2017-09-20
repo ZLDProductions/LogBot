@@ -200,7 +200,7 @@ infos = dict({
 		"Type"                :"Utility"
 	},
 	"_purge"         :{
-		"Info"                :"Purges messages from the channel it is sent through. Restraint through the switches.",
+		"Info"                :"Purges messages from the channel it is sent through. Restraint through the switches. If switches are present, and there is a problem, the bot will delete the trigger. limit is required.",
 		"Usage"               :"$purge limit=[num]&&contains=[text]&&from=[mention]&&attached=[True/False]&&embedded=[True/False]&&pinned=[True/False]&&mentions=[mention]&&mentions_channel=[channel_mention]&&mentions_role=[role_mention]",
 		"Required Permissions":"LogBot Admin",
 		"Type"                :"Moderation"
