@@ -133,12 +133,14 @@ None
 
 #### $help
 **Info**  
-Shows the help dialog for a specific command, or, if no command was stated, shows a list of commands.
+Shows the help dialog for a specific command, or, if no command was stated, shows a list of commands. Adding GroupBy modifiers changes the format of the command list. Adding multiple modifiers gives GroupByPlugin preference.
 
 **Usage**
 
     $help [command]
+    $help&{modifier}
 `command` is a command for the bot.
+`modifier` is either `GroupByPlugin` or `GroupByType`.
     
 **Required Permissions**  
 None
