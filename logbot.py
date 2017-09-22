@@ -42,7 +42,8 @@ whats_new = [
 	"•Admins can now disable a user's ability to use verse recognition.",
 	"•$verse has been updated. View the docs in the help command.",
 	"•Users can now specify a key-word or key-phrase for devotionals, to search them easily.",
-	"•Increased $purge w/ switches security. Now, when an argument that is incorrect is passed, the bot will delete only the trigger message. limit=[num] is now required."
+	"•Increased $purge w/ switches security.limit=[num] is now required for high-quantity deletion (more than 10 messages back).",
+	"•The help contents can now be sorted by Plugin or by Type. Just use $help&GroupByPlugin or $hel&GroupByType!"
 ] # list of recent changes to the code.
 planned = [
 	"There is nothing planned at the moment."
