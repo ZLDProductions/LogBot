@@ -359,6 +359,31 @@ def _filter(text: str) -> str:
 	else: return text
 	pass
 
+async def check_purge(message: discord.Message, limit=100, _check=None) -> int:
+	"""
+	Checks the messages that might be purge, and returns the quantity that will be purged.
+	:param message: The discord message that triggered the $purge command.
+	:param limit: The number of messages to check.
+	:param _check: The function to use to check each message. If none is provided, will return True for all instances.
+	:return: The number of messages to be purged.
+	"""
+	# noinspection PyUnusedLocal
+	def _dummycheck(m) -> bool: return True
+	if _check is None: _check = _dummycheck
+	count = 0
+	logs = client.logs_from(message.channel, limit=limit).iterate
+	while True:
+		try:
+			item = await logs()
+			if _check(item) is True: count += 1
+			del item
+			pass
+		except: break
+		pass
+	del logs
+	return count
+	pass
+
 class Commands:
 	class Member:
 		@staticmethod
@@ -1195,18 +1220,22 @@ class Commands:
 
 				return False not in res
 				pass
-			# noinspection PyUnresolvedReferences
-			purged_messages = await client.purge_from(
-				message.channel,
-				limit=_limit,
-				check=lambda m:_check(m),
-				before=_before,
-				after=_after
-			)
-			tmp = await client.send_message(message.channel, f"```Purged {len(purged_messages)} messages!```")
-			await sleep(3)
+			__num__ = await check_purge(message, _limit, _check=_check)
+			tmp = await client.send_message(message.channel, f"```Doing this will purge {__num__} messages from this channel.\nAre you sure (Y/N)?```")
+			msg_ = await client.wait_for_message(author=message.author, channel=message.channel)
+			await client.delete_message(msg_)
 			await client.delete_message(tmp)
+			if "y" in msg_.content.lower():
+				# noinspection PyUnresolvedReferences
+				purged_messages = await client.purge_from(message.channel, limit=_limit, check=lambda m:_check(m), before=_before, after=_after)
+				tmp = await client.send_message(message.channel, f"```Purged {len(purged_messages)} messages!```")
+				await sleep(3)
+				await client.delete_message(tmp)
+				del purged_messages
+				pass
 			del tmp
+			del msg_
+			del __num__
 			del _from
 			del _before
 			del _after
@@ -1217,7 +1246,6 @@ class Commands:
 			del _mentions
 			del _mentions_channel
 			del _mentions_role
-			del purged_messages
 			pass
 		@staticmethod
 		async def loose_purge(message: discord.Message):
@@ -1906,7 +1934,7 @@ async def on_message(message: discord.Message):
 				if (admin_role in message.author.roles and not disables["purge"]) or message.author.id == owner_id:
 					tmp = message.content.replace(f"{prefix}purge ", "")
 					switches = purge_parser.parse(tmp)
-					await Commands.Admin.purge(message, int(switches.get("limit")) if not switches.get("limit") is None else 10, switches)
+					await Commands.Admin.purge(message, int(switches.get("limit")) if not switches.get("limit") is None else 100, switches)
 					pass
 				elif disables["purge"]:
 					await sendDisabled(message)

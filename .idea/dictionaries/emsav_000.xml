@@ -24,12 +24,15 @@
       <w>cstm</w>
       <w>customcmds</w>
       <w>cycwf</w>
+      <w>dbmyp</w>
       <w>dchan</w>
       <w>dchannel</w>
       <w>defaultchannel</w>
       <w>defversion</w>
       <w>destrike</w>
       <w>divmod</w>
+      <w>downvotes</w>
+      <w>dummycheck</w>
       <w>edom</w>
       <w>emjs</w>
       <w>emoji</w>
@@ -69,6 +72,7 @@
       <w>lxjxr</w>
       <w>mappend</w>
       <w>marklist</w>
+      <w>mashape</w>
       <w>mcont</w>
       <w>mesg</w>
       <w>messagecount</w>
@@ -126,12 +130,14 @@
       <w>udat</w>
       <w>unban</w>
       <w>undeafened</w>
+      <w>unirest</w>
       <w>unkown</w>
       <w>unmarking</w>
       <w>unmute</w>
       <w>unmuted</w>
       <w>unmutes</w>
       <w>uobj</w>
+      <w>upvotes</w>
       <w>vals</w>
       <w>vappend</w>
       <w>vindex</w>
@@ -140,9 +146,11 @@
       <w>wikipedia</w>
       <w>wolof</w>
       <w>wordlist</w>
+      <w>xmsh</w>
       <w>ymrx</w>
       <w>zech</w>
       <w>zeph</w>
+      <w>zkpjsn</w>
     </words>
   </dictionary>
 </component>
