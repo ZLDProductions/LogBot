@@ -349,7 +349,7 @@ def _filter(text: str) -> str:
 	:param text: The uncensored text.
 	:return: The censored text.
 	"""
-	words = text.replace(",", "").replace(".", "").split(" ")
+	words = text.replace(",", "").replace(".", "").replace("!", "").replace("?", "").split(" ")
 	for word in words:
 		if word.lower() in dict_words:
 			words[words.index(word)] = "\\*" * len(word)
