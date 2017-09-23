@@ -28,7 +28,7 @@ import sql
 from logbot_data import *
 
 # base variables
-version = '16.5.2 Python'
+version = '16.6.0 Python'
 whats_new = [
 	"•Memory usage lessened.",
 	"•Bug fixes.",
@@ -42,8 +42,8 @@ whats_new = [
 	"•Admins can now disable a user's ability to use verse recognition.",
 	"•$verse has been updated. View the docs in the help command.",
 	"•Users can now specify a key-word or key-phrase for devotionals, to search them easily.",
-	"•Increased $purge w/ switches security.limit=[num] is now required for high-quantity deletion (more than 10 messages back).",
-	"•The help contents can now be sorted by Plugin or by Type. Just use $help&GroupByPlugin or $hel&GroupByType!"
+	"•Increased $purge w/ switches security. You will be notified of how many messages you are going to purge as well as be asked for confirmation of deleting the messages.",
+	"•The help contents can now be sorted by Plugin or by Type. Just use $help&GroupByPlugin or $help&GroupByType!"
 ] # list of recent changes to the code.
 planned = [
 	"There is nothing planned at the moment."
