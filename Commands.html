@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=windows-1252" http-equiv="content-type">
+    <title>Commands</title>
+    <meta content="ZLD Productions" name="author">
+    <link rel="stylesheet" href="styles.css"/>
+  </head>
+  <body>
+    <div class="navbar">
+      <a href="index.html">Home</a> - <a href="Commands.html">Commands</a> - <a href="About.html">About</a> - <a href="ToS.html">ToS</a> - <a href="Links.html">Links</a>
+      <hr>
+    </div>
+    <div class="page">
+      <h1>LogBot Commands</h1>
+      <p>Command Documentation Key:</p>
+      <p>Note: Do not use the brackets in your command.</p>
+      <table style="width: 100%" border="1">
+        <tbody>
+          <tr>
+            <td style="width: 209.433px;">Symbol(s)</td>
+            <td style="width: 745.567px;">Explanation</td>
+          </tr>
+          <tr>
+            <td>{param}</td>
+            <td>Required Parameter. Always use these.</td>
+          </tr>
+          <tr>
+            <td>[param]</td>
+            <td>Optional parameter. Only use these if you want to.</td>
+          </tr>
+          <tr>
+            <td>{param: [choice/choice/...]}</td>
+            <td>Required parameter with given choices. Always use one of the
+              choices given.</td>
+          </tr>
+          <tr>
+            <td>[param: [choice/choice/,,,]]</td>
+            <td>Optional parameter with given choices. Use one of them if you
+              want, otherwise: don't.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Often, the commands will use separators. Most of the time, it's a
+        space. Sometimes (in the case of $purge, $translate, and others) the
+        commands will use separators such as the vertical bar (|) or
+        double-ampersand (&amp;&amp;). Pay great attention to what is required.</p>
+      <table style="width: 100%;" border="1">
+        <tbody>
+          <tr>
+            <td style="width: 92.25px;">Command</td>
+            <td style="width: 350.583px;">Usage(s)</td>
+            <td style="width: 308.583px;">Explanation</td>
+            <td style="width: 174.583px;">Permissions</td>
+          </tr>
+          <tr>
+            <td><a id="exclude" name="exclude"></a>$exclude</td>
+            <td>$exclude {message}<br>
+              $ex {message}</td>
+            <td>Excludes a message from the logs.<br>
+              {message} is your message.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="excludechannel" name="excludechannel"></a>$excludechannel</td>
+            <td>$excludechannel {channels}<br>
+              $exc {channels}</td>
+            <td>Excludes one or more channels from the logs. This basically
+              ignores the channel(s).<br>
+              {channels} is at least one channel mention.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="includechannel" name="includechannel"></a>$includechannel</td>
+            <td>$includechannel {channels}<br>
+              $inc {channels}</td>
+            <td>Removes the channel(s) from the exclusion list.<br>
+              {channels} is at least one channel mention.<br>
+            </td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="mark" name="mark"></a>$mark</td>
+            <td>$mark a {channels}<br>
+              $mark r {channels}</td>
+            <td>Sets aside logs for a channel until you un-mark it. Useful if
+              you want to record the logs for a meeting.<br>
+              {channels} is at least one channel mention.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="admin" name="admin"></a>$admin</td>
+            <td>$admin a {users}<br>
+              $admin r {users}<br>
+              $admin s</td>
+            <td>Manipulates the bot's admin list.<br>
+              Admins can use any command.<br>
+              {users} is at least one user mention.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="showlist" name="showlist"></a>$showlist</td>
+            <td>$showlist</td>
+            <td>Shows the exclusion list.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="showmarks" name="showmarks"></a>$showmarks</td>
+            <td>$showmarks</td>
+            <td>Shows the marked channels list.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="help" name="help"></a>$help</td>
+            <td>$help [command]<br>
+              $help&amp;{modifier: [GroupByType/GroupByPlugin]}</td>
+            <td>Shows help contents. If [command] is not present, lists all of
+              the commands. If that is true and {modifier} is present, sorts the
+              commands by a group.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="version" name="version"></a>$version</td>
+            <td>$version</td>
+            <td>Shows the current bot version.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="channel" name="channel"></a>$channel</td>
+            <td>$channel new {type: [text/voice]} {name} {permission level:
+              [admin/member/everyone]}<br>
+              $channel del {channels}<br>
+              $channel edit {permission level: [admin/member/everyone]}
+              {channel}<br>
+              $channel show</td>
+            <td>Modifies the channels that the bot has created (or creates one).
+              Will not work on channels not created by the bot (for security reasons).</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="updates" name="updates"></a>$updates</td>
+            <td>$updates</td>
+            <td>Shows what I've recently added or changed with the bot.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="say" name="say"></a>$say</td>
+            <td>$say {text}|{channel}|{tts: [True/False]}</td>
+            <td>Sends a message in {channel}.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="planned" name="planned"></a>$planned</td>
+            <td>$planned</td>
+            <td>Shows what may come next in the bot.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="cmd" name="cmd"></a>$cmd</td>
+            <td>$cmd a {key}|{value}<br>
+              $cmd r {key}<br>
+              $cmd s</td>
+            <td>Creates, removes, or shows a list of the custom commands.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="query" name="query"></a>$query</td>
+            <td>$query {query}</td>
+            <td>Solves a mathematical problem.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="wiki" name="wiki"></a>$wiki</td>
+            <td>$wiki {term}</td>
+            <td>Retrieves information on a term from Wikipedia.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="verse" name="verse"></a>$verse</td>
+            <td>$verse info:book {book}<br>
+              $verse info:chapter {book} {chapter}<br>
+              $verse info:verse {book} {chapter}:{verse}<br>
+              $verse random<br>
+              $verse help<br>
+              $verse search {term}</td>
+            <td>Fetches information, fetches a random verse, shows the books of
+              the Bible, and searches for a term in the Bible.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="disable" name="disable"></a>$disable</td>
+            <td>$disable {command: [$exclude/$excludechannel/$includechannel/$mark/$showlist/$showmarks/$channel/$cmd/$query/$wiki/$say/welcome/goodbye/$decide/$prune/$purge/$user/$translate/filter]}</td>
+            <td>Disables {command} for the server.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="enable" name="enable"></a>$enable</td>
+            <td>$enable {command:
+[$exclude/$excludechannel/$includechannel/$mark/$showlist/$showmarks/$channel/$cmd/$query/$wiki/$say/welcome/goodbye/$decide/$prune/$purge/$user/$translate/filter]}</td>
+            <td>Enables {command} for the server.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="disables" name="disables"></a>$disables</td>
+            <td>$disables</td>
+            <td>Shows the disabled commands.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="prunes" name="prunes"></a>$prunes</td>
+            <td>$prunes {days}</td>
+            <td>Estimates the number of users who would be kicked by pruning.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="prune" name="prune"></a>$prune</td>
+            <td>$prune {days}</td>
+            <td>Prunes users, kicking them if they A: have no role, and B: have
+              been offline for {days}</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="suggest" name="suggest"></a>$suggest</td>
+            <td>$suggest {suggestion}</td>
+            <td>Saves a suggestion for the developer.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="decide" name="decide"></a>$decide</td>
+            <td>$decide {options}</td>
+            <td>Decides between {options}, which is a list of options split by
+              the vertical bar (|)</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="welcome" name="welcome"></a>$welcome</td>
+            <td>$welcome [msg]</td>
+            <td>Sets or gets the welcome message for the server.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="goodbye" name="goodbye"></a>$goodbye</td>
+            <td>$goodbye [msg]</td>
+            <td>Sets or gets the goodbye message for the server.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="user" name="user"></a>$user</td>
+            <td>$user {users}</td>
+            <td>Gets basic information on the user.<br>
+              {users} is at least one user mention or user name.<br>
+            </td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="invite" name="invite"></a>$invite</td>
+            <td>$invite</td>
+            <td>Gives you the bot's server-invite link (also available on-site)</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="purge" name="purge"></a>$purge</td>
+            <td>$purge [switches: [limit={num}/contains={text}/from={mention}/attached={True/False}/embedded={True/False}/pinned={True/False}/mentions={mention}/mentions_channel={channel_mention}/mentions_role={role_mention}]]</td>
+            <td>Purges messages from a channel. The switches act as a
+              constraint. If there are no switches, the bot will delete the
+              previous 100 messages. Switches are separated by &amp;&amp;</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="kick" name="kick"></a>$kick</td>
+            <td>$kick {users}</td>
+            <td>Kicks {users}.<br>
+              {users} is at least one user mention.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="ban" name="ban"></a>$ban</td>
+            <td>$ban {users}</td>
+            <td>Bans {users}.<br>
+              {users} is at least one user mention.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="permissions" name="permissions"></a>$permissions</td>
+            <td>$permissions [channel] [user]</td>
+            <td>Fetches the permissions of [user] in [channel]. Excluding
+              [channel] is for server permissions. Excluding [user] is for
+              yourself.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="translate.get" name="translate.get"></a>$translate.get</td>
+            <td>$translate.get</td>
+            <td>Fetches the language codes for every language in the bot.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="translate" name="translate"></a>$translate</td>
+            <td>$translate {from}|{to}|{text}</td>
+            <td>Translate text from one language to another. See the language
+              codes for reference.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="dm" name="dm"></a>$dm</td>
+            <td>$dm</td>
+            <td>Starts a DM with the bot.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="filter" name="filter"></a>$filter</td>
+            <td>$filter settype {type: [edit/delete]}<br>
+              $filter</td>
+            <td>Alters or shows the swearing filter settings.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="convert" name="convert"></a>$convert</td>
+            <td>$convert {codec: [unicode/ascii/eom/utf-8]} {string}</td>
+            <td>Converts a string to a different encoding.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="mute" name="mute"></a>$mute</td>
+            <td>$mute {users}</td>
+            <td>Mutes users.<br>
+              {users} is at least one user mention.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="unmute" name="unmute"></a>$unmute</td>
+            <td>$unmute {users}</td>
+            <td>Unmutes users.<br>
+              {users} is at least one user mention.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="mutes" name="mutes"></a>$mutes</td>
+            <td>$mutes</td>
+            <td>Shows the muted people.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="setchannel" name="setchannel"></a>$setchannel</td>
+            <td>$setchannel {channel}</td>
+            <td>Sets the default daily-verse channel.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="getchannel" name="getchannel"></a>$getchannel</td>
+            <td>$getchannel {channel}</td>
+            <td>Gets the default daily-verse channel.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="votd" name="votd"></a>$votd</td>
+            <td>$votd</td>
+            <td>Sends the VotD through chat.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="logbot.info" name="logbot.info"></a>logbot.info</td>
+            <td>logbot.info</td>
+            <td>Shows the bot information and the current-instance information.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="lrank" name="lrank"></a>l$rank</td>
+            <td>l$rank [user]</td>
+            <td>Shows the rank of the sender, or [user].</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="llevels" name="llevels"></a>l$levels</td>
+            <td>l$levels</td>
+            <td>Shows the server leaderboard. Takes a while to parse the list,
+              because it is so long.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="lplace" name="lplace"></a>l$place</td>
+            <td>l$place [user]</td>
+            <td>Shows [user]'s (or yours) place on the leaderboard. Somewhat
+              less laggy than l$levels.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="lbuy" name="lbuy"></a>l$buy</td>
+            <td>l$buy {item} [amount]</td>
+            <td>Purchases an item from the shop with credits earned by participating
+              in chat. {item} is an item from the shop.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="lshop" name="lshop"></a>l$shop</td>
+            <td>l$shop</td>
+            <td>Shows the purchasable items within the bot.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="lgift" name="lgift"></a>l$gift</td>
+            <td>l$gift {gift: [cred/xp/cpm/mul]} {amount} {user}</td>
+            <td>Sends some of {gift} to {user}.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="laward" name="laward"></a>l$award</td>
+            <td>l$award {award: [cred/rank/xp/cpm/tier]} {amount} {user}</td>
+            <td>Generates an award for the user.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="ping" name="ping"></a>$ping</td>
+            <td>$ping</td>
+            <td>Checks which modules, if any, are online.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="ldisabled" name="ldisabled"></a>l$disabled</td>
+            <td>l$disabled</td>
+            <td>Shows if the levels module has been disabled for the server.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="ldisable" name="ldisable"></a>l$disable</td>
+            <td>l$disable</td>
+            <td>Disables the levels module for the server.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="lenable" name="lenable"></a>l$enable</td>
+            <td>l$enable</td>
+            <td>Enables the levels module for the server.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="vdisable" name="vdisable"></a>v$disable</td>
+            <td>v$disable {channel/user}</td>
+            <td>Disables verse-recognition for a channel or a user.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="venable" name="venable"></a>v$enable</td>
+            <td>v$enable {channel/user}</td>
+            <td>Enables verse-recognition for a channel or a user.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="vdisables" name="vdisables"></a>v$disables</td>
+            <td>v$disables</td>
+            <td>Shows a list of disabled channels and users for this server.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="grps" name="grps"></a>g$rps</td>
+            <td>g$rps {choice}</td>
+            <td>Plays a game of Rock, Paper, Scissors.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="grpsls" name="grpsls"></a>g$rpsls</td>
+            <td>g$rpsls {choice}</td>
+            <td>Plays a game of Rock, Paper, Scissors, Lizard, Spock.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="grules" name="grules"></a>g$rules</td>
+            <td>g$rules {game: [rps/rpsls/scramble]}</td>
+            <td>Shows rules for a game.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="pstart" name="pstart"></a>p$start</td>
+            <td>p$start {prompt}|{choices}</td>
+            <td>Starts a vote and returns the vote's index.<br>
+              {choices} is a list of choices separated by |</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="pend" name="pend"></a>p$end</td>
+            <td>p$end {index}</td>
+            <td>Ends a vote and returns it's results.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="pstatus" name="pstatus"></a>p$status</td>
+            <td>p$status {index}</td>
+            <td>Shows the stats for a poll.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="pvote" name="pvote"></a>p$vote</td>
+            <td>p$vote {index} {choice}</td>
+            <td>Votes for {choice} in poll {index}.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="ppolls" name="ppolls"></a>p$polls</td>
+            <td>p$polls</td>
+            <td>Shows all of the polls for a server, as well as their indices.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="psave" name="psave"></a>p$save</td>
+            <td>p$save {index}</td>
+            <td>Saves a poll in the database, for later use.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="pview" name="pview"></a>p$view</td>
+            <td>p$view {index}</td>
+            <td>Shows a saved poll.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="premove" name="premove"></a>p$remove</td>
+            <td>p$remove {index}</td>
+            <td>Removes a saved poll from the database.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="psaved" name="psaved"></a>p$saved</td>
+            <td>p$saved</td>
+            <td>Shows all of the server's saved polls.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="ldm" name="ldm"></a>l$dm</td>
+            <td>l$dm {val: [t/f]}</td>
+            <td>Sets whether or not you want level up alerts to appear in DM or
+              not.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="setversion" name="setversion"></a>$setversion</td>
+            <td>$setversion {type: [kjv/akjv/web]}</td>
+            <td>Sets your default verse-recognition language.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="settype" name="settype"></a>$settype</td>
+            <td>$settype {type: [text/embed]}</td>
+            <td>Sets the appearance of the verse recognition results.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="hq" name="hq"></a>$hq</td>
+            <td>$hq</td>
+            <td>Sends the LogBot HQ invite link through chat.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="fetch" name="fetch"></a>$fetch</td>
+            <td>$fetch {channel}<br>
+              $fetch event</td>
+            <td>Fetches logs for {channel}. Use event for non-channel-specific
+              logs.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="hprefix" name="hprefix"></a>h$prefix</td>
+            <td>h$prefix [prefix]</td>
+            <td>Shows the bot's prefixes and information about them.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="joinrole" name="joinrole"></a>$joinrole</td>
+            <td>$joinrole [role]</td>
+            <td>Gets or sets the server's joinrole.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="git" name="git"></a>$git</td>
+            <td>$git</td>
+            <td>Sends the bot's GitHub URL through chat.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="guess" name="guess"></a>$guess</td>
+            <td>$guess {word}</td>
+            <td>Takes a guess at what the scrambled word is.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="scramble" name="scramble"></a>$scramble</td>
+            <td>$scramble add {word}<br>
+              $scramble rem {word}<br>
+              $scramble find {word}<br>
+              $scramble list<br>
+              $scramble</td>
+            <td>Adds, removes, finds, or lists words in the scramble word
+              database, or starts a new word scramble.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="giveup" name="giveup"></a>$giveup</td>
+            <td>$giveup</td>
+            <td>Gives up on a word scramble. This tells you the word.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="lalert" name="lalert"></a>l$alert</td>
+            <td>l$alert {channel}</td>
+            <td>Sets the default channel to alert you when you level up.<br>
+              None will give you no alert, and self will send it in the same
+              channel.<br>
+            </td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="logchannel" name="logchannel"></a>$logchannel</td>
+            <td>$logchannel [channel]</td>
+            <td>Gets or sets the log channel for the server.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="roll" name="roll"></a>$roll</td>
+            <td>$roll [num]</td>
+            <td>Rolls some dice.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="channels" name="channels"></a>$channels</td>
+            <td>$channels</td>
+            <td>Shows all of the server's channels.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="devotional" name="devotional"></a>$devotional</td>
+            <td>$devotional<br>
+              &amp;title=[title]<br>
+              &amp;description=[description]<br>
+              &amp;thumbnail=[image-url]<br>
+              &amp;footer=[text]<br>
+              &amp;text=[text]<br>
+              &amp;passage=[ref]<br>
+              &amp;keyword=[word]</td>
+            <td>Creates a discord embed with the data you provide. Lines can be
+              excluded, or used multiple times. Command can be split into multiple
+              messages, but needs to be ended with &amp;end to do so.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="lmilestone" name="lmilestone"></a>l$milestone</td>
+            <td>l$milestone a {type: [tier/rank]} {level} {role}<br>
+              l$milestone r {type: [tier/rank]} {level} {role}<br>
+              l$milestone s</td>
+            <td>Edits the server's milestones.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="lslots" name="lslots"></a>l$slots</td>
+            <td>l$slots [bid]</td>
+            <td>Plays the slot machine, or shows the slot's rules.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="ldefault" name="ldefault"></a>l$default</td>
+            <td>l$default DM {value: [on/true/1/off/false/0]}<br>
+              l$default AlertChannel {channel}</td>
+            <td>Sets the server's default levels module settings.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="ldefaults" name="ldefaults"></a>l$defaults</td>
+            <td>l$defaults</td>
+            <td>Shows the server's default levels module settings.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="ldefaultchannel" name="ldefaultchannel"></a>l$defaultchannel</td>
+            <td>l$defaultchannel {channel}</td>
+            <td>Sets the server's default welcoming channel. {channel} can be
+              None. Likely deprecated.</td>
+            <td>LogBot Admin.</td>
+          </tr>
+          <tr>
+            <td><a id="report" name="report"></a>$report</td>
+            <td>$report {bug}</td>
+            <td>Reports a bug to the developer. Please include a detailed
+              description and, if possible, a link to an image (not a file, or
+              pasted image)</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="reports" name="reports"></a>$reports</td>
+            <td>$reports</td>
+            <td>Shows the bot's bug reports</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="mstrikes" name="mstrikes"></a>m$strikes</td>
+            <td>m$strikes [user]</td>
+            <td>Shows a user's strikes.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="mstrike" name="mstrike"></a>m$strike</td>
+            <td>m$strike {user}|{reason}</td>
+            <td>Strikes a user and assigns and index value. The more strikes
+              that exist at any one time, the higher the index value.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="mdestrike" name="mdestrike"></a>m$destrike</td>
+            <td>m$destrike {code}</td>
+            <td>Removes a strike from a user.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="vsettings" name="vsettings"></a>v$settings</td>
+            <td>v$settings</td>
+            <td>Shows the verse module's settings for the server and for you.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="changeprefix" name="changeprefix"></a>$changeprefix</td>
+            <td>$changeprefix {prefix}</td>
+            <td>Changes the server's prefix.</td>
+            <td>LogBot Admin</td>
+          </tr>
+          <tr>
+            <td><a id="prefix" name="prefix"></a>$prefix</td>
+            <td>$prefix</td>
+            <td>Shows the server's prefix. Works with both the server's prefix
+              and the default prefix ($).</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="role" name="role"></a>$role</td>
+            <td>$role {role}</td>
+            <td>Shows information about a role.<br>
+              {role} can be a role mention, role name, or role id.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="urban" name="urban"></a>$urban</td>
+            <td>$urban {phrase}</td>
+            <td>Shows the UrbanDictionary definition of a phrase. May have
+              swearing.</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><a id="dict" name="dict"></a>$dict</td>
+            <td>$dict def {word}<br>
+              $dict syn {word}<br>
+              $dict ant {word}</td>
+            <td>Shows the definition, the synonyms, or the antonyms of a word.</td>
+            <td>None</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footer">
+      <hr>
+      <p class="Copyright">Copyright &copy; ZLD Productions 2017</p>
+    </div>
+  </body>
+</html>
