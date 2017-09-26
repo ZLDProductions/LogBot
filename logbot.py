@@ -1225,13 +1225,23 @@ class Commands:
 			msg_ = await client.wait_for_message(author=message.author, channel=message.channel)
 			await client.delete_message(msg_)
 			await client.delete_message(tmp)
-			if "y" in msg_.content.lower():
+			def equals(msg:str, *args):
+				for arg in args:
+					if msg.lower() == arg.lower(): return True
+					pass
+				return False
+			if equals(msg_.content, "yes", "yay", "yup", "y"):
 				# noinspection PyUnresolvedReferences
 				purged_messages = await client.purge_from(message.channel, limit=_limit, check=lambda m:_check(m), before=_before, after=_after)
 				tmp = await client.send_message(message.channel, f"```Purged {len(purged_messages)} messages!```")
 				await sleep(3)
 				await client.delete_message(tmp)
 				del purged_messages
+				pass
+			else:
+				tmp = await client.send_message(message.channel, f"```Canceled the purge.```")
+				await sleep(3)
+				await client.delete_message(tmp)
 				pass
 			del tmp
 			del msg_
