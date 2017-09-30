@@ -31,7 +31,46 @@ def format_message(msg: str, _tag: str) -> list:
 async def on_message(message: discord.Message):
 	begins = message.content.startswith
 	if message.author.id == owner_id:
-		if begins("$suggestions"):
+		if begins("$edit-suggestions"):
+			if not " " in message.content: page = 0
+			else: page = int(message.content.replace("$edit-suggestions ", ""))
+			items = []
+			# <editor-fold desc="Reading the Suggestions">
+			reader = open(suggestions, 'r')
+			ret = reader.read()
+			reader.close()
+			# </editor-fold>
+			# <editor-fold desc="Splitting the Suggestions">
+			tmp = ret.split("\n")
+			index = 0
+			for item in tmp:
+				if not item == "":
+					if index % 5 == 0: items.append(f"\n{item}")
+					else: items[-1] += f"\n{item}"
+				pass
+			# </editor-fold>
+			msg1 = await client.send_message(message.channel, f"```{items[page]}```")
+			msg2 = await client.send_message(message.channel, f"```Type the new content:```")
+			msg = await client.wait_for_message(author=message.author, channel=message.channel)
+			items[page] = msg.content
+			items = ''.join(items)
+			# <editor-fold desc="Saving the Suggestions">
+			writer = open(suggestions, 'w')
+			writer.write("\n" + str(items))
+			writer.close()
+			# </editor-fold>
+			await client.delete_messages([msg1, msg2])
+			del writer
+			del msg
+			del msg1
+			del msg2
+			del tmp
+			del items
+			del page
+			del index
+			del reader
+			pass
+		elif begins("$suggestions"):
 			# <editor-fold desc="READER: suggestions">
 			# noinspection PyShadowingNames
 			reader = open(suggestions, 'r')
@@ -50,6 +89,31 @@ async def on_message(message: discord.Message):
 			pass
 		elif begins("$exit") or begins("logbot.dev.exit"):
 			await client.logout()
+			pass
+		elif begins("$eval "):
+			cnt = message.content.replace("$eval ", "").split("\n")
+			def doeval(lines):
+				_vars = {}
+				for line in lines:
+					try:
+						if " = " in line: name = line.split(" = ")[0]; func = eval(line.split(" = ")[1]); _vars[name] = func
+						else: return str(eval(line)), "Success!"
+						pass
+					except: break
+					pass
+				return "ERROR", "Improper Syntax"
+				pass
+			tmp = doeval(cnt)
+			e = discord.Embed(title=f"Evaluate {'; '.join(cnt)}", description="Results", colour=discord.Colour.dark_grey())
+			if tmp[1] == "Success!":
+				e.add_field(name="Result", value=tmp[1])
+				e.add_field(name="Return", value=tmp[0])
+				pass
+			else:
+				e.add_field(name="Result", value=tmp[0])
+				e.add_field(name="Problem", value=tmp[1])
+				pass
+			await client.send_message(message.channel, "Here you go!", embed=e)
 			pass
 		pass
 

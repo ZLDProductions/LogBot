@@ -565,7 +565,7 @@ class Commands:
 			suggestion = message.content.replace(f"{prefix}suggest ", "", 1)
 			# <editor-fold desc="WRITER: suggestions">
 			writer = open(suggestions, 'a')
-			writer.write(f"\n[{str(message.author)}] {suggestion}")
+			writer.write(f"\n{suggestion}")
 			writer.close()
 			# </editor-fold>
 			await client.send_message(message.channel, "```Thank you for your suggestion.```")
@@ -1225,7 +1225,7 @@ class Commands:
 			msg_ = await client.wait_for_message(author=message.author, channel=message.channel)
 			await client.delete_message(msg_)
 			await client.delete_message(tmp)
-			def equals(msg:str, *args):
+			def equals(msg: str, *args):
 				for arg in args:
 					if msg.lower() == arg.lower(): return True
 					pass
@@ -2227,6 +2227,25 @@ async def on_message(message: discord.Message):
 				try: await client.send_message(message.channel, "Here you go!", embed=e)
 				except: await client.send_message(message.channel, _text)
 				pass
+			elif startswith(f"{prefix}sort "):
+				cnt = message.content.replace(f"{prefix}sort ", "").split(", ")
+				cnt.sort()
+				cnt = ', '.join(cnt)
+				await client.send_message(message.channel, f"```Sorted list:\n{cnt}```")
+				del cnt
+				pass
+			elif startswith(f"{prefix}desort "):
+				cnt = message.content.replace(f"{prefix}desort ", "").split(", ")
+				length = len(cnt)
+				tmp = []
+				app = tmp.append
+				while len(tmp) < length: item = random.choice(cnt); app(item); cnt.remove(item)
+				cnt = ', '.join(tmp)
+				await client.send_message(message.channel, f"```Desorted list:\n{cnt}```")
+				del tmp
+				del app
+				del cnt
+				pass
 
 			# elif startswith(f"{prefix}yoda "):
 			# 	cnt = message.content.replace(f"{prefix}yoda ", "").replace(" ", "+")
@@ -2855,7 +2874,7 @@ async def on_ready():
 			pass
 
 		if "-t" in argv:
-			t = argv[argv.index("-t")+1].split(".")
+			t = argv[argv.index("-t") + 1].split(".")
 			bootup_time = datetime(year=int(t[2]), month=int(t[0]), day=int(t[1]), hour=int(t[3]), minute=int(t[4]), second=int(t[5]), microsecond=int(t[6]))
 			pass
 		pass

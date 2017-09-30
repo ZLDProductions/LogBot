@@ -2,6 +2,7 @@
   <dictionary name="emsav_000">
     <words>
       <w>akjv</w>
+      <w>alist</w>
       <w>bangla</w>
       <w>bhutani</w>
       <w>bindex</w>
@@ -22,6 +23,7 @@
       <w>creds</w>
       <w>crem</w>
       <w>cstm</w>
+      <w>currentvalue</w>
       <w>customcmds</w>
       <w>cycwf</w>
       <w>dbmyp</w>
@@ -29,6 +31,8 @@
       <w>dchannel</w>
       <w>defaultchannel</w>
       <w>defversion</w>
+      <w>desort</w>
+      <w>desorted</w>
       <w>destrike</w>
       <w>divmod</w>
       <w>downvotes</w>
@@ -40,6 +44,7 @@
       <w>encouragin</w>
       <w>excludechannel</w>
       <w>faeroese</w>
+      <w>fillslot</w>
       <w>fmany</w>
       <w>galatian</w>
       <w>galations</w>
@@ -60,6 +65,7 @@
       <w>laothian</w>
       <w>lappend</w>
       <w>leaderboard</w>
+      <w>lefthalf</w>
       <w>lettish</w>
       <w>lightcyan</w>
       <w>lightgreen</w>
@@ -98,6 +104,7 @@
       <w>retpre</w>
       <w>rets</w>
       <w>retu</w>
+      <w>righthalf</w>
       <w>rpsls</w>
       <w>selfbot</w>
       <w>servanthood</w>
@@ -118,8 +125,10 @@
       <w>sqlkjv</w>
       <w>sqlread</w>
       <w>sqlweb</w>
+      <w>startposition</w>
       <w>stng</w>
       <w>strikethrough</w>
+      <w>sublistcount</w>
       <w>tappend</w>
       <w>tdat</w>
       <w>tegulu</w>
@@ -151,6 +160,7 @@
       <w>zech</w>
       <w>zeph</w>
       <w>zkpjsn</w>
+      <w>zyxwvutsrqpnomlkjihgfedcba</w>
     </words>
   </dictionary>
 </component>
