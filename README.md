@@ -1561,7 +1561,7 @@ None
 ---
 
 #### $dict
-**info**  
+**Info**  
 Shows the definitions, antonyms, or synonyms of a word.
 
 **Usage**  
@@ -1573,6 +1573,19 @@ Shows the definitions, antonyms, or synonyms of a word.
 
 **Required Permissions**  
 None
+
+---
+
+#### $files
+**Info**  
+Shows the server's log files.
+
+**Usage**
+
+    $files
+
+**Required Permissions**  
+LogBot Admin
 
 ---
 

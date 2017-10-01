@@ -28,7 +28,7 @@ import sql
 from logbot_data import *
 
 # base variables
-version = '16.6.0 Python'
+version = '16.6.1 Python'
 whats_new = [
 	"•Memory usage lessened.",
 	"•Bug fixes.",
@@ -384,6 +384,25 @@ async def check_purge(message: discord.Message, limit=100, _check=None) -> int:
 	return count
 	pass
 
+def get_diff(then: datetime, now: datetime) -> str:
+	years = now.year - then.year
+	months = now.month - then.month
+	days = now.day - then.day
+	weeks = 0
+	hours = now.hour - then.hour
+	minutes = now.minute - then.minute
+	seconds = now.second - then.second
+	if months < 0: years -= 1; months = 12 - (months * -1)
+	if days < 0: months -= 1; days = 30 - (days * -1)
+	if hours < 0: days -= 1; hours = 24 - (hours * -1)
+	if minutes < 0: hours -= 1; minutes = 60 - (minutes * -1)
+	if seconds < 0: minutes -= 1; seconds = 60 - (seconds * -1)
+	while days >= 7:
+		weeks += 1
+		days -= 7
+		pass
+	return f"{years} {'years' if not years == 1 else 'year'}, {months} {'months' if not months == 1 else 'month'}, {weeks} {'weeks' if not weeks == 1 else 'week'}, {days} {'days' if not days == 1 else 'day'}, {hours} {'hours' if not hours == 1 else 'hour'}, {minutes} {'minutes' if not minutes == 1 else 'minute'}, {seconds} {'seconds' if not seconds == 1 else 'second'}"
+
 class Commands:
 	class Member:
 		@staticmethod
@@ -482,7 +501,7 @@ class Commands:
 					.add_field(name="ID", value=server.id, inline=True) \
 					.add_field(name="Total Channels", value=str(len(server.channels)), inline=True) \
 					.add_field(name="Total Roles", value=str(len(server.roles)), inline=True) \
-					.add_field(name="Creation Time", value=f"{m.month}.{m.day}.{m.year} {m.hour}:{m.minute}") \
+					.add_field(name="Creation Time", value=f"{get_diff(m, datetime.now())} ago ({m.month}.{m.day}.{m.year} {m.hour}:{m.minute})") \
 					.add_field(name="Default Channel", value=str(server.default_channel)) \
 					.set_thumbnail(url=server.icon_url)
 				try: e.add_field(name="Role Hierarchy", value='\n'.join(roles))
@@ -498,7 +517,7 @@ class Commands:
 					.add_field(name="ID", value=server.id, inline=True) \
 					.add_field(name="Total Channels", value=str(len(server.channels)), inline=True) \
 					.add_field(name="Total Roles", value=str(len(server.roles)), inline=True) \
-					.add_field(name="Creation Time", value=f"{m.month}.{m.day}.{m.year} {m.hour}:{m.minute}") \
+					.add_field(name="Creation Time", value=f"{get_diff(m, datetime.now())} ago ({m.month}.{m.day}.{m.year} {m.hour}:{m.minute})") \
 					.add_field(name="Default Channel", value=str(server.default_channel)) \
 					.set_thumbnail(url=server.icon_url)
 				# </editor-fold>
@@ -1338,7 +1357,7 @@ class Commands:
 				.add_field(name="Name", value=str(user)) \
 				.add_field(name="ID", value=user.id) \
 				.add_field(name="Is Bot", value=str(user.bot)) \
-				.add_field(name="Date Created", value=f"{m.month}.{m.day}.{m.year} {m.hour}:{m.minute}") \
+				.add_field(name="Date Created", value=f"{get_diff(m, datetime.now())} ({m.month}.{m.day}.{m.year} {m.hour}:{m.minute})") \
 				.set_image(url=user.avatar_url) \
 				.set_thumbnail(url=user.default_avatar_url)
 			await client.send_message(message.channel, "Here you go!", embed=e)
@@ -2227,24 +2246,36 @@ async def on_message(message: discord.Message):
 				try: await client.send_message(message.channel, "Here you go!", embed=e)
 				except: await client.send_message(message.channel, _text)
 				pass
-			elif startswith(f"{prefix}sort "):
-				cnt = message.content.replace(f"{prefix}sort ", "").split(", ")
-				cnt.sort()
-				cnt = ', '.join(cnt)
-				await client.send_message(message.channel, f"```Sorted list:\n{cnt}```")
-				del cnt
-				pass
-			elif startswith(f"{prefix}desort "):
-				cnt = message.content.replace(f"{prefix}desort ", "").split(", ")
-				length = len(cnt)
-				tmp = []
-				app = tmp.append
-				while len(tmp) < length: item = random.choice(cnt); app(item); cnt.remove(item)
-				cnt = ', '.join(tmp)
-				await client.send_message(message.channel, f"```Desorted list:\n{cnt}```")
-				del tmp
-				del app
-				del cnt
+			elif startswith(f"{prefix}files"):
+				if admin_role in message.author.roles or message.author.id == owner_id:
+					files = []
+					for channel in message.server.channels:
+						try:
+							try:
+								_file = f"{channel}.mark.txt"
+								_reader_tmp = open(f"{discord_logs}\\{message.server.name}\\{file}", 'r')
+								tmp = _reader_tmp.read()
+								_reader_tmp.close()
+								files.append(_file)
+								del tmp
+								del _reader_tmp
+								del _file
+								pass
+							except:pass
+							file = f"{channel}.txt"
+							reader_tmp = open(f"{discord_logs}\\{message.server.name}\\{file}", 'r')
+							tmp = reader_tmp.read()
+							reader_tmp.close()
+							files.append(file)
+							del file
+							del reader_tmp
+							del tmp
+						except: pass
+					fstr = f"```" + '\n'.join(files) + "```"
+					await client.send_message(message.channel, fstr)
+					del fstr
+					del files
+					pass
 				pass
 
 			# elif startswith(f"{prefix}yoda "):

@@ -744,6 +744,13 @@ infos = dict({
 		"Required Permissions":"None",
 		"Type"                :"Fun",
 		"Plugin"              :"Main"
+	},
+	"_files"         :{
+		"Info"                :"Shows the server's log files.",
+		"Usage"               :"$files",
+		"Required Permissions":"LogBot Admin",
+		"Plugin"              :"Main",
+		"Type"                :"Utility"
 	}
 })
 prefixes = {
