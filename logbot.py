@@ -406,6 +406,75 @@ def get_diff(then: datetime, now: datetime) -> str:
 class Commands:
 	class Member:
 		@staticmethod
+		async def urban(message: discord.Message, prefix: str):
+			_def = urbandictionary.define(message.content.replace(f"{prefix}urban ", ""))[0]
+			_text = f"""```
+			{_def.word}
+
+			Definition:
+			{_def.definition}
+
+			Example:
+			{_def.example}
+
+			------
+
+			{_def.upvotes} Upvotes
+			{_def.downvotes} Downvotes
+			```
+			""".replace("\t", "")
+			__definition = _filter(_def.definition)
+			__example = _filter(_def.example)
+			if len(__example) == 0: __example = "No available examples..."
+			e = discord.Embed(title=_def.word, description=f"Definition(s) of {_def.word}", colour=discord.Colour.blue()) \
+				.add_field(name="Definition", value=__definition, inline=False) \
+				.add_field(name="Example", value=__example, inline=False) \
+				.add_field(name="Upvotes", value=_def.upvotes) \
+				.add_field(name="Downvotes", value=_def.downvotes)
+			try: await client.send_message(message.channel, "Here you go!", embed=e)
+			except: await client.send_message(message.channel, _text)
+			pass
+		@staticmethod
+		async def role(message: discord.Message, prefix: str):
+			_cnt_ = message.content.replace(f"{prefix}role ", "")
+			if len(message.role_mentions) > 0: _role = message.role_mentions[0]
+			else: _role = discord.utils.find(lambda r:r.name == _cnt_ or r.id == _cnt_, message.server.roles)
+			_members_in_role = [str(m) for m in message.server.members if _role in m.roles]
+			_position = _role.position
+			p = _role.permissions
+			_id = _role.id
+			_name = str(_role)
+			_created_at = _role.created_at
+			_colour = _role.colour
+			_mentionable = _role.mentionable
+			e = discord.Embed(title="Role Information", description=_name, colour=_colour) \
+				.add_field(name="Members", value=', '.join(_members_in_role), inline=False) \
+				.add_field(name="Position", value=str(_position), inline=False) \
+				.add_field(name="ID", value=_id, inline=False) \
+				.add_field(name="Mentionable", value=str(_mentionable), inline=False) \
+				.add_field(name="Create Instant Invite", value=str(p.create_instant_invite), inline=True) \
+				.add_field(name="Kick Members", value=str(p.kick_members), inline=True) \
+				.add_field(name="Ban Members", value=str(p.ban_members), inline=True) \
+				.add_field(name="Administrator", value=str(p.administrator), inline=True) \
+				.add_field(name="Manage Channels", value=str(p.manage_channels), inline=True) \
+				.add_field(name="Manage Server", value=str(p.manage_server), inline=True) \
+				.add_field(name="Read Messages", value=str(p.read_messages), inline=True) \
+				.add_field(name="Send Messages", value=str(p.send_messages), inline=True) \
+				.add_field(name="Send TTS Messages", value=str(p.send_tts_messages), inline=True) \
+				.add_field(name="Manage Messages", value=str(p.manage_messages), inline=True) \
+				.add_field(name="Embed Links", value=str(p.embed_links), inline=True) \
+				.add_field(name="Attach Files", value=str(p.attach_files), inline=True) \
+				.add_field(name="Read Message History", value=str(p.read_message_history), inline=True) \
+				.add_field(name="Mention Everyone", value=str(p.mention_everyone), inline=True) \
+				.add_field(name="Use External Emojis", value=str(p.external_emojis), inline=True) \
+				.add_field(name="Change Nickname", value=str(p.change_nickname), inline=True) \
+				.add_field(name="Manage Nicknames", value=str(p.manage_nicknames), inline=True) \
+				.add_field(name="Manage Roles", value=str(p.manage_roles), inline=True) \
+				.add_field(name="Manage Emojis", value=str(p.manage_emojis), inline=True) \
+				.set_footer(text=f"Created at {_created_at}")
+			await client.send_message(message.channel, f"Here you go!", embed=e)
+			pass
+		@staticmethod
 		async def channels(message: discord.Message):
 			_channels = [x for x in client.get_all_channels() if x.server == message.server]
 			voice_channels = []
@@ -866,6 +935,50 @@ class Commands:
 		pass
 	# noinspection PyShadowingNames
 	class Admin:
+		@staticmethod
+		async def files(message: discord.Message):
+			files = []
+			for channel in message.server.channels:
+				try:
+					try:
+						_file = f"{channel}.mark.txt"
+						_reader_tmp = open(f"{discord_logs}\\{message.server.name}\\{_file}", 'r')
+						tmp = _reader_tmp.read()
+						_reader_tmp.close()
+						files.append(_file)
+						del tmp
+						del _reader_tmp
+						del _file
+						pass
+					except: pass
+					file = f"{channel}.txt"
+					reader_tmp = open(f"{discord_logs}\\{message.server.name}\\{file}", 'r')
+					tmp = reader_tmp.read()
+					reader_tmp.close()
+					files.append(file)
+					del file
+					del reader_tmp
+					del tmp
+				except: pass
+				pass
+			fstr = f"```" + '\n'.join(files) + "```"
+			await client.send_message(message.channel, fstr)
+			del fstr
+			del files
+			pass
+		@staticmethod
+		async def changeprefix(message: discord.Message, prefix: str):
+			new_prefix = message.content.replace(f"{prefix}changeprefix ", "")
+			if not new_prefix == "```":
+				try: db.write("Prefixes", {"server":message.server.id, "prefix":new_prefix})
+				except: pass
+				db.update("Prefixes", "prefix", new_prefix, message.server.id)
+				await client.send_message(message.channel, f"Changed the prefix to {new_prefix}")
+				pass
+			else:
+				await client.send_message(message.channel, f"The prefix cannot be ``` because it messes up the bot's message formatting.")
+				pass
+			pass
 		@staticmethod
 		async def mute(message: discord.Message, muted_role: discord.Role):
 			users_to_mute = list()
@@ -2162,120 +2275,20 @@ async def on_message(message: discord.Message):
 				if message.author.id == owner_id: await on_member_remove(message.author)
 				pass
 			elif startswith(f"{prefix}changeprefix "):
-				if admin_role in message.author.roles or message.author.id == owner_id:
-					new_prefix = message.content.replace(f"{prefix}changeprefix ", "")
-					if not new_prefix == "```":
-						try: db.write("Prefixes", {"server":message.server.id, "prefix":new_prefix})
-						except: pass
-						db.update("Prefixes", "prefix", new_prefix, message.server.id)
-						await client.send_message(message.channel, f"Changed the prefix to {new_prefix}")
-						pass
-					else:
-						await client.send_message(message.channel, f"The prefix cannot be ``` because it messes up the bot's message formatting.")
-						pass
-					pass
+				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.changeprefix(message, prefix)
 				else: sendNoPerm(message)
 				pass
 			elif startswith(f"{prefix}prefix"):
 				await client.send_message(message.channel, f"The prefix is {prefix}")
 				pass
 			elif startswith(f"{prefix}role "):
-				_cnt_ = message.content.replace(f"{prefix}role ", "")
-				if len(message.role_mentions) > 0: _role = message.role_mentions[0]
-				else: _role = discord.utils.find(lambda r:r.name == _cnt_ or r.id == _cnt_, message.server.roles)
-				_members_in_role = [str(m) for m in message.server.members if _role in m.roles]
-				_position = _role.position
-				p = _role.permissions
-				_id = _role.id
-				_name = str(_role)
-				_created_at = _role.created_at
-				_colour = _role.colour
-				_mentionable = _role.mentionable
-				e = discord.Embed(title="Role Information", description=_name, colour=_colour) \
-					.add_field(name="Members", value=', '.join(_members_in_role), inline=False) \
-					.add_field(name="Position", value=str(_position), inline=False) \
-					.add_field(name="ID", value=_id, inline=False) \
-					.add_field(name="Mentionable", value=str(_mentionable), inline=False) \
-					.add_field(name="Create Instant Invite", value=str(p.create_instant_invite), inline=True) \
-					.add_field(name="Kick Members", value=str(p.kick_members), inline=True) \
-					.add_field(name="Ban Members", value=str(p.ban_members), inline=True) \
-					.add_field(name="Administrator", value=str(p.administrator), inline=True) \
-					.add_field(name="Manage Channels", value=str(p.manage_channels), inline=True) \
-					.add_field(name="Manage Server", value=str(p.manage_server), inline=True) \
-					.add_field(name="Read Messages", value=str(p.read_messages), inline=True) \
-					.add_field(name="Send Messages", value=str(p.send_messages), inline=True) \
-					.add_field(name="Send TTS Messages", value=str(p.send_tts_messages), inline=True) \
-					.add_field(name="Manage Messages", value=str(p.manage_messages), inline=True) \
-					.add_field(name="Embed Links", value=str(p.embed_links), inline=True) \
-					.add_field(name="Attach Files", value=str(p.attach_files), inline=True) \
-					.add_field(name="Read Message History", value=str(p.read_message_history), inline=True) \
-					.add_field(name="Mention Everyone", value=str(p.mention_everyone), inline=True) \
-					.add_field(name="Use External Emojis", value=str(p.external_emojis), inline=True) \
-					.add_field(name="Change Nickname", value=str(p.change_nickname), inline=True) \
-					.add_field(name="Manage Nicknames", value=str(p.manage_nicknames), inline=True) \
-					.add_field(name="Manage Roles", value=str(p.manage_roles), inline=True) \
-					.add_field(name="Manage Emojis", value=str(p.manage_emojis), inline=True) \
-					.set_footer(text=f"Created at {_created_at}")
-				await client.send_message(message.channel, f"Here you go!", embed=e)
+				await Commands.Member.role(message, prefix)
 				pass
 			elif startswith(f"{prefix}urban "):
-				_def = urbandictionary.define(message.content.replace(f"{prefix}urban ", ""))[0]
-				_text = f"""```
-				{_def.word}
-
-				Definition:
-				{_def.definition}
-
-				Example:
-				{_def.example}
-
-				------
-
-				{_def.upvotes} Upvotes
-				{_def.downvotes} Downvotes
-				```
-				""".replace("\t", "")
-				__definition = _filter(_def.definition)
-				__example = _filter(_def.example)
-				if len(__example) == 0: __example = "No available examples..."
-				e = discord.Embed(title=_def.word, description=f"Definition(s) of {_def.word}", colour=discord.Colour.blue()) \
-					.add_field(name="Definition", value=__definition, inline=False) \
-					.add_field(name="Example", value=__example, inline=False) \
-					.add_field(name="Upvotes", value=_def.upvotes) \
-					.add_field(name="Downvotes", value=_def.downvotes)
-				try: await client.send_message(message.channel, "Here you go!", embed=e)
-				except: await client.send_message(message.channel, _text)
+				await Commands.Member.urban(message, prefix)
 				pass
 			elif startswith(f"{prefix}files"):
-				if admin_role in message.author.roles or message.author.id == owner_id:
-					files = []
-					for channel in message.server.channels:
-						try:
-							try:
-								_file = f"{channel}.mark.txt"
-								_reader_tmp = open(f"{discord_logs}\\{message.server.name}\\{file}", 'r')
-								tmp = _reader_tmp.read()
-								_reader_tmp.close()
-								files.append(_file)
-								del tmp
-								del _reader_tmp
-								del _file
-								pass
-							except:pass
-							file = f"{channel}.txt"
-							reader_tmp = open(f"{discord_logs}\\{message.server.name}\\{file}", 'r')
-							tmp = reader_tmp.read()
-							reader_tmp.close()
-							files.append(file)
-							del file
-							del reader_tmp
-							del tmp
-						except: pass
-					fstr = f"```" + '\n'.join(files) + "```"
-					await client.send_message(message.channel, fstr)
-					del fstr
-					del files
-					pass
+				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.files(message)
 				pass
 
 			# elif startswith(f"{prefix}yoda "):
