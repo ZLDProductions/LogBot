@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
 from typing import Union
+
+import requests
 from PyQt5.Qt import QSystemTrayIcon
 
 def startswith ( *msgs: str, val: str = "" ) -> bool:
@@ -70,3 +72,8 @@ def replace ( message: str, *repls: tuple ) -> str:
 def notify ( header: str, body: str, sti: QSystemTrayIcon ):
 	sti.showMessage( header, body )
 	pass
+
+def filter_text(text: str) -> str:
+	url = "http://www.purgomalum.com/service/plain?text=" + text
+	r = requests.get( url )
+	return r.text.replace("*", "\\*")
