@@ -29,7 +29,7 @@ import tools
 from logbot_data import *
 
 # base variables
-version = '16.6.1 Python'
+version = '16.6.2 Python'
 whats_new = [
 	"•Memory usage lessened.",
 	"•Bug fixes.",
@@ -44,7 +44,8 @@ whats_new = [
 	"•$verse has been updated. View the docs in the help command.",
 	"•Users can now specify a key-word or key-phrase for devotionals, to search them easily.",
 	"•Increased $purge w/ switches security. You will be notified of how many messages you are going to purge as well as be asked for confirmation of deleting the messages.",
-	"•The help contents can now be sorted by Plugin or by Type. Just use $help&GroupByPlugin or $help&GroupByType!"
+	"•The help contents can now be sorted by Plugin or by Type. Just use $help&GroupByPlugin or $help&GroupByType!",
+	"•$say cannot send TTS messages, but it is also very easily typed, and can also have channel mentions in the message without sending to that channel."
 ] # list of recent changes to the code.
 planned = [
 	"There is nothing planned at the moment."
@@ -358,7 +359,7 @@ def _filter ( text: str ) -> str:
 	# 	pass
 	# if "\\*" in ' '.join( words ): return ' '.join( words )
 	# else: return text
-	return tools.filter_text(text)
+	return tools.filter_text( text )
 
 async def check_purge ( message: discord.Message, limit=100, _check=None ) -> int:
 	"""
@@ -1243,9 +1244,16 @@ class Commands:
 		async def say ( message: discord.Message, prefix: str ):
 			if not bot_id in message.content:
 				content = message.content.replace( f"{prefix}say ", "", 1 ).split( "|" )
-				for item in message.channel_mentions: await client.send_message( item, content[ 0 ], tts=ast.literal_eval( content[ 2 ].capitalize( ) ) )
-				del content
+				mentions = content[ 0 ].split( " " )
+				text = content[ 1 ]
+				mentions = [ client.get_channel( i.replace( "<#", "" ).replace( ">", "" ) ) for i in mentions ]
+				for c in mentions: await client.send_message( c, text )
 				pass
+			# if not bot_id in message.content:
+			# 	content = message.content.replace( f"{prefix}say ", "", 1 ).split( "|" )
+			# 	for item in message.channel_mentions: await client.send_message( item, content[ 0 ], tts=ast.literal_eval( content[ 2 ].capitalize( ) ) )
+			# 	del content
+			# 	pass
 			else:
 				await client.send_message( message.channel, f"```Please don't mention the bot in your message.```" )
 				pass
