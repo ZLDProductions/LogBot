@@ -98,7 +98,7 @@ infos = dict( {
 	},
 	"_say"           :{
 		"Info"                :"Sends a message in the specified channel.",
-		"Usage"               :"$say {text}|{channel_mention}|{tts [True/False]}",
+		"Usage"               :"$say {channel_mentions}|{text}",
 		"Required Permissions":"LogBot Admin",
 		"Type"                :"Fun",
 		"Plugin"              :"Main"

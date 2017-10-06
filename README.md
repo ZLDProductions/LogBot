@@ -199,10 +199,9 @@ Sends a message in the specific channel.
 
 **Usage**
 
-    $say {text}|{channel}|{tts: [True/False]}
+    $say {channel}|{text}
 `text` is the text to say.  
-`channel` is a channel mention (#channel).  
-`tts` is a boolean (True or False) value, and describes whether the message is spoken through Discord's voice synthesis.
+`channel` is one or more channel mentions (#channel).  
 
 **Required Permissions**  
 LogBot Admin
