@@ -763,6 +763,7 @@ prefixes = {
 	"h$":"Help Plugin"
 }
 url = "http://bit.ly/logbot_repo#"
+web_url = "https://zldproductions.github.io/LogBot/Commands.html#"
 
 sql = sqlite3.connect( f"{os.getcwd()}\\Discord Logs\\SETTINGS\\logbot.db" )
 cursor = sql.cursor( )
@@ -805,7 +806,7 @@ async def on_message ( message ):
 			pass
 		for item in list( items.keys( ) ): myembed.add_field( name=item, value=items[ item ].replace( "$", prefix ) )
 		myembed.set_footer( text=f"GitHub URL: {url}{content.replace(prefix, '')}" )
-		if not len( items.keys( ) ) == 0: await client.send_message( message.channel, f"GitHub URL: {url}{content.replace(prefix, '')}", embed=myembed )
+		if not len( items.keys( ) ) == 0: await client.send_message( message.channel, f"Website URL: {web_url}{content.replace(prefix, '')}", embed=myembed )
 		else: await client.send_message( message.channel, f"```There is no command for \"{content}\" at this time.```" )
 		del content
 		del myembed

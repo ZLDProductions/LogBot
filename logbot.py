@@ -395,17 +395,22 @@ def get_diff ( then: datetime, now: datetime ) -> str:
 	hours = now.hour - then.hour
 	minutes = now.minute - then.minute
 	seconds = now.second - then.second
-	if seconds < 0: minutes -= 1; seconds = 60 - (seconds * -1)
-	if minutes < 0: hours -= 1; minutes = 60 - (minutes * -1)
-	if hours < 0: days -= 1; hours = 24 - (hours * -1)
-	if days < 0: months -= 1; days = 30 - (days * -1)
-	if months < 0: years -= 1; months = 12 - (months * -1)
-	while days >= 7:
-		weeks += 1
-		days -= 7
-		pass
+	# <editor-fold desc="Correcting the times">
+	while seconds < 0: minutes -= 1; seconds += 60
+	while minutes < 0: hours -= 1; minutes += 60
+	while hours < 0: days -= 1; hours += 24
+	while days <0: months -= 1; days += 30
+	while months <0: years -= 1; months += 12
+	while seconds >= 60: minutes += 1; seconds -= 60
+	while minutes >= 60: hours += 1; minutes -= 60
+	while hours >= 24: days += 1; hours -= 24
+	while days >= 30: months += 1; days -= 30
+	while months >= 12: years += 1; months -= 12
+	while days >= 7: weeks += 1; days -= 7
+	# </editor-fold>
+
 	_str = f"{years} {'years' if not years == 1 else 'year'}, {months} {'months' if not months == 1 else 'month'}, {weeks} {'weeks' if not weeks == 1 else 'week'}, {days} {'days' if not days == 1 else 'day'}, {hours} {'hours' if not hours == 1 else 'hour'}, {minutes} {'minutes' if not minutes == 1 else 'minute'}, {seconds} {'seconds' if not seconds == 1 else 'second'}"
-	_str = _str.replace( "0 years, ", "" ).replace( "0 months, ", "" ).replace( "0 weeks, ", "" ).replace( "0 days, ", "" ).replace( "0 hours, ", "" ).replace( "0 minutes, ", "" ).replace( "0 seconds", "" )
+	_str = _str.replace(  "0 years,", "" ).replace( " 0 months,", "" ).replace( " 0 weeks,", "" ).replace( " 0 days,", "" ).replace( " 0 hours,", "" ).replace( " 0 minutes,", "" ).replace( " 0 seconds", "" )
 	return _str
 
 class Commands:
