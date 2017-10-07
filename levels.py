@@ -454,7 +454,7 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"l{prefix}levels" ):
-				await client.send_typing( message.channel )
+				msg = await client.send_message(message.channel, "```Loading the Leaderboards...```")
 				ret = [ ]
 				user_rank = 0
 				tmp = [ ]
@@ -476,6 +476,7 @@ async def on_message ( message: discord.Message ):
 					if i % 5 == 0: append( ret[ i ] + '\n' )
 					else: tmp[ len( tmp ) - 1 ] += ret[ i ] + "\n"
 					pass
+				await client.delete_messages(msg)
 				for item in tmp: await client.send_message( message.channel, f"```{item}```" )
 				await client.send_message( message.channel, f"```You are ranked: #{user_rank}```" )
 				pass
@@ -1373,8 +1374,18 @@ async def on_message ( message: discord.Message ):
 						FROM milestones
 						WHERE server="{message.server.id}";
 						""".replace( "\t", "" ) )
-						stuffs = [ f"{item} {limit} {discord.utils.find(lambda r: r.id == role, message.server.roles)}" for server, item, limit, role in ms ]
+						stuffs = [ ]
+						app = stuffs.append
+						for server, item, limit, role in ms:
+							_role = discord.utils.find(lambda r: r.id == role, message.server.roles)
+							if _role is None: sqlexecute(f"DELETE FROM milestones WHERE server='{server}' AND role='{role}';")
+							else: app(f"{item} {limit} {_role}")
+							pass
 						await client.send_message( message.channel, '\n'.join( stuffs ) )
+						del app
+						del stuffs
+						del ms
+						del cnt
 						pass
 					pass
 				else: await client.send_message( message.channel, "```You do not have permission to use this command.```" )

@@ -29,7 +29,7 @@ import tools
 from logbot_data import *
 
 # base variables
-version = '16.6.2 Python'
+version = '16.6.3 Python'
 whats_new = [
 	"•Memory usage lessened.",
 	"•Bug fixes.",
@@ -45,7 +45,8 @@ whats_new = [
 	"•Users can now specify a key-word or key-phrase for devotionals, to search them easily.",
 	"•Increased $purge w/ switches security. You will be notified of how many messages you are going to purge as well as be asked for confirmation of deleting the messages.",
 	"•The help contents can now be sorted by Plugin or by Type. Just use $help&GroupByPlugin or $help&GroupByType!",
-	"•$say cannot send TTS messages, but it is also very easily typed, and can also have channel mentions in the message without sending to that channel."
+	"•$say cannot send TTS messages, but it is also very easily typed, and can also have channel mentions in the message without sending to that channel.",
+	"•Fixed a bug that causes the bot to show a milestone with the role set to 'None' when the role is deleted without deleting the milestone first."
 ] # list of recent changes to the code.
 planned = [
 	"There is nothing planned at the moment."
@@ -394,16 +395,18 @@ def get_diff ( then: datetime, now: datetime ) -> str:
 	hours = now.hour - then.hour
 	minutes = now.minute - then.minute
 	seconds = now.second - then.second
-	if months < 0: years -= 1; months = 12 - (months * -1)
-	if days < 0: months -= 1; days = 30 - (days * -1)
-	if hours < 0: days -= 1; hours = 24 - (hours * -1)
-	if minutes < 0: hours -= 1; minutes = 60 - (minutes * -1)
 	if seconds < 0: minutes -= 1; seconds = 60 - (seconds * -1)
+	if minutes < 0: hours -= 1; minutes = 60 - (minutes * -1)
+	if hours < 0: days -= 1; hours = 24 - (hours * -1)
+	if days < 0: months -= 1; days = 30 - (days * -1)
+	if months < 0: years -= 1; months = 12 - (months * -1)
 	while days >= 7:
 		weeks += 1
 		days -= 7
 		pass
-	return f"{years} {'years' if not years == 1 else 'year'}, {months} {'months' if not months == 1 else 'month'}, {weeks} {'weeks' if not weeks == 1 else 'week'}, {days} {'days' if not days == 1 else 'day'}, {hours} {'hours' if not hours == 1 else 'hour'}, {minutes} {'minutes' if not minutes == 1 else 'minute'}, {seconds} {'seconds' if not seconds == 1 else 'second'}"
+	_str = f"{years} {'years' if not years == 1 else 'year'}, {months} {'months' if not months == 1 else 'month'}, {weeks} {'weeks' if not weeks == 1 else 'week'}, {days} {'days' if not days == 1 else 'day'}, {hours} {'hours' if not hours == 1 else 'hour'}, {minutes} {'minutes' if not minutes == 1 else 'minute'}, {seconds} {'seconds' if not seconds == 1 else 'second'}"
+	_str = _str.replace( "0 years, ", "" ).replace( "0 months, ", "" ).replace( "0 weeks, ", "" ).replace( "0 days, ", "" ).replace( "0 hours, ", "" ).replace( "0 minutes, ", "" ).replace( "0 seconds", "" )
+	return _str
 
 class Commands:
 	class Member:
@@ -1464,22 +1467,33 @@ class Commands:
 		async def prune ( message: discord.Message, prefix: str ):
 			days = int( message.content.replace( f"{prefix}prune ", "" ) )
 			# noinspection PyUnresolvedReferences
-			pruned_members = await client.prune_members( message.server, days=days )
-			await client.send_message( message.channel, f"```{pruned_members} members removed.```" )
+			est = await client.estimate_pruned_members( message.server, days=days )
+			await client.send_message( message.channel, f"```Are you sure you want to prune {est} members (y/n)?```" )
+			msg = await client.wait_for_message( author=message.author, channel=message.channel )
+			if msg.content.lower( ) == "y":
+				# noinspection PyUnresolvedReferences
+				pruned_members = await client.prune_members( message.server, days=days )
+				await client.send_message( message.channel, f"```{pruned_members} members removed.```" )
+				del pruned_members
+				pass
+			else:
+				await client.send_message( message.channel, f"```Canceled the prune.```" )
+				pass
 			del days
-			del pruned_members
 			pass
 		@staticmethod
 		async def user ( message: discord.Message, prefix: str ):
 			cnt = message.content.replace( f"{prefix}user ", "" )
 			user = discord.utils.find( lambda u:u.id == cnt or u.name == cnt or str( u ) == cnt or u.mention == cnt, message.server.members )
 			m = format_time( user.created_at )
+
 			e = discord.Embed( title=user.name, description=f"Information for {user.name}", color=discord.Colour.gold( ) ) \
 				.add_field( name="Nickname", value=str( user.nick ) ) \
 				.add_field( name="Name", value=str( user ) ) \
 				.add_field( name="ID", value=user.id ) \
-				.add_field( name="Is Bot", value=str( user.bot ) ) \
-				.add_field( name="Date Created", value=f"{get_diff(m, datetime.now())} ({m.month}.{m.day}.{m.year} {m.hour}:{m.minute})" ) \
+				.add_field( name="Type", value="Bot" if user.bot is True else "User" ) \
+				.add_field( name="Date Created", value=f"{get_diff(m, datetime.now())} ago ({m.month}.{m.day}.{m.year} {m.hour}:{m.minute})" ) \
+				.add_field( name="Status", value=str( user.status ) ) \
 				.set_image( url=user.avatar_url ) \
 				.set_thumbnail( url=user.default_avatar_url )
 			await client.send_message( message.channel, "Here you go!", embed=e )
