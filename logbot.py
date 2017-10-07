@@ -416,6 +416,28 @@ def get_diff ( then: datetime, now: datetime ) -> str:
 class Commands:
 	class Member:
 		@staticmethod
+		async def user ( message: discord.Message, prefix: str ):
+			cnt = message.content.replace( f"{prefix}user ", "" )
+			_user = discord.utils.find( lambda u:u.id == cnt or u.name == cnt or str( u ) == cnt or u.mention == cnt, message.server.members )
+			if _user is None and len(message.mentions) > 0: _user = message.mentions[0]
+			m = format_time( _user.created_at )
+
+			e = discord.Embed( title=_user.name, description=f"Information for {_user.name}", color=discord.Colour.gold( ) ) \
+				.add_field( name="Nickname", value=str( _user.nick ) ) \
+				.add_field( name="Name", value=str( _user ) ) \
+				.add_field( name="ID", value=_user.id ) \
+				.add_field( name="Type", value="Bot" if _user.bot is True else "User" ) \
+				.add_field( name="Date Created", value=f"{get_diff(m, datetime.now())} ago ({m.month}.{m.day}.{m.year} {m.hour}:{m.minute})" ) \
+				.add_field( name="Status", value=str( _user.status ) ) \
+				.set_image( url=_user.avatar_url ) \
+				.set_thumbnail( url=_user.default_avatar_url )
+			await client.send_message( message.channel, "Here you go!", embed=e )
+			del cnt
+			del _user
+			del m
+			del e
+			pass
+		@staticmethod
 		async def urban ( message: discord.Message, prefix: str ):
 			_def = urbandictionary.define( message.content.replace( f"{prefix}urban ", "" ) )[ 0 ]
 			_text = f"""```
@@ -1487,27 +1509,6 @@ class Commands:
 			del days
 			pass
 		@staticmethod
-		async def user ( message: discord.Message, prefix: str ):
-			cnt = message.content.replace( f"{prefix}user ", "" )
-			user = discord.utils.find( lambda u:u.id == cnt or u.name == cnt or str( u ) == cnt or u.mention == cnt, message.server.members )
-			m = format_time( user.created_at )
-
-			e = discord.Embed( title=user.name, description=f"Information for {user.name}", color=discord.Colour.gold( ) ) \
-				.add_field( name="Nickname", value=str( user.nick ) ) \
-				.add_field( name="Name", value=str( user ) ) \
-				.add_field( name="ID", value=user.id ) \
-				.add_field( name="Type", value="Bot" if user.bot is True else "User" ) \
-				.add_field( name="Date Created", value=f"{get_diff(m, datetime.now())} ago ({m.month}.{m.day}.{m.year} {m.hour}:{m.minute})" ) \
-				.add_field( name="Status", value=str( user.status ) ) \
-				.set_image( url=user.avatar_url ) \
-				.set_thumbnail( url=user.default_avatar_url )
-			await client.send_message( message.channel, "Here you go!", embed=e )
-			del cnt
-			del user
-			del m
-			del e
-			pass
-		@staticmethod
 		async def kick ( message: discord.Message, admin_role: discord.Role ):
 			for user in message.mentions:
 				if not admin_role in user.roles: await client.kick( user ); await client.send_message( message.channel, f"{user} has been kicked!" )
@@ -2087,15 +2088,9 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"{prefix}user " ):
-				if (admin_role in message.author.roles and not disables[ "user" ]) or message.author.id == owner_id:
-					await Commands.Admin.user( message, prefix )
-					pass
-				elif disables[ "user" ]:
-					await sendDisabled( message )
-					pass
-				else:
-					await sendNoPerm( message )
-					pass
+				if not disables[ "user" ] or message.author.id == owner_id: await Commands.Member.user( message, prefix )
+				elif disables[ "user" ]: await sendDisabled( message )
+				else: await sendNoPerm( message )
 				pass
 			elif startswith( f"{prefix}invite" ):
 				await client.send_message( message.channel, "https://discordapp.com/oauth2/authorize?client_id=255379748828610561&scope=bot&permissions=268696670" )
