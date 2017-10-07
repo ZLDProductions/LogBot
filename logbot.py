@@ -399,8 +399,8 @@ def get_diff ( then: datetime, now: datetime ) -> str:
 	while seconds < 0: minutes -= 1; seconds += 60
 	while minutes < 0: hours -= 1; minutes += 60
 	while hours < 0: days -= 1; hours += 24
-	while days <0: months -= 1; days += 30
-	while months <0: years -= 1; months += 12
+	while days < 0: months -= 1; days += 30
+	while months < 0: years -= 1; months += 12
 	while seconds >= 60: minutes += 1; seconds -= 60
 	while minutes >= 60: hours += 1; minutes -= 60
 	while hours >= 24: days += 1; hours -= 24
@@ -410,7 +410,7 @@ def get_diff ( then: datetime, now: datetime ) -> str:
 	# </editor-fold>
 
 	_str = f"{years} {'years' if not years == 1 else 'year'}, {months} {'months' if not months == 1 else 'month'}, {weeks} {'weeks' if not weeks == 1 else 'week'}, {days} {'days' if not days == 1 else 'day'}, {hours} {'hours' if not hours == 1 else 'hour'}, {minutes} {'minutes' if not minutes == 1 else 'minute'}, {seconds} {'seconds' if not seconds == 1 else 'second'}"
-	_str = _str.replace(  "0 years,", "" ).replace( " 0 months,", "" ).replace( " 0 weeks,", "" ).replace( " 0 days,", "" ).replace( " 0 hours,", "" ).replace( " 0 minutes,", "" ).replace( " 0 seconds", "" )
+	_str = _str.replace( "0 years,", "" ).replace( " 0 months,", "" ).replace( " 0 weeks,", "" ).replace( " 0 days,", "" ).replace( " 0 hours,", "" ).replace( " 0 minutes,", "" ).replace( " 0 seconds", "" )
 	return _str
 
 class Commands:
@@ -419,9 +419,8 @@ class Commands:
 		async def user ( message: discord.Message, prefix: str ):
 			cnt = message.content.replace( f"{prefix}user ", "" )
 			_user = discord.utils.find( lambda u:u.id == cnt or u.name == cnt or str( u ) == cnt or u.mention == cnt, message.server.members )
-			if _user is None and len(message.mentions) > 0: _user = message.mentions[0]
+			if _user is None and len( message.mentions ) > 0: _user = message.mentions[ 0 ]
 			m = format_time( _user.created_at )
-
 			e = discord.Embed( title=_user.name, description=f"Information for {_user.name}", color=discord.Colour.gold( ) ) \
 				.add_field( name="Nickname", value=str( _user.nick ) ) \
 				.add_field( name="Name", value=str( _user ) ) \
@@ -432,10 +431,10 @@ class Commands:
 				.set_image( url=_user.avatar_url ) \
 				.set_thumbnail( url=_user.default_avatar_url )
 			await client.send_message( message.channel, "Here you go!", embed=e )
+			del e
 			del cnt
 			del _user
 			del m
-			del e
 			pass
 		@staticmethod
 		async def urban ( message: discord.Message, prefix: str ):
@@ -2087,7 +2086,7 @@ async def on_message ( message: discord.Message ):
 					await sendNoPerm( message )
 					pass
 				pass
-			elif startswith( f"{prefix}user " ):
+			elif startswith( f"{prefix}user" ):
 				if not disables[ "user" ] or message.author.id == owner_id: await Commands.Member.user( message, prefix )
 				elif disables[ "user" ]: await sendDisabled( message )
 				else: await sendNoPerm( message )
