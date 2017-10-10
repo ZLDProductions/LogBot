@@ -14,7 +14,7 @@ client = Client( )
 init( )
 
 dict_words = [ ]
-filter_disable_list = { }
+filter_disable_list = [ ]
 filter_settings = { }
 
 discord_settings = f"{os.getcwd()}\\Discord Logs\\SETTINGS"
@@ -28,6 +28,7 @@ cursor = sql.cursor( )
 try:
 	reader = open( filter_disables, 'r' )
 	filter_disable_list = ast.literal_eval( reader.read( ) )
+	if isinstance( filter_disable_list, dict ): filter_disable_list = list( )
 	reader.close( )
 	del reader
 	pass
@@ -62,7 +63,7 @@ async def on_message ( message: Message ):
 			words[ words.index( word ) ] = "\\*" * len( word )
 			pass
 		pass
-	if not ' '.join( words ) == message.content.replace( ".", "" ).replace( ",", "" ).replace( "!", "" ).replace( "?", "" ):
+	if not ' '.join( words ) == message.content.replace( ".", "" ).replace( ",", "" ).replace( "!", "" ).replace( "?", "" ) and not message.server.id in filter_disable_list:
 		await client.delete_message( message )
 		if filter_settings[ message.server.id ] == 1:
 			await client.send_message( message.channel, f"[{message.author.mention}] {' '.join(words)}" )
@@ -155,7 +156,7 @@ async def on_message_edit ( before: Message, after: Message ):
 			words[ words.index( word ) ] = "\\*" * len( word )
 			pass
 		pass
-	if not ' '.join( words ) == after.content.replace( ",", "" ).replace( ".", "" ):
+	if not ' '.join( words ) == after.content.replace( ",", "" ).replace( ".", "" ) and not before.server.id in filter_disable_list:
 		await client.delete_message( after )
 		if filter_settings[ after.server.id ] == 1:
 			await client.send_message( after.channel, f"[{after.author.mention}] {' '.join(words)}" )
