@@ -12,7 +12,7 @@ my_str = """0. logbot.py
 5. help.py
 6. ai.py
 7. games.py
-8. swearing_filter.py
+8. custom.py
 9. swearing_filter_v2.py
 A. dev.py
 B. security.py
@@ -26,7 +26,7 @@ programs = {
 	"5":"help.py",
 	"6":"ai.py",
 	"7":"games.py",
-	"8":"swearing_filter.py",
+	"8":"custom.py",
 	"9":"swearing_filter_v2.py",
 	"A":"dev.py",
 	"B":"security.py",
@@ -41,7 +41,7 @@ titles = {
 	"5":"Help Plugin",
 	"6":"AI Plugin",
 	"7":"Games Plugin",
-	"8":"Swearing Filter Plugin",
+	"8":"Custom Commands Plugin",
 	"9":"Swearing Filter V2 Plugin",
 	"A":"Dev Plugin",
 	"B":"Security Plugin",

@@ -643,32 +643,6 @@ class Commands:
 			:param message: A discord.Message object from on_message.
 			:param prefix: The server's prefix.
 			"""
-			# <editor-fold desc="Check for Existence">
-			if disables.get( "exclude" ) is None: disables[ "exclude" ] = False
-			if disables.get( "excludechannel" ) is None: disables[ "excludechannel" ] = False
-			if disables.get( "includechannel" ) is None: disables[ "includechannel" ] = False
-			if disables.get( "mark" ) is None: disables[ "mark" ] = False
-			if disables.get( "showlist" ) is None: disables[ "showlist" ] = False
-			if disables.get( "showmarks" ) is None: disables[ "showmarks" ] = False
-			if disables.get( "channel" ) is None: disables[ "channel" ] = False
-			if disables.get( "say" ) is None: disables[ "say" ] = False
-			if disables.get( "cmd" ) is None: disables[ "cmd" ] = False
-			if disables.get( "query" ) is None: disables[ "query" ] = False
-			if disables.get( "wiki" ) is None: disables[ "wiki" ] = False
-			if disables.get( "decide" ) is None: disables[ "decide" ] = False
-			if disables.get( "prune" ) is None: disables[ "prune" ] = False
-			if disables.get( "purge" ) is None: disables[ "purge" ] = False
-			if disables.get( "user" ) is None: disables[ "user" ] = False
-			if disables.get( "translate" ) is None: disables[ "translate" ] = False
-			if disables.get( "urban" ) is None: disables[ "urban" ] = False
-			if disables.get( "roll" ) is None: disables[ "roll" ] = False
-			if disables.get( "server" ) is None: disables[ "server" ] = False
-			if disables.get( "convert" ) is None: disables[ "convert" ] = False
-			if disables.get( "dict" ) is None: disables[ "dict" ] = False
-			if disables.get( "permissions" ) is None: disables[ "permissions" ] = False
-			if disables.get( "welcome" ) is None: disables[ "welcome" ] = False
-			if disables.get( "goodbye" ) is None: disables[ "goodbye" ] = False
-			# </editor-fold>
 			# <editor-fold desc="discord.Embed">
 			e = discord.Embed( title="Disabled Features", descriptions="A list of disabled features in this server.", colour=discord.Colour.dark_purple( ) ) \
 				.add_field( name=f"{prefix}exclude", value=str( disables[ "exclude" ] ) ) \
@@ -679,7 +653,6 @@ class Commands:
 				.add_field( name=f"{prefix}showmarks", value=str( disables[ "showmarks" ] ) ) \
 				.add_field( name=f"{prefix}channel", value=str( disables[ "channel" ] ) ) \
 				.add_field( name=f"{prefix}say", value=str( disables[ "say" ] ) ) \
-				.add_field( name=f"{prefix}cmd", value=str( disables[ "cmd" ] ) ) \
 				.add_field( name=f"{prefix}query", value=str( disables[ "query" ] ) ) \
 				.add_field( name=f"{prefix}wiki", value=str( disables[ "wiki" ] ) ) \
 				.add_field( name=f"{prefix}decide", value=str( disables[ "decide" ] ) ) \
@@ -780,48 +753,48 @@ class Commands:
 			await client.send_message( message.channel, f"```Coming Soon:\n{tmp}```" )
 			del tmp
 			pass
-		@staticmethod
-		async def cmd ( message: discord.Message ):
-			content = message.content.split( ' ' )
-			content.remove( content[ 0 ] )
-			if content[ 0 ] == 'a':
-				content.remove( content[ 0 ] )
-				text = ' '.join( content )
-				cmd = text.split( "|" )
-				if cmd[ 0 ] is not None:
-					custom_commands[ cmd[ 0 ] ] = cmd[ 1 ]
-					await client.send_message( message.channel, "```Created the command.```" )
-					print( f"{Fore.LIGHTMAGENTA_EX}Command {cmd[0]}:{cmd[1]} was created.{Fore.RESET}" )
-					send( f"Command {cmd[0]}{cmd[1]} was created.", message.server.name )
-					pass
-				else:
-					await client.send_message( message.channel, "```A command cannot be nothing!!!```" )
-					print( f"{Fore.LIGHTMAGENTA_EX}{message.author} attempted to create a universal command!{Fore.RESET}" )
-					send( f"{message.author} attempted to create a universal command!", message.server.name )
-					pass
-				del text
-				del cmd
-				pass
-			elif content[ 0 ] == 'r':
-				content.remove( content[ 0 ] )
-				cmd = ' '.join( content )
-				data = { cmd:custom_commands[ cmd ] }
-				del custom_commands[ cmd ]
-				await client.send_message( message.channel, "```Deleted the command.```" )
-				print( f"{Fore.LIGHTMAGENTA_EX}Command {cmd}:{data[cmd]} was deleted.{Fore.RESET}" )
-				send( f"Command {cmd}:{data[cmd]} was deleted.", message.server.name )
-				del data
-				del cmd
-				pass
-			elif content[ 0 ] == 's':
-				tmp = '\n'.join( list( custom_commands.keys( ) ) )
-				ret = f"```Commands:\n{tmp}```"
-				await client.send_message( message.channel, ret )
-				del tmp
-				del ret
-				pass
-			del content
-			pass
+		# @staticmethod
+		# async def cmd ( message: discord.Message ):
+		# 	content = message.content.split( ' ' )
+		# 	content.remove( content[ 0 ] )
+		# 	if content[ 0 ] == 'a':
+		# 		content.remove( content[ 0 ] )
+		# 		text = ' '.join( content )
+		# 		cmd = text.split( "|" )
+		# 		if cmd[ 0 ] is not None:
+		# 			custom_commands[ cmd[ 0 ] ] = cmd[ 1 ]
+		# 			await client.send_message( message.channel, "```Created the command.```" )
+		# 			print( f"{Fore.LIGHTMAGENTA_EX}Command {cmd[0]}:{cmd[1]} was created.{Fore.RESET}" )
+		# 			send( f"Command {cmd[0]}{cmd[1]} was created.", message.server.name )
+		# 			pass
+		# 		else:
+		# 			await client.send_message( message.channel, "```A command cannot be nothing!!!```" )
+		# 			print( f"{Fore.LIGHTMAGENTA_EX}{message.author} attempted to create a universal command!{Fore.RESET}" )
+		# 			send( f"{message.author} attempted to create a universal command!", message.server.name )
+		# 			pass
+		# 		del text
+		# 		del cmd
+		# 		pass
+		# 	elif content[ 0 ] == 'r':
+		# 		content.remove( content[ 0 ] )
+		# 		cmd = ' '.join( content )
+		# 		data = { cmd:custom_commands[ cmd ] }
+		# 		del custom_commands[ cmd ]
+		# 		await client.send_message( message.channel, "```Deleted the command.```" )
+		# 		print( f"{Fore.LIGHTMAGENTA_EX}Command {cmd}:{data[cmd]} was deleted.{Fore.RESET}" )
+		# 		send( f"Command {cmd}:{data[cmd]} was deleted.", message.server.name )
+		# 		del data
+		# 		del cmd
+		# 		pass
+		# 	elif content[ 0 ] == 's':
+		# 		tmp = '\n'.join( list( custom_commands.keys( ) ) )
+		# 		ret = f"```Commands:\n{tmp}```"
+		# 		await client.send_message( message.channel, ret )
+		# 		del tmp
+		# 		del ret
+		# 		pass
+		# 	del content
+		# 	pass
 		@staticmethod
 		async def query ( message: discord.Message, prefix: str ):
 			try:
@@ -1992,17 +1965,17 @@ async def on_message ( message: discord.Message ):
 			elif startswith( f"{prefix}planned" ):
 				await Commands.Member.planned( message )
 				pass
-			elif startswith( f"{prefix}cmd " ):
-				if not disables.get( "cmd" ) is True or message.author.id == owner_id:
-					await Commands.Member.cmd( message )
-					pass
-				elif disables[ "cmd" ]:
-					await sendDisabled( message )
-					pass
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
+			# elif startswith( f"{prefix}cmd " ):
+			# 	if not disables.get( "cmd" ) is True or message.author.id == owner_id:
+			# 		await Commands.Member.cmd( message )
+			# 		pass
+			# 	elif disables[ "cmd" ]:
+			# 		await sendDisabled( message )
+			# 		pass
+			# 	else:
+			# 		await sendNoPerm( message )
+			# 		pass
+			# 	pass
 			elif startswith( f"{prefix}query " ):
 				if not disables.get( "query" ) is True or message.author.id == owner_id:
 					await Commands.Member.query( message, prefix )
