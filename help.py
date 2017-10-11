@@ -230,7 +230,7 @@ infos = dict( {
 		"Plugin"              :"Main"
 	},
 	"_purge"         :{
-		"Info"                :"Purges messages from the channel it is sent through. Restraint through the switches. If switches are present, and there is a problem, the bot will delete the trigger. limit is required.",
+		"Info"                :"Purges messages from the channel it is sent through. Restraint through the switches. If switches are present, and there is a problem, the bot will delete the trigger.",
 		"Usage"               :"$purge limit=[num]&&contains=[text]&&from=[mention]&&attached=[True/False]&&embedded=[True/False]&&pinned=[True/False]&&mentions=[mention]&&mentions_channel=[channel_mention]&&mentions_role=[role_mention]",
 		"Required Permissions":"LogBot Admin",
 		"Type"                :"Moderation",
@@ -648,7 +648,7 @@ infos = dict( {
 		"Plugin"              :"Levels"
 	},
 	"l_default"      :{
-		"Info"                :"Sets the default values for DM or Alertchannel in the server.",
+		"Info"                :"Sets the default values for DM or Alert channel in the server.",
 		"Usage"               :"l$default DM {val: [on/off]}\nl$default AlertChannel {channel-mention}",
 		"Required Permissions":"LogBot Admin",
 		"Type"                :"Utility",
