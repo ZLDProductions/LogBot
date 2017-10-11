@@ -100,7 +100,13 @@ disables = {
 	"prune"         :False,
 	"purge"         :False,
 	"user"          :False,
-	"translate"     :False
+	"translate"     :False,
+	"urban"         :False,
+	"roll"          :False,
+	"server"        :False,
+	"convert"       :False,
+	"dict"          :False,
+	"permissions"   :False
 }
 custom_commands = { }
 times = [ ]
@@ -1879,34 +1885,6 @@ async def on_message ( message: discord.Message ):
 
 		try: prefix = db.read( "Prefixes", message.server.id )
 		except: prefix = "$"; traceback.format_exc( ); db.write( "Prefixes", { "server":message.server.id, "prefix":"$" } )
-
-		# <editor-fold desc="Disables Check">
-		# Prevents exceptions when new servers get LogBot.
-		if disables.get( "exclude" ) is None: disables[ "exclude" ] = False
-		if disables.get( "excludechannel" ) is None: disables[ "excludechannel" ] = False
-		if disables.get( "includechannel" ) is None: disables[ "includechannel" ] = False
-		if disables.get( "mark" ) is None: disables[ "mark" ] = False
-		if disables.get( "showlist" ) is None: disables[ "showlist" ] = False
-		if disables.get( "showmarks" ) is None: disables[ "showmarks" ] = False
-		if disables.get( "channel" ) is None: disables[ "channel" ] = False
-		if disables.get( "say" ) is None: disables[ "say" ] = False
-		if disables.get( "cmd" ) is None: disables[ "cmd" ] = False
-		if disables.get( "query" ) is None: disables[ "query" ] = False
-		if disables.get( "wiki" ) is None: disables[ "wiki" ] = False
-		if disables.get( "decide" ) is None: disables[ "decide" ] = False
-		if disables.get( "prune" ) is None: disables[ "prune" ] = False
-		if disables.get( "purge" ) is None: disables[ "purge" ] = False
-		if disables.get( "user" ) is None: disables[ "user" ] = False
-		if disables.get( "translate" ) is None: disables[ "translate" ] = False
-		if disables.get( "urban" ) is None: disables[ "urban" ] = False
-		if disables.get( "roll" ) is None: disables[ "roll" ] = False
-		if disables.get( "server" ) is None: disables[ "server" ] = False
-		if disables.get( "convert" ) is None: disables[ "convert" ] = False
-		if disables.get( "dict" ) is None: disables[ "dict" ] = False
-		if disables.get( "permissions" ) is None: disables[ "permissions" ] = False
-		if disables.get( "welcome" ) is None: disables[ "welcome" ] = False
-		if disables.get( "goodbye" ) is None: disables[ "goodbye" ] = False
-		# </editor-fold>
 
 		if startswith( prefix ):
 			if startswith( f"{prefix}exclude ", f"{prefix}ex " ):

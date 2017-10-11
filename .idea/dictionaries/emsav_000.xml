@@ -35,6 +35,7 @@
       <w>desorted</w>
       <w>destrike</w>
       <w>divmod</w>
+      <w>doeval</w>
       <w>downvotes</w>
       <w>dummycheck</w>
       <w>edom</w>
@@ -46,6 +47,7 @@
       <w>faeroese</w>
       <w>fillslot</w>
       <w>fmany</w>
+      <w>fstr</w>
       <w>galatian</w>
       <w>galations</w>
       <w>galician</w>
@@ -56,6 +58,7 @@
       <w>getversion</w>
       <w>giveup</w>
       <w>gozt</w>
+      <w>groupby</w>
       <w>includechannel</w>
       <w>infos</w>
       <w>iyvd</w>
@@ -71,6 +74,7 @@
       <w>lightgreen</w>
       <w>lightmagenta</w>
       <w>lightred</w>
+      <w>lightwhite</w>
       <w>lihu</w>
       <w>lingala</w>
       <w>logbot</w>
