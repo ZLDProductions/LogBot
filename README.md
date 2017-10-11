@@ -243,9 +243,9 @@ Creates, removes, or shows a list of the custom commands.
 
 **Usage**
 
-    $cmd a {key}|{value}
-    $cmd r {key}
-    $cmd s
+    c$add {key}||{value}
+    c$remove {key}
+    c$show
 `key` is the command name. Include the prefix at the beginning.  
 `value` is the message that is sent once the command is triggered.
 

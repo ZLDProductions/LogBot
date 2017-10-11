@@ -176,9 +176,9 @@ div.page {
           </tr>
           <tr>
             <td><a id="cmd" name="cmd"></a>$cmd</td>
-            <td>$cmd a {key}|{value}<br>
-              $cmd r {key}<br>
-              $cmd s</td>
+            <td>c$add {key}||{value}<br>
+              c$remove {key}<br>
+              c$show</td>
             <td>Creates, removes, or shows a list of the custom commands.</td>
             <td>None</td>
           </tr>
@@ -208,14 +208,14 @@ div.page {
           </tr>
           <tr>
             <td><a id="disable" name="disable"></a>$disable</td>
-            <td>$disable {command: [$exclude/$excludechannel/$includechannel/$mark/$showlist/$showmarks/$channel/$cmd/$query/$wiki/$say/welcome/goodbye/$decide/$prune/$purge/$user/$translate/filter]}</td>
+            <td>$disable {command: [$exclude/$excludechannel/$includechannel/$mark/$showlist/$showmarks/$channel/$query/$wiki/$say/welcome/goodbye/$decide/$prune/$purge/$user/$translate/filter]}</td>
             <td>Disables {command} for the server.</td>
             <td>LogBot Admin</td>
           </tr>
           <tr>
             <td><a id="enable" name="enable"></a>$enable</td>
             <td>$enable {command:
-[$exclude/$excludechannel/$includechannel/$mark/$showlist/$showmarks/$channel/$cmd/$query/$wiki/$say/welcome/goodbye/$decide/$prune/$purge/$user/$translate/filter]}</td>
+[$exclude/$excludechannel/$includechannel/$mark/$showlist/$showmarks/$channel/$query/$wiki/$say/welcome/goodbye/$decide/$prune/$purge/$user/$translate/filter]}</td>
             <td>Enables {command} for the server.</td>
             <td>LogBot Admin</td>
           </tr>

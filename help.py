@@ -119,10 +119,10 @@ infos = dict( {
 	},
 	"_cmd"           :{
 		"Info"                :"Creates, removes, or shows a list of the custom commands.",
-		"Usage"               :"$cmd a {key}|{value}\n$cmd r {key}\n$cmd s",
-		"Required Permissions":"LogBot Member",
+		"Usage"               :"c$add {key}||{value}\nc$remove {key}\nc$show",
+		"Required Permissions":"None",
 		"Type"                :"Fun",
-		"Plugin"              :"Main"
+		"Plugin"              :"Custom Commands"
 	},
 	"_query"         :{
 		"Info"                :"Fetches information from Wolfram|Alpha",
