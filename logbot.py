@@ -29,24 +29,9 @@ import tools
 from logbot_data import *
 
 # base variables
-version = '16.6.3 Python'
+version = '16.7.0 Python'
 whats_new = [
-	"•Memory usage lessened.",
-	"•Bug fixes.",
-	"•Added $defversion.",
-	"•Updated help content.",
-	"•Updated help content again.",
-	"•More bug fixes.",
-	"•Even more bug fixes.",
-	"•Custom prefixes.",
-	"•Added $role",
-	"•Admins can now disable a user's ability to use verse recognition.",
-	"•$verse has been updated. View the docs in the help command.",
-	"•Users can now specify a key-word or key-phrase for devotionals, to search them easily.",
-	"•Increased $purge w/ switches security. You will be notified of how many messages you are going to purge as well as be asked for confirmation of deleting the messages.",
-	"•The help contents can now be sorted by Plugin or by Type. Just use $help&GroupByPlugin or $help&GroupByType!",
-	"•$say cannot send TTS messages, but it is also very easily typed, and can also have channel mentions in the message without sending to that channel.",
-	"•Fixed a bug that causes the bot to show a milestone with the role set to 'None' when the role is deleted without deleting the milestone first."
+	"•Fixed custom commands. Now, each server can have their own commands. No more awkward moments!"
 ] # list of recent changes to the code.
 planned = [
 	"There is nothing planned at the moment."
