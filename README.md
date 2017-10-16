@@ -1030,9 +1030,7 @@ Votes for a choice.
 
 **Usage**
 
-    p$vote {index} {choice}
-`index` is the poll index, which can be found by using `p$polls`.
-`choice` is the index of the choice. This can be found by viewing the status of the poll.
+    p$vote
 
 **Required Permissions**  
 None

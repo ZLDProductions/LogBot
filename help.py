@@ -483,7 +483,7 @@ infos = dict( {
 	},
 	"p_vote"         :{
 		"Info"                :"Votes for a choice.",
-		"Usage"               :"p$vote {vote_index} {choice_index}",
+		"Usage"               :"p$vote",
 		"Required Permissions":"None",
 		"Type"                :"Feedback",
 		"Plugin"              :"Polling"
