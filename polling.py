@@ -73,33 +73,71 @@ class Commands:
 			await client.send_message( message.channel, "Poll status...", embed=e )
 			pass
 		@staticmethod
-		async def p_vote ( message: discord.Message, prefix: str ):
-			vote = message.content.replace( f"p{prefix}vote ", "", 1 ).split( " " )
+		async def p_vote ( message: discord.Message ):
+			msgs = [ ]
+			tmp1 = await client.send_message( message.channel, f"```What is the index for your poll?```" )
+			pindex = await client.wait_for_message( author=message.author, channel=message.channel )
+			msgs.append( tmp1 )
+			msgs.append( pindex )
+			tmp2 = await client.send_message( message.channel, f"```What is the index for your choice?```" )
+			cindex = await client.wait_for_message( author=message.author, channel=message.channel )
+			msgs.append( tmp2 )
+			msgs.append( cindex )
+
 			res = _read( f"""
 			SELECT voted
 			FROM polls
-			WHERE server = "{message.server.id}"
-			AND topic_index = {vote[0]};
+			WHERE server="{message.server.id}"
+			AND topic_index={pindex.content};
 			""".replace( "\t", "" ) )
+
 			v = res[ 0 ][ 0 ]
 			if v is None: v = ""
 			if not message.author.id in v.split( " " ):
 				_execute( f"""
 				UPDATE polls
 				SET result = result + 1
-				WHERE server = "{message.server.id}"
-				AND topic_index = {vote[0]}
-				AND choice_index = {vote[1]};
+				WHERE server= "{message.server.id}"
+				AND topic_index = {pindex.content}
+				AND choice_index = {cindex.content};
 				""".replace( "\t", "" ) )
 				_execute( f"""
 				UPDATE polls
-				SET voted = "{f"{v}{message.author.id} "}"
-				WHERE server = "{message.server.id}"
-				AND topic_index = {vote[0]};
+				SET voted="{f"{v}{message.author.id} "}"
+				WHERE server="{message.server.id}"
+				AND topic_index={pindex.content};
 				""".replace( "\t", "" ) )
 				await client.send_message( message.channel, f"Voted! :white_check_mark:" )
 				pass
 			else: await client.send_message( message.channel, f"```You have already voted!```" )
+			await client.delete_messages( msgs )
+
+			# vote = message.content.replace( f"p{prefix}vote ", "", 1 ).split( " " )
+			# res = _read( f"""
+			# SELECT voted
+			# FROM polls
+			# WHERE server = "{message.server.id}"
+			# AND topic_index = {vote[0]};
+			# """.replace( "\t", "" ) )
+			# v = res[ 0 ][ 0 ]
+			# if v is None: v = ""
+			# if not message.author.id in v.split( " " ):
+			# 	_execute( f"""
+			# 	UPDATE polls
+			# 	SET result = result + 1
+			# 	WHERE server = "{message.server.id}"
+			# 	AND topic_index = {vote[0]}
+			# 	AND choice_index = {vote[1]};
+			# 	""".replace( "\t", "" ) )
+			# 	_execute( f"""
+			# 	UPDATE polls
+			# 	SET voted = "{f"{v}{message.author.id} "}"
+			# 	WHERE server = "{message.server.id}"
+			# 	AND topic_index = {vote[0]};
+			# 	""".replace( "\t", "" ) )
+			# 	await client.send_message( message.channel, f"Voted! :white_check_mark:" )
+			# 	pass
+			# else: await client.send_message( message.channel, f"```You have already voted!```" )
 			pass
 		@staticmethod
 		async def p_polls ( message: discord.Message ):
@@ -207,14 +245,17 @@ class Commands:
 				WHERE server = "{message.server.id}"
 				ORDER BY topic_index DESC;
 				""".replace( "\t", "" ) )[ 0 ][ 0 ]
+				e = discord.Embed(title=topic, colour=discord.Colour.orange())
 				for index, item in enumerate( choices ):
 					if topic_index is None: topic_index = 0
+					e.add_field(name=f"{item} ({index+1})", value="0")
 					_execute( f"""
 					INSERT INTO polls (server, topic_index, topic, choice_index, choice, result)
 					VALUES ("{message.server.id}", {topic_index+1}, "{topic}", {index+1}, "{item}", 0);
 					""".replace( "\t", "" ) )
 					pass
-				await client.send_message( message.channel, f":hourglass_flowing_sand: Started a poll with an index of {topic_index+1}!" )
+				tmp = '\n'.join( [ f"{item}: {ind + 1}" for ind, item in enumerate( choices ) ] )
+				await client.send_message( message.channel, f":hourglass_flowing_sand: Started a poll with an index of {topic_index+1}!", embed=e )
 			else: await client.send_message( message.channel, "```That poll already exists!```" )
 			pass
 		@staticmethod
@@ -274,7 +315,7 @@ async def on_message ( message ):
 			else: sendNoPerm( message )
 			pass
 		elif startswith( f"p{prefix}status " ): await Commands.Member.p_status( message, prefix )
-		elif startswith( f"p{prefix}vote " ): await Commands.Member.p_vote( message, prefix )
+		elif startswith( f"p{prefix}vote" ): await Commands.Member.p_vote( message )
 		elif startswith( f"p{prefix}polls" ): await Commands.Member.p_polls( message )
 		elif startswith( f"p{prefix}save " ):
 			if admin_role in message.author.roles: await Commands.Admin.p_save( message, prefix )
