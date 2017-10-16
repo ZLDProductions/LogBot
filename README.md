@@ -237,23 +237,6 @@ None
 
 ---
 
-#### $cmd
-**Info**  
-Creates, removes, or shows a list of the custom commands.
-
-**Usage**
-
-    c$add {key}||{value}
-    c$remove {key}
-    c$show
-`key` is the command name. Include the prefix at the beginning.  
-`value` is the message that is sent once the command is triggered.
-
-**Required Permissions**  
-None
-
----
-
 #### $query
 **Info**  
 Fetches information from Wolfram|Alpha.
@@ -1583,6 +1566,45 @@ Shows the server's log files.
 
 **Required Permissions**  
 LogBot Admin
+
+---
+
+#### c$show
+**Info**  
+Shows the server's log files.
+
+**Usage**  
+
+    c$show
+
+**Required Permissions**  
+None
+
+---
+
+#### c$add
+**Info**  
+Adds a custom command to the list.
+
+**Usage**
+
+    c$add {trigger}||{response}
+
+**Required Permissions**  
+None
+
+---
+
+#### c$remove
+**Info**  
+Removes a custom command from the list.
+
+**Usage**  
+
+    c$remove {trigger}
+
+**Required Permissions**  
+None
 
 ---
 

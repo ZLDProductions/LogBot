@@ -117,13 +117,6 @@ infos = dict( {
 		"Type"                :"Stats",
 		"Plugin"              :"Main"
 	},
-	"_cmd"           :{
-		"Info"                :"Creates, removes, or shows a list of the custom commands.",
-		"Usage"               :"c$add {key}||{value}\nc$remove {key}\nc$show",
-		"Required Permissions":"None",
-		"Type"                :"Fun",
-		"Plugin"              :"Custom Commands"
-	},
 	"_query"         :{
 		"Info"                :"Fetches information from Wolfram|Alpha",
 		"Usage"               :"$query {query}",
@@ -751,6 +744,27 @@ infos = dict( {
 		"Required Permissions":"LogBot Admin",
 		"Plugin"              :"Main",
 		"Type"                :"Utility"
+	},
+	"c_show"         :{
+		"Info"                :"Shows the server's custom commands.",
+		"Usage"               :"c$show",
+		"Required Permissions":"None",
+		"Plugin"              :"Custom Commands",
+		"Type"                :"Fun"
+	},
+	"c_add"          :{
+		"Info"                :"Adds a custom command to the list.",
+		"Usage"               :"c$add {trigger}||{response}",
+		"Required Permissions":"None",
+		"Plugin"              :"Custom Commands",
+		"Type"                :"Fun"
+	},
+	"c_remove"       :{
+		"Info"                :"Removes a custom command from the list.",
+		"Usage"               :"c$remove {trigger}",
+		"Required Permissions":"None",
+		"Plugin"              :"Custom Commands",
+		"Type"                :"Fun"
 	}
 } )
 prefixes = {
