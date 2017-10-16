@@ -29,7 +29,7 @@ import tools
 from logbot_data import *
 
 # base variables
-version = '16.7.0 Python'
+version = '16.7.1 Python'
 whats_new = [
 	"•Fixed custom commands. Now, each server can have their own commands. No more awkward moments!",
 	"•Revised the original polling system to make voting much simpler."
