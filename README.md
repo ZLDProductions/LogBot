@@ -1608,6 +1608,20 @@ None
 
 ---
 
+#### $gif
+**Info**  
+Fetches GIF images from Giphy.
+
+**Usage**  
+
+    $gif random [tag]
+`tag` is the image tag.
+
+**Required Permissions**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.
