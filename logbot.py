@@ -13,6 +13,7 @@ from sys import argv
 from typing import List, Union
 
 import discord
+import giphy_client
 import psutil
 import translate
 # import unirest
@@ -47,6 +48,7 @@ parser = configparser.ConfigParser( )
 channel_parser = configparser.ConfigParser( )
 pydict = PyDictionary( )
 purge_parser = argparser.ArgParser( "&&", "=" )
+gc = giphy_client.DefaultApi( )
 
 # tray icon
 selected_image = f"{os.getcwd()}\\Discord Logs\\SETTINGS\\avatar5.jpg"
@@ -2314,6 +2316,12 @@ async def on_message ( message: discord.Message ):
 				pass
 			elif startswith( f"{prefix}files" ):
 				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.files( message )
+				pass
+			elif startswith( f"{prefix}gif random" ):
+				tag = message.content.replace( f"{prefix}gif random", "" )
+				image = gc.gifs_random_get( giphy_key, tag=tag ).data
+				e = discord.Embed( ).set_image( url=image.image_url )
+				await client.send_message( message.channel, "", embed=e )
 				pass
 
 			# elif startswith(f"{prefix}yoda "):
