@@ -70,32 +70,34 @@ exclude_channel_list = [ ]
 marklist = [ ]
 channels = [ ]
 user_name = ""
-disables = {
-	"exclude"       :False,
-	"excludechannel":False,
-	"includechannel":False,
-	"mark"          :False,
-	"showlist"      :False,
-	"showmarks"     :False,
-	"channel"       :False,
-	"cmd"           :False,
-	"query"         :False,
-	"wiki"          :False,
-	"say"           :False,
-	"welcome"       :False,
-	"goodbye"       :False,
-	"decide"        :False,
-	"prune"         :False,
-	"purge"         :False,
-	"user"          :False,
-	"translate"     :False,
-	"urban"         :False,
-	"roll"          :False,
-	"server"        :False,
-	"convert"       :False,
-	"dict"          :False,
-	"permissions"   :False
-}
+disable_names = [
+	"exclude",
+	"excludechannel",
+	"includechannel",
+	"mark",
+	"showlist",
+	"showmarks",
+	"channel",
+	"cmd",
+	"query",
+	"wiki",
+	"say",
+	"welcome",
+	"goodbye",
+	"decide",
+	"prune",
+	"purge",
+	"user",
+	"translate",
+	"urban",
+	"roll",
+	"server",
+	"convert",
+	"dict",
+	"permissions",
+	"gif"
+]
+disables = { com:False for com in disable_names }
 custom_commands = { }
 times = [ ]
 join_roles = { }
@@ -654,6 +656,7 @@ class Commands:
 				.add_field( name=f"{prefix}convert", value=str( disables[ "convert" ] ) ) \
 				.add_field( name=f"{prefix}dict", value=str( disables[ "dict" ] ) ) \
 				.add_field( name=f"{prefix}permissions", value=str( disables[ "permissions" ] ) ) \
+				.add_field( name=f"{prefix}gif", value=str( disables[ "gif" ] ) ) \
 				.add_field( name="welcome", value=str( disables[ "welcome" ] ) ) \
 				.add_field( name="goodbye", value=str( disables[ "goodbye" ] ) )
 			# </editor-fold>
@@ -2318,10 +2321,13 @@ async def on_message ( message: discord.Message ):
 				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.files( message )
 				pass
 			elif startswith( f"{prefix}gif random" ):
-				tag = message.content.replace( f"{prefix}gif random", "" )
-				image = gc.gifs_random_get( giphy_key, tag=tag ).data
-				e = discord.Embed( ).set_image( url=image.image_url )
-				await client.send_message( message.channel, "", embed=e )
+				if not disables[ "gif" ] or message.author.id == owner_id:
+					tag = message.content.replace( f"{prefix}gif random", "" )
+					image = gc.gifs_random_get( giphy_key, tag=tag ).data
+					e = discord.Embed( ).set_image( url=image.image_url )
+					await client.send_message( message.channel, "", embed=e )
+					pass
+				else: sendDisabled( message )
 				pass
 
 			# elif startswith(f"{prefix}yoda "):
