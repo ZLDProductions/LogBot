@@ -1,5 +1,6 @@
 import os
 import sqlite3
+import traceback
 
 sql = sqlite3.connect( "launch.db" )
 cursor = sql.cursor( )
@@ -73,7 +74,7 @@ def getRunPackages ( ):
 	pass
 
 def main ( ):
-	print( "1. Run sequence\n2. Run package\n3. Create package\n4. Edit package" )
+	print( "1. Run sequence\n2. Run package\n3. Create package\n4. Edit package\n5. Remove package." )
 	choice = int( input( "Operation: " ) )
 	if choice == 1:
 		print( my_str )
@@ -121,10 +122,28 @@ def main ( ):
 		UPDATE packages
 		SET sequence="{seq}"
 		WHERE name="{name}";
-		""".replace( "\t", "" ) ); sql.commit( ); print( "Updated the package." )
-		except: print( "Could not update the package." )
+		""".replace( "\t", "" ) ); sql.commit( ); print( "Updated the package." ); input( "" )
+		except: print( "Could not update the package." ); print( traceback.format_exc( ) ); input( "" )
 		main( )
 		pass
+	elif choice == 5:
+		cursor.execute( f"""
+		SELECT *
+		FROM packages;
+		""".replace( "\t", "" ) )
+		res = cursor.fetchall( )
+		for pkg in res: print( f"{pkg[0]} - {pkg[1]}" )
+		name = input( "Package name: " )
+		try:
+			cursor.execute( f"""
+			DELETE FROM packages
+			WHERE name="{name}";
+			""".replace( "\t", "" ) )
+			sql.commit( )
+			print( "Removed the package." )
+			input( "" )
+		except: print( "Could not remove the package." ); print( traceback.format_exc( ) ); input( "" )
+		main( )
 	pass
 
 main( )
