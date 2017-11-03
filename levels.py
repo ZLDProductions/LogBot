@@ -149,7 +149,7 @@ def clamp ( _min: Union[ int, float ], _max: Union[ int, float ], val: Union[ in
 # noinspection PyTypeChecker,PyShadowingNames
 @client.event
 async def on_message ( message: discord.Message ):
-	global base, disabled
+	global base, disabled, exiting
 	if not message.server is None:
 		prefix = getprefix( message.server.id )
 		try:
@@ -455,7 +455,6 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"l{prefix}levels" ):
-				msg = await client.send_message(message.channel, "```Loading the Leaderboards...```")
 				ret = [ ]
 				user_rank = 0
 				tmp = [ ]
@@ -469,7 +468,8 @@ async def on_message ( message: discord.Message ):
 				append = ret.append
 				for i in range( 0, len( result ) ):
 					if result[ i ][ 0 ] == message.author.id: user_rank = i + 1
-					user = await client.get_user_info( result[ i ][ 0 ] )
+					# user = await client.get_user_info( result[ i ][ 0 ] )
+					user = message.server.get_member( result[ i ][ 0 ] )
 					append( f"{user} : {(result[i][1]*100)+result[i][2]}" )
 					pass
 				append = tmp.append
