@@ -477,7 +477,6 @@ async def on_message ( message: discord.Message ):
 					if i % 50 == 0: append( ret[ i ] + '\n' )
 					else: tmp[ len( tmp ) - 1 ] += ret[ i ] + "\n"
 					pass
-				await client.delete_message(msg)
 				for item in tmp: await client.send_message( message.channel, f"```{item}```" )
 				await client.send_message( message.channel, f"```You are ranked: #{user_rank}```" )
 				pass
