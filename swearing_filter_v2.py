@@ -12,6 +12,7 @@ from logbot_data import *
 
 client = Client( )
 init( )
+exiting = False
 
 dict_words = [ ]
 filter_disable_list = [ ]
@@ -102,7 +103,8 @@ async def on_message ( message: Message ):
 		pass
 	elif startswith( "$exit", "logbot.filter.exit" ):
 		if message.author.id == owner_id:
-			exit( 0 )
+			exiting = True
+			await client.logout( )
 			pass
 		pass
 	elif startswith( f"{prefix}ping" ):
@@ -172,3 +174,8 @@ async def on_ready ( ):
 	pass
 
 client.run( token )
+
+if not exiting:
+	subprocess.Popen( f"python {os.getcwd()}\\swearing_filter_v2.py" )
+	exit( 0 )
+	pass

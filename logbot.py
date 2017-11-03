@@ -41,6 +41,7 @@ planned = [
 	"There is nothing planned at the moment."
 ] # list of what I plan to do.
 bootup_time = datetime.now( ) # the time the bot started.
+exiting = False # determines if the bot is closing. If False, the bot automatically restarts.
 
 # clients and classes
 client = discord.Client( )
@@ -1562,6 +1563,7 @@ class Commands:
 	class Owner:
 		@staticmethod
 		async def exit ( ):
+			exiting = True
 			await client.logout( )
 			pass
 		@staticmethod
@@ -2345,6 +2347,17 @@ async def on_message ( message: discord.Message ):
 					pass
 				else: await client.send_message( message.channel, "```That command has been disabled!```" )
 				pass
+			elif startswith( f"{prefix}factor " ):
+				terms = message.content.replace( f"{prefix}factor ", "" ).split( " " )
+				n = int( terms[ 0 ] )
+				s = 0
+				if len( terms ) > 1: s = int( terms[ 1 ] )
+				factors = tools.factor( n, s )
+				ret = f"Factors of {n}:\n"
+				for factor in factors: ret += f"{factor[0]}, {factor[1]}\n"
+				ret = f"```{ret}```"
+				await client.send_message( message.channel, ret )
+				pass
 
 			# elif startswith(f"{prefix}yoda "):
 			# 	cnt = message.content.replace(f"{prefix}yoda ", "").replace(" ", "+")
@@ -2993,3 +3006,8 @@ async def on_ready ( ):
 	pass
 
 client.run( token )
+
+if exiting == False:
+	subprocess.Popen( f"python {os.getcwd()}\\logbot.py -t {bootup_time.month}.{bootup_time.day}.{bootup_time.year}.{bootup_time.hour}.{bootup_time.minute}.{bootup_time.second}.{bootup_time.microsecond}", False )
+	exit( 0 )
+	pass

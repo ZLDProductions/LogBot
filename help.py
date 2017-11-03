@@ -10,6 +10,7 @@ from logbot_data import token
 
 client = discord.Client( )
 init( )
+exiting = False
 
 key = """
 [] - optional parameter
@@ -895,7 +896,7 @@ async def on_message ( message ):
 		if message.author.id == owner_id: do_update = True
 		pass
 	elif startswith( "$exit", "logbot.help.exit" ):
-		if message.author.id == owner_id: exit( 0 )
+		if message.author.id == owner_id: exiting = True; await client.logout( )
 		pass
 	elif startswith( f"{prefix}ping" ):
 		tm = datetime.now( ) - message.timestamp
@@ -911,3 +912,8 @@ async def on_message ( message ):
 	pass
 
 client.run( token )
+
+if exiting == False:
+	subprocess.Popen( f"python {os.getcwd()}\\help.py" )
+	exit( 0 )
+	pass

@@ -13,6 +13,7 @@ from logbot_data import token
 client = Client( )
 # noinspection SpellCheckingInspection
 init( )
+exiting = False
 
 poll_path = f"{os.getcwd()}\\Discord Logs\\SETTINGS\\Polling"
 _sql = sqlite3.connect( f"{poll_path}\\polling.db" )
@@ -343,6 +344,7 @@ async def on_message ( message ):
 			pass
 		elif startswith( "$prefix", "logbot.polling.exit" ):
 			if message.author.id == owner_id:
+				exiting = True
 				await client.logout( )
 				pass
 			pass
@@ -382,3 +384,8 @@ async def on_ready ( ):
 	pass
 
 client.run( token )
+
+if exiting == False:
+	subprocess.Popen( f"python {os.getcwd()}\\polling.py" )
+	exit( 0 )
+	pass

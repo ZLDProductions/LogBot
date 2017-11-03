@@ -11,6 +11,7 @@ from logbot_data import token, owner_id
 
 client = Client( )
 init( )
+exiting = False
 
 sql = sqlite3.connect( f"{os.getcwd()}\\moderation.db" )
 cursor = sql.cursor( )
@@ -76,6 +77,7 @@ async def on_message ( message: Message ):
 			subprocess.Popen( f"{os.getcwd()}\\moderation.py" )
 			pass
 		elif begins( "$exit" ) or begins( "logbot.mod.exit" ):
+			exiting = True
 			await client.logout( )
 			pass
 		pass
@@ -101,3 +103,8 @@ async def on_ready ( ):
 	pass
 
 client.run( token )
+
+if exiting == False:
+	subprocess.Popen( f"python {os.getcwd()}\\moderation.py" )
+	exit( 0 )
+	pass

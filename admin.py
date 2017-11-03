@@ -14,6 +14,7 @@ init( )
 purge_parser = argparser.ArgParser( "&&", "=" )
 sql = sqlite3.connect( f"{os.getcwd()}\\Discord Logs\\SETTINGS\\logbot.db" )
 cursor = sql.cursor( )
+exiting = False
 
 class Commands:
 	class Admin:
@@ -106,7 +107,11 @@ async def on_message ( message: Message ):
 		if message.author.id == owner_id: do_update = True
 		pass
 	elif startswith( "logbot.admin.exit", "$exit" ):
-		if message.author.id == owner_id: await client.logout( )
+		if message.author.id == owner_id:
+			# noinspection PyUnusedLocal,PyShadowingNames
+			exiting = True
+			await client.logout( )
+			pass
 		pass
 
 	if do_update is True:
@@ -123,3 +128,8 @@ async def on_ready ( ):
 	pass
 
 client.run( token )
+
+if exiting == False:
+	subprocess.Popen( f"python {os.getcwd()}\\admin.py" )
+	exit( 0 )
+	pass

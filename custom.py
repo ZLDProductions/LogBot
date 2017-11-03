@@ -1,14 +1,16 @@
 import ast
 import os
 import sqlite3
+import subprocess
 
-from colorama import init, Fore
+from colorama import Fore, init
 from discord import Client, Message
 
 from logbot_data import token
 
 client = Client( )
 init( )
+exiting = False
 
 commands = { }
 _settings = f"{os.getcwd()}\\Discord Logs\\SETTINGS"
@@ -44,36 +46,47 @@ async def on_ready ( ):
 async def on_message ( message: Message ):
 	prefix = sqlread( f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';" )[ 0 ][ 0 ]
 	begins = message.content.startswith
-	if not message.server.id in commands.keys(): commands[message.server.id] = dict()
+	if not message.server.id in commands.keys( ): commands[ message.server.id ] = dict( )
 
 	if begins( f"c{prefix}add " ):
 		cmd = message.content.replace( f'c{prefix}add ', '' ).split( '||' )
-		if not cmd[0] == "":
-			commands[message.server.id][cmd[0]] = cmd[1]
-			await client.send_message(message.channel, f"```Created the command.```")
-			print(f"{Fore.LIGHTMAGENTA_EX}Command {cmd[0]}:{cmd[1]} was created.{Fore.RESET}")
+		if not cmd[ 0 ] == "":
+			commands[ message.server.id ][ cmd[ 0 ] ] = cmd[ 1 ]
+			await client.send_message( message.channel, f"```Created the command.```" )
+			print( f"{Fore.LIGHTMAGENTA_EX}Command {cmd[0]}:{cmd[1]} was created.{Fore.RESET}" )
 			pass
-		else: await client.send_message(message.channel, f"```A command cannot be triggered like that!```")
+		else: await client.send_message( message.channel, f"```A command cannot be triggered like that!```" )
 		del cmd
 		pass
-	elif begins(f"c{prefix}remove "):
-		cmd = message.content.replace(f"c{prefix}remove ", "")
-		data = {cmd:commands[message.server.id][cmd]}
-		del commands[message.server.id][cmd]
-		await client.send_message(message.channel, "```Deleted the command.```")
-		print(f"{Fore.LIGHTMAGENTA_EX}Command {cmd}:{data[cmd]} was deleted.{Fore.RESET}")
+	elif begins( f"c{prefix}remove " ):
+		cmd = message.content.replace( f"c{prefix}remove ", "" )
+		data = { cmd:commands[ message.server.id ][ cmd ] }
+		del commands[ message.server.id ][ cmd ]
+		await client.send_message( message.channel, "```Deleted the command.```" )
+		print( f"{Fore.LIGHTMAGENTA_EX}Command {cmd}:{data[cmd]} was deleted.{Fore.RESET}" )
 		del data
 		del cmd
 		pass
-	elif begins(f"c{prefix}show"):
-		tmp = '\n'.join(list(commands[message.server.id].keys()))
-		await client.send_message(message.channel, f"```Commands:\n{tmp}```")
+	elif begins( f"c{prefix}show" ):
+		tmp = '\n'.join( list( commands[ message.server.id ].keys( ) ) )
+		await client.send_message( message.channel, f"```Commands:\n{tmp}```" )
 		del tmp
 		pass
+	elif begins( f"logbot.custom.exit" ):
+		if message.author.id == owner_id:
+			exiting = True
+			await client.logout( )
+			pass
+		pass
 
-	for item in list(commands[message.server.id].keys()):
-		if begins(item): await client.send_message(message.channel, commands[message.server.id][item])
+	for item in list( commands[ message.server.id ].keys( ) ):
+		if begins( item ): await client.send_message( message.channel, commands[ message.server.id ][ item ] )
 		pass
 	pass
 
 client.run( token )
+
+if exiting == False:
+	subprocess.Popen( f"python {os.getcwd()}\\custom.py" )
+	exit( 0 )
+	pass

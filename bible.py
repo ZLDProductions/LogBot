@@ -19,6 +19,7 @@ from logbot_data import token
 
 client = discord.Client( )
 init( )
+exiting = False
 
 akjv_books = [ "1 Samuel",
                "2 Samuel",
@@ -2081,7 +2082,7 @@ async def on_message ( message ):
 		else: sendNoPerm( message )
 		pass
 	elif startswith( "$exit", "logbot.bible.exit" ):
-		if message.author.id == owner_id: await Commands.Owner.exit( )
+		if message.author.id == owner_id: exiting = True; await Commands.Owner.exit( )
 		else: sendNoPerm( message )
 		pass
 	elif startswith( f"$update", "logbot.bible.update" ):
@@ -2223,3 +2224,8 @@ async def on_ready ( ):
 	pass
 
 client.run( token )
+
+if exiting == False:
+	subprocess.Popen( f"python {os.getcwd()}\\bible.py" )
+	exit( 0 )
+	pass

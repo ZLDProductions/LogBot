@@ -73,7 +73,29 @@ def notify ( header: str, body: str, sti: QSystemTrayIcon ):
 	sti.showMessage( header, body )
 	pass
 
-def filter_text(text: str) -> str:
+def filter_text ( text: str ) -> str:
 	url = "http://www.purgomalum.com/service/plain?text=" + text
 	r = requests.get( url )
-	return r.text.replace("*", "\\*")
+	return r.text.replace( "*", "\\*" )
+
+def factor ( n: int, s: int = 0 ) -> list:
+	"""
+	Gets the factors of n.
+	:param n: The whole integer to factor.
+	:param s: The (optional) sum of the factors. If they do not add up to this, then they are excluded from the statement.
+	:return: A list of tuples containing the factors for n.
+	"""
+	n = abs( n )
+	if s == 0:
+		ret = [ ]
+		for i in range( 1, n + 1 ):
+			if n % i == 0: ret.append( (i, int( n / i )) )
+			pass
+		return ret
+	else:
+		ret = [ ]
+		for i in range( 1, n + 1 ):
+			if n % i == 0 and (i + int( n / i ) == s or -i + int( n / i ) == s or i + int( n / -i ) == s or -i + int( n / -i ) == s): ret.append( (i, int( n / i )) )
+			pass
+		return ret
+	pass

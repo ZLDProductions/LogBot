@@ -16,6 +16,7 @@ from logbot_data import token, bot_id
 
 # from symbols import symbols
 
+exiting = False
 init( )
 client = discord.Client( )
 owner_id = "239500860336373761"
@@ -1453,7 +1454,7 @@ async def on_message ( message: discord.Message ):
 				pass
 			pass
 		elif startswith( "logbot.levels.exit", "$exit" ):
-			if message.author.id == owner_id: await client.logout( )
+			if message.author.id == owner_id: exiting = True; await client.logout( )
 			else:
 				await client.send_message( message.channel, "```You do not have permission to use this command.```" )
 				print( f"{Fore.LIGHTGREEN_EX}{str(message.author)} attempted to use a command.{Fore.RESET}" )
@@ -1628,3 +1629,8 @@ async def on_ready ( ):
 	pass
 
 client.run( token )
+
+if exiting == False:
+	subprocess.Popen( f"python {os.getcwd()}\\levels.py" )
+	exit( 0 )
+	pass

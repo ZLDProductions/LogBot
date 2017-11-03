@@ -1,3 +1,6 @@
+import subprocess
+
+import os
 from colorama import init, Fore
 from discord import Client, Message, Permissions
 from discord.utils import find
@@ -6,6 +9,7 @@ from logbot_data import token, owner_id, bot_id
 
 client = Client( )
 init( )
+exiting = False
 
 @client.event
 async def on_message ( message: Message ):
@@ -48,6 +52,7 @@ async def on_message ( message: Message ):
 
 		if message.content.startswith( "$exit" ) or message.content.startswith( "logbot.security.exit" ):
 			if message.author.id == owner_id:
+				exiting = True
 				await client.logout( )
 				pass
 			pass
@@ -60,3 +65,8 @@ async def on_ready ( ):
 	pass
 
 client.run( token )
+
+if not exiting:
+	subprocess.Popen( f"python {os.getcwd()}\\security.py" )
+	exit( 0 )
+	pass

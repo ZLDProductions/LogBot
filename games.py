@@ -13,6 +13,7 @@ from logbot_data import token
 # noinspection SpellCheckingInspection
 client = discord.Client( )
 init( )
+exiting = False
 sql = sqlite3.connect( "logbot.db" )
 cursor = sql.cursor( )
 
@@ -202,8 +203,8 @@ async def on_message ( message ):
 		pass
 	elif startswith( "$exit", "logbot.games.exit" ):
 		if message.author.id == "239500860336373761":
+			exiting = True
 			await client.logout( )
-			exit( 0 )
 			pass
 		pass
 	elif startswith( f"$update", "logbot.games.update" ):
@@ -261,3 +262,8 @@ async def on_ready ( ):
 	pass
 
 client.run( token )
+
+if exiting == False:
+	subprocess.Popen( f"python {os.getcwd()}\\games.py" )
+	exit( 0 )
+	pass

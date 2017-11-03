@@ -8,6 +8,7 @@ from logbot_data import owner_id, token
 
 client = discord.Client( )
 init( )
+exiting = False
 
 discord_settings = f"{os.getcwd()}\\Discord Logs\\SETTINGS"
 suggestions = f"{discord_settings}\\suggestions.txt"
@@ -88,6 +89,7 @@ async def on_message ( message: discord.Message ):
 			exit( 0 )
 			pass
 		elif begins( "$exit" ) or begins( "logbot.dev.exit" ):
+			exiting = True
 			await client.logout( )
 			pass
 		elif begins( "$eval " ):
@@ -115,6 +117,7 @@ async def on_message ( message: discord.Message ):
 				pass
 			await client.send_message( message.channel, "Here you go!", embed=e )
 			pass
+
 		pass
 
 	if begins( "$report " ):
@@ -160,3 +163,8 @@ async def on_ready ( ):
 	pass
 
 client.run( token )
+
+if exiting == False:
+	subprocess.Popen( f"python {os.getcwd()}\\dev.py" )
+	exit( 0 )
+	pass
