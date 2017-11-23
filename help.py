@@ -769,7 +769,7 @@ infos = dict( {
 	},
 	"_gif"           :{
 		"Info"                :"Fetches a random gif (with optional tag) from Giphy.",
-		"Usage"               :"$gif random [tag]",
+		"Usage"               :"$gif [tag]",
 		"Required Permissions":"None",
 		"Plugin"              :"Main",
 		"Type"                :"Fun"

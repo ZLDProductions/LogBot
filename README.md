@@ -1614,7 +1614,7 @@ Fetches GIF images from Giphy.
 
 **Usage**  
 
-    $gif random [tag]
+    $gif [tag]
 `tag` is the image tag.
 
 **Required Permissions**  
