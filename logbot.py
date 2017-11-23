@@ -30,12 +30,13 @@ import tools
 from logbot_data import *
 
 # base variables
-version = '16.7.2 Python'
+version = '16.7.3 Python'
 whats_new = [
 	"•Fixed custom commands. Now, each server can have their own commands. No more awkward moments!",
 	"•Revised the original polling system to make voting much simpler.",
 	"•Added $gif.",
-	"•Fixed $disable commands."
+	"•Fixed $disable commands.",
+	"•Major speed increase in the levels plugin."
 ] # list of recent changes to the code.
 planned = [
 	"There is nothing planned at the moment."
@@ -428,6 +429,16 @@ def get_diff ( then: datetime, now: datetime ) -> str:
 
 class Commands:
 	class Member:
+		@staticmethod
+		async def gif ( message: discord.Message, prefix: str ):
+			tag = message.content.replace( f"{prefix}gif", "" )
+			image = gc.gifs_random_get( giphy_key, tag=tag ).data
+			e = discord.Embed( ).set_image( url=image.image_url )
+			await client.send_message( message.channel, "", embed=e )
+			del e
+			del image
+			del tag
+			pass
 		@staticmethod
 		async def user ( message: discord.Message, prefix: str ):
 			cnt = message.content.replace( f"{prefix}user ", "" )
@@ -1563,6 +1574,7 @@ class Commands:
 	class Owner:
 		@staticmethod
 		async def exit ( ):
+			global exiting
 			exiting = True
 			await client.logout( )
 			pass
@@ -2338,25 +2350,9 @@ async def on_message ( message: discord.Message ):
 			elif startswith( f"{prefix}files" ):
 				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.files( message )
 				pass
-			elif startswith( f"{prefix}gif random" ):
-				if not disables[ message.server.id ][ "gif" ] or message.author.id == owner_id:
-					tag = message.content.replace( f"{prefix}gif random", "" )
-					image = gc.gifs_random_get( giphy_key, tag=tag ).data
-					e = discord.Embed( ).set_image( url=image.image_url )
-					await client.send_message( message.channel, "", embed=e )
-					pass
+			elif startswith( f"{prefix}gif" ):
+				if not disables[ message.server.id ][ "gif" ] or message.author.id == owner_id: await Commands.Member.gif( message, prefix )
 				else: await client.send_message( message.channel, "```That command has been disabled!```" )
-				pass
-			elif startswith( f"{prefix}factor " ):
-				terms = message.content.replace( f"{prefix}factor ", "" ).split( " " )
-				n = int( terms[ 0 ] )
-				s = 0
-				if len( terms ) > 1: s = int( terms[ 1 ] )
-				factors = tools.factor( n, s )
-				ret = f"Factors of {n}:\n"
-				for factor in factors: ret += f"{factor[0]}, {factor[1]}\n"
-				ret = f"```{ret}```"
-				await client.send_message( message.channel, ret )
 				pass
 
 			# elif startswith(f"{prefix}yoda "):
@@ -3007,7 +3003,7 @@ async def on_ready ( ):
 
 client.run( token )
 
-if exiting == False:
+if not exiting:
 	subprocess.Popen( f"python {os.getcwd()}\\logbot.py -t {bootup_time.month}.{bootup_time.day}.{bootup_time.year}.{bootup_time.hour}.{bootup_time.minute}.{bootup_time.second}.{bootup_time.microsecond}", False )
 	exit( 0 )
 	pass

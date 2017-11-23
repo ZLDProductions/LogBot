@@ -1629,7 +1629,7 @@ async def on_ready ( ):
 
 client.run( token )
 
-if exiting == False:
+if not exiting:
 	subprocess.Popen( f"python {os.getcwd()}\\levels.py" )
 	exit( 0 )
 	pass
