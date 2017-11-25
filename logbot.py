@@ -30,13 +30,14 @@ import tools
 from logbot_data import *
 
 # base variables
-version = '16.7.3 Python'
+version = '16.7.4 Python'
 whats_new = [
 	"•Fixed custom commands. Now, each server can have their own commands. No more awkward moments!",
 	"•Revised the original polling system to make voting much simpler.",
 	"•Added $gif.",
 	"•Fixed $disable commands.",
-	"•Major speed increase in the levels plugin."
+	"•Major speed increase in the levels plugin.",
+	"•Added the ability to fetch only a certain field for a user when using the $user command."
 ] # list of recent changes to the code.
 planned = [
 	"There is nothing planned at the moment."
@@ -438,6 +439,33 @@ class Commands:
 			del e
 			del image
 			del tag
+			pass
+		@staticmethod
+		async def user_restrict ( message: discord.Message, prefix: str ):
+			cnt = message.content.replace( f"{prefix}user:", "" )
+			params = cnt.split( " " )
+			field = params[ 0 ]
+			params.remove( field )
+			params = ' '.join( params )
+			_user = discord.utils.find( lambda u:u.id == params or u.name == params or str( u ) == params or u.mention == params, message.server.members )
+			if _user is None and len( message.mentions ) > 0: _user = message.mentions[ 0 ]
+			elif _user is None and len( message.mentions ) == 0: _user = message.author
+
+			if field == "nick": await client.send_message( message.channel, str( _user.nick ) )
+			elif field == "name": await client.send_message( message.channel, str( _user ) )
+			elif field == "id": await client.send_message( message.channel, str( _user.id ) )
+			elif field == "type": await client.send_message( message.channel, "Bot" if _user.bot is True else "User" )
+			elif field == "date":
+				m = format_time( _user.created_at )
+				await client.send_message( message.channel, f"{get_diff(m, datetime.now())} ago ({m.month}.{m.day}.{m.year} {m.hour}:{m.minute})" )
+				pass
+			elif field == "status": await client.send_message( message.channel, str( _user.status ) )
+			elif field == "avatar": await client.send_message( message.channel, _user.avatar_url )
+			elif field == "default": await client.send_message( message.channel, _user.default_avatar_url )
+			del cnt
+			del params
+			del field
+			del _user
 			pass
 		@staticmethod
 		async def user ( message: discord.Message, prefix: str ):
@@ -1928,12 +1956,12 @@ async def on_message ( message: discord.Message ):
 
 		if startswith( prefix ):
 			if startswith( f"{prefix}exclude ", f"{prefix}ex " ):
-				if (admin_role in message.author.roles and not disables.get( "exclude" ) is True) or message.author.id == owner_id: await Commands.Admin.exclude( message, time )
+				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "exclude" ) is True) or message.author.id == owner_id: await Commands.Admin.exclude( message, time )
 				elif disables[ message.server.id ][ "exclude" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
 				else: await sendNoPerm( message )
 				pass
 			elif startswith( f"{prefix}excludechannel ", f"{prefix}exc " ):
-				if (admin_role in message.author.roles and not disables.get( "excludechannel" ) is True) or message.author.id == owner_id:
+				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "excludechannel" ) is True) or message.author.id == owner_id:
 					await Commands.Admin.excludechannel( message )
 					pass
 				elif disables[ message.server.id ][ "excludechannel" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -1942,7 +1970,7 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"{prefix}includechannel ", f"{prefix}inc " ):
-				if (admin_role in message.author.roles and not disables.get( "includechannel" ) is True) or message.author.id == owner_id:
+				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "includechannel" ) is True) or message.author.id == owner_id:
 					await Commands.Admin.includechannel( message )
 					pass
 				elif disables[ message.server.id ][ "includechannel" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -1951,7 +1979,7 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"{prefix}mark " ):
-				if (admin_role in message.author.roles and not disables.get( "mark" ) is True) or message.author.id == owner_id:
+				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "mark" ) is True) or message.author.id == owner_id:
 					await Commands.Admin.mark( message, prefix )
 					pass
 				elif disables[ message.server.id ][ "mark" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -1968,7 +1996,7 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"{prefix}showlist" ):
-				if not disables.get( "showlist" ) is True or message.author.id == owner_id:
+				if not disables[ message.server.id ].get( "showlist" ) is True or message.author.id == owner_id:
 					await Commands.Member.showlist( message )
 					pass
 				elif disables[ message.server.id ][ "showlist" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -1977,7 +2005,7 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"{prefix}showmarks" ):
-				if not disables.get( "showmarks" ) is True or message.author.id == owner_id:
+				if not disables[ message.server.id ].get( "showmarks" ) is True or message.author.id == owner_id:
 					await Commands.Member.showmarks( message )
 					pass
 				elif disables[ message.server.id ][ "showmarks" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -1989,7 +2017,7 @@ async def on_message ( message: discord.Message ):
 				await client.send_message( message.channel, f"```LogBot Version {version}```" )
 				pass
 			elif startswith( f"{prefix}channel " ):
-				if (admin_role in message.author.roles and not disables.get( "channel" ) is True) or message.author.id == owner_id:
+				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "channel" ) is True) or message.author.id == owner_id:
 					await Commands.Admin.channel( message, prefix )
 					pass
 				elif disables[ message.server.id ][ "channel" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -2001,7 +2029,7 @@ async def on_message ( message: discord.Message ):
 				await Commands.Member.updates( message )
 				pass
 			elif startswith( f"{prefix}say" ):
-				if (admin_role in message.author.roles and not disables.get( "say" ) is True) or message.author.id == owner_id:
+				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "say" ) is True) or message.author.id == owner_id:
 					await Commands.Admin.say( message, prefix )
 					pass
 				elif disables[ message.server.id ][ "say" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -2013,7 +2041,7 @@ async def on_message ( message: discord.Message ):
 				await Commands.Member.planned( message )
 				pass
 			# elif startswith( f"{prefix}cmd " ):
-			# 	if not disables.get( "cmd" ) is True or message.author.id == owner_id:
+			# 	if not disables[message.server.id].get( "cmd" ) is True or message.author.id == owner_id:
 			# 		await Commands.Member.cmd( message )
 			# 		pass
 			# 	elif disables[ message.server.id ][ "cmd" ]:
@@ -2024,7 +2052,7 @@ async def on_message ( message: discord.Message ):
 			# 		pass
 			# 	pass
 			elif startswith( f"{prefix}query " ):
-				if not disables.get( "query" ) is True or message.author.id == owner_id:
+				if not disables[ message.server.id ].get( "query" ) is True or message.author.id == owner_id:
 					await Commands.Member.query( message, prefix )
 					pass
 				elif disables[ message.server.id ][ "query" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -2033,7 +2061,7 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"{prefix}wiki " ):
-				if not disables.get( "wiki" ) is True or message.author.id == owner_id:
+				if not disables[ message.server.id ].get( "wiki" ) is True or message.author.id == owner_id:
 					await Commands.Member.wiki( message, prefix )
 					pass
 				elif disables[ message.server.id ][ "wiki" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -2061,7 +2089,7 @@ async def on_message ( message: discord.Message ):
 				await Commands.Member.suggest( message, prefix )
 				pass
 			elif startswith( f"{prefix}decide " ):
-				if not disables.get( "decide" ) is True or message.author.id == owner_id:
+				if not disables[ message.server.id ].get( "decide" ) is True or message.author.id == owner_id:
 					await Commands.Member.decide( message, prefix )
 					pass
 				elif disables[ message.server.id ][ "decide" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -2073,7 +2101,7 @@ async def on_message ( message: discord.Message ):
 				await Commands.Member.disables( message, prefix )
 				pass
 			elif startswith( f"{prefix}welcome " ):
-				if (admin_role in message.author.roles and not disables.get( "welcome" ) is True) or message.author.id == owner_id:
+				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "welcome" ) is True) or message.author.id == owner_id:
 					await Commands.Admin.welcome( message, prefix )
 					pass
 				elif disables[ message.server.id ][ "welcome" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -2082,7 +2110,7 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"{prefix}goodbye " ):
-				if (admin_role in message.author.roles and not disables.get( "goodbye" ) is True) or message.author.id == owner_id:
+				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "goodbye" ) is True) or message.author.id == owner_id:
 					await Commands.Admin.goodbye( message, prefix )
 					pass
 				elif disables[ message.server.id ][ "goodbye" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -2091,7 +2119,7 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"{prefix}welcome" ):
-				if (admin_role in message.author.roles and not disables.get( "welcome" ) is True) or message.author.id == owner_id:
+				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "welcome" ) is True) or message.author.id == owner_id:
 					await Commands.Admin.show_welcome( message )
 					pass
 				elif disables[ message.server.id ][ "welcome" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -2100,7 +2128,7 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"{prefix}goodbye" ):
-				if (admin_role in message.author.roles and not disables.get( "goodbye" ) is True) or message.author.id == owner_id:
+				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "goodbye" ) is True) or message.author.id == owner_id:
 					await Commands.Admin.show_goodbye( message )
 					pass
 				elif disables[ message.server.id ][ "goodbye" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -2109,7 +2137,7 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"{prefix}prunes " ):
-				if (admin_role in message.author.roles and not disables.get( "prune" ) is True) or message.author.id == owner_id:
+				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "prune" ) is True) or message.author.id == owner_id:
 					await Commands.Admin.prunes( message, prefix )
 					pass
 				elif disables[ message.server.id ][ "prune" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -2118,7 +2146,7 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"{prefix}prune " ):
-				if (admin_role in message.author.roles and not disables.get( "prune" ) is True) or message.author.id == owner_id:
+				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "prune" ) is True) or message.author.id == owner_id:
 					await Commands.Admin.prune( message, prefix )
 					pass
 				elif disables[ message.server.id ][ "prune" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -2126,8 +2154,12 @@ async def on_message ( message: discord.Message ):
 					await sendNoPerm( message )
 					pass
 				pass
+			elif startswith( f"{prefix}user:" ):
+				if not disables[ message.server.id ].get( "user" ) is True or message.author.id == owner_id: await Commands.Member.user_restrict( message, prefix )
+				elif disables[ message.server.id ][ "user" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+				pass
 			elif startswith( f"{prefix}user" ):
-				if not disables.get( "user" ) is True or message.author.id == owner_id: await Commands.Member.user( message, prefix )
+				if not disables[ message.server.id ].get( "user" ) is True or message.author.id == owner_id: await Commands.Member.user( message, prefix )
 				elif disables[ message.server.id ][ "user" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
 				else: await sendNoPerm( message )
 				pass
@@ -2135,7 +2167,7 @@ async def on_message ( message: discord.Message ):
 				await client.send_message( message.channel, "https://discordapp.com/oauth2/authorize?client_id=255379748828610561&scope=bot&permissions=268696670" )
 				pass
 			elif startswith( f"{prefix}purge " ):
-				if (admin_role in message.author.roles and not disables.get( "purge" ) is True) or message.author.id == owner_id:
+				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "purge" ) is True) or message.author.id == owner_id:
 					tmp = message.content.replace( f"{prefix}purge ", "" )
 					switches = purge_parser.parse( tmp )
 					await Commands.Admin.purge( message, int( switches.get( "limit" ) ) if not switches.get( "limit" ) is None else 100, switches )
@@ -2146,7 +2178,7 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"{prefix}purge" ):
-				if (admin_role in message.author.roles and not disables.get( "purge" ) is True) or message.author.id == owner_id:
+				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "purge" ) is True) or message.author.id == owner_id:
 					await Commands.Admin.loose_purge( message )
 					pass
 				elif disables[ message.server.id ][ "purge" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -2171,11 +2203,11 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"{prefix}permissions" ):
-				if not disables.get( "permissions" ) is True: await Commands.Member.user_permissions( message, prefix )
+				if not disables[ message.server.id ].get( "permissions" ) is True: await Commands.Member.user_permissions( message, prefix )
 				else: await client.send_message( message.channel, "```That command has been disabled!```" )
 				pass
 			elif startswith( f"{prefix}translate.get" ):
-				if not disables.get( "translate" ) is True or message.author.id == owner_id:
+				if not disables[ message.server.id ].get( "translate" ) is True or message.author.id == owner_id:
 					await Commands.Member.translate_get( message )
 					pass
 				elif disables[ message.server.id ][ "translate" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -2184,7 +2216,7 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"{prefix}translate " ):
-				if not disables.get( "translate" ) is True or message.author.id == owner_id:
+				if not disables[ message.server.id ].get( "translate" ) is True or message.author.id == owner_id:
 					await Commands.Member.translate( message, prefix )
 					pass
 				elif disables[ message.server.id ][ "translate" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
@@ -2214,7 +2246,7 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"{prefix}dict " ):
-				if not disables.get( "dict" ) is True: await Commands.Member.dict( message, prefix )
+				if not disables[ message.server.id ].get( "dict" ) is True: await Commands.Member.dict( message, prefix )
 				else: await client.send_message( message.channel, "```That command has been disabled!```" )
 				pass
 			elif startswith( f"{prefix}setup" ):
@@ -2226,11 +2258,11 @@ async def on_message ( message: discord.Message ):
 					pass
 				pass
 			elif startswith( f"{prefix}server" ):
-				if not disables.get( "server" ) is True: await Commands.Member.server( message )
+				if not disables[ message.server.id ].get( "server" ) is True: await Commands.Member.server( message )
 				else: await client.send_message( message.channel, "```That command has been disabled!```" )
 				pass
 			elif startswith( f"{prefix}convert " ):
-				if not disables.get( "convert" ) is True: await Commands.Member.convert( message, prefix )
+				if not disables[ message.server.id ].get( "convert" ) is True: await Commands.Member.convert( message, prefix )
 				else: await client.send_message( message.channel, "```That command has been disabled!```" )
 				pass
 			elif startswith( f"{prefix}mute " ):
@@ -2274,12 +2306,12 @@ async def on_message ( message: discord.Message ):
 				await client.send_message( message.channel, git_link )
 				pass
 			elif startswith( f"{prefix}joinrole " ):
-				if (admin_role in message.author.roles and not disables.get( "welcome" ) is True) or message.author.id == owner_id: await Commands.Admin.join_role( message, prefix )
+				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "welcome" ) is True) or message.author.id == owner_id: await Commands.Admin.join_role( message, prefix )
 				elif disables[ message.server.id ][ "welcome" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
 				else: sendNoPerm( message )
 				pass
 			elif startswith( f"{prefix}joinrole" ):
-				if not disables.get( "welcome" ) is True or message.author.id == owner_id:
+				if not disables[ message.server.id ].get( "welcome" ) is True or message.author.id == owner_id:
 					role = discord.utils.find( lambda r:r.id == join_roles[ message.server.id ], message.server.roles )
 					await client.send_message( message.channel, f"Join Role for {message.server.name}: {role}" )
 					pass
@@ -2313,7 +2345,7 @@ async def on_message ( message: discord.Message ):
 				else: sendNoPerm( message )
 				pass
 			elif startswith( f"{prefix}roll" ):
-				if not disables.get( "roll" ) is True: await client.send_message( message.channel, f"You rolled {random.choice(range(1, int(message.content.replace('{prefix}roll ', ''))))}!" )
+				if not disables[ message.server.id ].get( "roll" ) is True: await client.send_message( message.channel, f"You rolled {random.choice(range(1, int(message.content.replace('{prefix}roll ', ''))))}!" )
 				else: await client.send_message( message.channel, "```That command has been disabled!```" )
 				pass
 			elif startswith( f"{prefix}channels" ):
@@ -2344,7 +2376,7 @@ async def on_message ( message: discord.Message ):
 				await Commands.Member.role( message, prefix )
 				pass
 			elif startswith( f"{prefix}urban " ):
-				if not disables.get( "urban" ) is True: await Commands.Member.urban( message, prefix )
+				if not disables[ message.server.id ].get( "urban" ) is True: await Commands.Member.urban( message, prefix )
 				else: await client.send_message( message.channel, "```That command has been disabled!```" )
 				pass
 			elif startswith( f"{prefix}files" ):
