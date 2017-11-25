@@ -453,8 +453,9 @@ Shows public information about a user.
 
 **Usage**
 
-    $user {user}
+    $user[:field] {user}
 `user` is a user mention (@user#0000) or the name of the user.
+`:field` is optional. Include : in your message. Fields are: `name`, `nick`, `id`, `date`, `default`, `avatar`, `status`, `type`
 
 **Required Permissions**  
 None

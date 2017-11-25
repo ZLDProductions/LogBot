@@ -211,7 +211,7 @@ infos = dict( {
 	},
 	"_user"          :{
 		"Info"                :"Shows public information about a user.",
-		"Usage"               :"$user {mention}",
+		"Usage"               :"$user[:field] {mention}",
 		"Required Permissions":"LogBot Member",
 		"Type"                :"Fun",
 		"Plugin"              :"Main"

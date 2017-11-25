@@ -290,9 +290,10 @@ div.page {
         </tr>
         <tr>
             <td><a id="user" name="user"></a>$user</td>
-            <td>$user {users}</td>
+            <td>$user[:field] {users}</td>
             <td>Gets basic information on the user.<br>
                 {users} is at least one user mention or user name.<br>
+                [:field] can be: name, nick, type, id, status, date, avatar, or default<br>
             </td>
             <td>None</td>
         </tr>
