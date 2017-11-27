@@ -8,6 +8,7 @@ from datetime import datetime
 import discord
 from colorama import Fore, init
 
+from sql import SQL
 from logbot_data import token
 
 # noinspection SpellCheckingInspection
@@ -22,13 +23,14 @@ left = ""
 
 logs = f'{os.getcwd()}\\Discord Logs'
 settings = f"{logs}\\SETTINGS"
+db = SQL( )
 _sql = sqlite3.connect( f"{settings}\\logbot.db" )
 _cursor = sql.cursor( )
 
 def getprefix ( server: str ) -> str:
-	_cursor.execute( f"SELECT prefix FROM Prefixes WHERE server='{server}';" )
-	return _cursor.fetchall( )[ 0 ][ 0 ]
-	pass
+	# _cursor.execute( f"SELECT prefix FROM Prefixes WHERE server='{server}';" )
+	# return _cursor.fetchall( )[ 0 ][ 0 ]
+	return db.read( "Prefixes", server )
 
 challenges = [
 	"Type no capital letters.",
@@ -72,7 +74,15 @@ async def on_message ( message ):
 				pass
 			else:
 				tmp = _read( f"""SELECT * FROM scrambles WHERE sid='{message.server.id}'""" )[ 0 ]
-				await client.send_message( message.channel, f"Wow...incorrect...\n{tmp[1]}" )
+				word = list( tmp[ 0 ] )
+				guessed = list( content )
+				overall = list( )
+				length = len( word ) if len( word ) >= len( guessed ) else len( guessed )
+				for i in range( 0, length ):
+					if word[ i ].lower( ) == guessed[ i ].lower( ): overall.append( word[ i ] )
+					else: overall.append( "_" )
+					pass
+				await client.send_message( message.channel, f"Incorrect!\n{tmp[1]}\n{''.join(overall)}" )
 				pass
 			pass
 		except: await client.send_message( message.channel, "```No scramble exists.```" )
