@@ -210,7 +210,7 @@ def is_ascii ( s: str ) -> bool:
 	:param s: The string to analyze.
 	:return: True if `s` is not unicode, otherwise False.
 	"""
-	return all( ord( c ) < 128 for c in s )
+	return all( ord( c ) < 128 for c in s ) # Returns true if the string has no unicode characters.
 
 # Changes the time from UTC to PST (-8 hrs)
 def format_time ( time_stamp: datetime ) -> datetime:
@@ -219,7 +219,7 @@ def format_time ( time_stamp: datetime ) -> datetime:
 	:param time_stamp: A UTC timestamp.
 	:return: A PST timestamp.
 	"""
-	return time_stamp.replace( tzinfo=timezone.utc ).astimezone( tz=None )
+	return time_stamp.replace( tzinfo=timezone.utc ).astimezone( tz=None ) # Converts the datetime from UTC to the machine's local time.
 
 def save ( sid: str ):
 	"""
