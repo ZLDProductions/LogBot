@@ -29,7 +29,7 @@ import sql
 import tools
 from logbot_data import *
 
-# base variables
+# <editor-fold desc="Base Variables">
 version = '16.7.4 Python'
 whats_new = [
 	"•Fixed custom commands. Now, each server can have their own commands. No more awkward moments!",
@@ -44,64 +44,41 @@ planned = [
 ] # list of what I plan to do.
 bootup_time = datetime.now( ) # the time the bot started.
 exiting = False # determines if the bot is closing. If False, the bot automatically restarts.
+# </editor-fold>
 
-# clients and classes
-client = discord.Client( )
-init( )
-wclient = wolframalpha.Client( app_id=wa_token )
-parser = configparser.ConfigParser( )
-channel_parser = configparser.ConfigParser( )
-pydict = PyDictionary( )
-purge_parser = argparser.ArgParser( "&&", "=" )
-gc = giphy_client.DefaultApi( )
+# <editor-fold desc="Clients and Classes">
+client = discord.Client( ) # Discord client
+init( ) # Colorama client (color the console!)
+wclient = wolframalpha.Client( app_id=wa_token ) # Wolfram|Alpha client
+parser = configparser.ConfigParser( ) # ConfigParser init
+channel_parser = configparser.ConfigParser( ) # ConfigParser init
+pydict = PyDictionary( ) # PyDictionary client
+purge_parser = argparser.ArgParser( "&&", "=" ) # ArgParser (my own class) init
+gc = giphy_client.DefaultApi( ) # Giphy client
+# </editor-fold>
 
-# tray icon
-selected_image = f"{os.getcwd()}\\Discord Logs\\SETTINGS\\avatar5.jpg"
+# <editor-fold desc="Tray Icon">
+selected_image = f"{os.getcwd()}\\Discord Logs\\SETTINGS\\avatar5.jpg" # Bot image
 app = Qt.QApplication( argv )
 sti = Qt.QSystemTrayIcon( Qt.QIcon( selected_image ), app )
 icon = Qt.QIcon( selected_image )
 sti.setIcon( icon )
 sti.show( )
 sti.setToolTip( "LogBot" )
+# </editor-fold>
 
-# databases
+# <editor-fold desc="Databases">
 db = sql.SQL( )
 db.create( "Welcomes", "server", "message" )
 db.create( "Goodbyes", "server", "message" )
 db.create( "Prefixes", "server", "prefix" )
+# </editor-fold>
 
-# instance variables
+# <editor-fold desc="Instance Variables">
 exclude_channel_list = [ ]
 marklist = [ ]
 channels = [ ]
 user_name = ""
-# disables = {
-# 	"exclude":False,
-# 	"excludechannel":False,
-# 	"includechannel":False,
-# 	"mark":False,
-# 	"showlist":False,
-# 	"showmarks":False,
-# 	"channel":False,
-# 	"cmd":False,
-# 	"query":False,
-# 	"wiki":False,
-# 	"say":False,
-# 	"welcome":False,
-# 	"goodbye":False,
-# 	"decide":False,
-# 	"prune":False,
-# 	"purge":False,
-# 	"user":False,
-# 	"translate":False,
-# 	"urban":False,
-# 	"roll":False,
-# 	"server":False,
-# 	"convert":False,
-# 	"dict":False,
-# 	"permissions":False,
-# 	"gif":False
-# }
 disables = { }
 custom_commands = { }
 times = [ ]
@@ -109,8 +86,9 @@ join_roles = { }
 log_channel = { }
 default_channel = { }
 dict_words = [ ]
+# </editor-fold>
 
-# paths
+# <editor-fold desc="Paths">
 discord_logs = f"{os.getcwd()}\\Discord Logs"
 discord_settings = f"{discord_logs}\\SETTINGS"
 server_settings = f"{discord_settings}\\SERVER SETTINGS"
@@ -125,6 +103,7 @@ _join_roles = f"{discord_settings}\\join_roles.txt"
 _defaults = f"{discord_settings}\\default_channels.txt"
 _dictionary = f"{discord_settings}\\censored_words.txt"
 _disables = f"{discord_settings}\\disables.txt"
+# </editor-fold>
 
 if not os.path.exists( discord_settings ): os.makedirs( discord_settings )
 
