@@ -1623,6 +1623,20 @@ None
 
 ---
 
+#### $sf
+**Info**  
+Calculates the number of significant figures in a number.
+
+**Usage**
+
+    $sf {n}
+`n` is a number. It can be a decimal.
+
+**Required Permissions**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.

@@ -773,6 +773,13 @@ infos = dict( {
 		"Required Permissions":"None",
 		"Plugin"              :"Main",
 		"Type"                :"Fun"
+	},
+	"_sf"            :{
+		"Info"                :"Calculates the number of significant figures in a number, which can be a decimal.",
+		"Usage"               :"$sf {num}",
+		"Required Permissions":"None",
+		"Plugin"              :"Main",
+		"Type"                :"Fun"
 	}
 } )
 prefixes = {
