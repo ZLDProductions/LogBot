@@ -37,7 +37,8 @@ whats_new = [
 	"•Added $gif.",
 	"•Fixed $disable commands.",
 	"•Major speed increase in the levels plugin.",
-	"•Added the ability to fetch only a certain field for a user when using the $user command."
+	"•Added the ability to fetch only a certain field for a user when using the $user command.",
+	"•Fixed 3/5 bugs regarding the $setup command!"
 ] # list of recent changes to the code.
 planned = [
 	"There is nothing planned at the moment."
@@ -1004,6 +1005,70 @@ class Commands:
 	# noinspection PyShadowingNames
 	class Admin:
 		@staticmethod
+		async def setup ( message: discord.Message, admin_role: discord.Role ):
+			# <editor-fold desc="Exclude">
+			msg1 = await client.send_message( message.channel, "```Which channels would you like to exclude? Type None for no excluded channels.```" )
+			msg2 = await client.wait_for_message( author=message.author, channel=message.channel )
+			excludes = msg2.channel_mentions
+			await client.delete_messages( [ msg1, msg2 ] )
+			# </editor-fold>
+			# <editor-fold desc="Admins">
+			msg1 = await client.send_message( message.channel, "```Who would you like as Admins for your server? Server owners are automatically and permanently admins. Type None for no one.```" )
+			msg2 = await client.wait_for_message( channel=message.channel, author=message.author )
+			admins = msg2.mentions
+			await client.delete_messages( [ msg1, msg2 ] )
+			# </editor-fold>
+			# <editor-fold desc="Marks">
+			msg1 = await client.send_message( message.channel, "```What channels would you like to be marked? Type None for no channels.```" )
+			msg2 = await client.wait_for_message( channel=message.channel, author=message.author )
+			marks = msg2.channel_mentions
+			await client.delete_messages( [ msg1, msg2 ] )
+			# </editor-fold>
+			# <editor-fold desc="Welcome">
+			msg1 = await client.send_message( message.channel, "```What would you like the welcome message to be? Use {server} for the server name and {user} for the user name. Type None for no welcome message.```" )
+			msg2 = await client.wait_for_message( channel=message.channel, author=message.author )
+			welcome = msg2.content
+			await client.delete_messages( [ msg1, msg2 ] )
+			# </editor-fold>
+			# <editor-fold desc="Goodbye">
+			msg1 = await client.send_message( message.channel, "```What would you like the leave message to be? Type None for no leave message. Use {server} for the server name and {user} for the user's name.```" )
+			msg2 = await client.wait_for_message( channel=message.channel, author=message.author )
+			goodbye = msg2.content
+			await client.delete_messages( [ msg1, msg2 ] )
+			# </editor-fold>
+
+			for _channel in excludes:
+				if not _channel.id in exclude_channel_list: exclude_channel_list.append( _channel.id )
+				pass
+			for _user in admins:
+				if not admin_role in _user.roles: await client.add_roles( _user, admin_role )
+				pass
+			for _channel in marks:
+				if not _channel.id in marklist: marklist.append( _channel.id )
+				pass
+
+			if welcome.startswith( "read(" ):
+				content = welcome.replace( "read(", "" )
+				_file_cnt = content[ 0:len( content ) - 1 ]
+				_file_path = f"{message.server.id}.txt"
+				open( _file_path, 'w' ).write( _file_cnt )
+				try: db.write( "Welcomes", { "server":message.server.id, "message":f"read( {_file_path} )" } )
+				except: pass
+				db.update( "Welcomes", "message", f"read( {_file_path} )", message.server.id )
+				pass
+			else:
+				if not welcome == "None":
+					try: db.write( "Welcomes", { "server":message.server.id, "message":welcome } )
+					except: pass
+					db.update( "Welcomes", "message", welcome, message.server.id )
+					pass
+				else: db.update( "Welcomes", "message", "", message.server.id )
+				pass
+			if not goodbye == "None": db.write( "Goodbyes", { "server":message.server.id, "message":goodbye } ); db.update( "Goodbyes", message.server.id, goodbye, message.server.id )
+			await client.send_message( message.channel, "```The bot has been set up for your server!```" )
+			del msg1, msg2, excludes, marks, admins, welcome, goodbye
+			pass
+		@staticmethod
 		async def files ( message: discord.Message ):
 			files = [ ]
 			for channel in message.server.channels:
@@ -1082,55 +1147,6 @@ class Commands:
 				pass
 			await client.send_message( message.channel, f"Unmuted {', '.join([str(x) for x in users_to_mute])} ({len(users_to_mute)}) users. :loud_sound:" )
 			del users_to_mute
-			pass
-		@staticmethod
-		async def setup ( message: discord.Message, admin_role: discord.Role ):
-			# <editor-fold desc="Exclude">
-			await client.send_message( message.channel, "```First of all, which channels would you like to exclude? Type None for none.```" )
-			tmp_msg = await client.wait_for_message( message.channel, author=message.author )
-			tmp_channels = tmp_msg.channel_mentions
-			# </editor-fold>
-			# <editor-fold desc="Admins">
-			await client.send_message( message.channel, "```Who would you like as Admins for your server? You are automatically included. Type None for no one.```" )
-			tmp_msg = await client.wait_for_message( message.channel, author=message.author )
-			tmp_admin_users = tmp_msg.mentions
-			# </editor-fold>
-			# <editor-fold desc="Marks">
-			await client.send_message( message.channel, "```What channels would you like to be marked? Type None for none.```" )
-			tmp_msg = await client.wait_for_message( message.channel, author=message.author )
-			tmp_mark_channels = tmp_msg.channel_mentions
-			# </editor-fold>
-			# <editor-fold desc="Welcome">
-			await client.send_message( message.channel,
-			                           "```What would you like your welcome message to be? Type \\None for no welcome message. Use {server} for the server name and {user} for the user name.```" )
-			tmp_msg = await client.wait_for_message( message.channel, author=message.author )
-			tmp_welcome = tmp_msg.content
-			# </editor-fold>
-			# <editor-fold desc="Goodbye">
-			await client.send_message( message.channel,
-			                           "```What would you like your goodbye message to be? Type \\None for no goodbye message. Use {server} for the server name and {user} for the user name.```" )
-			tmp_msg = await client.wait_for_message( message.channel, author=message.author )
-			tmp_goodbye = tmp_msg.content
-			# </editor-fold>
-
-			for cha in tmp_channels:
-				if not cha.id in exclude_channel_list: exclude_channel_list.append( cha.id )
-				pass
-			for u in tmp_admin_users:
-				if not admin_role in u.roles: await client.add_roles( u, admin_role )
-				pass
-			for cha in tmp_mark_channels:
-				if not cha.id in marklist: marklist.append( cha.id )
-				pass
-			if tmp_welcome == "\\None": db.write( "Welcomes", { "server":message.server.id, "message":tmp_welcome } )
-			if tmp_goodbye == "\\None": db.write( "Goodbyes", { "server":message.server.id, "message":tmp_goodbye } )
-			await client.send_message( message.channel, "```The bot has been set up for your server!```" )
-			del tmp_msg
-			del tmp_channels
-			del tmp_admin_users
-			del tmp_mark_channels
-			del tmp_welcome
-			del tmp_goodbye
 			pass
 		@staticmethod
 		async def disable ( message: discord.Message, prefix: str ):
@@ -1836,6 +1852,7 @@ async def sendNoPerm ( message: discord.Message ):
 	print( f"{Fore.LIGHTGREEN_EX}{message.author} attempted to use a command.{Fore.RESET}" )
 	pass
 
+# <editor-fold desc="Message Updates">
 # noinspection PyShadowingNames
 @client.event
 async def on_message ( message: discord.Message ):
@@ -2365,6 +2382,23 @@ async def on_message ( message: discord.Message ):
 				if not disables[ message.server.id ][ "gif" ] or message.author.id == owner_id: await Commands.Member.gif( message, prefix )
 				else: await client.send_message( message.channel, "```That command has been disabled!```" )
 				pass
+			elif startswith( f"{prefix}sf " ):
+				num = message.content.replace( f'{prefix}sf ', '' )
+				org_num = num
+				sfs = 0
+				dot_found = False
+				while num[ 0 ] == "0" or num[ 0 ] == ".":
+					if num[ 0 ] == ".": dot_found = True
+					num = num[ 1: ]
+					pass
+				if "." in num: sfs = len( num ) - 1
+				elif dot_found: sfs = len( num )
+				else:
+					while num[ -1 ] == "0": num = num[ 0:len( num ) - 1 ]
+					sfs = len( num )
+					pass
+				await client.send_message( message.channel, f"```{org_num} has {sfs} significant figures ({num})!```" )
+				pass
 
 			# elif startswith(f"{prefix}yoda "):
 			# 	cnt = message.content.replace(f"{prefix}yoda ", "").replace(" ", "+")
@@ -2504,41 +2538,8 @@ async def on_message_edit ( before: discord.Message, after: discord.Message ):
 		pass
 	pass
 
-@client.event
-async def on_channel_delete ( channel: discord.Channel ):
-	m = datetime.now( )
-	ret = f"Channel Deleted: {channel.server.name} ~ \"{channel.name}\" was deleted ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
-	send( ret, channel.server.name )
-	c = client.get_channel( parser[ channel.server.id ][ "logchannel" ] )
-	if not c is None:
-		e = discord.Embed( title="Channel Deleted!", description="A channel was deleted!", colour=discord.Colour.red( ) )
-		e.add_field( name="Name", value=str( channel ), inline=False )
-		e.add_field( name="ID", value=channel.id, inline=False )
-		e.set_footer( text=str( m ) )
-		await client.send_message( c, "", embed=e )
-		pass
-	pass
-
-@client.event
-async def on_channel_create ( channel: discord.Channel ):
-	m = datetime.now( )
-	ret = f"Channel Created: {channel.server.name} ~ \"{channel.name}\" was created ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
-	if channel.server is not None: send( ret, channel.server.name )
-	else: send( ret, f"DM{channel.name}" )
-	c = client.get_channel( parser[ channel.server.id ][ "logchannel" ] )
-	if not c is None:
-		e = discord.Embed( title="Channel Created!", description="A channel was created!", colour=discord.Colour.green( ) )
-		e.add_field( name="Name", value=str( channel ), inline=False )
-		e.add_field( name="ID", value=channel.id, inline=False )
-		e.add_field( name="Position", value=str( channel.position ), inline=False )
-		e.add_field( name="Bitrate", value=str( channel.bitrate ), inline=False )
-		e.add_field( name="Topic", value=channel.topic, inline=False )
-		e.add_field( name="User Limit", value=str( channel.user_limit ), inline=False )
-		e.set_footer( text=str( channel.created_at ) )
-		await client.send_message( c, "", embed=e )
-		pass
-	pass
-
+# </editor-fold>
+# <editor-fold desc="Member Updates">
 @client.event
 async def on_member_join ( member: discord.Member ):
 	m = datetime.now( )
@@ -2627,6 +2628,85 @@ async def on_member_update ( before: discord.Member, after: discord.Member ):
 	pass
 
 @client.event
+async def on_member_ban ( member: discord.Member ):
+	m = datetime.now( )
+	sent_str = f"Member Banned: {member.server.name} ~ {check(member.nick, member.name, member.id)} was banned ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
+	send( sent_str, member.server.name )
+	c = client.get_channel( parser[ member.server.id ][ "logchannel" ] )
+	if not c is None:
+		e = discord.Embed( title="Member Banned!", description="A member was banned!", colour=discord.Colour.red( ) )
+		e.add_field( name="Name", value=str( member ), inline=False )
+		e.add_field( name="ID", value=member.id, inline=False )
+		e.set_footer( text=str( m ) )
+		await client.send_message( c, "", embed=e )
+		pass
+	pass
+
+@client.event
+async def on_member_unban ( server: discord.Server, user: discord.User ):
+	m = datetime.now( )
+	sent_str = f"Member Unbanned: {server.name} ~ {check(user.display_name, user.name, user.id)} was unbanned ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
+	send( sent_str, server.name )
+	c = client.get_channel( parser[ server.id ][ "logchannel" ] )
+	if not c is None:
+		e = discord.Embed( title="Member Unbanned!", description="A member was unbanned!", colour=discord.Colour.red( ) )
+		e.add_field( name="Name", value=str( user ), inline=False )
+		e.add_field( name="ID", value=user.id, inline=False )
+		e.set_footer( text=str( m ) )
+		await client.send_message( c, "", embed=e )
+		pass
+	pass
+
+# </editor-fold>
+# <editor-fold desc="Channel Updates">
+@client.event
+async def on_channel_update ( before: discord.Channel, after: discord.Channel ):
+	m = datetime.now( )
+	if before.name != after.name:
+		send( f"Channel Updated: {after.server.name} ~ {after}'s name was changed from {before.name} to {after.name}", after.server.name )
+		with f"{discord_logs}\\{before.server.name}\\{before.name}.mark.txt" as old_loc:
+			if os.path.exists( old_loc ): os.rename( old_loc, f"{discord_logs}\\{before.server.name}\\{after.name}.mark.txt" )
+			pass
+		with f"{discord_logs}\\{before.server.name}\\{before.name}.txt" as old_loc_unmarked:
+			if os.path.exists( old_loc_unmarked ): os.rename( old_loc_unmarked, f"{discord_logs}\\{before.server.name}\\{after.name}.txt" )
+			pass
+		pass
+	elif before.topic is not after.topic: send( f"Channel Updated: {after.server.name} ~ {after}'s topic was changed from \"{before.topic}\" to \"{after.topic}\"", after.server.name )
+	elif before.position is not after.position: send( f"Channel Updated: {after.server.name} ~ {after}'s position was changed from {before.position} to {after.position}", after.server.name )
+	elif before.user_limit is not after.user_limit: send( f"Channel Updated: {after.server.name} ~ {after}'s user limit was changed from {before.user_limit} to {after.user_limit}", after.server.name )
+	elif before.bitrate is not after.bitrate: send( f"Channel Updated: {after.server.name} ~ {after.name}'s bitrate was changed from {before.bitrate} to {after.bitrate}", after.server.name )
+	else: send( f"Channel Updated: {after.server.name} ~ {after.name} was updated.", after.server.name )
+	c = client.get_channel( parser[ before.server.id ][ "logchannel" ] )
+	if not c is None:
+		e = discord.Embed( title="Channel Updated!", description="A channel was updated!", colour=discord.Colour.gold( ) )
+		if not str( before ) == str( after ):
+			e.add_field( name="Old Name", value=str( before ), inline=False )
+			e.add_field( name="New Name", value=str( after ), inline=False )
+			pass
+		else: e.add_field( name="Name", value=str( after ), inline=False )
+		e.add_field( name="ID", value=after.id, inline=False )
+		if not before.topic == after.topic:
+			e.add_field( name="Old Topic", value=str( before.topic ), inline=False )
+			e.add_field( name="New Topic", value=str( after.topic ), inline=False )
+			pass
+		if not before.position == after.position:
+			e.add_field( name="Old Position", value=str( before.position ), inline=False )
+			e.add_field( name="New Position", value=str( after.position ), inline=False )
+			pass
+		if not before.bitrate == after.bitrate:
+			e.add_field( name="Old Bitrate", value=str( before.bitrate ), inline=False )
+			e.add_field( name="New Bitrate", value=str( after.bitrate ), inline=False )
+			pass
+		if not before.user_limit == after.user_limit:
+			e.add_field( name="Old User Limit", value=str( before.user_limit ), inline=False )
+			e.add_field( name="New User Limit", value=str( after.user_limit ), inline=False )
+			pass
+		e.set_footer( text=str( m ) )
+		await client.send_message( c, "", embed=e )
+		pass
+	pass
+
+@client.event
 async def on_voice_state_update ( before: discord.Member, after: discord.Member ):
 	m = datetime.now( )
 	sent_str = "Voice Status Updated: {after.server.name} ~ "
@@ -2652,30 +2732,87 @@ async def on_voice_state_update ( before: discord.Member, after: discord.Member 
 	pass
 
 @client.event
-async def on_member_ban ( member: discord.Member ):
+async def on_channel_delete ( channel: discord.Channel ):
 	m = datetime.now( )
-	sent_str = f"Member Banned: {member.server.name} ~ {check(member.nick, member.name, member.id)} was banned ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
-	send( sent_str, member.server.name )
-	c = client.get_channel( parser[ member.server.id ][ "logchannel" ] )
+	ret = f"Channel Deleted: {channel.server.name} ~ \"{channel.name}\" was deleted ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
+	send( ret, channel.server.name )
+	c = client.get_channel( parser[ channel.server.id ][ "logchannel" ] )
 	if not c is None:
-		e = discord.Embed( title="Member Banned!", description="A member was banned!", colour=discord.Colour.red( ) )
-		e.add_field( name="Name", value=str( member ), inline=False )
-		e.add_field( name="ID", value=member.id, inline=False )
+		e = discord.Embed( title="Channel Deleted!", description="A channel was deleted!", colour=discord.Colour.red( ) )
+		e.add_field( name="Name", value=str( channel ), inline=False )
+		e.add_field( name="ID", value=channel.id, inline=False )
 		e.set_footer( text=str( m ) )
 		await client.send_message( c, "", embed=e )
 		pass
 	pass
 
 @client.event
-async def on_member_unban ( server: discord.Server, user: discord.User ):
+async def on_channel_create ( channel: discord.Channel ):
 	m = datetime.now( )
-	sent_str = f"Member Unbanned: {server.name} ~ {check(user.display_name, user.name, user.id)} was unbanned ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
-	send( sent_str, server.name )
-	c = client.get_channel( parser[ server.id ][ "logchannel" ] )
+	ret = f"Channel Created: {channel.server.name} ~ \"{channel.name}\" was created ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
+	if channel.server is not None: send( ret, channel.server.name )
+	else: send( ret, f"DM{channel.name}" )
+	c = client.get_channel( parser[ channel.server.id ][ "logchannel" ] )
 	if not c is None:
-		e = discord.Embed( title="Member Unbanned!", description="A member was unbanned!", colour=discord.Colour.red( ) )
-		e.add_field( name="Name", value=str( user ), inline=False )
-		e.add_field( name="ID", value=user.id, inline=False )
+		e = discord.Embed( title="Channel Created!", description="A channel was created!", colour=discord.Colour.green( ) )
+		e.add_field( name="Name", value=str( channel ), inline=False )
+		e.add_field( name="ID", value=channel.id, inline=False )
+		e.add_field( name="Position", value=str( channel.position ), inline=False )
+		e.add_field( name="Bitrate", value=str( channel.bitrate ), inline=False )
+		e.add_field( name="Topic", value=channel.topic, inline=False )
+		e.add_field( name="User Limit", value=str( channel.user_limit ), inline=False )
+		e.set_footer( text=str( channel.created_at ) )
+		await client.send_message( c, "", embed=e )
+		pass
+	pass
+
+# </editor-fold>
+# <editor-fold desc="Server Updates">
+# noinspection PyShadowingNames
+@client.event
+async def on_server_update ( before: discord.Server, after: discord.Server ):
+	m = datetime.now( )
+	# If the server's properties were changed, do the appropriate actions and log them.
+	if before.name != after.name:
+		with f"{discord_logs}\\{before.name}" as old_loc:
+			with f"{discord_logs}\\{after.name}" as new_loc:
+				os.rename( old_loc, new_loc )
+				pass
+			pass
+		send( f"Server Updated: {after.name} ~ The server name was changed from {before.name} to {after.name}.", after.name )
+		pass
+	if before.default_channel != after.default_channel:
+		send( f"Server Updated: {after.name} ~ The server's default channel was changed from {before.default_channel} to {after.default_channel}.", after.name )
+		pass
+	if before.afk_channel != after.afk_channel:
+		send( f"Server Updated: {after.name} ~ The server's AFK channel was changed from {before.afk_channel} to {after.afk_channel}.", after.name )
+		pass
+	if before.default_role != after.default_role:
+		send( f"Server Updated: {after.name} ~ The server's default role was changed from {before.default_role} to {after.default_role}.", after.name )
+		pass
+	if before.verification_level != after.verification_level:
+		send( f"Server Updated: {after.name} ~ The server's verification level was changed from {before.verification_level} to {after.verification_level}.", after.name )
+		pass
+	c = client.get_channel( parser[ before.id ][ "logchannel" ] )
+	if not c is None:
+		e = discord.Embed( title="Server Updated!", description="The server was updated!", colour=discord.Colour.gold( ) )
+		if not str( before ) == str( after ):
+			e.add_field( name="Old Name", value=str( before ), inline=False )
+			e.add_field( name="New Name", value=str( after ), inline=False )
+			pass
+		e.add_field( name="ID", value=after.id, inline=False )
+		if not before.default_channel == after.default_channel:
+			e.add_field( name="Old Default Channel", value=str( before.default_channel ), inline=False )
+			e.add_field( name="New Default Channel", value=str( after.default_channel ), inline=False )
+			pass
+		if not before.afk_channel == after.afk_channel:
+			e.add_field( name="Old AFK Channel", value=str( before.afk_channel ), inline=False )
+			e.add_field( name="New AFK Channel", value=str( after.afk_channel ), inline=False )
+			pass
+		if not before.default_role == after.default_role:
+			e.add_field( name="Old Default Role", value=str( before.default_role ), inline=False )
+			e.add_field( name="New Default Role", value=str( after.default_role ), inline=False )
+			pass
 		e.set_footer( text=str( m ) )
 		await client.send_message( c, "", embed=e )
 		pass
@@ -2852,6 +2989,8 @@ async def on_server_role_update ( before: discord.Role, after: discord.Role ):
 	del c
 	pass
 
+# </editor-fold>
+# <editor-fold desc="Reaction Events">
 @client.event
 async def on_reaction_add ( reaction: discord.Reaction, user: Union[ discord.User, discord.Member ] ):
 	emj = codecs.unicode_escape_encode( reaction.emoji, 'strict' )
@@ -2877,102 +3016,7 @@ async def on_reaction_clear ( message: discord.Message, reactions: List[ discord
 	send( sent_str, message.server.name )
 	pass
 
-@client.event
-async def on_channel_update ( before: discord.Channel, after: discord.Channel ):
-	m = datetime.now( )
-	if before.name != after.name:
-		send( f"Channel Updated: {after.server.name} ~ {after}'s name was changed from {before.name} to {after.name}", after.server.name )
-		with f"{discord_logs}\\{before.server.name}\\{before.name}.mark.txt" as old_loc:
-			if os.path.exists( old_loc ): os.rename( old_loc, f"{discord_logs}\\{before.server.name}\\{after.name}.mark.txt" )
-			pass
-		with f"{discord_logs}\\{before.server.name}\\{before.name}.txt" as old_loc_unmarked:
-			if os.path.exists( old_loc_unmarked ): os.rename( old_loc_unmarked, f"{discord_logs}\\{before.server.name}\\{after.name}.txt" )
-			pass
-		pass
-	elif before.topic is not after.topic: send( f"Channel Updated: {after.server.name} ~ {after}'s topic was changed from \"{before.topic}\" to \"{after.topic}\"", after.server.name )
-	elif before.position is not after.position: send( f"Channel Updated: {after.server.name} ~ {after}'s position was changed from {before.position} to {after.position}", after.server.name )
-	elif before.user_limit is not after.user_limit: send( f"Channel Updated: {after.server.name} ~ {after}'s user limit was changed from {before.user_limit} to {after.user_limit}", after.server.name )
-	elif before.bitrate is not after.bitrate: send( f"Channel Updated: {after.server.name} ~ {after.name}'s bitrate was changed from {before.bitrate} to {after.bitrate}", after.server.name )
-	else: send( f"Channel Updated: {after.server.name} ~ {after.name} was updated.", after.server.name )
-	c = client.get_channel( parser[ before.server.id ][ "logchannel" ] )
-	if not c is None:
-		e = discord.Embed( title="Channel Updated!", description="A channel was updated!", colour=discord.Colour.gold( ) )
-		if not str( before ) == str( after ):
-			e.add_field( name="Old Name", value=str( before ), inline=False )
-			e.add_field( name="New Name", value=str( after ), inline=False )
-			pass
-		else: e.add_field( name="Name", value=str( after ), inline=False )
-		e.add_field( name="ID", value=after.id, inline=False )
-		if not before.topic == after.topic:
-			e.add_field( name="Old Topic", value=str( before.topic ), inline=False )
-			e.add_field( name="New Topic", value=str( after.topic ), inline=False )
-			pass
-		if not before.position == after.position:
-			e.add_field( name="Old Position", value=str( before.position ), inline=False )
-			e.add_field( name="New Position", value=str( after.position ), inline=False )
-			pass
-		if not before.bitrate == after.bitrate:
-			e.add_field( name="Old Bitrate", value=str( before.bitrate ), inline=False )
-			e.add_field( name="New Bitrate", value=str( after.bitrate ), inline=False )
-			pass
-		if not before.user_limit == after.user_limit:
-			e.add_field( name="Old User Limit", value=str( before.user_limit ), inline=False )
-			e.add_field( name="New User Limit", value=str( after.user_limit ), inline=False )
-			pass
-		e.set_footer( text=str( m ) )
-		await client.send_message( c, "", embed=e )
-		pass
-	pass
-
-# noinspection PyShadowingNames
-@client.event
-async def on_server_update ( before: discord.Server, after: discord.Server ):
-	m = datetime.now( )
-	# If the server's properties were changed, do the appropriate actions and log them.
-	if before.name != after.name:
-		with f"{discord_logs}\\{before.name}" as old_loc:
-			with f"{discord_logs}\\{after.name}" as new_loc:
-				os.rename( old_loc, new_loc )
-				pass
-			pass
-		send( f"Server Updated: {after.name} ~ The server name was changed from {before.name} to {after.name}.", after.name )
-		pass
-	if before.default_channel != after.default_channel:
-		send( f"Server Updated: {after.name} ~ The server's default channel was changed from {before.default_channel} to {after.default_channel}.", after.name )
-		pass
-	if before.afk_channel != after.afk_channel:
-		send( f"Server Updated: {after.name} ~ The server's AFK channel was changed from {before.afk_channel} to {after.afk_channel}.", after.name )
-		pass
-	if before.default_role != after.default_role:
-		send( f"Server Updated: {after.name} ~ The server's default role was changed from {before.default_role} to {after.default_role}.", after.name )
-		pass
-	if before.verification_level != after.verification_level:
-		send( f"Server Updated: {after.name} ~ The server's verification level was changed from {before.verification_level} to {after.verification_level}.", after.name )
-		pass
-	c = client.get_channel( parser[ before.id ][ "logchannel" ] )
-	if not c is None:
-		e = discord.Embed( title="Server Updated!", description="The server was updated!", colour=discord.Colour.gold( ) )
-		if not str( before ) == str( after ):
-			e.add_field( name="Old Name", value=str( before ), inline=False )
-			e.add_field( name="New Name", value=str( after ), inline=False )
-			pass
-		e.add_field( name="ID", value=after.id, inline=False )
-		if not before.default_channel == after.default_channel:
-			e.add_field( name="Old Default Channel", value=str( before.default_channel ), inline=False )
-			e.add_field( name="New Default Channel", value=str( after.default_channel ), inline=False )
-			pass
-		if not before.afk_channel == after.afk_channel:
-			e.add_field( name="Old AFK Channel", value=str( before.afk_channel ), inline=False )
-			e.add_field( name="New AFK Channel", value=str( after.afk_channel ), inline=False )
-			pass
-		if not before.default_role == after.default_role:
-			e.add_field( name="Old Default Role", value=str( before.default_role ), inline=False )
-			e.add_field( name="New Default Role", value=str( after.default_role ), inline=False )
-			pass
-		e.set_footer( text=str( m ) )
-		await client.send_message( c, "", embed=e )
-		pass
-	pass
+# </editor-fold>
 
 @client.event
 async def on_ready ( ):
