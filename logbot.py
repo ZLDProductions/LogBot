@@ -412,6 +412,24 @@ def get_diff ( then: datetime, now: datetime ) -> str:
 class Commands:
 	class Member:
 		@staticmethod
+		async def sf ( message: discord.Message, prefix: str ):
+			num = message.content.replace( f"{prefix}sf ", "" )
+			org_num = num
+			sfs = 0
+			dot_found = False
+			while num[ 0 ] == "0" or num[ 0 ] == ".":
+				if num[ 0 ] == ".": dot_found = True
+				num = num[ 1: ]
+				pass
+			if "." in num: sfs = len( num ) - 1
+			elif dot_found: sfs = len( num )
+			else:
+				while num[ -1 ] == "0": num = num[ 0:len( num ) - 1 ]
+				sfs = len( num )
+				pass
+			await client.send_message( message.channel, f"```{org_num} has {sfs} significant figures ({num})!```" )
+			pass
+		@staticmethod
 		async def gif ( message: discord.Message, prefix: str ):
 			tag = message.content.replace( f"{prefix}gif", "" )
 			image = gc.gifs_random_get( giphy_key, tag=tag ).data
@@ -2384,21 +2402,7 @@ async def on_message ( message: discord.Message ):
 				else: await client.send_message( message.channel, "```That command has been disabled!```" )
 				pass
 			elif startswith( f"{prefix}sf " ):
-				num = message.content.replace( f'{prefix}sf ', '' )
-				org_num = num
-				sfs = 0
-				dot_found = False
-				while num[ 0 ] == "0" or num[ 0 ] == ".":
-					if num[ 0 ] == ".": dot_found = True
-					num = num[ 1: ]
-					pass
-				if "." in num: sfs = len( num ) - 1
-				elif dot_found: sfs = len( num )
-				else:
-					while num[ -1 ] == "0": num = num[ 0:len( num ) - 1 ]
-					sfs = len( num )
-					pass
-				await client.send_message( message.channel, f"```{org_num} has {sfs} significant figures ({num})!```" )
+				Commands.Member.sf( message, prefix )
 				pass
 
 			# elif startswith(f"{prefix}yoda "):

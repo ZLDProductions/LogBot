@@ -1266,6 +1266,11 @@ def read ( sid: str ):
 
 	pass
 
+def cap_all_words ( text: str ):
+	ret = [ ]
+	for seq in text.split( " " ): ret.append( seq.capitalize( ) )
+	return ' '.join( ret )
+
 # noinspection PyUnresolvedReferences
 class formatting:
 	BOLD = "**"
@@ -2100,7 +2105,7 @@ async def on_message ( message ):
 			elif line.startswith( "&author=" ) or line.startswith( "&footer=" ): e.set_footer( text=line.replace( "&author=", "" ).replace( "&footer=", "" ) )
 			elif line.startswith( "&thumbnail=" ): e.set_thumbnail( url=line.replace( "&thumbnail=", "" ) )
 			elif line.startswith( "&passage=" ):
-				def analyzeVerse ( _text:str, _version:str="kjv" ):
+				def analyzeVerse ( _text: str, _version: str = "kjv" ):
 					if _version == "kjv":
 						if "-" in _text: return [ _text, getPassage( _text, ih=False ) ]
 						else: return [ _text, getVerse( _text, ih=False ) ]
@@ -2116,7 +2121,7 @@ async def on_message ( message ):
 					pass
 				_text = line.replace( "&passage=", "" )
 				version = bible_versions[ message.author.id ]
-				ret = analyzeVerse( _text.capitalize( ), _version=version )
+				ret = analyzeVerse( cap_all_words( _text ), _version=version )
 				e.add_field( name=ret[ 0 ], value=ret[ 1 ], inline=False )
 				pass
 			elif line.startswith( "&text=" ):
@@ -2168,7 +2173,7 @@ async def on_message ( message ):
 					pass
 				_text = line.replace( "&passage=", "" )
 				version = bible_versions[ message.author.id ]
-				ret = analyzeVerse( _text.capitalize( ), _version=version )
+				ret = analyzeVerse( cap_all_words( _text ), _version=version )
 				e.add_field( name=ret[ 0 ], value=ret[ 1 ], inline=False )
 				pass
 			elif line.startswith( "&text=" ):
