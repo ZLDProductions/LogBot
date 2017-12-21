@@ -409,6 +409,23 @@ def get_diff ( then: datetime, now: datetime ) -> str:
 	_str = _str.replace( "0 years,", "" ).replace( " 0 months,", "" ).replace( " 0 weeks,", "" ).replace( " 0 days,", "" ).replace( " 0 hours,", "" ).replace( " 0 minutes,", "" ).replace( " 0 seconds", "" )
 	return _str
 
+def log_error ( error_text: str ):
+	file = f"{os.getcwd()}\\error_log.txt"
+	prev_text = ""
+	try:
+		reader = open( file, 'r' )
+		prev_text = reader.read( )
+		reader.close( )
+		del reader
+		pass
+	except: pass
+	writer = open( file, 'w' )
+	writer.write( f"{datetime.now()} (logbot.py) - {error_text}\n\n{prev_text}" )
+	writer.close( )
+	if "SystemExit" in error_text: exit( 0 )
+	del writer
+	pass
+
 class Commands:
 	class Member:
 		@staticmethod
@@ -1877,626 +1894,629 @@ async def sendNoPerm ( message: discord.Message ):
 async def on_message ( message: discord.Message ):
 	global default_channel
 	try:
-		if default_channel.get( message.server.id ) is None: default_channel[ message.server.id ] = message.server.default_channel.id
-	except: pass
+		try:
+			if default_channel.get( message.server.id ) is None: default_channel[ message.server.id ] = message.server.default_channel.id
+		except: pass
 
-	muted_role = discord.utils.find( lambda r:r.name == "LogBot Muted", message.server.roles )
+		muted_role = discord.utils.find( lambda r:r.name == "LogBot Muted", message.server.roles )
 
-	if muted_role in message.author.roles and not message.author == message.server.owner: await client.delete_message( message )
+		if muted_role in message.author.roles and not message.author == message.server.owner: await client.delete_message( message )
 
-	msgcont = message.content if is_ascii( message.content ) else u"{}".format( message.content )
-	# noinspection PyShadowingNames
-	def startswith ( *msg: str, val: str = message.content, modifier: str = "" ) -> bool:
-		"""
-		Checks if `val` starts with any string in `msg`.
-		:param msg: Several str type parameters.
-		:param val: The string to compare msg to.
-		:param modifier: A special operation to perform on val. Can be "lower", "upper", or "capitalize"
-		:return: True if a value in msg is at the beginning of val, False if not.
-		"""
-		if modifier == "lower": val = val.lower( )
-		if modifier == "upper": val = val.upper( )
-		if modifier == "capitalize": val = val.capitalize( )
+		msgcont = message.content if is_ascii( message.content ) else u"{}".format( message.content )
 		# noinspection PyShadowingNames
-		for m in msg:
-			if val.startswith( m ):
-				return True
-			pass
-		return False
-	if not message.channel.is_private and not muted_role in message.author.roles:
-		admin_role = discord.utils.find( lambda r:r.name == "LogBot Admin", message.server.roles )
+		def startswith ( *msg: str, val: str = message.content, modifier: str = "" ) -> bool:
+			"""
+			Checks if `val` starts with any string in `msg`.
+			:param msg: Several str type parameters.
+			:param val: The string to compare msg to.
+			:param modifier: A special operation to perform on val. Can be "lower", "upper", or "capitalize"
+			:return: True if a value in msg is at the beginning of val, False if not.
+			"""
+			if modifier == "lower": val = val.lower( )
+			if modifier == "upper": val = val.upper( )
+			if modifier == "capitalize": val = val.capitalize( )
+			# noinspection PyShadowingNames
+			for m in msg:
+				if val.startswith( m ):
+					return True
+				pass
+			return False
+		if not message.channel.is_private and not muted_role in message.author.roles:
+			admin_role = discord.utils.find( lambda r:r.name == "LogBot Admin", message.server.roles )
 
-		if not message.server.id in list( disables.keys( ) ): disables[ message.server.id ] = {
-			"exclude"       :False,
-			"excludechannel":False,
-			"includechannel":False,
-			"mark"          :False,
-			"showlist"      :False,
-			"showmarks"     :False,
-			"channel"       :False,
-			"cmd"           :False,
-			"query"         :False,
-			"wiki"          :False,
-			"say"           :False,
-			"welcome"       :False,
-			"goodbye"       :False,
-			"decide"        :False,
-			"prune"         :False,
-			"purge"         :False,
-			"user"          :False,
-			"translate"     :False,
-			"urban"         :False,
-			"roll"          :False,
-			"server"        :False,
-			"convert"       :False,
-			"dict"          :False,
-			"permissions"   :False,
-			"gif"           :False
-		}
-		if not isinstance( disables[ message.server.id ], dict ): disables[ message.server.id ] = {
-			"exclude"       :False,
-			"excludechannel":False,
-			"includechannel":False,
-			"mark"          :False,
-			"showlist"      :False,
-			"showmarks"     :False,
-			"channel"       :False,
-			"cmd"           :False,
-			"query"         :False,
-			"wiki"          :False,
-			"say"           :False,
-			"welcome"       :False,
-			"goodbye"       :False,
-			"decide"        :False,
-			"prune"         :False,
-			"purge"         :False,
-			"user"          :False,
-			"translate"     :False,
-			"urban"         :False,
-			"roll"          :False,
-			"server"        :False,
-			"convert"       :False,
-			"dict"          :False,
-			"permissions"   :False,
-			"gif"           :False
-		}
+			if not message.server.id in list( disables.keys( ) ): disables[ message.server.id ] = {
+				"exclude"       :False,
+				"excludechannel":False,
+				"includechannel":False,
+				"mark"          :False,
+				"showlist"      :False,
+				"showmarks"     :False,
+				"channel"       :False,
+				"cmd"           :False,
+				"query"         :False,
+				"wiki"          :False,
+				"say"           :False,
+				"welcome"       :False,
+				"goodbye"       :False,
+				"decide"        :False,
+				"prune"         :False,
+				"purge"         :False,
+				"user"          :False,
+				"translate"     :False,
+				"urban"         :False,
+				"roll"          :False,
+				"server"        :False,
+				"convert"       :False,
+				"dict"          :False,
+				"permissions"   :False,
+				"gif"           :False
+			}
+			if not isinstance( disables[ message.server.id ], dict ): disables[ message.server.id ] = {
+				"exclude"       :False,
+				"excludechannel":False,
+				"includechannel":False,
+				"mark"          :False,
+				"showlist"      :False,
+				"showmarks"     :False,
+				"channel"       :False,
+				"cmd"           :False,
+				"query"         :False,
+				"wiki"          :False,
+				"say"           :False,
+				"welcome"       :False,
+				"goodbye"       :False,
+				"decide"        :False,
+				"prune"         :False,
+				"purge"         :False,
+				"user"          :False,
+				"translate"     :False,
+				"urban"         :False,
+				"roll"          :False,
+				"server"        :False,
+				"convert"       :False,
+				"dict"          :False,
+				"permissions"   :False,
+				"gif"           :False
+			}
 
-		sort( )
+			sort( )
 
-		# save( message.server.id )
-		time = format_time( message.timestamp )
+			# save( message.server.id )
+			time = format_time( message.timestamp )
 
-		try: prefix = db.read( "Prefixes", message.server.id )
-		except: prefix = "$"; traceback.format_exc( ); db.write( "Prefixes", { "server":message.server.id, "prefix":"$" } )
+			try: prefix = db.read( "Prefixes", message.server.id )
+			except: prefix = "$"; traceback.format_exc( ); db.write( "Prefixes", { "server":message.server.id, "prefix":"$" } )
 
-		if startswith( prefix ):
-			if startswith( f"{prefix}exclude ", f"{prefix}ex " ):
-				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "exclude" ) is True) or message.author.id == owner_id: await Commands.Admin.exclude( message, time )
-				elif disables[ message.server.id ][ "exclude" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else: await sendNoPerm( message )
-				pass
-			elif startswith( f"{prefix}excludechannel ", f"{prefix}exc " ):
-				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "excludechannel" ) is True) or message.author.id == owner_id:
-					await Commands.Admin.excludechannel( message )
+			if startswith( prefix ):
+				if startswith( f"{prefix}exclude ", f"{prefix}ex " ):
+					if (admin_role in message.author.roles and not disables[ message.server.id ].get( "exclude" ) is True) or message.author.id == owner_id: await Commands.Admin.exclude( message, time )
+					elif disables[ message.server.id ][ "exclude" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else: await sendNoPerm( message )
 					pass
-				elif disables[ message.server.id ][ "excludechannel" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}includechannel ", f"{prefix}inc " ):
-				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "includechannel" ) is True) or message.author.id == owner_id:
-					await Commands.Admin.includechannel( message )
-					pass
-				elif disables[ message.server.id ][ "includechannel" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}mark " ):
-				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "mark" ) is True) or message.author.id == owner_id:
-					await Commands.Admin.mark( message, prefix )
-					pass
-				elif disables[ message.server.id ][ "mark" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}admin " ):
-				if admin_role in message.author.roles or message.author.id == owner_id:
-					await Commands.Admin.admin( message, admin_role, prefix )
-					pass
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}showlist" ):
-				if not disables[ message.server.id ].get( "showlist" ) is True or message.author.id == owner_id:
-					await Commands.Member.showlist( message )
-					pass
-				elif disables[ message.server.id ][ "showlist" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}showmarks" ):
-				if not disables[ message.server.id ].get( "showmarks" ) is True or message.author.id == owner_id:
-					await Commands.Member.showmarks( message )
-					pass
-				elif disables[ message.server.id ][ "showmarks" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}version" ):
-				await client.send_message( message.channel, f"```LogBot Version {version}```" )
-				pass
-			elif startswith( f"{prefix}channel " ):
-				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "channel" ) is True) or message.author.id == owner_id:
-					await Commands.Admin.channel( message, prefix )
-					pass
-				elif disables[ message.server.id ][ "channel" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}updates" ):
-				await Commands.Member.updates( message )
-				pass
-			elif startswith( f"{prefix}say" ):
-				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "say" ) is True) or message.author.id == owner_id:
-					await Commands.Admin.say( message, prefix )
-					pass
-				elif disables[ message.server.id ][ "say" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}planned" ):
-				await Commands.Member.planned( message )
-				pass
-			# elif startswith( f"{prefix}cmd " ):
-			# 	if not disables[message.server.id].get( "cmd" ) is True or message.author.id == owner_id:
-			# 		await Commands.Member.cmd( message )
-			# 		pass
-			# 	elif disables[ message.server.id ][ "cmd" ]:
-			# 		await await client.send_message( message.channel, "```That command has been disabled!```" )
-			# 		pass
-			# 	else:
-			# 		await sendNoPerm( message )
-			# 		pass
-			# 	pass
-			elif startswith( f"{prefix}query " ):
-				if not disables[ message.server.id ].get( "query" ) is True or message.author.id == owner_id:
-					await Commands.Member.query( message, prefix )
-					pass
-				elif disables[ message.server.id ][ "query" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}wiki " ):
-				if not disables[ message.server.id ].get( "wiki" ) is True or message.author.id == owner_id:
-					await Commands.Member.wiki( message, prefix )
-					pass
-				elif disables[ message.server.id ][ "wiki" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}disable " ):
-				if admin_role in message.author.roles or message.author.id == owner_id:
-					await Commands.Admin.disable( message, prefix )
-					pass
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}enable " ):
-				if admin_role in message.author.roles or message.author.id == owner_id:
-					await Commands.Admin.enable( message, prefix )
-					pass
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}suggest " ):
-				await Commands.Member.suggest( message, prefix )
-				pass
-			elif startswith( f"{prefix}decide " ):
-				if not disables[ message.server.id ].get( "decide" ) is True or message.author.id == owner_id:
-					await Commands.Member.decide( message, prefix )
-					pass
-				elif disables[ message.server.id ][ "decide" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}disables" ):
-				await Commands.Member.disables( message, prefix )
-				pass
-			elif startswith( f"{prefix}welcome " ):
-				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "welcome" ) is True) or message.author.id == owner_id:
-					await Commands.Admin.welcome( message, prefix )
-					pass
-				elif disables[ message.server.id ][ "welcome" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}goodbye " ):
-				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "goodbye" ) is True) or message.author.id == owner_id:
-					await Commands.Admin.goodbye( message, prefix )
-					pass
-				elif disables[ message.server.id ][ "goodbye" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}welcome" ):
-				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "welcome" ) is True) or message.author.id == owner_id:
-					await Commands.Admin.show_welcome( message )
-					pass
-				elif disables[ message.server.id ][ "welcome" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}goodbye" ):
-				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "goodbye" ) is True) or message.author.id == owner_id:
-					await Commands.Admin.show_goodbye( message )
-					pass
-				elif disables[ message.server.id ][ "goodbye" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}prunes " ):
-				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "prune" ) is True) or message.author.id == owner_id:
-					await Commands.Admin.prunes( message, prefix )
-					pass
-				elif disables[ message.server.id ][ "prune" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}prune " ):
-				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "prune" ) is True) or message.author.id == owner_id:
-					await Commands.Admin.prune( message, prefix )
-					pass
-				elif disables[ message.server.id ][ "prune" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}user:" ):
-				if not disables[ message.server.id ].get( "user" ) is True or message.author.id == owner_id: await Commands.Member.user_restrict( message, prefix )
-				elif disables[ message.server.id ][ "user" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				pass
-			elif startswith( f"{prefix}user" ):
-				if not disables[ message.server.id ].get( "user" ) is True or message.author.id == owner_id: await Commands.Member.user( message, prefix )
-				elif disables[ message.server.id ][ "user" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else: await sendNoPerm( message )
-				pass
-			elif startswith( f"{prefix}invite" ):
-				await client.send_message( message.channel, "https://discordapp.com/oauth2/authorize?client_id=255379748828610561&scope=bot&permissions=268696670" )
-				pass
-			elif startswith( f"{prefix}purge " ):
-				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "purge" ) is True) or message.author.id == owner_id:
-					tmp = message.content.replace( f"{prefix}purge ", "" )
-					switches = purge_parser.parse( tmp )
-					await Commands.Admin.purge( message, int( switches.get( "limit" ) ) if not switches.get( "limit" ) is None else 100, switches )
-					pass
-				elif disables[ message.server.id ][ "purge" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}purge" ):
-				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "purge" ) is True) or message.author.id == owner_id:
-					await Commands.Admin.loose_purge( message )
-					pass
-				elif disables[ message.server.id ][ "purge" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}kick " ):
-				if admin_role in message.author.roles or message.author.id == owner_id:
-					await Commands.Admin.kick( message, admin_role )
-					pass
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}ban " ):
-				if admin_role in message.author.roles or message.author.id == owner_id:
-					await Commands.Admin.ban( message, admin_role )
-					pass
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}permissions" ):
-				if not disables[ message.server.id ].get( "permissions" ) is True: await Commands.Member.user_permissions( message, prefix )
-				else: await client.send_message( message.channel, "```That command has been disabled!```" )
-				pass
-			elif startswith( f"{prefix}translate.get" ):
-				if not disables[ message.server.id ].get( "translate" ) is True or message.author.id == owner_id:
-					await Commands.Member.translate_get( message )
-					pass
-				elif disables[ message.server.id ][ "translate" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}translate " ):
-				if not disables[ message.server.id ].get( "translate" ) is True or message.author.id == owner_id:
-					await Commands.Member.translate( message, prefix )
-					pass
-				elif disables[ message.server.id ][ "translate" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}dm" ):
-				await client.send_message( message.author, f"Welcome, {message.author.name}" )
-				pass
-			elif startswith( f"{prefix}fetch " ):
-				if admin_role in message.author.roles or message.author.id == owner_id:
-					_file = f"{discord_logs}\\{message.server.name}\\{message.content.replace(f'{prefix}fetch ', '')}"
-					if not _file.endswith( '.txt' ): _file += ".txt"
-					await client.send_file( message.channel, f"{_file}" )
-					pass
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}refresh" ):
-				if message.author.id == owner_id:
-					await Commands.Owner.refresh( )
-					pass
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}dict " ):
-				if not disables[ message.server.id ].get( "dict" ) is True: await Commands.Member.dict( message, prefix )
-				else: await client.send_message( message.channel, "```That command has been disabled!```" )
-				pass
-			elif startswith( f"{prefix}setup" ):
-				if message.author.id == message.server.owner.id or message.author.id == owner_id:
-					await Commands.Admin.setup( message, admin_role )
-					pass
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}server" ):
-				if not disables[ message.server.id ].get( "server" ) is True: await Commands.Member.server( message )
-				else: await client.send_message( message.channel, "```That command has been disabled!```" )
-				pass
-			elif startswith( f"{prefix}convert " ):
-				if not disables[ message.server.id ].get( "convert" ) is True: await Commands.Member.convert( message, prefix )
-				else: await client.send_message( message.channel, "```That command has been disabled!```" )
-				pass
-			elif startswith( f"{prefix}mute " ):
-				if admin_role in message.author.roles or message.author.id == owner_id:
-					await Commands.Admin.mute( message, muted_role )
-					pass
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}unmute " ):
-				if admin_role in message.author.roles or message.author.id == owner_id:
-					await Commands.Admin.unmute( message, muted_role )
-					pass
-				else:
-					await sendNoPerm( message )
-					pass
-				pass
-			elif startswith( f"{prefix}mutes" ):
-				await Commands.Member.mutes( message, muted_role )
-				pass
-			elif startswith( f"{prefix}ping" ):
-				await Commands.Member.ping( message )
-				pass
-			elif startswith( f"{prefix}clear" ):
-				if admin_role in message.author.roles or message.author.id == owner_id:
-					messages = list( client.messages )
-					mtd = [ m if m.channel == message.channel else None for m in messages ]
-					remove = mtd.remove
-					while None in mtd: remove( None )
-					for m in mtd:
-						# print(f"{m.author} ~ {m.content} ~ {len(m.attachments)}")
-						await client.delete_message( m )
+				elif startswith( f"{prefix}excludechannel ", f"{prefix}exc " ):
+					if (admin_role in message.author.roles and not disables[ message.server.id ].get( "excludechannel" ) is True) or message.author.id == owner_id:
+						await Commands.Admin.excludechannel( message )
+						pass
+					elif disables[ message.server.id ][ "excludechannel" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
 						pass
 					pass
-				pass
-			elif startswith( f"{prefix}hq" ):
-				await client.send_message( message.channel, hq_link )
-				pass
-			elif startswith( f"{prefix}git" ):
-				await client.send_message( message.channel, git_link )
-				pass
-			elif startswith( f"{prefix}joinrole " ):
-				if (admin_role in message.author.roles and not disables[ message.server.id ].get( "welcome" ) is True) or message.author.id == owner_id: await Commands.Admin.join_role( message, prefix )
-				elif disables[ message.server.id ][ "welcome" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else: sendNoPerm( message )
-				pass
-			elif startswith( f"{prefix}joinrole" ):
-				if not disables[ message.server.id ].get( "welcome" ) is True or message.author.id == owner_id:
-					role = discord.utils.find( lambda r:r.id == join_roles[ message.server.id ], message.server.roles )
-					await client.send_message( message.channel, f"Join Role for {message.server.name}: {role}" )
+				elif startswith( f"{prefix}includechannel ", f"{prefix}inc " ):
+					if (admin_role in message.author.roles and not disables[ message.server.id ].get( "includechannel" ) is True) or message.author.id == owner_id:
+						await Commands.Admin.includechannel( message )
+						pass
+					elif disables[ message.server.id ][ "includechannel" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
 					pass
-				elif disables[ message.server.id ][ "welcome" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
-				else: sendNoPerm( message )
-				pass
-			elif startswith( f"{prefix}logchannel " ):
-				if admin_role in message.author.roles:
-					cmentions = message.channel_mentions
-					if len( cmentions ) > 0:
-						c = cmentions[ 0 ].id
-						parser[ message.server.id ][ "logchannel" ] = c
-						await client.send_message( message.channel, f"```Set the log channel to {cmentions[0]}```" )
-						del c
+				elif startswith( f"{prefix}mark " ):
+					if (admin_role in message.author.roles and not disables[ message.server.id ].get( "mark" ) is True) or message.author.id == owner_id:
+						await Commands.Admin.mark( message, prefix )
+						pass
+					elif disables[ message.server.id ][ "mark" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}admin " ):
+					if admin_role in message.author.roles or message.author.id == owner_id:
+						await Commands.Admin.admin( message, admin_role, prefix )
 						pass
 					else:
-						parser[ message.server.id ][ "logchannel" ] = "None"
-						await client.send_message( message.channel, f"```Set the log channel to None```" )
+						await sendNoPerm( message )
 						pass
-					del cmentions
 					pass
-				else: sendNoPerm( message )
-				pass
-			elif startswith( f"{prefix}logchannel" ):
-				if admin_role in message.author.roles:
-					c = client.get_channel( parser[ message.server.id ][ "logchannel" ] )
-					if c is None: await client.send_message( message.channel, "```There is no log channel.```" )
-					else: await client.send_message( message.channel, f"```The log channel is #{c}.```" )
-					del c
+				elif startswith( f"{prefix}showlist" ):
+					if not disables[ message.server.id ].get( "showlist" ) is True or message.author.id == owner_id:
+						await Commands.Member.showlist( message )
+						pass
+					elif disables[ message.server.id ][ "showlist" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
 					pass
-				else: sendNoPerm( message )
+				elif startswith( f"{prefix}showmarks" ):
+					if not disables[ message.server.id ].get( "showmarks" ) is True or message.author.id == owner_id:
+						await Commands.Member.showmarks( message )
+						pass
+					elif disables[ message.server.id ][ "showmarks" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}version" ):
+					await client.send_message( message.channel, f"```LogBot Version {version}```" )
+					pass
+				elif startswith( f"{prefix}channel " ):
+					if (admin_role in message.author.roles and not disables[ message.server.id ].get( "channel" ) is True) or message.author.id == owner_id:
+						await Commands.Admin.channel( message, prefix )
+						pass
+					elif disables[ message.server.id ][ "channel" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}updates" ):
+					await Commands.Member.updates( message )
+					pass
+				elif startswith( f"{prefix}say" ):
+					if (admin_role in message.author.roles and not disables[ message.server.id ].get( "say" ) is True) or message.author.id == owner_id:
+						await Commands.Admin.say( message, prefix )
+						pass
+					elif disables[ message.server.id ][ "say" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}planned" ):
+					await Commands.Member.planned( message )
+					pass
+				# elif startswith( f"{prefix}cmd " ):
+				# 	if not disables[message.server.id].get( "cmd" ) is True or message.author.id == owner_id:
+				# 		await Commands.Member.cmd( message )
+				# 		pass
+				# 	elif disables[ message.server.id ][ "cmd" ]:
+				# 		await await client.send_message( message.channel, "```That command has been disabled!```" )
+				# 		pass
+				# 	else:
+				# 		await sendNoPerm( message )
+				# 		pass
+				# 	pass
+				elif startswith( f"{prefix}query " ):
+					if not disables[ message.server.id ].get( "query" ) is True or message.author.id == owner_id:
+						await Commands.Member.query( message, prefix )
+						pass
+					elif disables[ message.server.id ][ "query" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}wiki " ):
+					if not disables[ message.server.id ].get( "wiki" ) is True or message.author.id == owner_id:
+						await Commands.Member.wiki( message, prefix )
+						pass
+					elif disables[ message.server.id ][ "wiki" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}disable " ):
+					if admin_role in message.author.roles or message.author.id == owner_id:
+						await Commands.Admin.disable( message, prefix )
+						pass
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}enable " ):
+					if admin_role in message.author.roles or message.author.id == owner_id:
+						await Commands.Admin.enable( message, prefix )
+						pass
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}suggest " ):
+					await Commands.Member.suggest( message, prefix )
+					pass
+				elif startswith( f"{prefix}decide " ):
+					if not disables[ message.server.id ].get( "decide" ) is True or message.author.id == owner_id:
+						await Commands.Member.decide( message, prefix )
+						pass
+					elif disables[ message.server.id ][ "decide" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}disables" ):
+					await Commands.Member.disables( message, prefix )
+					pass
+				elif startswith( f"{prefix}welcome " ):
+					if (admin_role in message.author.roles and not disables[ message.server.id ].get( "welcome" ) is True) or message.author.id == owner_id:
+						await Commands.Admin.welcome( message, prefix )
+						pass
+					elif disables[ message.server.id ][ "welcome" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}goodbye " ):
+					if (admin_role in message.author.roles and not disables[ message.server.id ].get( "goodbye" ) is True) or message.author.id == owner_id:
+						await Commands.Admin.goodbye( message, prefix )
+						pass
+					elif disables[ message.server.id ][ "goodbye" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}welcome" ):
+					if (admin_role in message.author.roles and not disables[ message.server.id ].get( "welcome" ) is True) or message.author.id == owner_id:
+						await Commands.Admin.show_welcome( message )
+						pass
+					elif disables[ message.server.id ][ "welcome" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}goodbye" ):
+					if (admin_role in message.author.roles and not disables[ message.server.id ].get( "goodbye" ) is True) or message.author.id == owner_id:
+						await Commands.Admin.show_goodbye( message )
+						pass
+					elif disables[ message.server.id ][ "goodbye" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}prunes " ):
+					if (admin_role in message.author.roles and not disables[ message.server.id ].get( "prune" ) is True) or message.author.id == owner_id:
+						await Commands.Admin.prunes( message, prefix )
+						pass
+					elif disables[ message.server.id ][ "prune" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}prune " ):
+					if (admin_role in message.author.roles and not disables[ message.server.id ].get( "prune" ) is True) or message.author.id == owner_id:
+						await Commands.Admin.prune( message, prefix )
+						pass
+					elif disables[ message.server.id ][ "prune" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}user:" ):
+					if not disables[ message.server.id ].get( "user" ) is True or message.author.id == owner_id: await Commands.Member.user_restrict( message, prefix )
+					elif disables[ message.server.id ][ "user" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					pass
+				elif startswith( f"{prefix}user" ):
+					if not disables[ message.server.id ].get( "user" ) is True or message.author.id == owner_id: await Commands.Member.user( message, prefix )
+					elif disables[ message.server.id ][ "user" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else: await sendNoPerm( message )
+					pass
+				elif startswith( f"{prefix}invite" ):
+					await client.send_message( message.channel, "https://discordapp.com/oauth2/authorize?client_id=255379748828610561&scope=bot&permissions=268696670" )
+					pass
+				elif startswith( f"{prefix}purge " ):
+					if (admin_role in message.author.roles and not disables[ message.server.id ].get( "purge" ) is True) or message.author.id == owner_id:
+						tmp = message.content.replace( f"{prefix}purge ", "" )
+						switches = purge_parser.parse( tmp )
+						await Commands.Admin.purge( message, int( switches.get( "limit" ) ) if not switches.get( "limit" ) is None else 100, switches )
+						pass
+					elif disables[ message.server.id ][ "purge" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}purge" ):
+					if (admin_role in message.author.roles and not disables[ message.server.id ].get( "purge" ) is True) or message.author.id == owner_id:
+						await Commands.Admin.loose_purge( message )
+						pass
+					elif disables[ message.server.id ][ "purge" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}kick " ):
+					if admin_role in message.author.roles or message.author.id == owner_id:
+						await Commands.Admin.kick( message, admin_role )
+						pass
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}ban " ):
+					if admin_role in message.author.roles or message.author.id == owner_id:
+						await Commands.Admin.ban( message, admin_role )
+						pass
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}permissions" ):
+					if not disables[ message.server.id ].get( "permissions" ) is True: await Commands.Member.user_permissions( message, prefix )
+					else: await client.send_message( message.channel, "```That command has been disabled!```" )
+					pass
+				elif startswith( f"{prefix}translate.get" ):
+					if not disables[ message.server.id ].get( "translate" ) is True or message.author.id == owner_id:
+						await Commands.Member.translate_get( message )
+						pass
+					elif disables[ message.server.id ][ "translate" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}translate " ):
+					if not disables[ message.server.id ].get( "translate" ) is True or message.author.id == owner_id:
+						await Commands.Member.translate( message, prefix )
+						pass
+					elif disables[ message.server.id ][ "translate" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}dm" ):
+					await client.send_message( message.author, f"Welcome, {message.author.name}" )
+					pass
+				elif startswith( f"{prefix}fetch " ):
+					if admin_role in message.author.roles or message.author.id == owner_id:
+						_file = f"{discord_logs}\\{message.server.name}\\{message.content.replace(f'{prefix}fetch ', '')}"
+						if not _file.endswith( '.txt' ): _file += ".txt"
+						await client.send_file( message.channel, f"{_file}" )
+						pass
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}refresh" ):
+					if message.author.id == owner_id:
+						await Commands.Owner.refresh( )
+						pass
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}dict " ):
+					if not disables[ message.server.id ].get( "dict" ) is True: await Commands.Member.dict( message, prefix )
+					else: await client.send_message( message.channel, "```That command has been disabled!```" )
+					pass
+				elif startswith( f"{prefix}setup" ):
+					if message.author.id == message.server.owner.id or message.author.id == owner_id:
+						await Commands.Admin.setup( message, admin_role )
+						pass
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}server" ):
+					if not disables[ message.server.id ].get( "server" ) is True: await Commands.Member.server( message )
+					else: await client.send_message( message.channel, "```That command has been disabled!```" )
+					pass
+				elif startswith( f"{prefix}convert " ):
+					if not disables[ message.server.id ].get( "convert" ) is True: await Commands.Member.convert( message, prefix )
+					else: await client.send_message( message.channel, "```That command has been disabled!```" )
+					pass
+				elif startswith( f"{prefix}mute " ):
+					if admin_role in message.author.roles or message.author.id == owner_id:
+						await Commands.Admin.mute( message, muted_role )
+						pass
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}unmute " ):
+					if admin_role in message.author.roles or message.author.id == owner_id:
+						await Commands.Admin.unmute( message, muted_role )
+						pass
+					else:
+						await sendNoPerm( message )
+						pass
+					pass
+				elif startswith( f"{prefix}mutes" ):
+					await Commands.Member.mutes( message, muted_role )
+					pass
+				elif startswith( f"{prefix}ping" ):
+					await Commands.Member.ping( message )
+					pass
+				elif startswith( f"{prefix}clear" ):
+					if admin_role in message.author.roles or message.author.id == owner_id:
+						messages = list( client.messages )
+						mtd = [ m if m.channel == message.channel else None for m in messages ]
+						remove = mtd.remove
+						while None in mtd: remove( None )
+						for m in mtd:
+							# print(f"{m.author} ~ {m.content} ~ {len(m.attachments)}")
+							await client.delete_message( m )
+							pass
+						pass
+					pass
+				elif startswith( f"{prefix}hq" ):
+					await client.send_message( message.channel, hq_link )
+					pass
+				elif startswith( f"{prefix}git" ):
+					await client.send_message( message.channel, git_link )
+					pass
+				elif startswith( f"{prefix}joinrole " ):
+					if (admin_role in message.author.roles and not disables[ message.server.id ].get( "welcome" ) is True) or message.author.id == owner_id: await Commands.Admin.join_role( message, prefix )
+					elif disables[ message.server.id ][ "welcome" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else: sendNoPerm( message )
+					pass
+				elif startswith( f"{prefix}joinrole" ):
+					if not disables[ message.server.id ].get( "welcome" ) is True or message.author.id == owner_id:
+						role = discord.utils.find( lambda r:r.id == join_roles[ message.server.id ], message.server.roles )
+						await client.send_message( message.channel, f"Join Role for {message.server.name}: {role}" )
+						pass
+					elif disables[ message.server.id ][ "welcome" ]: await client.send_message( message.channel, "```That command has been disabled!```" )
+					else: sendNoPerm( message )
+					pass
+				elif startswith( f"{prefix}logchannel " ):
+					if admin_role in message.author.roles:
+						cmentions = message.channel_mentions
+						if len( cmentions ) > 0:
+							c = cmentions[ 0 ].id
+							parser[ message.server.id ][ "logchannel" ] = c
+							await client.send_message( message.channel, f"```Set the log channel to {cmentions[0]}```" )
+							del c
+							pass
+						else:
+							parser[ message.server.id ][ "logchannel" ] = "None"
+							await client.send_message( message.channel, f"```Set the log channel to None```" )
+							pass
+						del cmentions
+						pass
+					else: sendNoPerm( message )
+					pass
+				elif startswith( f"{prefix}logchannel" ):
+					if admin_role in message.author.roles:
+						c = client.get_channel( parser[ message.server.id ][ "logchannel" ] )
+						if c is None: await client.send_message( message.channel, "```There is no log channel.```" )
+						else: await client.send_message( message.channel, f"```The log channel is #{c}.```" )
+						del c
+						pass
+					else: sendNoPerm( message )
+					pass
+				elif startswith( f"{prefix}roll" ):
+					if not disables[ message.server.id ].get( "roll" ) is True: await client.send_message( message.channel, f"You rolled {random.choice(range(1, int(message.content.replace('{prefix}roll ', ''))))}!" )
+					else: await client.send_message( message.channel, "```That command has been disabled!```" )
+					pass
+				elif startswith( f"{prefix}channels" ):
+					await Commands.Member.channels( message )
+					pass
+				elif startswith( f"{prefix}defaultchannel " ):
+					if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.defaultchannel( message )
+					else: sendNoPerm( message )
+					pass
+				elif startswith( f"{prefix}defaultchannel" ):
+					if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.get_defaultchannel( message )
+					else: sendNoPerm( message )
+					pass
+				elif startswith( f"{prefix}simwelcome" ):
+					if message.author.id == owner_id: await on_member_join( message.author )
+					pass
+				elif startswith( f"{prefix}simgoodbye" ):
+					if message.author.id == owner_id: await on_member_remove( message.author )
+					pass
+				elif startswith( f"{prefix}changeprefix " ):
+					if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.changeprefix( message, prefix )
+					else: sendNoPerm( message )
+					pass
+				elif startswith( f"{prefix}prefix" ):
+					await client.send_message( message.channel, f"The prefix is {prefix}" )
+					pass
+				elif startswith( f"{prefix}role " ):
+					await Commands.Member.role( message, prefix )
+					pass
+				elif startswith( f"{prefix}urban " ):
+					if not disables[ message.server.id ].get( "urban" ) is True: await Commands.Member.urban( message, prefix )
+					else: await client.send_message( message.channel, "```That command has been disabled!```" )
+					pass
+				elif startswith( f"{prefix}files" ):
+					if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.files( message )
+					pass
+				elif startswith( f"{prefix}gif" ):
+					if not disables[ message.server.id ][ "gif" ] or message.author.id == owner_id: await Commands.Member.gif( message, prefix )
+					else: await client.send_message( message.channel, "```That command has been disabled!```" )
+					pass
+				elif startswith( f"{prefix}sf " ):
+					await Commands.Member.sf( message, prefix )
+					pass
+
+				# elif startswith(f"{prefix}yoda "):
+				# 	cnt = message.content.replace(f"{prefix}yoda ", "").replace(" ", "+")
+				# 	response = unirest.get(f"https://yoda.p.mashape.com/yoda?sentence={cnt}",
+				# 		headers={
+				# 			"X-Mashape-Key":"RGua7KFPvXmshXY96pU0btMbDbmyp1yIZkpjsnC2za8zQ3OzgV",
+				# 			"Accept"       :"text/plain"
+				# 		}
+				# 	)
+				# 	_body = response.raw_body
+				# 	print(_body)
+				# 	pass
 				pass
-			elif startswith( f"{prefix}roll" ):
-				if not disables[ message.server.id ].get( "roll" ) is True: await client.send_message( message.channel, f"You rolled {random.choice(range(1, int(message.content.replace('{prefix}roll ', ''))))}!" )
-				else: await client.send_message( message.channel, "```That command has been disabled!```" )
+			elif startswith( f"$update", "logbot.update" ):
+				if message.author.id == owner_id:
+					m = await client.send_message( message.channel, "```Updating...```" )
+					print( f"{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}" )
+					await client.close( )
+					update( m.id, message.channel.id )
+					pass
+				else: await sendNoPerm( message )
 				pass
-			elif startswith( f"{prefix}channels" ):
-				await Commands.Member.channels( message )
+			elif startswith( "logbot.exit", "$exit" ):
+				if message.author.id == owner_id: await Commands.Owner.exit( )
+				else: await sendNoPerm( message )
 				pass
-			elif startswith( f"{prefix}defaultchannel " ):
-				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.defaultchannel( message )
-				else: sendNoPerm( message )
+			elif startswith( "logbot.info" ):
+				await Commands.Owner.info( message )
 				pass
-			elif startswith( f"{prefix}defaultchannel" ):
-				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.get_defaultchannel( message )
-				else: sendNoPerm( message )
-				pass
-			elif startswith( f"{prefix}simwelcome" ):
-				if message.author.id == owner_id: await on_member_join( message.author )
-				pass
-			elif startswith( f"{prefix}simgoodbye" ):
-				if message.author.id == owner_id: await on_member_remove( message.author )
-				pass
-			elif startswith( f"{prefix}changeprefix " ):
-				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.changeprefix( message, prefix )
-				else: sendNoPerm( message )
-				pass
-			elif startswith( f"{prefix}prefix" ):
+			elif startswith( "$prefix" ):
 				await client.send_message( message.channel, f"The prefix is {prefix}" )
 				pass
-			elif startswith( f"{prefix}role " ):
-				await Commands.Member.role( message, prefix )
-				pass
-			elif startswith( f"{prefix}urban " ):
-				if not disables[ message.server.id ].get( "urban" ) is True: await Commands.Member.urban( message, prefix )
-				else: await client.send_message( message.channel, "```That command has been disabled!```" )
-				pass
-			elif startswith( f"{prefix}files" ):
-				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.files( message )
-				pass
-			elif startswith( f"{prefix}gif" ):
-				if not disables[ message.server.id ][ "gif" ] or message.author.id == owner_id: await Commands.Member.gif( message, prefix )
-				else: await client.send_message( message.channel, "```That command has been disabled!```" )
-				pass
-			elif startswith( f"{prefix}sf " ):
-				Commands.Member.sf( message, prefix )
+
+			for item in list( custom_commands.keys( ) ):
+				if startswith( item ):
+					await client.send_message( message.channel, custom_commands[ item ] )
+					pass
 				pass
 
-			# elif startswith(f"{prefix}yoda "):
-			# 	cnt = message.content.replace(f"{prefix}yoda ", "").replace(" ", "+")
-			# 	response = unirest.get(f"https://yoda.p.mashape.com/yoda?sentence={cnt}",
-			# 		headers={
-			# 			"X-Mashape-Key":"RGua7KFPvXmshXY96pU0btMbDbmyp1yIZkpjsnC2za8zQ3OzgV",
-			# 			"Accept"       :"text/plain"
-			# 		}
-			# 	)
-			# 	_body = response.raw_body
-			# 	print(_body)
-			# 	pass
-			pass
-		elif startswith( f"$update", "logbot.update" ):
-			if message.author.id == owner_id:
-				m = await client.send_message( message.channel, "```Updating...```" )
-				print( f"{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}" )
-				await client.close( )
-				update( m.id, message.channel.id )
+			save( message.server.id )
+
+			with open( channel_settings, 'w' ) as configfile:
+				channel_parser.write( configfile )
 				pass
-			else: await sendNoPerm( message )
-			pass
-		elif startswith( "logbot.exit", "$exit" ):
-			if message.author.id == owner_id: await Commands.Owner.exit( )
-			else: await sendNoPerm( message )
-			pass
-		elif startswith( "logbot.info" ):
-			await Commands.Owner.info( message )
-			pass
-		elif startswith( "$prefix" ):
-			await client.send_message( message.channel, f"The prefix is {prefix}" )
-			pass
 
-		for item in list( custom_commands.keys( ) ):
-			if startswith( item ):
-				await client.send_message( message.channel, custom_commands[ item ] )
+			try:
+				exclude_channel_list.index( message.channel.id )
 				pass
-			pass
-
-		save( message.server.id )
-
-		with open( channel_settings, 'w' ) as configfile:
-			channel_parser.write( configfile )
-			pass
-
-		try:
-			exclude_channel_list.index( message.channel.id )
-			pass
-		except:
-			if not message.content.startswith( f"$exclude " ) and not message.content.startswith( f"$ex " ):
-				ret = f"Message Sent: {message.server.name} ~ {message.channel} ~ \"{msgcont}\" ~ {message.author} ~ {time.day}.{time.month}.{time.year} {time.hour}:{time.minute} ~ {message.attachments}"
-				send( ret, message.server.name, message.channel.name )
+			except:
+				if not message.content.startswith( f"$exclude " ) and not message.content.startswith( f"$ex " ):
+					ret = f"Message Sent: {message.server.name} ~ {message.channel} ~ \"{msgcont}\" ~ {message.author} ~ {time.day}.{time.month}.{time.year} {time.hour}:{time.minute} ~ {message.attachments}"
+					send( ret, message.server.name, message.channel.name )
+					pass
 				pass
+
+			pass
+		elif message.channel.is_private:
+			if message.content.startswith( "logbot.info" ): await Commands.DM.info( message )
+			elif message.content.startswith( "$planned" ): await Commands.DM.planned( message )
+			elif message.content.startswith( "$translate.get" ): await Commands.DM.translate_get( message )
+			elif message.content.startswith( "$translate " ): await Commands.DM.translate( message )
+			elif message.content.startswith( "$wiki" ): await Commands.DM.wiki( message )
+			elif message.content.startswith( "logbot.exit" ):
+				if message.author.id == owner_id: await Commands.DM.exit( )
+				else: await sendNoPerm( message )
+				pass
+			elif message.content.startswith( "$updates" ): await Commands.DM.updates( message )
+			elif message.content.startswith( "$refresh" ):
+				if message.author.id == owner_id: await Commands.DM.refresh( )
+				pass
+			elif message.content.startswith( "$update" ) or message.content.startswith( "logbot.update" ):
+				if message.author.id == owner_id: await Commands.DM.update( message )
+				pass
+			elif message.content.startswith( "$suggest " ): await Commands.DM.suggest( message )
+			# elif message.content.startswith("$suggestions"): await Commands.DM.suggestions(message)
+			elif message.content.startswith( "$decide" ):
+				content = message.content.split( ' ' )
+				content.remove( content[ 0 ] )
+				content = ' '.join( content ).split( "|" )
+				choice = random.choice( content )
+				await client.send_message( message.channel, f"```I have chosen: {choice}```" )
+				pass
+			elif message.content.startswith( "$invite" ):
+				await client.send_message( message.channel, "https://discordapp.com/oauth2/authorize?client_id=255379748828610561&scope=bot&permissions=2146958463" )
+				pass
+			elif message.content.startswith( "$query " ): await Commands.DM.query( message )
+			elif message.content.startswith( "$dict " ): await Commands.DM.dict( message )
 			pass
 
+		tm = int( (datetime.now( ) - message.timestamp).microseconds ) / 1000000
+		print( tm )
+		times.append( tm )
+		del tm
 		pass
-	elif message.channel.is_private:
-		if message.content.startswith( "logbot.info" ): await Commands.DM.info( message )
-		elif message.content.startswith( "$planned" ): await Commands.DM.planned( message )
-		elif message.content.startswith( "$translate.get" ): await Commands.DM.translate_get( message )
-		elif message.content.startswith( "$translate " ): await Commands.DM.translate( message )
-		elif message.content.startswith( "$wiki" ): await Commands.DM.wiki( message )
-		elif message.content.startswith( "logbot.exit" ):
-			if message.author.id == owner_id: await Commands.DM.exit( )
-			else: await sendNoPerm( message )
-			pass
-		elif message.content.startswith( "$updates" ): await Commands.DM.updates( message )
-		elif message.content.startswith( "$refresh" ):
-			if message.author.id == owner_id: await Commands.DM.refresh( )
-			pass
-		elif message.content.startswith( "$update" ) or message.content.startswith( "logbot.update" ):
-			if message.author.id == owner_id: await Commands.DM.update( message )
-			pass
-		elif message.content.startswith( "$suggest " ): await Commands.DM.suggest( message )
-		# elif message.content.startswith("$suggestions"): await Commands.DM.suggestions(message)
-		elif message.content.startswith( "$decide" ):
-			content = message.content.split( ' ' )
-			content.remove( content[ 0 ] )
-			content = ' '.join( content ).split( "|" )
-			choice = random.choice( content )
-			await client.send_message( message.channel, f"```I have chosen: {choice}```" )
-			pass
-		elif message.content.startswith( "$invite" ):
-			await client.send_message( message.channel, "https://discordapp.com/oauth2/authorize?client_id=255379748828610561&scope=bot&permissions=2146958463" )
-			pass
-		elif message.content.startswith( "$query " ): await Commands.DM.query( message )
-		elif message.content.startswith( "$dict " ): await Commands.DM.dict( message )
-		pass
-
-	tm = int( (datetime.now( ) - message.timestamp).microseconds ) / 1000000
-	print( tm )
-	times.append( tm )
-	del tm
+	except: log_error( traceback.format_exc( ) )
 	pass
 
 # noinspection PyShadowingNames

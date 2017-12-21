@@ -1832,6 +1832,23 @@ class Commands:
 		pass
 	pass
 
+def log_error ( error_text: str ):
+	file = f"{os.getcwd()}\\error_log.txt"
+	prev_text = ""
+	try:
+		reader = open( file, 'r' )
+		prev_text = reader.read( )
+		reader.close( )
+		del reader
+		pass
+	except: pass
+	writer = open( file, 'w' )
+	writer.write( f"{datetime.now()} (bible.py) - {error_text}\n\n{prev_text}" )
+	writer.close( )
+	if "SystemExit" in error_text: exit( 0 )
+	del writer
+	pass
+
 @asyncio.coroutine
 def trigger_votd ( ):
 	"""
@@ -1877,349 +1894,351 @@ async def sendDisabled ( message: discord.Message ):
 
 @client.event
 async def on_message ( message ):
-	prefix = sqlread( f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';" )[ 0 ][ 0 ]
-	await trigger_votd( )
-	read( message.server.id )
-	bible_versions[ message.author.id ] = bible_versions[ message.author.id ] if not bible_versions.get( message.author.id ) is None else "akjv"
-	bible_types[ message.author.id ] = bible_types[ message.author.id ] if not bible_types.get( message.author.id ) is None else "embed"
-	if not message.server.id in verse_disable_list:
-		if not message.author.bot:
-			if not message.content.startswith( f"{prefix}verse " ) and not message.content.startswith( f"{prefix}devotional\n" ):
-				if not message.channel.id in disabled_channels and not message.author.id in disabled_users:
-					for mcont in message.content.split( "\n" ):
-						e = discord.Embed( title=bible_versions[ message.author.id ], colour=discord.Colour.purple( ) )
-						encountered = [ ]
-						tmp_content = mcont.replace( ".", " " ) \
-							.replace( "`", "" ) \
-							.replace( "*", "" ) \
-							.replace( "_", "" )
-						verse = [ ]
-						tmp_content = abbr( tmp_content )
-						for i in range( 0, 17 ): tmp_content = tmp_content.replace( akjv_books[ i ], akjv_books[ i ].replace( " ", "|" ) )
-						mc = tmp_content.split( " " )
-						append = verse.append
-						for i in range( 0, len( mc ) ): mc[ i ] = abbr( mc[ i ].replace( "|", " " ).capitalize( ) )
-						for b in akjv_books:
-							while b in mc:
-								index = mc.index( b )
-								if not index == len( mc ) - 1:
-									if "," in mc[ index + 1 ]:
-										for item in mc[ index + 1 ].split( ":" )[ 1 ].split( "," ): append( f"{mc[index]} {mc[index+1].split(':')[0]}:{item}" )
-										pass
-									else: verse.append( f"{mc[index]} {mc[index+1]}" )
-									pass
-								mc.remove( b )
-								pass
-							pass
-						for v in verse:
-							if bible_types[ message.author.id ] == "text":
-								if "-" in v and not v in encountered:
-									if bible_versions[ message.author.id ] == "kjv":
-										for m in format_message( getPassage( v, ih=True ) ):
-											m = m.replace( "```", "" ).split( '\n' )
-											m[ 1 ] = f"```{m[1]}"
-											m = '\n'.join( m ) + "```"
-											await client.send_message( message.channel, m )
+	try:
+		prefix = sqlread( f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';" )[ 0 ][ 0 ]
+		await trigger_votd( )
+		read( message.server.id )
+		bible_versions[ message.author.id ] = bible_versions[ message.author.id ] if not bible_versions.get( message.author.id ) is None else "akjv"
+		bible_types[ message.author.id ] = bible_types[ message.author.id ] if not bible_types.get( message.author.id ) is None else "embed"
+		if not message.server.id in verse_disable_list:
+			if not message.author.bot:
+				if not message.content.startswith( f"{prefix}verse " ) and not message.content.startswith( f"{prefix}devotional\n" ):
+					if not message.channel.id in disabled_channels and not message.author.id in disabled_users:
+						for mcont in message.content.split( "\n" ):
+							e = discord.Embed( title=bible_versions[ message.author.id ], colour=discord.Colour.purple( ) )
+							encountered = [ ]
+							tmp_content = mcont.replace( ".", " " ) \
+								.replace( "`", "" ) \
+								.replace( "*", "" ) \
+								.replace( "_", "" )
+							verse = [ ]
+							tmp_content = abbr( tmp_content )
+							for i in range( 0, 17 ): tmp_content = tmp_content.replace( akjv_books[ i ], akjv_books[ i ].replace( " ", "|" ) )
+							mc = tmp_content.split( " " )
+							append = verse.append
+							for i in range( 0, len( mc ) ): mc[ i ] = abbr( mc[ i ].replace( "|", " " ).capitalize( ) )
+							for b in akjv_books:
+								while b in mc:
+									index = mc.index( b )
+									if not index == len( mc ) - 1:
+										if "," in mc[ index + 1 ]:
+											for item in mc[ index + 1 ].split( ":" )[ 1 ].split( "," ): append( f"{mc[index]} {mc[index+1].split(':')[0]}:{item}" )
 											pass
+										else: verse.append( f"{mc[index]} {mc[index+1]}" )
 										pass
-									elif bible_versions[ message.author.id ] == "akjv":
-										for m in format_message( getAKJVPassage( v, ih=True ) ):
-											m = m.replace( "```", "" ).split( '\n' )
-											m[ 1 ] = f"```{m[1]}"
-											m = '\n'.join( m ) + "```"
-											await client.send_message( message.channel, m )
-											pass
-										pass
-									elif bible_versions[ message.author.id ] == "web":
-										for m in format_message( getWEBPassage( v, ih=True ) ):
-											m = m.replace( "```", "" ).split( '\n' )
-											m[ 1 ] = f"```{m[1]}"
-											m = '\n'.join( m ) + "```"
-											await client.send_message( message.channel, m )
-											pass
-										pass
-									pass
-								elif ":" in v and not v in encountered:
-									if bible_versions[ message.author.id ] == "kjv":
-										for m in format_message( getVerse( v, ih=True ) ):
-											m = m.replace( "```", "" ).split( '\n' )
-											m[ 1 ] = f"```{m[1]}"
-											m = '\n'.join( m ) + "```"
-											await client.send_message( message.channel, m )
-											pass
-										pass
-									elif bible_versions[ message.author.id ] == "akjv":
-										for m in format_message( getAKJVVerse( v, ih=True ) ):
-											m = m.replace( "```", "" ).split( '\n' )
-											m[ 1 ] = f"```{m[1]}"
-											m = '\n'.join( m ) + "```"
-											await client.send_message( message.channel, m )
-											pass
-										pass
-									elif bible_versions[ message.author.id ] == "web":
-										for m in format_message( getWEBVerse( v, ih=True ) ):
-											m = m.replace( "```", "" ).split( '\n' )
-											m[ 1 ] = f"```{m[1]}"
-											m = '\n'.join( m ) + "```"
-											await client.send_message( message.channel, m )
-											pass
-										pass
+									mc.remove( b )
 									pass
 								pass
-							else:
-								if "-" in v and not v in encountered:
-									if bible_versions[ message.author.id ] == "kjv": e.add_field( name=v, value=getPassage( v, ih=False ) )
-									elif bible_versions[ message.author.id ] == "akjv": e.add_field( name=v, value=getAKJVPassage( v, ih=False ) )
-									elif bible_versions[ message.author.id ] == "web": e.add_field( name=v, value=getWEBPassage( v, ih=False ) )
+							for v in verse:
+								if bible_types[ message.author.id ] == "text":
+									if "-" in v and not v in encountered:
+										if bible_versions[ message.author.id ] == "kjv":
+											for m in format_message( getPassage( v, ih=True ) ):
+												m = m.replace( "```", "" ).split( '\n' )
+												m[ 1 ] = f"```{m[1]}"
+												m = '\n'.join( m ) + "```"
+												await client.send_message( message.channel, m )
+												pass
+											pass
+										elif bible_versions[ message.author.id ] == "akjv":
+											for m in format_message( getAKJVPassage( v, ih=True ) ):
+												m = m.replace( "```", "" ).split( '\n' )
+												m[ 1 ] = f"```{m[1]}"
+												m = '\n'.join( m ) + "```"
+												await client.send_message( message.channel, m )
+												pass
+											pass
+										elif bible_versions[ message.author.id ] == "web":
+											for m in format_message( getWEBPassage( v, ih=True ) ):
+												m = m.replace( "```", "" ).split( '\n' )
+												m[ 1 ] = f"```{m[1]}"
+												m = '\n'.join( m ) + "```"
+												await client.send_message( message.channel, m )
+												pass
+											pass
+										pass
+									elif ":" in v and not v in encountered:
+										if bible_versions[ message.author.id ] == "kjv":
+											for m in format_message( getVerse( v, ih=True ) ):
+												m = m.replace( "```", "" ).split( '\n' )
+												m[ 1 ] = f"```{m[1]}"
+												m = '\n'.join( m ) + "```"
+												await client.send_message( message.channel, m )
+												pass
+											pass
+										elif bible_versions[ message.author.id ] == "akjv":
+											for m in format_message( getAKJVVerse( v, ih=True ) ):
+												m = m.replace( "```", "" ).split( '\n' )
+												m[ 1 ] = f"```{m[1]}"
+												m = '\n'.join( m ) + "```"
+												await client.send_message( message.channel, m )
+												pass
+											pass
+										elif bible_versions[ message.author.id ] == "web":
+											for m in format_message( getWEBVerse( v, ih=True ) ):
+												m = m.replace( "```", "" ).split( '\n' )
+												m[ 1 ] = f"```{m[1]}"
+												m = '\n'.join( m ) + "```"
+												await client.send_message( message.channel, m )
+												pass
+											pass
+										pass
 									pass
-								elif ":" in v and not v in encountered:
-									if bible_versions[ message.author.id ] == "kjv": e.add_field( name=v, value=getVerse( v, ih=False ) )
-									elif bible_versions[ message.author.id ] == "akjv": e.add_field( name=v, value=getAKJVVerse( v, ih=False ) )
-									elif bible_versions[ message.author.id ] == "web": e.add_field( name=v, value=getWEBVerse( v, ih=False ) )
+								else:
+									if "-" in v and not v in encountered:
+										if bible_versions[ message.author.id ] == "kjv": e.add_field( name=v, value=getPassage( v, ih=False ) )
+										elif bible_versions[ message.author.id ] == "akjv": e.add_field( name=v, value=getAKJVPassage( v, ih=False ) )
+										elif bible_versions[ message.author.id ] == "web": e.add_field( name=v, value=getWEBPassage( v, ih=False ) )
+										pass
+									elif ":" in v and not v in encountered:
+										if bible_versions[ message.author.id ] == "kjv": e.add_field( name=v, value=getVerse( v, ih=False ) )
+										elif bible_versions[ message.author.id ] == "akjv": e.add_field( name=v, value=getAKJVVerse( v, ih=False ) )
+										elif bible_versions[ message.author.id ] == "web": e.add_field( name=v, value=getWEBVerse( v, ih=False ) )
+										pass
 									pass
+								encountered.append( v )
 								pass
-							encountered.append( v )
-							pass
-						if bible_types[ message.author.id ] == "embed" and len( e.fields ) >= 1:
-							try:
-								# <editor-fold desc="Fetching Title...">
-								index = list( mcont ).index( '"' )
-								title = ""
-								has_found = False
-								for i in range( index + 1, len( mcont ) ):
-									if mcont[ i ] == "\"": has_found = True
-									if not has_found: title += mcont[ i ]
+							if bible_types[ message.author.id ] == "embed" and len( e.fields ) >= 1:
+								try:
+									# <editor-fold desc="Fetching Title...">
+									index = list( mcont ).index( '"' )
+									title = ""
+									has_found = False
+									for i in range( index + 1, len( mcont ) ):
+										if mcont[ i ] == "\"": has_found = True
+										if not has_found: title += mcont[ i ]
+										pass
+									title = ' '.join( [ t for t in title.split( " " ) ] )
+									# </editor-fold>
+									e.title = title
+									e.description = bible_versions[ message.author.id ]
 									pass
-								title = ' '.join( [ t for t in title.split( " " ) ] )
-								# </editor-fold>
-								e.title = title
-								e.description = bible_versions[ message.author.id ]
-								pass
-							except: pass
+								except: pass
 
-							for i in range( 0, len( e.fields ) ):
-								if e.fields[ i ].value == "No such verse!": e.remove_field( i )
-								pass
+								for i in range( 0, len( e.fields ) ):
+									if e.fields[ i ].value == "No such verse!": e.remove_field( i )
+									pass
 
-							tm = datetime.now( ) - message.timestamp
-							# delay = int(divmod(tm.total_seconds(), 60)[1] * 1000)
-							# delay = int((tm.total_seconds() % 60) * 1000)
-							delay = int( tm.microseconds / 1000 )
-							if delay > 999: delay = str( delay / 1000 )
-							else: delay = f"0.{delay}"
-							await client.send_message( message.channel, f"Response in {delay} seconds! :smile:", embed=e )
-							print( f"Sending {', '.join(verse)} ~ Delay: {delay}s." )
+								tm = datetime.now( ) - message.timestamp
+								# delay = int(divmod(tm.total_seconds(), 60)[1] * 1000)
+								# delay = int((tm.total_seconds() % 60) * 1000)
+								delay = int( tm.microseconds / 1000 )
+								if delay > 999: delay = str( delay / 1000 )
+								else: delay = f"0.{delay}"
+								await client.send_message( message.channel, f"Response in {delay} seconds! :smile:", embed=e )
+								print( f"Sending {', '.join(verse)} ~ Delay: {delay}s." )
+								pass
 							pass
 						pass
 					pass
 				pass
 			pass
-		pass
 
-	do_update = False
+		do_update = False
 
-	owner_id = "239500860336373761"
+		owner_id = "239500860336373761"
 
-	admin_role = discord.utils.find( lambda r:r.name == "LogBot Admin", message.server.roles )
-	def startswith ( *msg, val=message.content ):
-		# noinspection PyShadowingNames
-		for item in msg:
-			if val.startswith( item ): return True
-		return False
-	bi = BibleInfo( )
+		admin_role = discord.utils.find( lambda r:r.name == "LogBot Admin", message.server.roles )
+		def startswith ( *msg, val=message.content ):
+			# noinspection PyShadowingNames
+			for item in msg:
+				if val.startswith( item ): return True
+			return False
+		bi = BibleInfo( )
 
-	if startswith( f"{prefix}disable verse", f"{prefix}disable {prefix}verse" ):
-		if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.disable( message )
-		else: sendNoPerm( message )
-		pass
-	elif startswith( f"{prefix}enable verse", f"{prefix}enable {prefix}verse" ):
-		if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.enable( message )
-		else: sendNoPerm( message )
-		pass
-	elif startswith( f"{prefix}verse help" ):
-		if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_help( message )
-		elif message.server.id in verse_disable_list: sendDisabled( message )
-		else: sendNoPerm( message )
-		pass
-	elif startswith( f"{prefix}verse info" ):
-		if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_info( message, bi, prefix )
-		elif message.server.id in verse_disable_list: sendDisabled( message )
-		else: sendNoPerm( message )
-		pass
-	elif startswith( f"{prefix}verse random" ):
-		if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_random( message )
-		elif message.server.id in verse_disable_list: sendDisabled( message )
-		else: sendNoPerm( message )
-		pass
-	elif startswith( f"{prefix}verse search" ):
-		if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_search( message, prefix )
-		elif message.server.id in verse_disable_list: sendDisabled( message )
-		else: sendNoPerm( message )
-		pass
-	elif startswith( f"{prefix}verse compare " ):
-		if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_compare( message, prefix )
-		elif message.server.id in verse_disable_list: sendDisabled( message )
-		else: sendNoPerm( message )
-		pass
-	elif startswith( f"{prefix}votd" ): await Commands.Member.send_votd( message )
-	elif startswith( f"{prefix}setversion " ): await Commands.Member.setversion( message, prefix )
-	elif startswith( f"{prefix}settype " ): await Commands.Member.settype( message, prefix )
-	elif startswith( f"{prefix}getversion", f"{prefix}setversion" ):
-		await client.send_message( message.channel, bible_versions[ message.author.id ] )
-		pass
-	elif startswith( f"{prefix}gettype", f"{prefix}settype" ):
-		await client.send_message( message.channel, bible_types[ message.author.id ] )
-		pass
-	elif startswith( f"{prefix}setchannel " ):
-		if admin_role in message.author.roles: await Commands.Admin.setchannel( message )
-		else: sendNoPerm( message )
-		pass
-	elif startswith( f"{prefix}getchannel" ):
-		await client.send_message( message.channel, f"The default channel is <#{default_channel[message.server.id]}>" )
-		pass
-	elif startswith( f"v{prefix}disables" ): await Commands.Member.disables( message )
-	elif startswith( f"v{prefix}disable" ):
-		if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.v_disable( message )
-		else: sendNoPerm( message )
-		pass
-	elif startswith( f"v{prefix}enable" ):
-		if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.v_enable( message )
-		else: sendNoPerm( message )
-		pass
-	elif startswith( "$exit", "logbot.bible.exit" ):
-		if message.author.id == owner_id: exiting = True; await Commands.Owner.exit( )
-		else: sendNoPerm( message )
-		pass
-	elif startswith( f"$update", "logbot.bible.update" ):
-		if message.author.id == owner_id: do_update = True
-		else: sendNoPerm( message )
-		pass
-	elif startswith( f"{prefix}ping" ): await Commands.Member.ping( message )
-	elif startswith( f"{prefix}devotional\n" ):
-		lines = message.content.replace( "{prefix}devotional\n", "" ).split( "\n" )
-		e = discord.Embed( title="", description="", colour=discord.Colour.green( ) )
-		text = ""
-		for line in lines:
-			if line.startswith( "&title=" ): e.title = line.replace( "&title=", "" )
-			elif line.startswith( "&description=" ): e.description = line.replace( "&description=", "" )
-			elif line.startswith( "&author=" ) or line.startswith( "&footer=" ): e.set_footer( text=line.replace( "&author=", "" ).replace( "&footer=", "" ) )
-			elif line.startswith( "&thumbnail=" ): e.set_thumbnail( url=line.replace( "&thumbnail=", "" ) )
-			elif line.startswith( "&passage=" ):
-				def analyzeVerse ( _text: str, _version: str = "kjv" ):
-					if _version == "kjv":
-						if "-" in _text: return [ _text, getPassage( _text, ih=False ) ]
-						else: return [ _text, getVerse( _text, ih=False ) ]
-						pass
-					elif _version == "akjv":
-						if "-" in _text: return [ _text, getAKJVPassage( _text, ih=False ) ]
-						else: return [ _text, getAKJVVerse( _text, ih=False ) ]
-						pass
-					elif _version == "web":
-						if "-" in _text: return [ _text, getWEBPassage( _text, ih=False ) ]
-						else: return [ _text, getWEBVerse( _text, ih=False ) ]
-						pass
-					pass
-				_text = line.replace( "&passage=", "" )
-				version = bible_versions[ message.author.id ]
-				ret = analyzeVerse( cap_all_words( _text ), _version=version )
-				e.add_field( name=ret[ 0 ], value=ret[ 1 ], inline=False )
-				pass
-			elif line.startswith( "&text=" ):
-				if "|" in line: _title = line.replace( "&text=", "" ).split( "|" )[ 0 ]; _text = line.replace( "&text=", "" ).split( "|" )[ 1 ]
-				else: _title = "` `"; _text = line.replace( "&text=", "" )
-				e.add_field( name=_title, value=_text, inline=False )
-				pass
-			elif line.startswith( "&keyword=" ): text = line.replace( "&keyword=", "" )
+		if startswith( f"{prefix}disable verse", f"{prefix}disable {prefix}verse" ):
+			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.disable( message )
+			else: sendNoPerm( message )
 			pass
-		if text == "": text = e.title
-		await client.send_message( message.channel, text, embed=e )
-		pass
-	elif startswith( f"{prefix}devotional" ):
-		_msgs = [ ]
-		lines = [ ]
-		mappend = _msgs.append
-		lappend = lines.append
-		cont = True
-		_msg = await client.wait_for_message( author=message.author )
-		mappend( _msg )
-		lappend( _msg.content )
-		while cont:
+		elif startswith( f"{prefix}enable verse", f"{prefix}enable {prefix}verse" ):
+			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.enable( message )
+			else: sendNoPerm( message )
+			pass
+		elif startswith( f"{prefix}verse help" ):
+			if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_help( message )
+			elif message.server.id in verse_disable_list: sendDisabled( message )
+			else: sendNoPerm( message )
+			pass
+		elif startswith( f"{prefix}verse info" ):
+			if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_info( message, bi, prefix )
+			elif message.server.id in verse_disable_list: sendDisabled( message )
+			else: sendNoPerm( message )
+			pass
+		elif startswith( f"{prefix}verse random" ):
+			if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_random( message )
+			elif message.server.id in verse_disable_list: sendDisabled( message )
+			else: sendNoPerm( message )
+			pass
+		elif startswith( f"{prefix}verse search" ):
+			if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_search( message, prefix )
+			elif message.server.id in verse_disable_list: sendDisabled( message )
+			else: sendNoPerm( message )
+			pass
+		elif startswith( f"{prefix}verse compare " ):
+			if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_compare( message, prefix )
+			elif message.server.id in verse_disable_list: sendDisabled( message )
+			else: sendNoPerm( message )
+			pass
+		elif startswith( f"{prefix}votd" ): await Commands.Member.send_votd( message )
+		elif startswith( f"{prefix}setversion " ): await Commands.Member.setversion( message, prefix )
+		elif startswith( f"{prefix}settype " ): await Commands.Member.settype( message, prefix )
+		elif startswith( f"{prefix}getversion", f"{prefix}setversion" ):
+			await client.send_message( message.channel, bible_versions[ message.author.id ] )
+			pass
+		elif startswith( f"{prefix}gettype", f"{prefix}settype" ):
+			await client.send_message( message.channel, bible_types[ message.author.id ] )
+			pass
+		elif startswith( f"{prefix}setchannel " ):
+			if admin_role in message.author.roles: await Commands.Admin.setchannel( message )
+			else: sendNoPerm( message )
+			pass
+		elif startswith( f"{prefix}getchannel" ):
+			await client.send_message( message.channel, f"The default channel is <#{default_channel[message.server.id]}>" )
+			pass
+		elif startswith( f"v{prefix}disables" ): await Commands.Member.disables( message )
+		elif startswith( f"v{prefix}disable" ):
+			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.v_disable( message )
+			else: sendNoPerm( message )
+			pass
+		elif startswith( f"v{prefix}enable" ):
+			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.v_enable( message )
+			else: sendNoPerm( message )
+			pass
+		elif startswith( "$exit", "logbot.bible.exit" ):
+			if message.author.id == owner_id: exiting = True; await Commands.Owner.exit( )
+			else: sendNoPerm( message )
+			pass
+		elif startswith( f"$update", "logbot.bible.update" ):
+			if message.author.id == owner_id: do_update = True
+			else: sendNoPerm( message )
+			pass
+		elif startswith( f"{prefix}ping" ): await Commands.Member.ping( message )
+		elif startswith( f"{prefix}devotional\n" ):
+			lines = message.content.replace( "{prefix}devotional\n", "" ).split( "\n" )
+			e = discord.Embed( title="", description="", colour=discord.Colour.green( ) )
+			text = ""
+			for line in lines:
+				if line.startswith( "&title=" ): e.title = line.replace( "&title=", "" )
+				elif line.startswith( "&description=" ): e.description = line.replace( "&description=", "" )
+				elif line.startswith( "&author=" ) or line.startswith( "&footer=" ): e.set_footer( text=line.replace( "&author=", "" ).replace( "&footer=", "" ) )
+				elif line.startswith( "&thumbnail=" ): e.set_thumbnail( url=line.replace( "&thumbnail=", "" ) )
+				elif line.startswith( "&passage=" ):
+					def analyzeVerse ( _text: str, _version: str = "kjv" ):
+						if _version == "kjv":
+							if "-" in _text: return [ _text, getPassage( _text, ih=False ) ]
+							else: return [ _text, getVerse( _text, ih=False ) ]
+							pass
+						elif _version == "akjv":
+							if "-" in _text: return [ _text, getAKJVPassage( _text, ih=False ) ]
+							else: return [ _text, getAKJVVerse( _text, ih=False ) ]
+							pass
+						elif _version == "web":
+							if "-" in _text: return [ _text, getWEBPassage( _text, ih=False ) ]
+							else: return [ _text, getWEBVerse( _text, ih=False ) ]
+							pass
+						pass
+					_text = line.replace( "&passage=", "" )
+					version = bible_versions[ message.author.id ]
+					ret = analyzeVerse( cap_all_words( _text ), _version=version )
+					e.add_field( name=ret[ 0 ], value=ret[ 1 ], inline=False )
+					pass
+				elif line.startswith( "&text=" ):
+					if "|" in line: _title = line.replace( "&text=", "" ).split( "|" )[ 0 ]; _text = line.replace( "&text=", "" ).split( "|" )[ 1 ]
+					else: _title = "` `"; _text = line.replace( "&text=", "" )
+					e.add_field( name=_title, value=_text, inline=False )
+					pass
+				elif line.startswith( "&keyword=" ): text = line.replace( "&keyword=", "" )
+				pass
+			if text == "": text = e.title
+			await client.send_message( message.channel, text, embed=e )
+			pass
+		elif startswith( f"{prefix}devotional" ):
+			_msgs = [ ]
+			lines = [ ]
+			mappend = _msgs.append
+			lappend = lines.append
+			cont = True
 			_msg = await client.wait_for_message( author=message.author )
-			if _msg.content == "&end": cont = False; mappend( _msg )
-			else: lappend( _msg.content ); mappend( _msg )
-			pass
-		mappend( message )
-		text = ""
-		e = discord.Embed( title="", description="", colour=discord.Colour.green( ) )
-		for line in lines:
-			if line.startswith( "&title=" ): e.title = line.replace( "&title=", "" )
-			elif line.startswith( "&description=" ): e.description = line.replace( "&description=", "" )
-			elif line.startswith( "&author=" ) or line.startswith( "&footer=" ): e.set_footer( text=line.replace( "&author=", "" ).replace( "&footer=", "" ) )
-			elif line.startswith( "&thumbnail=" ): e.set_thumbnail( url=line.replace( "&thumbnail=", "" ) )
-			elif line.startswith( "&passage=" ):
-				def analyzeVerse ( _text, _version="kjv" ):
-					if _version == "kjv":
-						if "-" in _text: return [ _text, getPassage( _text, ih=False ) ]
-						else: return [ _text, getVerse( _text, ih=False ) ]
+			mappend( _msg )
+			lappend( _msg.content )
+			while cont:
+				_msg = await client.wait_for_message( author=message.author )
+				if _msg.content == "&end": cont = False; mappend( _msg )
+				else: lappend( _msg.content ); mappend( _msg )
+				pass
+			mappend( message )
+			text = ""
+			e = discord.Embed( title="", description="", colour=discord.Colour.green( ) )
+			for line in lines:
+				if line.startswith( "&title=" ): e.title = line.replace( "&title=", "" )
+				elif line.startswith( "&description=" ): e.description = line.replace( "&description=", "" )
+				elif line.startswith( "&author=" ) or line.startswith( "&footer=" ): e.set_footer( text=line.replace( "&author=", "" ).replace( "&footer=", "" ) )
+				elif line.startswith( "&thumbnail=" ): e.set_thumbnail( url=line.replace( "&thumbnail=", "" ) )
+				elif line.startswith( "&passage=" ):
+					def analyzeVerse ( _text, _version="kjv" ):
+						if _version == "kjv":
+							if "-" in _text: return [ _text, getPassage( _text, ih=False ) ]
+							else: return [ _text, getVerse( _text, ih=False ) ]
+							pass
+						elif _version == "akjv":
+							if "-" in _text: return [ _text, getAKJVPassage( _text, ih=False ) ]
+							else: return [ _text, getAKJVVerse( _text, ih=False ) ]
+							pass
+						elif _version == "web":
+							if "-" in _text: return [ _text, getWEBPassage( _text, ih=False ) ]
+							else: return [ _text, getWEBVerse( _text, ih=False ) ]
+							pass
 						pass
-					elif _version == "akjv":
-						if "-" in _text: return [ _text, getAKJVPassage( _text, ih=False ) ]
-						else: return [ _text, getAKJVVerse( _text, ih=False ) ]
-						pass
-					elif _version == "web":
-						if "-" in _text: return [ _text, getWEBPassage( _text, ih=False ) ]
-						else: return [ _text, getWEBVerse( _text, ih=False ) ]
-						pass
+					_text = line.replace( "&passage=", "" )
+					version = bible_versions[ message.author.id ]
+					ret = analyzeVerse( cap_all_words( _text ), _version=version )
+					e.add_field( name=ret[ 0 ], value=ret[ 1 ], inline=False )
 					pass
-				_text = line.replace( "&passage=", "" )
-				version = bible_versions[ message.author.id ]
-				ret = analyzeVerse( cap_all_words( _text ), _version=version )
-				e.add_field( name=ret[ 0 ], value=ret[ 1 ], inline=False )
+				elif line.startswith( "&text=" ):
+					if "|" in line: _title = line.replace( "&text=", "" ).split( "|" )[ 0 ]; _text = line.replace( "&text=", "" ).split( "|" )[ 1 ]
+					else: _title = "` `"; _text = line.replace( "&text=", "" )
+					e.add_field( name=_title, value=_text, inline=False )
+					pass
+				elif line.startswith( "&keyword=" ): text = line.replace( "&keyword=", "" )
 				pass
-			elif line.startswith( "&text=" ):
-				if "|" in line: _title = line.replace( "&text=", "" ).split( "|" )[ 0 ]; _text = line.replace( "&text=", "" ).split( "|" )[ 1 ]
-				else: _title = "` `"; _text = line.replace( "&text=", "" )
-				e.add_field( name=_title, value=_text, inline=False )
+			if text == "": text = e.title
+			await client.send_message( message.channel, text, embed=e )
+			for m in _msgs:
+				await client.delete_message( m )
 				pass
-			elif line.startswith( "&keyword=" ): text = line.replace( "&keyword=", "" )
 			pass
-		if text == "": text = e.title
-		await client.send_message( message.channel, text, embed=e )
-		for m in _msgs:
-			await client.delete_message( m )
+		elif startswith( f"v{prefix}settings" ):
+			channels = [ str( client.get_channel( _id ) ) if client.get_channel( _id ).server == message.server else None for _id in disabled_channels ]
+			crem = channels.remove
+			while None in channels: crem( None )
+
+			_def_channel = default_channel.get( message.server.id )
+			if _def_channel is None: _def_channel = "No default channel."
+
+			_personal = discord.Embed( title="Personal", description="Verse Module Settings", colour=discord.Colour.dark_blue( ) )
+			_personal.add_field( name="Type", value=bible_types[ message.author.id ] )
+			_personal.add_field( name="Version", value=bible_versions[ message.author.id ] )
+			_server = discord.Embed( title="Server", description="Verse Module Settings", colour=discord.Colour.dark_blue( ) )
+			_server.add_field( name="Verse Channel", value=default_channel[ message.server.id ] )
+			_server.add_field( name="Disabled Channels", value=''.join( channels ) if not len( channels ) == 0 else "No disabled channels." )
+
+			await client.send_message( message.channel, "", embed=_personal )
+			await client.send_message( message.channel, "", embed=_server )
+			del _def_channel
+			del channels
+			del crem
+			del _personal
+			del _server
+			pass
+
+		save( message.server.id )
+		if do_update:
+			print( f"{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}" )
+			subprocess.Popen( f"python {os.getcwd()}\\bible.py" )
+			exit( 0 )
 			pass
 		pass
-	elif startswith( f"v{prefix}settings" ):
-		channels = [ str( client.get_channel( _id ) ) if client.get_channel( _id ).server == message.server else None for _id in disabled_channels ]
-		crem = channels.remove
-		while None in channels: crem( None )
-
-		_def_channel = default_channel.get( message.server.id )
-		if _def_channel is None: _def_channel = "No default channel."
-
-		_personal = discord.Embed( title="Personal", description="Verse Module Settings", colour=discord.Colour.dark_blue( ) )
-		_personal.add_field( name="Type", value=bible_types[ message.author.id ] )
-		_personal.add_field( name="Version", value=bible_versions[ message.author.id ] )
-		_server = discord.Embed( title="Server", description="Verse Module Settings", colour=discord.Colour.dark_blue( ) )
-		_server.add_field( name="Verse Channel", value=default_channel[ message.server.id ] )
-		_server.add_field( name="Disabled Channels", value=''.join( channels ) if not len( channels ) == 0 else "No disabled channels." )
-
-		await client.send_message( message.channel, "", embed=_personal )
-		await client.send_message( message.channel, "", embed=_server )
-		del _def_channel
-		del channels
-		del crem
-		del _personal
-		del _server
-		pass
-
-	save( message.server.id )
-	if do_update:
-		print( f"{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}" )
-		subprocess.Popen( f"python {os.getcwd()}\\bible.py" )
-		exit( 0 )
-		pass
-	pass
+	except: log_error( traceback.format_exc( ) )
 
 @client.event
 async def on_ready ( ):

@@ -1,6 +1,7 @@
 import os
 import sqlite3
 import subprocess
+import traceback
 from datetime import datetime
 
 import discord
@@ -21,6 +22,23 @@ _sql_cursor = _sql.cursor( )
 
 __sql = sqlite3.connect( f"{os.getcwd()}\\Discord Logs\\SETTINGS\\logbot.db" )
 __cursor = __sql.cursor( )
+
+def log_error ( error_text: str ):
+	file = f"{os.getcwd()}\\error_log.txt"
+	prev_text = ""
+	try:
+		reader = open( file, 'r' )
+		prev_text = reader.read( )
+		reader.close( )
+		del reader
+		pass
+	except: pass
+	writer = open( file, 'w' )
+	writer.write( f"{datetime.now()} (polling.py) - {error_text}\n\n{prev_text}" )
+	writer.close( )
+	if "SystemExit" in error_text: exit( 0 )
+	del writer
+	pass
 
 def getprefix ( server: str ) -> str:
 	__cursor.execute( f"SELECT prefix FROM Prefixes WHERE server='{server}';" )
@@ -246,10 +264,10 @@ class Commands:
 				WHERE server = "{message.server.id}"
 				ORDER BY topic_index DESC;
 				""".replace( "\t", "" ) )[ 0 ][ 0 ]
-				e = discord.Embed(title=topic, colour=discord.Colour.orange())
+				e = discord.Embed( title=topic, colour=discord.Colour.orange( ) )
 				for index, item in enumerate( choices ):
 					if topic_index is None: topic_index = 0
-					e.add_field(name=f"{item} ({index+1})", value="0")
+					e.add_field( name=f"{item} ({index+1})", value="0" )
 					_execute( f"""
 					INSERT INTO polls (server, topic_index, topic, choice_index, choice, result)
 					VALUES ("{message.server.id}", {topic_index+1}, "{topic}", {index+1}, "{item}", 0);
@@ -291,71 +309,74 @@ class Commands:
 
 @client.event
 async def on_message ( message ):
-	prefix = getprefix( message.server.id )
-	owner_id = "239500860336373761"
-	admin_role = find( lambda r:r.name == "LogBot Admin", message.server.roles )
-	do_update = False
-	def startswith ( *msgs: str, val: str = message.content ):
-		"""
-		Checks if `val` startswith a value in `msgs`
-		:param msgs: Several arguments, all of which are strings.
-		:param val: A string that will be checked for similarities.
-		:return: True if `val` starts with any `msgs`, else False.
-		"""
-		for msg in msgs:
-			if val.startswith( msg ): return True
-			pass
-		return False
-	if isinstance( message.server, Server ):
-		if startswith( f"p{prefix}start " ):
-			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.p_start( message, prefix )
-			else: sendNoPerm( message )
-			pass
-		elif startswith( f"p{prefix}end " ):
-			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.p_end( message, prefix )
-			else: sendNoPerm( message )
-			pass
-		elif startswith( f"p{prefix}status " ): await Commands.Member.p_status( message, prefix )
-		elif startswith( f"p{prefix}vote" ): await Commands.Member.p_vote( message )
-		elif startswith( f"p{prefix}polls" ): await Commands.Member.p_polls( message )
-		elif startswith( f"p{prefix}save " ):
-			if admin_role in message.author.roles: await Commands.Admin.p_save( message, prefix )
-			else: sendNoPerm( message )
-			pass
-		elif startswith( f"p{prefix}view " ):
-			if admin_role in message.author.roles: await Commands.Admin.p_view( message, prefix )
-			else: sendNoPerm( message )
-			pass
-		elif startswith( f"p{prefix}remove " ):
-			if admin_role in message.author.roles: await Commands.Admin.p_remove( message, prefix )
-			else: sendNoPerm( message )
-			pass
-		elif startswith( f"p{prefix}saved" ):
-			if admin_role in message.author.roles: await Commands.Admin.p_saved( message )
-			else: sendNoPerm( message )
-			pass
-		elif startswith( "logbot.polling.update", "p$update", "$update" ):
-			if message.author.id == owner_id: do_update = True
-			else: sendNoPerm( message )
-			pass
-		elif startswith( f"{prefix}ping" ):
-			tm = datetime.now( ) - message.timestamp
-			await client.send_message( message.channel, f"```LogBot Polling Online ~ {round(tm.microseconds / 1000)}```" )
-			pass
-		elif startswith( "$prefix", "logbot.polling.exit" ):
-			if message.author.id == owner_id:
-				exiting = True
-				await client.logout( )
+	try:
+		prefix = getprefix( message.server.id )
+		owner_id = "239500860336373761"
+		admin_role = find( lambda r:r.name == "LogBot Admin", message.server.roles )
+		do_update = False
+		def startswith ( *msgs: str, val: str = message.content ):
+			"""
+			Checks if `val` startswith a value in `msgs`
+			:param msgs: Several arguments, all of which are strings.
+			:param val: A string that will be checked for similarities.
+			:return: True if `val` starts with any `msgs`, else False.
+			"""
+			for msg in msgs:
+				if val.startswith( msg ): return True
+				pass
+			return False
+		if isinstance( message.server, Server ):
+			if startswith( f"p{prefix}start " ):
+				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.p_start( message, prefix )
+				else: sendNoPerm( message )
+				pass
+			elif startswith( f"p{prefix}end " ):
+				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.p_end( message, prefix )
+				else: sendNoPerm( message )
+				pass
+			elif startswith( f"p{prefix}status " ): await Commands.Member.p_status( message, prefix )
+			elif startswith( f"p{prefix}vote" ): await Commands.Member.p_vote( message )
+			elif startswith( f"p{prefix}polls" ): await Commands.Member.p_polls( message )
+			elif startswith( f"p{prefix}save " ):
+				if admin_role in message.author.roles: await Commands.Admin.p_save( message, prefix )
+				else: sendNoPerm( message )
+				pass
+			elif startswith( f"p{prefix}view " ):
+				if admin_role in message.author.roles: await Commands.Admin.p_view( message, prefix )
+				else: sendNoPerm( message )
+				pass
+			elif startswith( f"p{prefix}remove " ):
+				if admin_role in message.author.roles: await Commands.Admin.p_remove( message, prefix )
+				else: sendNoPerm( message )
+				pass
+			elif startswith( f"p{prefix}saved" ):
+				if admin_role in message.author.roles: await Commands.Admin.p_saved( message )
+				else: sendNoPerm( message )
+				pass
+			elif startswith( "logbot.polling.update", "p$update", "$update" ):
+				if message.author.id == owner_id: do_update = True
+				else: sendNoPerm( message )
+				pass
+			elif startswith( f"{prefix}ping" ):
+				tm = datetime.now( ) - message.timestamp
+				await client.send_message( message.channel, f"```LogBot Polling Online ~ {round(tm.microseconds / 1000)}```" )
+				pass
+			elif startswith( "$prefix", "logbot.polling.exit" ):
+				if message.author.id == owner_id:
+					exiting = True
+					await client.logout( )
+					pass
 				pass
 			pass
-		pass
 
-	if do_update:
-		print( f"{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}" )
-		await client.close( )
-		subprocess.Popen( f"python {os.getcwd()}\\polling.py", False )
-		exit( 0 )
+		if do_update:
+			print( f"{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}" )
+			await client.close( )
+			subprocess.Popen( f"python {os.getcwd()}\\polling.py", False )
+			exit( 0 )
+			pass
 		pass
+	except: log_error( traceback.format_exc( ) )
 	pass
 
 @client.event

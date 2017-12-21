@@ -1,6 +1,8 @@
 import os
 import sqlite3
 import subprocess
+import traceback
+from datetime import datetime
 
 from colorama import Fore, init
 from discord import Client, Message
@@ -15,6 +17,23 @@ purge_parser = argparser.ArgParser( "&&", "=" )
 sql = sqlite3.connect( f"{os.getcwd()}\\Discord Logs\\SETTINGS\\logbot.db" )
 cursor = sql.cursor( )
 exiting = False
+
+def log_error ( error_text: str ):
+	file = f"{os.getcwd()}\\error_log.txt"
+	prev_text = ""
+	try:
+		reader = open( file, 'r' )
+		prev_text = reader.read( )
+		reader.close( )
+		del reader
+		pass
+	except: pass
+	writer = open( file, 'w' )
+	writer.write( f"{datetime.now()} (admin.py) - {error_text}\n\n{prev_text}" )
+	writer.close( )
+	if "SystemExit" in error_text: exit( 0 )
+	del writer
+	pass
 
 class Commands:
 	class Admin:
@@ -83,42 +102,45 @@ def sqlread ( cmd: str ):
 
 @client.event
 async def on_message ( message: Message ):
-	do_update = False
-	def startswith ( *args: str, val: str = message.content ) -> bool:
-		for arg in args:
-			if val.startswith( arg ): return True
+	try:
+		do_update = False
+		def startswith ( *args: str, val: str = message.content ) -> bool:
+			for arg in args:
+				if val.startswith( arg ): return True
+				pass
+			return False
+		prefix = sqlread( f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';" )[ 0 ][ 0 ]
+		if not message.channel.is_private:
+			admin_role = find( lambda r:r.name == "LogBot Admin", message.server.roles )
+			if startswith( f"a{prefix}count " ):
+				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.a_count_param( message, prefix )
+				pass
+			elif startswith( f"a{prefix}count" ):
+				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.a_count( message )
+				pass
+			elif startswith( f"a{prefix}total" ):
+				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.a_total( message )
+				pass
 			pass
-		return False
-	prefix = sqlread( f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';" )[ 0 ][ 0 ]
-	if not message.channel.is_private:
-		admin_role = find( lambda r:r.name == "LogBot Admin", message.server.roles )
-		if startswith( f"a{prefix}count " ):
-			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.a_count_param( message, prefix )
-			pass
-		elif startswith( f"a{prefix}count" ):
-			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.a_count( message )
-			pass
-		elif startswith( f"a{prefix}total" ):
-			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.a_total( message )
-			pass
-		pass
 
-	if startswith( "a$update", "logbot.admin.update", "$update" ):
-		if message.author.id == owner_id: do_update = True
-		pass
-	elif startswith( "logbot.admin.exit", "$exit" ):
-		if message.author.id == owner_id:
-			# noinspection PyUnusedLocal,PyShadowingNames
-			exiting = True
-			await client.logout( )
+		if startswith( "a$update", "logbot.admin.update", "$update" ):
+			if message.author.id == owner_id: do_update = True
+			pass
+		elif startswith( "logbot.admin.exit", "$exit" ):
+			if message.author.id == owner_id:
+				# noinspection PyUnusedLocal,PyShadowingNames
+				exiting = True
+				await client.logout( )
+				pass
+			pass
+
+		if do_update is True:
+			print( f"{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}" )
+			subprocess.Popen( f"python {os.getcwd()}\\admin.py" )
+			exit( 0 )
 			pass
 		pass
-
-	if do_update is True:
-		print( f"{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}" )
-		subprocess.Popen( f"python {os.getcwd()}\\admin.py" )
-		exit( 0 )
-		pass
+	except: log_error( traceback.format_exc( ) )
 	pass
 
 @client.event

@@ -1,5 +1,6 @@
 import os
 import subprocess
+import traceback
 from datetime import datetime
 
 import discord
@@ -797,6 +798,23 @@ web_url = "https://zldproductions.github.io/LogBot/Commands.html#"
 sql = sqlite3.connect( f"{os.getcwd()}\\Discord Logs\\SETTINGS\\logbot.db" )
 cursor = sql.cursor( )
 
+def log_error ( error_text: str ):
+	file = f"{os.getcwd()}\\error_log.txt"
+	prev_text = ""
+	try:
+		reader = open( file, 'r' )
+		prev_text = reader.read( )
+		reader.close( )
+		del reader
+		pass
+	except: pass
+	writer = open( file, 'w' )
+	writer.write( f"{datetime.now()} (help.py) - {error_text}\n\n{prev_text}" )
+	writer.close( )
+	if "SystemExit" in error_text: exit( 0 )
+	del writer
+	pass
+
 def sqlread ( cmd: str ):
 	cursor.execute( cmd )
 	return cursor.fetchall( )
@@ -810,112 +828,115 @@ async def on_ready ( ):
 
 @client.event
 async def on_message ( message ):
-	# noinspection PyUnusedLocal
-	def replace ( *args, val=message.content ):
-		_replace = val.replace
-		for reg, rep in args: val = _replace( reg, rep )
-		return val
-	def startswith ( *args, val=message.content ):
-		for arg in args:
-			if val.startswith( arg ): return True
+	try:
+		# noinspection PyUnusedLocal
+		def replace ( *args, val=message.content ):
+			_replace = val.replace
+			for reg, rep in args: val = _replace( reg, rep )
+			return val
+		def startswith ( *args, val=message.content ):
+			for arg in args:
+				if val.startswith( arg ): return True
+				pass
+			return False
 			pass
-		return False
-		pass
-	owner_id = "239500860336373761"
-	do_update = False
+		owner_id = "239500860336373761"
+		do_update = False
 
-	prefix = sqlread( f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';" )[ 0 ][ 0 ]
+		prefix = sqlread( f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';" )[ 0 ][ 0 ]
 
-	if startswith( f"{prefix}help " ):
-		content = message.content.replace( f"{prefix}help ", "", 1 )
-		myembed = discord.Embed( title=content, description=f"Command Information for {content}\n{key}", colour=discord.Colour.dark_gold( ) )
-		items = { }
-		for item in infos.keys( ):
-			if item.replace( "_", "" ) == content.replace( prefix, "" ).replace( "$", "" ): items = infos[ item ]
-			pass
-		for item in list( items.keys( ) ): myembed.add_field( name=item, value=items[ item ].replace( "$", prefix ) )
-		myembed.set_footer( text=f"GitHub URL: {url}{content.replace(prefix, '')}" )
-		if not len( items.keys( ) ) == 0: await client.send_message( message.channel, f"Website URL: {web_url}{content.replace(prefix, '')}", embed=myembed )
-		else: await client.send_message( message.channel, f"```There is no command for \"{content}\" at this time.```" )
-		del content
-		del myembed
-		del items
-		pass
-	elif startswith( f"{prefix}help" ):
-		_cnt = message.content.replace( f"{prefix}help", "" )
-		_groupby = None
-		if "&GroupByType" in _cnt: _groupby = "type"
-		if "&GroupByPlugin" in _cnt: _groupby = "plugin"
-		if _groupby == "type":
-			all_commands = { }
-			_str = ""
-			for item in infos:
-				if all_commands.get( infos[ item ][ "Type" ] ) is not None: all_commands[ infos[ item ][ "Type" ] ].append( item )
-				else: all_commands[ infos[ item ][ "Type" ] ] = list( ); all_commands[ infos[ item ][ "Type" ] ].append( item )
+		if startswith( f"{prefix}help " ):
+			content = message.content.replace( f"{prefix}help ", "", 1 )
+			myembed = discord.Embed( title=content, description=f"Command Information for {content}\n{key}", colour=discord.Colour.dark_gold( ) )
+			items = { }
+			for item in infos.keys( ):
+				if item.replace( "_", "" ) == content.replace( prefix, "" ).replace( "$", "" ): items = infos[ item ]
 				pass
-			for item in all_commands:
-				_str += f"{item}:\n{', '.join(all_commands[item])}\n\n"
+			for item in list( items.keys( ) ): myembed.add_field( name=item, value=items[ item ].replace( "$", prefix ) )
+			myembed.set_footer( text=f"GitHub URL: {url}{content.replace(prefix, '')}" )
+			if not len( items.keys( ) ) == 0: await client.send_message( message.channel, f"Website URL: {web_url}{content.replace(prefix, '')}", embed=myembed )
+			else: await client.send_message( message.channel, f"```There is no command for \"{content}\" at this time.```" )
+			del content
+			del myembed
+			del items
+			pass
+		elif startswith( f"{prefix}help" ):
+			_cnt = message.content.replace( f"{prefix}help", "" )
+			_groupby = None
+			if "&GroupByType" in _cnt: _groupby = "type"
+			if "&GroupByPlugin" in _cnt: _groupby = "plugin"
+			if _groupby == "type":
+				all_commands = { }
+				_str = ""
+				for item in infos:
+					if all_commands.get( infos[ item ][ "Type" ] ) is not None: all_commands[ infos[ item ][ "Type" ] ].append( item )
+					else: all_commands[ infos[ item ][ "Type" ] ] = list( ); all_commands[ infos[ item ][ "Type" ] ].append( item )
+					pass
+				for item in all_commands:
+					_str += f"{item}:\n{', '.join(all_commands[item])}\n\n"
+					pass
+				all_commands = _str
 				pass
-			all_commands = _str
-			pass
-		elif _groupby == "plugin":
-			all_commands = { }
-			_str = ""
-			for item in infos:
-				if all_commands.get( infos[ item ][ "Plugin" ] ) is not None: all_commands[ infos[ item ][ "Plugin" ] ].append( item )
-				else: all_commands[ infos[ item ][ "Plugin" ] ] = list( ); all_commands[ infos[ item ][ "Plugin" ] ].append( item )
+			elif _groupby == "plugin":
+				all_commands = { }
+				_str = ""
+				for item in infos:
+					if all_commands.get( infos[ item ][ "Plugin" ] ) is not None: all_commands[ infos[ item ][ "Plugin" ] ].append( item )
+					else: all_commands[ infos[ item ][ "Plugin" ] ] = list( ); all_commands[ infos[ item ][ "Plugin" ] ].append( item )
+					pass
+				for item in all_commands:
+					_str += f"{item}:\n{', '.join(all_commands[item])}\n\n"
+					pass
+				all_commands = _str
 				pass
-			for item in all_commands:
-				_str += f"{item}:\n{', '.join(all_commands[item])}\n\n"
+			else:
+				all_commands = list( infos.keys( ) )
+				all_commands.sort( )
+				all_commands = ', '.join( all_commands ).replace( "_", prefix )
 				pass
-			all_commands = _str
+			await client.send_message( message.channel, f"```Use {prefix}help to get the list of commands.\nUse {prefix}help [command] to get more information on [command].\nUse {prefix}git to visit the GitHub Documentation.\nThe prefix is {prefix}```" )
+			await client.send_message( message.channel, f"```Commands:\n{all_commands.replace('_', prefix)}```" )
 			pass
-		else:
-			all_commands = list( infos.keys( ) )
-			all_commands.sort( )
-			all_commands = ', '.join( all_commands ).replace( "_", prefix )
+		elif startswith( f"h{prefix}prefix " ):
+			prefix = message.content.replace( "h{prefix}prefix ", "" )
+			data = prefixes.get( prefix )
+			if data is None:
+				await client.send_message( message.channel, f"```There is no prefix \"{prefix}\"" )
+				pass
+			else:
+				e = discord.Embed( title=prefix, description=f"Prefix Information for {prefix}", colour=discord.Colour.dark_gold( ) ) \
+					.add_field( name="Plugin", value=data )
+				await client.send_message( message.channel, "Here you go!", embed=e )
+				del e
+				pass
+			del prefix
+			del data
 			pass
-		await client.send_message( message.channel, f"```Use {prefix}help to get the list of commands.\nUse {prefix}help [command] to get more information on [command].\nUse {prefix}git to visit the GitHub Documentation.\nThe prefix is {prefix}```" )
-		await client.send_message( message.channel, f"```Commands:\n{all_commands.replace('_', prefix)}```" )
-		pass
-	elif startswith( f"h{prefix}prefix " ):
-		prefix = message.content.replace( "h{prefix}prefix ", "" )
-		data = prefixes.get( prefix )
-		if data is None:
-			await client.send_message( message.channel, f"```There is no prefix \"{prefix}\"" )
+		elif startswith( f"h{prefix}prefix" ):
+			prefs = list( prefixes.keys( ) )
+			prefs.sort( )
+			await client.send_message( message.channel, f"```{', '.join(prefs)}```" )
+			del prefs
 			pass
-		else:
-			e = discord.Embed( title=prefix, description=f"Prefix Information for {prefix}", colour=discord.Colour.dark_gold( ) ) \
-				.add_field( name="Plugin", value=data )
-			await client.send_message( message.channel, "Here you go!", embed=e )
-			del e
+		elif startswith( f"$update", "logbot.help.update" ):
+			if message.author.id == owner_id: do_update = True
 			pass
-		del prefix
-		del data
-		pass
-	elif startswith( f"h{prefix}prefix" ):
-		prefs = list( prefixes.keys( ) )
-		prefs.sort( )
-		await client.send_message( message.channel, f"```{', '.join(prefs)}```" )
-		del prefs
-		pass
-	elif startswith( f"$update", "logbot.help.update" ):
-		if message.author.id == owner_id: do_update = True
-		pass
-	elif startswith( "$exit", "logbot.help.exit" ):
-		if message.author.id == owner_id: exiting = True; await client.logout( )
-		pass
-	elif startswith( f"{prefix}ping" ):
-		tm = datetime.now( ) - message.timestamp
-		await client.send_message( message.channel, f"```LogBot Help Online ~ {round(tm.microseconds / 1000)}```" )
-		pass
+		elif startswith( "$exit", "logbot.help.exit" ):
+			if message.author.id == owner_id: exiting = True; await client.logout( )
+			pass
+		elif startswith( f"{prefix}ping" ):
+			tm = datetime.now( ) - message.timestamp
+			await client.send_message( message.channel, f"```LogBot Help Online ~ {round(tm.microseconds / 1000)}```" )
+			pass
 
-	if do_update:
-		print( f"{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}" )
-		await client.close( )
-		subprocess.Popen( f"python {os.getcwd()}\\help.py", False )
-		exit( 0 )
+		if do_update:
+			print( f"{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}" )
+			await client.close( )
+			subprocess.Popen( f"python {os.getcwd()}\\help.py", False )
+			exit( 0 )
+			pass
 		pass
+	except: log_error( traceback.format_exc( ) )
 	pass
 
 client.run( token )
