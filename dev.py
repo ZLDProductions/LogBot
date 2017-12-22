@@ -180,8 +180,8 @@ async def on_message ( message: discord.Message ):
 
 @client.event
 async def on_ready ( ):
-	os.system( "cls" )
-	print( f"{Fore.MAGENTA}Ready!!!{Fore.RESET}" )
+	# os.system( "cls" )
+	print( f"{Fore.MAGENTA}Dev Ready!!!{Fore.RESET}" )
 	pass
 
 client.run( token )

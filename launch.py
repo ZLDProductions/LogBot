@@ -1,5 +1,6 @@
 import os
 import sqlite3
+import subprocess
 import traceback
 
 sql = sqlite3.connect( "launch.db" )
@@ -70,7 +71,9 @@ def getRunPackages ( ):
 	res = cursor.fetchall( )
 	for pkg in res: print( f"{res.index(pkg)}. {pkg[0]} - {pkg[1]}" )
 	seq = res[ int( input( "Sequence to run: " ) ) ][ 1 ]
-	for c in seq: os.system( f"start \"{titles[c]}\" /MAX /HIGH python \"{os.getcwd()}\\{programs[c]}\"" )
+	# for c in seq: os.system( f"start \"{titles[c]}\" /MAX /HIGH python \"{os.getcwd()}\\{programs[c]}\"" )
+	os.system( "cls" )
+	for c in seq: subprocess.Popen( f"python \"{os.getcwd()}\\{programs[c]}\"" )
 	pass
 
 def main ( ):
@@ -79,13 +82,11 @@ def main ( ):
 	if choice == 1:
 		print( my_str )
 		files = input( "Programs to launch: " )
-		for c in files:
-			os.system( f"start \"{titles[c]}\" /MAX /HIGH python \"{os.getcwd()}\\{programs[c]}\"" )
-			pass
+		# for c in files: os.system( f"start \"{titles[c]}\" /MAX /HIGH python \"{os.getcwd()}\\{programs[c]}\"" )
+		os.system( "cls" )
+		for c in files: subprocess.Popen( f"python \"{os.getcwd()}\\{programs[c]}\"" )
 		pass
-	elif choice == 2:
-		getRunPackages( )
-		pass
+	elif choice == 2: getRunPackages( )
 	elif choice == 3:
 		name = input( "Package name: " )
 		sequence = input( "Package sequence: " )
@@ -96,9 +97,7 @@ def main ( ):
 		OR sequence="{sequence}";
 		""".replace( "\t", "" ) )
 		res = cursor.fetchall( )
-		if len( res ) >= 1:
-			print( "That package already exists." )
-			pass
+		if len( res ) >= 1: print( "That package already exists." )
 		else:
 			cursor.execute( f"""
 			INSERT INTO packages (name, sequence)

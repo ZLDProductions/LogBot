@@ -57,8 +57,8 @@ def sqlread ( cmd: str ):
 
 @client.event
 async def on_ready ( ):
-	os.system( "cls" )
-	print( f"{Fore.MAGENTA}Ready!!!{Fore.RESET}" )
+	# os.system( "cls" )
+	print( f"{Fore.MAGENTA}Custom Ready!!!{Fore.RESET}" )
 	pass
 
 @client.event

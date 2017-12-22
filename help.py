@@ -822,8 +822,8 @@ def sqlread ( cmd: str ):
 @client.event
 async def on_ready ( ):
 	await client.change_presence( game=None )
-	os.system( "cls" )
-	print( f"{Fore.MAGENTA}Ready!!!{Fore.RESET}" )
+	# os.system( "cls" )
+	print( f"{Fore.MAGENTA}Help Ready!!!{Fore.RESET}" )
 	pass
 
 @client.event

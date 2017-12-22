@@ -83,7 +83,7 @@ async def on_message ( message: Message ):
 
 @client.event
 async def on_ready ( ):
-	print( f"{Fore.MAGENTA}Ready!!!{Fore.RESET}" )
+	print( f"{Fore.MAGENTA}Security Ready!!!{Fore.RESET}" )
 	pass
 
 client.run( token )

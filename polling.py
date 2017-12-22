@@ -382,8 +382,8 @@ async def on_message ( message ):
 @client.event
 async def on_ready ( ):
 	await client.change_presence( )
-	os.system( "cls" )
-	print( f"{Fore.MAGENTA}Ready!{Fore.RESET}" )
+	# os.system( "cls" )
+	print( f"{Fore.MAGENTA}Polling Ready!{Fore.RESET}" )
 	try: _execute( """
 			CREATE TABLE polls (server VARCHAR(50), topic_index INTEGER, topic VARCHAR(100), choice_index INTEGER, choice VARCHAR(50), result INTEGER, voted VARCHAR(19000000));
 			""".replace( "\t", "" ) )

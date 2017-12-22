@@ -190,7 +190,7 @@ async def on_message_edit ( before: Message, after: Message ):
 @client.event
 async def on_ready ( ):
 	os.system( "cls" )
-	print( f"{Fore.MAGENTA}Ready!!!{Fore.RESET}" )
+	print( f"{Fore.MAGENTA}Filter Ready!!!{Fore.RESET}" )
 	pass
 
 client.run( token )

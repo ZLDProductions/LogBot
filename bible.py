@@ -2243,8 +2243,8 @@ async def on_message ( message ):
 @client.event
 async def on_ready ( ):
 	await client.change_presence( game=None )
-	os.system( "cls" )
-	print( f"{Fore.MAGENTA}Ready!!!{Fore.RESET}" )
+	# os.system( "cls" )
+	print( f"{Fore.MAGENTA}Bible Ready!!!{Fore.RESET}" )
 	pass
 
 client.run( token )

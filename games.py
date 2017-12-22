@@ -277,8 +277,8 @@ async def on_message ( message ):
 @client.event
 async def on_ready ( ):
 	await client.change_presence( )
-	os.system( "cls" )
-	print( f"{Fore.MAGENTA}Ready!{Fore.RESET}" )
+	# os.system( "cls" )
+	print( f"{Fore.MAGENTA}Games Ready!{Fore.RESET}" )
 	try: _execute( f"""CREATE TABLE wordlist (word VARCHAR(1000) UNIQUE);""" )
 	except: pass
 	try: _execute( f"""CREATE INDEX wordlist_index ON wordlist (word);""" )

@@ -106,21 +106,21 @@ async def on_message ( message: Message ):
 
 @client.event
 async def on_ready ( ):
-	os.system( "cls" )
-	print( f"{Fore.MAGENTA}Ready!!!{Fore.RESET}" )
+	# os.system( "cls" )
+	print( f"{Fore.MAGENTA}Mod Ready!!!{Fore.RESET}" )
 	try:
 		exe( f"""
 		CREATE TABLE _moderation (strike INTEGER PRIMARY KEY, server VARCHAR(50), member VARCHAR(50), reason VARCHAR(100));
 		""".replace( "\t", "" ) )
 		pass
-	except: print( traceback.format_exc( ) )
+	except: pass
 	try:
 		exe( f"""
 		CREATE INDEX my_mod_index
 		ON _moderation (strike, server, member, reason);
 		""".replace( "\t", "" ) )
 		pass
-	except: print( traceback.format_exc( ) )
+	except: pass
 	pass
 
 client.run( token )

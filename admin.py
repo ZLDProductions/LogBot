@@ -145,8 +145,8 @@ async def on_message ( message: Message ):
 
 @client.event
 async def on_ready ( ):
-	os.system( "cls" )
-	print( f"{Fore.MAGENTA}Ready!!!{Fore.RESET}" )
+	# os.system( "cls" )
+	print( f"{Fore.MAGENTA}Admin Ready!!!{Fore.RESET}" )
 	pass
 
 client.run( token )

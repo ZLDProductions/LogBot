@@ -3064,7 +3064,7 @@ async def on_ready ( ):
 			bootup_time = datetime( year=int( t[ 2 ] ), month=int( t[ 0 ] ), day=int( t[ 1 ] ), hour=int( t[ 3 ] ), minute=int( t[ 4 ] ), second=int( t[ 5 ] ), microsecond=int( t[ 6 ] ) )
 			pass
 		pass
-	os.system( 'cls' )
+	# os.system( 'cls' )
 	print( f"{Fore.MAGENTA}Signed in and waiting...\nRunning version: Logbot Version {version}{Fore.RESET}" )
 	for server in client.servers:
 		if not server.id in parser.sections( ):
@@ -3074,12 +3074,15 @@ async def on_ready ( ):
 		pass
 	# Updates bot icon, status, and game.
 	await client.change_presence( game=discord.Game( name="Prefix: $" ), status=None )
-	avatar_tmp = open( selected_image, "rb" )
-	await client.edit_profile( avatar=avatar_tmp.read( ) )
-	avatar_tmp.close( )
-	del avatar_tmp
-	icon = Qt.QIcon( selected_image )
-	sti.setIcon( icon )
+	try:
+		avatar_tmp = open( selected_image, "rb" )
+		await client.edit_profile( avatar=avatar_tmp.read( ) )
+		avatar_tmp.close( )
+		icon = Qt.QIcon( selected_image )
+		sti.setIcon( icon )
+		del avatar_tmp
+		pass
+	except: pass
 	pass
 
 client.run( token )

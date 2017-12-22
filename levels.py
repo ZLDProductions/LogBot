@@ -1616,8 +1616,8 @@ async def on_message ( message: discord.Message ):
 async def on_ready ( ):
 	if not os.path.exists( _data ): os.makedirs( _data )
 	if not os.path.exists( _disables ): os.makedirs( _disables )
-	os.system( "cls" )
-	print( f"{Fore.MAGENTA}Ready!!!{Fore.RESET}" )
+	# os.system( "cls" )
+	print( f"{Fore.MAGENTA}Levels Ready!!!{Fore.RESET}" )
 	try: sqlexecute( f"""
 	CREATE TABLE levels (server VARCHAR(50), member VARCHAR(50), tier LONG, rank INTEGER(3), xp LONG, xp_limit LONG, multiplier DECIMAL(50,1), credits LONG, cpm LONG, dm BOOLEAN);
 	""".replace( "\t", "" ) )
