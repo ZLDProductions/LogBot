@@ -1,3 +1,4 @@
+import threading
 from datetime import datetime, timezone
 from typing import Union
 
@@ -99,3 +100,8 @@ def factor ( n: int, s: int = 0 ) -> list:
 			pass
 		return ret
 	pass
+
+def threaded ( fn ):
+	def wrapper ( *args, **kwargs ):
+		threading.Thread( target=fn, args=args, kwargs=kwargs ).start( )
+	return wrapper

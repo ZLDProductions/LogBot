@@ -108,7 +108,9 @@ _dictionary = f"{discord_settings}\\censored_words.txt"
 _disables = f"{discord_settings}\\disables.txt"
 # </editor-fold>
 
-if not os.path.exists( discord_settings ): os.makedirs( discord_settings )
+if not os.path.exists( discord_settings ):
+	os.makedirs( discord_settings )
+	pass
 
 # <editor-fold desc="data loading">
 parser.read( f'{discord_settings}\\data.ini' )
@@ -120,7 +122,7 @@ try:
 	reader.close( )
 	del reader
 	pass
-except: traceback.format_exc( )
+except: pass
 
 # Load the default channels.
 try:
@@ -129,7 +131,7 @@ try:
 	reader.close( )
 	del reader
 	pass
-except: traceback.format_exc( )
+except: pass
 
 # Load the banned words.
 try:
@@ -157,7 +159,9 @@ if not "SETTINGS" in parser.sections( ):
 	pass
 
 if "SETTINGS" in parser.sections( ):
-	if "name" in parser[ "SETTINGS" ]: user_name = parser[ "SETTINGS" ][ "name" ]
+	if "name" in parser[ "SETTINGS" ]:
+		user_name = parser[ "SETTINGS" ][ "name" ]
+		pass
 	else:
 		# noinspection PyUnresolvedReferences,PyUnresolvedReferences
 		user_name = input( f"{Fore.CYAN}What is your nickname on Discord? {Fore.RESET}" )
@@ -169,7 +173,7 @@ if "SETTINGS" in parser.sections( ):
 		marklist = ast.literal_eval( parser[ "SETTINGS" ][ "mark_list" ] )
 		channels = ast.literal_eval( parser[ "SETTINGS" ][ "channel_list" ] )
 		pass
-	except: traceback.format_exc( )
+	except: pass
 	pass
 
 # </editor-fold>
@@ -183,7 +187,9 @@ def send ( message: str, servername: str, channel: str = "event" ):
 	:param channel: The channel to write to. This is the actually log file. Defaults to "event".
 	"""
 	# noinspection PyUnresolvedReferences,PyUnresolvedReferences
-	if not os.path.exists( f"{discord_logs}\\{servername}" ): os.makedirs( f"{discord_logs}\\{servername}" )
+	if not os.path.exists( f"{discord_logs}\\{servername}" ):
+		os.makedirs( f"{discord_logs}\\{servername}" )
+		pass
 	try:
 		# logs if the channel is marked.
 		marklist.index( channel )
@@ -204,7 +210,9 @@ def send ( message: str, servername: str, channel: str = "event" ):
 		message = u"{}".format( message )
 		print( message )
 		pass
-	except: print( f"{servername} ~ {Fore.LIGHTRED_EX}There was an error with the encoding of the message.{Fore.RESET}" )
+	except:
+		print( f"{servername} ~ {Fore.LIGHTRED_EX}There was an error with the encoding of the message.{Fore.RESET}" )
+		pass
 	pass
 
 def is_ascii ( s: str ) -> bool:
@@ -237,7 +245,9 @@ def save ( sid: str ):
 		"channel_list"     :str( channels )
 	}
 
-	if not os.path.exists( f"{server_settings}\\{sid}" ): os.makedirs( f"{server_settings}\\{sid}" )
+	if not os.path.exists( f"{server_settings}\\{sid}" ):
+		os.makedirs( f"{server_settings}\\{sid}" )
+		pass
 
 	# <editor-fold desc="Disables">
 	# writer = open( f"{server_settings}\\{sid}\\disables.txt", 'w' )
@@ -261,7 +271,9 @@ def save ( sid: str ):
 	# </editor-fold>
 
 	# <editor-fold desc="ini file">
-	with open( f"{discord_settings}\\data.ini", 'w' ) as configfile: parser.write( configfile )
+	with open( f"{discord_settings}\\data.ini", 'w' ) as configfile:
+		parser.write( configfile )
+		pass
 	# </editor-fold>
 	pass
 
@@ -272,7 +284,9 @@ def check ( *args ) -> str:
 	:return: The first string in args that passes inspection.
 	"""
 	for item in args:
-		if item is not None and is_ascii( item ): return item
+		if item is not None and is_ascii( item ):
+			return item
+		pass
 	pass
 
 def format_message ( cont: str ) -> list:
@@ -281,8 +295,16 @@ def format_message ( cont: str ) -> list:
 	:param cont: The string to format.
 	:return: A list of strings. Each formatted into 2000 characters, including ``` at each end.
 	"""
-	if len( cont ) > 1994: return [ f"```{item}```" for item in [ cont[ i:i + 1000 ] for i in range( 0, len( cont ), 1000 ) ] ]
-	else: return [ f"```{cont}```" ]
+	if len( cont ) > 1994:
+		return [
+			f"```{item}```"
+			for item in [
+				cont[ i:i + 1000 ]
+				for i in range( 0, len( cont ), 1000 )
+			]
+		]
+	else:
+		return [ f"```{cont}```" ]
 	pass
 
 def update ( mid: str, cid: str ):
@@ -375,7 +397,9 @@ async def check_purge ( message: discord.Message, limit=100, _check=None ) -> in
 	while True:
 		try:
 			item = await logs( )
-			if _check( item ) is True: count += 1
+			if _check( item ) is True:
+				count += 1
+				pass
 			del item
 			pass
 		except: break
@@ -393,17 +417,50 @@ def get_diff ( then: datetime, now: datetime ) -> str:
 	minutes = now.minute - then.minute
 	seconds = now.second - then.second
 	# <editor-fold desc="Correcting the times">
-	while seconds < 0: minutes -= 1; seconds += 60
-	while minutes < 0: hours -= 1; minutes += 60
-	while hours < 0: days -= 1; hours += 24
-	while days < 0: months -= 1; days += 30
-	while months < 0: years -= 1; months += 12
-	while seconds >= 60: minutes += 1; seconds -= 60
-	while minutes >= 60: hours += 1; minutes -= 60
-	while hours >= 24: days += 1; hours -= 24
-	while days >= 30: months += 1; days -= 30
-	while months >= 12: years += 1; months -= 12
-	while days >= 7: weeks += 1; days -= 7
+	while seconds < 0:
+		minutes -= 1
+		seconds += 60
+		pass
+	while minutes < 0:
+		hours -= 1
+		minutes += 60
+		pass
+	while hours < 0:
+		days -= 1
+		hours += 24
+		pass
+	while days < 0:
+		months -= 1
+		days += 30
+		pass
+	while months < 0:
+		years -= 1
+		months += 12
+		pass
+	while seconds >= 60:
+		minutes += 1
+		seconds -= 60
+		pass
+	while minutes >= 60:
+		hours += 1
+		minutes -= 60
+		pass
+	while hours >= 24:
+		days += 1
+		hours -= 24
+		pass
+	while days >= 30:
+		months += 1
+		days -= 30
+		pass
+	while months >= 12:
+		years += 1
+		months -= 12
+		pass
+	while days >= 7:
+		weeks += 1
+		days -= 7
+		pass
 	# </editor-fold>
 
 	_str = f"{years} {'years' if not years == 1 else 'year'}, {months} {'months' if not months == 1 else 'month'}, {weeks} {'weeks' if not weeks == 1 else 'week'}, {days} {'days' if not days == 1 else 'day'}, {hours} {'hours' if not hours == 1 else 'hour'}, {minutes} {'minutes' if not minutes == 1 else 'minute'}, {seconds} {'seconds' if not seconds == 1 else 'second'}"
@@ -423,7 +480,9 @@ def log_error ( error_text: str ):
 	writer = open( file, 'w' )
 	writer.write( f"{datetime.now()} (logbot.py) - {error_text}\n\n{prev_text}" )
 	writer.close( )
-	if "SystemExit" in error_text: exit( 0 )
+	if "SystemExit" in error_text:
+		exit( 0 )
+		pass
 	del writer
 	pass
 
@@ -436,13 +495,21 @@ class Commands:
 			sfs = 0
 			dot_found = False
 			while num[ 0 ] == "0" or num[ 0 ] == ".":
-				if num[ 0 ] == ".": dot_found = True
+				if num[ 0 ] == ".":
+					dot_found = True
+					pass
 				num = num[ 1: ]
 				pass
-			if "." in num: sfs = len( num ) - 1
-			elif dot_found: sfs = len( num )
+			if "." in num:
+				sfs = len( num ) - 1
+				pass
+			elif dot_found:
+				sfs = len( num )
+				pass
 			else:
-				while num[ -1 ] == "0": num = num[ 0:len( num ) - 1 ]
+				while num[ -1 ] == "0":
+					num = num[ 0:len( num ) - 1 ]
+					pass
 				sfs = len( num )
 				pass
 			await client.send_message( message.channel, f"```{org_num} has {sfs} significant figures ({num})!```" )
@@ -465,20 +532,38 @@ class Commands:
 			params.remove( field )
 			params = ' '.join( params )
 			_user = discord.utils.find( lambda u:u.id == params or u.name == params or str( u ) == params or u.mention == params, message.server.members )
-			if _user is None and len( message.mentions ) > 0: _user = message.mentions[ 0 ]
-			elif _user is None and len( message.mentions ) == 0: _user = message.author
+			if _user is None and len( message.mentions ) > 0:
+				_user = message.mentions[ 0 ]
+				pass
+			elif _user is None and len( message.mentions ) == 0:
+				_user = message.author
+				pass
 
-			if field == "nick": await client.send_message( message.channel, str( _user.nick ) )
-			elif field == "name": await client.send_message( message.channel, str( _user ) )
-			elif field == "id": await client.send_message( message.channel, str( _user.id ) )
-			elif field == "type": await client.send_message( message.channel, "Bot" if _user.bot is True else "User" )
+			if field == "nick":
+				await client.send_message( message.channel, str( _user.nick ) )
+				pass
+			elif field == "name":
+				await client.send_message( message.channel, str( _user ) )
+				pass
+			elif field == "id":
+				await client.send_message( message.channel, str( _user.id ) )
+				pass
+			elif field == "type":
+				await client.send_message( message.channel, "Bot" if _user.bot is True else "User" )
+				pass
 			elif field == "date":
 				m = format_time( _user.created_at )
 				await client.send_message( message.channel, f"{get_diff(m, datetime.now())} ago ({m.month}.{m.day}.{m.year} {m.hour}:{m.minute})" )
 				pass
-			elif field == "status": await client.send_message( message.channel, str( _user.status ) )
-			elif field == "avatar": await client.send_message( message.channel, _user.avatar_url )
-			elif field == "default": await client.send_message( message.channel, _user.default_avatar_url )
+			elif field == "status":
+				await client.send_message( message.channel, str( _user.status ) )
+				pass
+			elif field == "avatar":
+				await client.send_message( message.channel, _user.avatar_url )
+				pass
+			elif field == "default":
+				await client.send_message( message.channel, _user.default_avatar_url )
+				pass
 			del cnt
 			del params
 			del field
@@ -488,7 +573,9 @@ class Commands:
 		async def user ( message: discord.Message, prefix: str ):
 			cnt = message.content.replace( f"{prefix}user ", "" )
 			_user = discord.utils.find( lambda u:u.id == cnt or u.name == cnt or str( u ) == cnt or u.mention == cnt, message.server.members )
-			if _user is None and len( message.mentions ) > 0: _user = message.mentions[ 0 ]
+			if _user is None and len( message.mentions ) > 0:
+				_user = message.mentions[ 0 ]
+				pass
 			m = format_time( _user.created_at )
 			e = discord.Embed( title=_user.name, description=f"Information for {_user.name}", color=discord.Colour.gold( ) ) \
 				.add_field( name="Nickname", value=str( _user.nick ) ) \
@@ -525,21 +612,35 @@ class Commands:
 			""".replace( "\t", "" )
 			__definition = _filter( _def.definition )
 			__example = _filter( _def.example )
-			if len( __example ) == 0: __example = "No available examples..."
+			if len( __example ) == 0:
+				__example = "No available examples..."
+				pass
 			e = discord.Embed( title=_def.word, description=f"Definition(s) of {_def.word}", colour=discord.Colour.blue( ) ) \
 				.add_field( name="Definition", value=__definition, inline=False ) \
 				.add_field( name="Example", value=__example, inline=False ) \
 				.add_field( name="Upvotes", value=_def.upvotes ) \
 				.add_field( name="Downvotes", value=_def.downvotes )
-			try: await client.send_message( message.channel, "Here you go!", embed=e )
-			except: await client.send_message( message.channel, _text )
+			try:
+				await client.send_message( message.channel, "Here you go!", embed=e )
+				pass
+			except:
+				await client.send_message( message.channel, _text )
+				pass
 			pass
 		@staticmethod
 		async def role ( message: discord.Message, prefix: str ):
 			_cnt_ = message.content.replace( f"{prefix}role ", "" )
-			if len( message.role_mentions ) > 0: _role = message.role_mentions[ 0 ]
-			else: _role = discord.utils.find( lambda r:r.name == _cnt_ or r.id == _cnt_, message.server.roles )
-			_members_in_role = [ str( m ) for m in message.server.members if _role in m.roles ]
+			if len( message.role_mentions ) > 0:
+				_role = message.role_mentions[ 0 ]
+				pass
+			else:
+				_role = discord.utils.find( lambda r:r.name == _cnt_ or r.id == _cnt_, message.server.roles )
+				pass
+			_members_in_role = [
+				str( m )
+				for m in message.server.members
+				if _role in m.roles
+			]
 			_position = _role.position
 			p = _role.permissions
 			_id = _role.id
@@ -576,23 +677,41 @@ class Commands:
 			pass
 		@staticmethod
 		async def channels ( message: discord.Message ):
-			_channels = [ x for x in client.get_all_channels( ) if x.server == message.server ]
+			_channels = [
+				x
+				for x in client.get_all_channels( )
+				if x.server == message.server
+			]
 			voice_channels = [ ]
 			text_channels = [ ]
 			vappend = voice_channels.append
 			tappend = text_channels.append
 			for c in _channels:
-				if c.type == discord.ChannelType.voice: vappend( str( c ) )
-				else: tappend( str( c ) )
+				if c.type == discord.ChannelType.voice:
+					vappend( str( c ) )
+					pass
+				else:
+					tappend( str( c ) )
+					pass
 				pass
-			voice_channels = [ f"#{x}" for x in voice_channels ]
+			voice_channels = [
+				f"#{x}"
+				for x in voice_channels
+			]
 			voice_channels.sort( )
-			text_channels = [ f"#{x}" for x in text_channels ]
+			text_channels = [
+				f"#{x}"
+				for x in text_channels
+			]
 			text_channels.sort( )
 			v_msg = format_message( f"Voice Channels:\n{', '.join(voice_channels)}" )
 			t_msg = format_message( f"Text Channels:\n{', '.join(text_channels)}" )
-			for msg in v_msg: await client.send_message( message.channel, msg )
-			for msg in t_msg: await client.send_message( message.channel, msg )
+			for msg in v_msg:
+				await client.send_message( message.channel, msg )
+				pass
+			for msg in t_msg:
+				await client.send_message( message.channel, msg )
+				pass
 			del vappend
 			del tappend
 			pass
@@ -615,7 +734,9 @@ class Commands:
 			"""
 			mu = "Muted Users:\n"
 			for user in message.server.members:
-				if muted_role in user.roles: mu += f"{user}\n"
+				if muted_role in user.roles:
+					mu += f"{user}\n"
+					pass
 				pass
 			await client.send_message( message.channel, f"{mu}" )
 			del mu
@@ -661,7 +782,10 @@ class Commands:
 			"""
 			m = format_time( message.server.created_at )
 			server = message.server
-			roles = [ f"{str(role).replace('@', '')} ({role.position}) [{role.id}]" for role in server.role_hierarchy ]
+			roles = [
+				f"{str(role).replace('@', '')} ({role.position}) [{role.id}]"
+				for role in server.role_hierarchy
+			]
 			try:
 				# <editor-fold desc="discord.Embed">
 				e = discord.Embed( title=server.name, description=f"Information for {server.name}", colour=discord.Colour.teal( ) ) \
@@ -779,7 +903,9 @@ class Commands:
 			ret = f"Suggestions:{reader.read()}"
 			reader.close( )
 			# </editor-fold>
-			for item in format_message( ret ): await client.send_message( message.channel, item )
+			for item in format_message( ret ):
+				await client.send_message( message.channel, item )
+				pass
 			del ret
 			del reader
 			pass
@@ -788,7 +914,9 @@ class Commands:
 			msg = "Excluded Channels:\n"
 			for channel in exclude_channel_list:
 				for c in message.server.channels:
-					if channel == c.id: msg += c.mention + "\n"
+					if channel == c.id:
+						msg += c.mention + "\n"
+						pass
 					pass
 				pass
 			await client.send_message( message.channel, msg )
@@ -799,7 +927,9 @@ class Commands:
 			msg = "Marked Channels\n"
 			for item in marklist:
 				for c in message.server.channels:
-					if c.id == item: msg += c.mention + "\n"
+					if c.id == item:
+						msg += c.mention + "\n"
+						pass
 					pass
 				pass
 			await client.send_message( message.channel, msg )

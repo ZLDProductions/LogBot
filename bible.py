@@ -810,7 +810,8 @@ def check ( *msgs: str ):
 	:return: The first instance of non-ascii string, or the last if none is found.
 	"""
 	for M in msgs:
-		if is_ascii( M ): return M
+		if is_ascii( M ):
+			return M
 		pass
 	return msgs[ len( msgs ) - 1 ]
 
@@ -941,8 +942,12 @@ def abbr ( _msg: str ) -> str:
 		"3 Jn " :"3 John ",
 		"Rev "  :"Revelation "
 	}
-	for item in list( books.keys( ) ): _msg = _msg.lower( ).replace( item.lower( ), books[ item ] )
-	for item in _msg.split( " " ): _msg = _msg.replace( item, item.capitalize( ) )
+	for item in list( books.keys( ) ):
+		_msg = _msg.lower( ).replace( item.lower( ), books[ item ] )
+		pass
+	for item in _msg.split( " " ):
+		_msg = _msg.replace( item, item.capitalize( ) )
+		pass
 	return _msg
 
 # noinspection PyUnusedLocal
@@ -969,7 +974,9 @@ def getVerse ( key: str, ih: bool = True ) -> str:
 			verse = d[ 1 ].split( ":" )[ 1 ]
 			pass
 		ret = ""
-		if ih is True: ret = f"**{key} ~ KJV**\n"
+		if ih is True:
+			ret = f"**{key} ~ KJV**\n"
+			pass
 		ret += sqlkjv.read( book, chapter, verse )
 		return ret
 		pass
@@ -1007,8 +1014,10 @@ def getPassage ( key: str, ih: bool = True ) -> str:
 		tmp = ''.join( tmp )
 		ret += "{} {}".format( tmp, getVerse( qu[ 0 ] + " " + qu[ 1 ] + ":" + str( i ), ih=False ) ) + "\n"
 		pass
-	if ih: return retpre + ret
-	else: return ret
+	if ih:
+		return retpre + ret
+	else:
+		return ret
 	pass
 
 # noinspection PyUnusedLocal
@@ -1216,11 +1225,17 @@ def searchForVerse ( key: str, p: int = 0, v: str = "kjv" ) -> str:
 	ret = "```"
 	total = 0
 	if len( res ) > p * 10 + 10:
-		for i in range( p * 10, p * 10 + 10 ): ret += "{}\n".format( res[ i ][ 0 ] )
+		for i in range( p * 10, p * 10 + 10 ):
+			ret += "{}\n".format( res[ i ][ 0 ] )
+			pass
 	elif len( res ) > 0:
-		for i in range( 0, len( res ) ): ret += "{}\n".format( res[ i ][ 0 ] )
+		for i in range( 0, len( res ) ):
+			ret += "{}\n".format( res[ i ][ 0 ] )
+			pass
 
-	for item in res: total += len( re.findall( key, item[ 1 ], flags=2 ) )
+	for item in res:
+		total += len( re.findall( key, item[ 1 ], flags=2 ) )
+		pass
 	ret += f"{parse_num(total)} occurences found, {parse_num(int(math.ceil(total / 10)))} pages overall!```"
 	return ret
 
@@ -1230,8 +1245,15 @@ def format_message ( cont: str ) -> list:
 	:param cont: The string to format.
 	:return: A list of strings with each section of text.
 	"""
-	if len( cont ) > 1994: return [ f"{item}" for item in [ cont[ i:i + 1000 ] for i in range( 0, len( cont ), 1000 ) ] ]
-	else: return [ f"```{cont}```" ]
+	if len( cont ) > 1994:
+		return [
+			f"{item}" for item in [
+				cont[ i:i + 1000 ]
+				for i in range( 0, len( cont ), 1000 )
+			]
+		]
+	else:
+		return [ f"```{cont}```" ]
 	pass
 
 def read ( sid: str ):
@@ -1262,13 +1284,17 @@ def read ( sid: str ):
 		disabled_users = [ ]
 		pass
 
-	if not os.path.exists( f"{discord_settings}\\SERVER SETTINGS\\{sid}\\" ): os.makedirs( f"{discord_settings}\\SERVER SETTINGS\\{sid}\\" )
+	if not os.path.exists( f"{discord_settings}\\SERVER SETTINGS\\{sid}\\" ):
+		os.makedirs( f"{discord_settings}\\SERVER SETTINGS\\{sid}\\" )
+		pass
 
 	pass
 
 def cap_all_words ( text: str ):
 	ret = [ ]
-	for seq in text.split( " " ): ret.append( seq.capitalize( ) )
+	for seq in text.split( " " ):
+		ret.append( seq.capitalize( ) )
+		pass
 	return ' '.join( ret )
 
 # noinspection PyUnresolvedReferences
@@ -1303,8 +1329,12 @@ class formatting:
 		keys = items.keys( )
 		for i in range( 0, len( keys ) ):
 			format_code = items[ keys[ i ] ]
-			if i != 0: repl += string[ int( keys[ i - 1 ] ):int( keys[ i ] ) ]
-			else: repl += string[ 0:int( keys[ i ] ) ]
+			if i != 0:
+				repl += string[ int( keys[ i - 1 ] ):int( keys[ i ] ) ]
+				pass
+			else:
+				repl += string[ 0:int( keys[ i ] ) ]
+				pass
 			repl += format_code
 			pass
 
@@ -1324,9 +1354,13 @@ class Commands:
 			await client.send_typing( message.channel )
 			c = message.content.replace( f"{prefix}verse search", "" )
 			page = 0
-			if c.startswith( "." ): page = int( c.split( " " )[ 0 ].replace( ".", "" ) )
+			if c.startswith( "." ):
+				page = int( c.split( " " )[ 0 ].replace( ".", "" ) )
+				pass
 			key = c.replace( f".{page} ", "" )
-			for item in format_message( searchForVerse( key, p=page, v=bible_versions[ message.author.id ] ) ): await client.send_message( message.channel, item )
+			for item in format_message( searchForVerse( key, p=page, v=bible_versions[ message.author.id ] ) ):
+				await client.send_message( message.channel, item )
+				pass
 			del c
 			del page
 			del key
@@ -1336,7 +1370,9 @@ class Commands:
 			await client.send_typing( message.channel )
 			verse = getRandomVerse( bible_versions[ message.author.id ] )
 			if bible_types[ message.author.id ] == "text":
-				for item in format_message( verse ): await client.send_message( message.channel, item )
+				for item in format_message( verse ):
+					await client.send_message( message.channel, item )
+					pass
 				pass
 			else:
 				stuffs = verse.split( "\n" )
@@ -1551,7 +1587,9 @@ class Commands:
 				elif cont == "Revelation":
 					ret = "Revelation\nAuthor: {}\nChapters: {}\n{}".format( bi.getRevelationAuthor( ), bi.getRevelationChapters( ), bi.getRevelationSummary( ) )
 					pass
-				for item in format_message( ret ): await client.send_message( message.channel, item )
+				for item in format_message( ret ):
+					await client.send_message( message.channel, item )
+					pass
 				del cont
 				del ret
 				pass
@@ -1567,7 +1605,9 @@ class Commands:
 				index = 0
 				while True:
 					index += 1
-					try: stapp( sqlkjv.read( cont.split( " " )[ 0 ], cont.split( " " )[ 1 ], str( index ) ) )
+					try:
+						stapp( sqlkjv.read( cont.split( " " )[ 0 ], cont.split( " " )[ 1 ], str( index ) ) )
+						pass
 					except: break
 					pass
 				ret[ "Verses" ] = len( stuffs )
@@ -1676,13 +1716,17 @@ class Commands:
 				if "-" in content:
 					stuffs = [ getPassage( content, ih=False ), getAKJVPassage( content, ih=False ), getWEBPassage( content, ih=False ) ]
 					for item in stuffs:
-						for m in format_message( item ): await client.send_message( message.channel, m )
+						for m in format_message( item ):
+							await client.send_message( message.channel, m )
+							pass
 						pass
 					del stuffs
 					pass
 				else:
 					stuffs = [ getVerse( content, ih=False ), getAKJVVerse( content, ih=False ), getWEBVerse( content, ih=False ) ]
-					for item in stuffs: await client.send_message( message.content, f"```{item}```" )
+					for item in stuffs:
+						await client.send_message( message.content, f"```{item}```" )
+						pass
 					del stuffs
 					pass
 				pass
@@ -1913,18 +1957,26 @@ async def on_message ( message ):
 								.replace( "_", "" )
 							verse = [ ]
 							tmp_content = abbr( tmp_content )
-							for i in range( 0, 17 ): tmp_content = tmp_content.replace( akjv_books[ i ], akjv_books[ i ].replace( " ", "|" ) )
+							for i in range( 0, 17 ):
+								tmp_content = tmp_content.replace( akjv_books[ i ], akjv_books[ i ].replace( " ", "|" ) )
+								pass
 							mc = tmp_content.split( " " )
 							append = verse.append
-							for i in range( 0, len( mc ) ): mc[ i ] = abbr( mc[ i ].replace( "|", " " ).capitalize( ) )
+							for i in range( 0, len( mc ) ):
+								mc[ i ] = abbr( mc[ i ].replace( "|", " " ).capitalize( ) )
+								pass
 							for b in akjv_books:
 								while b in mc:
 									index = mc.index( b )
 									if not index == len( mc ) - 1:
 										if "," in mc[ index + 1 ]:
-											for item in mc[ index + 1 ].split( ":" )[ 1 ].split( "," ): append( f"{mc[index]} {mc[index+1].split(':')[0]}:{item}" )
+											for item in mc[ index + 1 ].split( ":" )[ 1 ].split( "," ):
+												append( f"{mc[index]} {mc[index+1].split(':')[0]}:{item}" )
+												pass
 											pass
-										else: verse.append( f"{mc[index]} {mc[index+1]}" )
+										else:
+											verse.append( f"{mc[index]} {mc[index+1]}" )
+											pass
 										pass
 									mc.remove( b )
 									pass
@@ -2016,15 +2068,21 @@ async def on_message ( message ):
 								except: pass
 
 								for i in range( 0, len( e.fields ) ):
-									if e.fields[ i ].value == "No such verse!": e.remove_field( i )
+									if e.fields[ i ].value == "No such verse!":
+										e.remove_field( i )
+										pass
 									pass
 
 								tm = datetime.now( ) - message.timestamp
 								# delay = int(divmod(tm.total_seconds(), 60)[1] * 1000)
 								# delay = int((tm.total_seconds() % 60) * 1000)
 								delay = int( tm.microseconds / 1000 )
-								if delay > 999: delay = str( delay / 1000 )
-								else: delay = f"0.{delay}"
+								if delay > 999:
+									delay = str( delay / 1000 )
+									pass
+								else:
+									delay = f"0.{delay}"
+									pass
 								await client.send_message( message.channel, f"Response in {delay} seconds! :smile:", embed=e )
 								print( f"Sending {', '.join(verse)} ~ Delay: {delay}s." )
 								pass
@@ -2042,46 +2100,91 @@ async def on_message ( message ):
 		def startswith ( *msg, val=message.content ):
 			# noinspection PyShadowingNames
 			for item in msg:
-				if val.startswith( item ): return True
+				if val.startswith( item ):
+					return True
 			return False
 		bi = BibleInfo( )
 
 		if startswith( f"{prefix}disable verse", f"{prefix}disable {prefix}verse" ):
-			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.disable( message )
-			else: sendNoPerm( message )
+			if admin_role in message.author.roles or message.author.id == owner_id:
+				await Commands.Admin.disable( message )
+				pass
+			else:
+				sendNoPerm( message )
+				pass
 			pass
 		elif startswith( f"{prefix}enable verse", f"{prefix}enable {prefix}verse" ):
-			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.enable( message )
-			else: sendNoPerm( message )
+			if admin_role in message.author.roles or message.author.id == owner_id:
+				await Commands.Admin.enable( message )
+				pass
+			else:
+				sendNoPerm( message )
+				pass
 			pass
 		elif startswith( f"{prefix}verse help" ):
-			if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_help( message )
-			elif message.server.id in verse_disable_list: sendDisabled( message )
-			else: sendNoPerm( message )
+			if not message.server.id in verse_disable_list or message.author.id == owner_id:
+				await Commands.Member.verse_help( message )
+				pass
+			elif message.server.id in verse_disable_list:
+				sendDisabled( message )
+				pass
+			else:
+				sendNoPerm( message )
+				pass
 			pass
 		elif startswith( f"{prefix}verse info" ):
-			if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_info( message, bi, prefix )
-			elif message.server.id in verse_disable_list: sendDisabled( message )
-			else: sendNoPerm( message )
+			if not message.server.id in verse_disable_list or message.author.id == owner_id:
+				await Commands.Member.verse_info( message, bi, prefix )
+				pass
+			elif message.server.id in verse_disable_list:
+				sendDisabled( message )
+				pass
+			else:
+				sendNoPerm( message )
+				pass
 			pass
 		elif startswith( f"{prefix}verse random" ):
-			if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_random( message )
-			elif message.server.id in verse_disable_list: sendDisabled( message )
-			else: sendNoPerm( message )
+			if not message.server.id in verse_disable_list or message.author.id == owner_id:
+				await Commands.Member.verse_random( message )
+				pass
+			elif message.server.id in verse_disable_list:
+				sendDisabled( message )
+				pass
+			else:
+				sendNoPerm( message )
+				pass
 			pass
 		elif startswith( f"{prefix}verse search" ):
-			if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_search( message, prefix )
-			elif message.server.id in verse_disable_list: sendDisabled( message )
-			else: sendNoPerm( message )
+			if not message.server.id in verse_disable_list or message.author.id == owner_id:
+				await Commands.Member.verse_search( message, prefix )
+				pass
+			elif message.server.id in verse_disable_list:
+				sendDisabled( message )
+				pass
+			else:
+				sendNoPerm( message )
+				pass
 			pass
 		elif startswith( f"{prefix}verse compare " ):
-			if not message.server.id in verse_disable_list or message.author.id == owner_id: await Commands.Member.verse_compare( message, prefix )
-			elif message.server.id in verse_disable_list: sendDisabled( message )
-			else: sendNoPerm( message )
+			if not message.server.id in verse_disable_list or message.author.id == owner_id:
+				await Commands.Member.verse_compare( message, prefix )
+				pass
+			elif message.server.id in verse_disable_list:
+				sendDisabled( message )
+				pass
+			else:
+				sendNoPerm( message )
+				pass
 			pass
-		elif startswith( f"{prefix}votd" ): await Commands.Member.send_votd( message )
-		elif startswith( f"{prefix}setversion " ): await Commands.Member.setversion( message, prefix )
-		elif startswith( f"{prefix}settype " ): await Commands.Member.settype( message, prefix )
+		elif startswith( f"{prefix}votd" ):
+			await Commands.Member.send_votd( message )
+			pass
+		elif startswith( f"{prefix}setversion " ):
+			await Commands.Member.setversion( message, prefix )
+			pass
+		elif startswith( f"{prefix}settype " ):
+			await Commands.Member.settype( message, prefix )
+			pass
 		elif startswith( f"{prefix}getversion", f"{prefix}setversion" ):
 			await client.send_message( message.channel, bible_versions[ message.author.id ] )
 			pass
@@ -2089,52 +2192,91 @@ async def on_message ( message ):
 			await client.send_message( message.channel, bible_types[ message.author.id ] )
 			pass
 		elif startswith( f"{prefix}setchannel " ):
-			if admin_role in message.author.roles: await Commands.Admin.setchannel( message )
-			else: sendNoPerm( message )
+			if admin_role in message.author.roles:
+				await Commands.Admin.setchannel( message )
+				pass
+			else:
+				sendNoPerm( message )
+				pass
 			pass
 		elif startswith( f"{prefix}getchannel" ):
 			await client.send_message( message.channel, f"The default channel is <#{default_channel[message.server.id]}>" )
 			pass
-		elif startswith( f"v{prefix}disables" ): await Commands.Member.disables( message )
+		elif startswith( f"v{prefix}disables" ):
+			await Commands.Member.disables( message )
+			pass
 		elif startswith( f"v{prefix}disable" ):
-			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.v_disable( message )
-			else: sendNoPerm( message )
+			if admin_role in message.author.roles or message.author.id == owner_id:
+				await Commands.Admin.v_disable( message )
+				pass
+			else:
+				sendNoPerm( message )
+				pass
 			pass
 		elif startswith( f"v{prefix}enable" ):
-			if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.v_enable( message )
-			else: sendNoPerm( message )
+			if admin_role in message.author.roles or message.author.id == owner_id:
+				await Commands.Admin.v_enable( message )
+				pass
+			else:
+				sendNoPerm( message )
+				pass
 			pass
 		elif startswith( "$exit", "logbot.bible.exit" ):
-			if message.author.id == owner_id: exiting = True; await Commands.Owner.exit( )
-			else: sendNoPerm( message )
+			if message.author.id == owner_id:
+				exiting = True
+				await Commands.Owner.exit( )
+				pass
+			else:
+				sendNoPerm( message )
+				pass
 			pass
 		elif startswith( f"$update", "logbot.bible.update" ):
-			if message.author.id == owner_id: do_update = True
-			else: sendNoPerm( message )
+			if message.author.id == owner_id:
+				do_update = True
+				pass
+			else:
+				sendNoPerm( message )
+				pass
 			pass
-		elif startswith( f"{prefix}ping" ): await Commands.Member.ping( message )
+		elif startswith( f"{prefix}ping" ):
+			await Commands.Member.ping( message )
+			pass
 		elif startswith( f"{prefix}devotional\n" ):
 			lines = message.content.replace( "{prefix}devotional\n", "" ).split( "\n" )
 			e = discord.Embed( title="", description="", colour=discord.Colour.green( ) )
 			text = ""
 			for line in lines:
-				if line.startswith( "&title=" ): e.title = line.replace( "&title=", "" )
-				elif line.startswith( "&description=" ): e.description = line.replace( "&description=", "" )
-				elif line.startswith( "&author=" ) or line.startswith( "&footer=" ): e.set_footer( text=line.replace( "&author=", "" ).replace( "&footer=", "" ) )
-				elif line.startswith( "&thumbnail=" ): e.set_thumbnail( url=line.replace( "&thumbnail=", "" ) )
+				if line.startswith( "&title=" ):
+					e.title = line.replace( "&title=", "" )
+					pass
+				elif line.startswith( "&description=" ):
+					e.description = line.replace( "&description=", "" )
+					pass
+				elif line.startswith( "&author=" ) or line.startswith( "&footer=" ):
+					e.set_footer( text=line.replace( "&author=", "" ).replace( "&footer=", "" ) )
+					pass
+				elif line.startswith( "&thumbnail=" ):
+					e.set_thumbnail( url=line.replace( "&thumbnail=", "" ) )
+					pass
 				elif line.startswith( "&passage=" ):
 					def analyzeVerse ( _text: str, _version: str = "kjv" ):
 						if _version == "kjv":
-							if "-" in _text: return [ _text, getPassage( _text, ih=False ) ]
-							else: return [ _text, getVerse( _text, ih=False ) ]
+							if "-" in _text:
+								return [ _text, getPassage( _text, ih=False ) ]
+							else:
+								return [ _text, getVerse( _text, ih=False ) ]
 							pass
 						elif _version == "akjv":
-							if "-" in _text: return [ _text, getAKJVPassage( _text, ih=False ) ]
-							else: return [ _text, getAKJVVerse( _text, ih=False ) ]
+							if "-" in _text:
+								return [ _text, getAKJVPassage( _text, ih=False ) ]
+							else:
+								return [ _text, getAKJVVerse( _text, ih=False ) ]
 							pass
 						elif _version == "web":
-							if "-" in _text: return [ _text, getWEBPassage( _text, ih=False ) ]
-							else: return [ _text, getWEBVerse( _text, ih=False ) ]
+							if "-" in _text:
+								return [ _text, getWEBPassage( _text, ih=False ) ]
+							else:
+								return [ _text, getWEBVerse( _text, ih=False ) ]
 							pass
 						pass
 					_text = line.replace( "&passage=", "" )
@@ -2143,13 +2285,23 @@ async def on_message ( message ):
 					e.add_field( name=ret[ 0 ], value=ret[ 1 ], inline=False )
 					pass
 				elif line.startswith( "&text=" ):
-					if "|" in line: _title = line.replace( "&text=", "" ).split( "|" )[ 0 ]; _text = line.replace( "&text=", "" ).split( "|" )[ 1 ]
-					else: _title = "` `"; _text = line.replace( "&text=", "" )
+					if "|" in line:
+						_title = line.replace( "&text=", "" ).split( "|" )[ 0 ]
+						_text = line.replace( "&text=", "" ).split( "|" )[ 1 ]
+						pass
+					else:
+						_title = "` `"
+						_text = line.replace( "&text=", "" )
+						pass
 					e.add_field( name=_title, value=_text, inline=False )
 					pass
-				elif line.startswith( "&keyword=" ): text = line.replace( "&keyword=", "" )
+				elif line.startswith( "&keyword=" ):
+					text = line.replace( "&keyword=", "" )
+					pass
 				pass
-			if text == "": text = e.title
+			if text == "":
+				text = e.title
+				pass
 			await client.send_message( message.channel, text, embed=e )
 			pass
 		elif startswith( f"{prefix}devotional" ):
@@ -2163,30 +2315,50 @@ async def on_message ( message ):
 			lappend( _msg.content )
 			while cont:
 				_msg = await client.wait_for_message( author=message.author )
-				if _msg.content == "&end": cont = False; mappend( _msg )
-				else: lappend( _msg.content ); mappend( _msg )
+				if _msg.content == "&end":
+					cont = False
+					mappend( _msg )
+					pass
+				else:
+					lappend( _msg.content )
+					mappend( _msg )
+					pass
 				pass
 			mappend( message )
 			text = ""
 			e = discord.Embed( title="", description="", colour=discord.Colour.green( ) )
 			for line in lines:
-				if line.startswith( "&title=" ): e.title = line.replace( "&title=", "" )
-				elif line.startswith( "&description=" ): e.description = line.replace( "&description=", "" )
-				elif line.startswith( "&author=" ) or line.startswith( "&footer=" ): e.set_footer( text=line.replace( "&author=", "" ).replace( "&footer=", "" ) )
-				elif line.startswith( "&thumbnail=" ): e.set_thumbnail( url=line.replace( "&thumbnail=", "" ) )
+				if line.startswith( "&title=" ):
+					e.title = line.replace( "&title=", "" )
+					pass
+				elif line.startswith( "&description=" ):
+					e.description = line.replace( "&description=", "" )
+					pass
+				elif line.startswith( "&author=" ) or line.startswith( "&footer=" ):
+					e.set_footer( text=line.replace( "&author=", "" ).replace( "&footer=", "" ) )
+					pass
+				elif line.startswith( "&thumbnail=" ):
+					e.set_thumbnail( url=line.replace( "&thumbnail=", "" ) )
+					pass
 				elif line.startswith( "&passage=" ):
 					def analyzeVerse ( _text, _version="kjv" ):
 						if _version == "kjv":
-							if "-" in _text: return [ _text, getPassage( _text, ih=False ) ]
-							else: return [ _text, getVerse( _text, ih=False ) ]
+							if "-" in _text:
+								return [ _text, getPassage( _text, ih=False ) ]
+							else:
+								return [ _text, getVerse( _text, ih=False ) ]
 							pass
 						elif _version == "akjv":
-							if "-" in _text: return [ _text, getAKJVPassage( _text, ih=False ) ]
-							else: return [ _text, getAKJVVerse( _text, ih=False ) ]
+							if "-" in _text:
+								return [ _text, getAKJVPassage( _text, ih=False ) ]
+							else:
+								return [ _text, getAKJVVerse( _text, ih=False ) ]
 							pass
 						elif _version == "web":
-							if "-" in _text: return [ _text, getWEBPassage( _text, ih=False ) ]
-							else: return [ _text, getWEBVerse( _text, ih=False ) ]
+							if "-" in _text:
+								return [ _text, getWEBPassage( _text, ih=False ) ]
+							else:
+								return [ _text, getWEBVerse( _text, ih=False ) ]
 							pass
 						pass
 					_text = line.replace( "&passage=", "" )
@@ -2195,25 +2367,37 @@ async def on_message ( message ):
 					e.add_field( name=ret[ 0 ], value=ret[ 1 ], inline=False )
 					pass
 				elif line.startswith( "&text=" ):
-					if "|" in line: _title = line.replace( "&text=", "" ).split( "|" )[ 0 ]; _text = line.replace( "&text=", "" ).split( "|" )[ 1 ]
-					else: _title = "` `"; _text = line.replace( "&text=", "" )
+					if "|" in line:
+						_title = line.replace( "&text=", "" ).split( "|" )[ 0 ]
+						_text = line.replace( "&text=", "" ).split( "|" )[ 1 ]
+						pass
+					else:
+						_title = "` `"
+						_text = line.replace( "&text=", "" )
+						pass
 					e.add_field( name=_title, value=_text, inline=False )
 					pass
-				elif line.startswith( "&keyword=" ): text = line.replace( "&keyword=", "" )
+				elif line.startswith( "&keyword=" ):
+					text = line.replace( "&keyword=", "" )
+					pass
 				pass
-			if text == "": text = e.title
+			if text == "":
+				text = e.title
+				pass
 			await client.send_message( message.channel, text, embed=e )
-			for m in _msgs:
-				await client.delete_message( m )
-				pass
+			await client.delete_messages( _msgs )
 			pass
 		elif startswith( f"v{prefix}settings" ):
 			channels = [ str( client.get_channel( _id ) ) if client.get_channel( _id ).server == message.server else None for _id in disabled_channels ]
 			crem = channels.remove
-			while None in channels: crem( None )
+			while None in channels:
+				crem( None )
+				pass
 
 			_def_channel = default_channel.get( message.server.id )
-			if _def_channel is None: _def_channel = "No default channel."
+			if _def_channel is None:
+				_def_channel = "No default channel."
+				pass
 
 			_personal = discord.Embed( title="Personal", description="Verse Module Settings", colour=discord.Colour.dark_blue( ) )
 			_personal.add_field( name="Type", value=bible_types[ message.author.id ] )
