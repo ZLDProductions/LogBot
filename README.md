@@ -38,7 +38,7 @@ Used to exclude a single message from the logs this bot creates.
     $ex {message}
 `message` is the normal message you would have sent.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -53,7 +53,7 @@ Excludes all messages in the mentioned channel(s) from the logs.
     $exc {channels}
 `channels` is one or more channel mentions (#channel-name).
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -68,7 +68,7 @@ Used to remove the exclusion of mention channel(s) from the logs.
     $inc {channels}
 `channels` is one or more channel mentions (#channel-name).
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -83,7 +83,7 @@ Used to set aside logs for the mentioned channel(s).
     $mark r {channels}
 `channels` is one or more channel mentions.
 
-**Required Permissions**      
+**Required Level**      
 LogBot Admin
 
 ---
@@ -100,7 +100,7 @@ Server owners are always an admin.
     $admin s
 `users` is one or more user mentions (@user#0000)
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -113,7 +113,7 @@ Shows the list of excluded channels.
 
     $showlist
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -126,7 +126,7 @@ Shows the list of marked channels.
 
     $showmarks
     
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -142,7 +142,7 @@ Shows the help dialog for a specific command, or, if no command was stated, show
 `command` is a command for the bot.
 `modifier` is either `GroupByPlugin` or `GroupByType`.
     
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -155,7 +155,7 @@ Shows the current bot version, and what programming language it was written in.
 
     $version
     
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -175,7 +175,7 @@ Creates a channel, edits a channel, shows a list of channels created by the bot,
 `permission level` is the permission level for the channel , regarding the bot.  
 `channels` is a channel mention (#channel-name) or the name of the channel.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -188,7 +188,7 @@ Shows what is new with the bot.
 
     $updates
     
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -203,7 +203,7 @@ Sends a message in the specific channel.
 `text` is the text to say.  
 `channel` is one or more channel mentions (#channel).  
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -219,7 +219,7 @@ Adds, removes, or shows the members of this bot.
     $member s
 `user` is one or more user mentions (@user#0000).
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -232,7 +232,7 @@ Shows what may come next in the bot.
 
     $planned
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -246,7 +246,7 @@ Fetches information from Wolfram|Alpha.
     $query {query}
 `query` is the statement searched on Wolfram|Alpha.
 
-**Required Permissions** 
+**Required Level** 
 None
 
 ---
@@ -260,7 +260,7 @@ Fetches information from Wikipedia.
     $wiki {input}
 `input` is the topic for the wikipedia search.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -282,7 +282,7 @@ Fetches information from the Bible.
 `verse` is a number describing the verse of the `chapter` of the `book`.  
 `query` is the search key.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -317,7 +317,7 @@ Disables a command.
 * $translate
 * filter
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -332,7 +332,7 @@ All commands that work with disabled also work with this one.
     $enable {command}
 `command` is one of the bot commands listed in $disable.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -345,7 +345,7 @@ Shows the disabled commands.
 
     $disables
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -359,7 +359,7 @@ Estimates the number of members who will be kicked by `$prune {days}`.
     $prunes {days}
 `days` is the number of minimum offline days a member has to have in order to qualify for the prune.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -373,7 +373,7 @@ Kicks members who have been offline for {days}.
     $prune {days}
 `days` is the minimum number of days a member has to be offline in order to qualify for the prune.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -387,7 +387,7 @@ Saves a suggestion for the developer.
     $suggest {suggestion}
 `suggestion` is your suggestion for an addition or a change in the bot's features.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -400,7 +400,7 @@ Shows suggestions received so far unless they have been completed (and therefore
 
     $suggestions
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -414,7 +414,7 @@ Chooses a random value between the options given.
     $decide {options}
 `options` is a list of options, separated by | (vertical bar), like this: `Yes|No`
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -428,7 +428,7 @@ Either sets the current welcome message (if [msg] is present), or shows it.
     $welcome [msg]
 `msg` is the new welcome message.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -442,7 +442,7 @@ Either sets the current goodbye message, or shows it.
     $goodbye [msg]
 `msg` is the new goodbye message.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -457,7 +457,7 @@ Shows public information about a user.
 `user` is a user mention (@user#0000) or the name of the user.
 `:field` is optional. Include : in your message. Fields are: `name`, `nick`, `id`, `date`, `default`, `avatar`, `status`, `type`
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -470,7 +470,7 @@ Gives you an invite link.
 
     $invite
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -504,7 +504,7 @@ It can only delete messages if they are under 2 weeks old.
 `role_mention` represents a role mention.  
 `boolean` represents a True or False (case-sensitive) value.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -518,7 +518,7 @@ Kicks the mentioned user(s).
     $kick {users}
 `users` is one or more mentions of users (@user#0000).
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -532,7 +532,7 @@ Bans the mentioned user(s) from the server.
     $ban {users}
 `users` is one or more user mentions.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -547,7 +547,7 @@ Shows the permissions of the user that sent it or the mentioned user, in the spe
 `channel` is a channel mention.  
 `user` is a user mention.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -560,7 +560,7 @@ Shows the list of language codes.
 
     $translate.get
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -576,7 +576,7 @@ Translates text.
 `to` is the language code `text` will be translated to.  
 `text` is the text that will be translated.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -589,7 +589,7 @@ Starts a DM channel.
 
     $dm
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -604,7 +604,7 @@ Alters or shows the filter settings.
     $filter
 `type` is the new filter type. This is for setting whether or not the bot should replace filtered messages with their censored versions.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -619,7 +619,7 @@ Converts a string to the encoded equivalent.
 `codec` is the conversion codec to use. Unicode is used most often.  
 `string` is a sequence of characters.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -633,7 +633,7 @@ Mutes a person, deleting any and all messages sent by them in the channel the co
     $mute {users}
 `users` is one or more user mentions.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -647,7 +647,7 @@ Unmutes a person, allowing them to send a message in the channel the command was
     $unmute {users}
 `users` is one or more user mentions.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -660,7 +660,7 @@ Shows the people muted in the server.
 
     $mutes
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -674,7 +674,7 @@ Sets the default channel for the daily verse.
     $setchannel {channel}
 `channel` is a channel mention.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -687,7 +687,7 @@ Gets the default channel for the daily verse.
 
     $getchannel
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -700,7 +700,7 @@ Shows the verse of the day.
 
     $votd
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -713,7 +713,7 @@ Shows information on the current running instance of LogBot.
 
     logbot.info
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -727,7 +727,7 @@ Shows the rank of the sender, or mentioned person.
     l$rank [user]
 `user` is a user mention.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -740,7 +740,7 @@ Shows a list of everyone in the server, sorted by their ranks. Users with rank 0
 
     l$levels
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -754,7 +754,7 @@ Shows your server rank.
     l$place [user]
 `user` is a user mention.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -770,7 +770,7 @@ Purchases an item from the shop with credits earned in the bot.
 `item` is the item to buy. This matches up with the first column provided when using `l$shop`.  
 `amount` is the amount to buy.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -783,7 +783,7 @@ Shows a list of items you can buy.
 
     l$shop
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -799,7 +799,7 @@ Sends some of your chosen `{gift}` to the chosen user.
 `amount` is the amount to give.  
 `user` is the user to give `gift` to.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -815,7 +815,7 @@ Generates an award for the chosen user.
 `amount` is the amount of `award` to award.
 `user` is the user to award `award` to.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -828,7 +828,7 @@ Checks which modules, if any, are working properly.
 
     $ping
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -841,7 +841,7 @@ Shows if the levels module is disabled.
 
     l$disabled
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -854,7 +854,7 @@ Disables the levels module for the server, until it is is re-enabled.
 
     l$disable
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -867,7 +867,7 @@ Enables the levels system.
 
     l$enable
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -881,7 +881,7 @@ Disables verse recognition for individual channels, if some were mentioned. If n
     v$disable {channel}
 `channel` is one or more channel mentions.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -895,7 +895,7 @@ Enables verse recognition for the channel(s) mentioned. If none were mentioned, 
     v$enable {channel}
 `channel` is one or more channel mentions.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -908,7 +908,7 @@ Shows a list of the channels in this server where verse recognition is disabled.
 
     v$disables
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -926,7 +926,7 @@ paper beats rock
     g$rps {choice: [rock/paper/scissors]}
 `choice` is your choice between rock, paper, and scissors.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -946,7 +946,7 @@ Spock destroys rock and disintegrates scissors
     g$rpsls {choice: [rock/paper/scissors/lizard/Spock]}
 `choice` is your choice between rock, paper, scissors, lizard, and Spock.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -960,7 +960,7 @@ Shows rules for a game.
     g$rules {game: [rps/rpsls/scramble]}
 `game` is the game you want rules for.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -975,7 +975,7 @@ Starts a vote and returns the index of the vote.
 `prompt` is the topic of the vote.  
 `choices` is one or more choices for the users to choose from. Each one is separated by a vertical bar.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -989,7 +989,7 @@ Ends a vote and returns the results.
     p$end {index}
 `index` is the vote index. This can be retrieved by using the `p$polls` command.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -1003,7 +1003,7 @@ Shows the status of a poll.
     p$status {index}
 `index` is the poll index. This can be retrieved by using the `p$polls` command.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1016,7 +1016,7 @@ Votes for a choice.
 
     p$vote
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1029,7 +1029,7 @@ Shows existing votes and their indices.
 
     p$polls
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1043,7 +1043,7 @@ Saves a poll for later use.
     p$save {index}
 `index` is the poll index, which can be fetched by using `p$polls`.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -1057,7 +1057,7 @@ Views a specific saved poll.
     p$view {index}
 `index` is the poll index, which can be found by using `p$saved`.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -1071,7 +1071,7 @@ Removes a saved poll from the database.
     p$remove {index}
 `index` is the poll index, which can be fetched by using `p$saved`.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -1084,7 +1084,7 @@ Shows the saved polls.
 
     p$saved
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -1098,7 +1098,7 @@ Sets whether or not to send level/tier up notifications in DM or a server channe
     l$dm {val: [t/f]}
 `val` is a boolean (True or False) value.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1112,7 +1112,7 @@ Sets your preferred bible version.
     $setversion [version: [kjv/akjv/web]}
 `version` is the bible version you want to set yours to. Currently only supports 3 versions.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1126,7 +1126,7 @@ Sets the type of the bible verses.
     $settype {type: [embed/text]}
 `type` is the return format you wish to receive references in.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1139,7 +1139,7 @@ Sends the LogBot HQ Instant Invite Link through chat.
 
     $hq
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1154,7 +1154,7 @@ Fetches the logs for a channel in a server.
     $fetch event
 `channel` is the name (not a mention) of a channel.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -1168,7 +1168,7 @@ Much like $help, this command will either show a list of prefixes (if no prefix 
     h$prefix [prefix]
 `prefix` is the prefix that you wish to view.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1182,7 +1182,7 @@ Gets or sets the join role.
     $joinrole [role]
 `role` is a role mention.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin/Member
 
 ---
@@ -1195,7 +1195,7 @@ Shows a link to the GitHub repository for this bot.
 
     $git
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1209,7 +1209,7 @@ Take a guess at what the scrambled word is.
     $guess {word}
 `word` is the un-scrambled word that you are guessing.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1227,7 +1227,7 @@ Adds a word, removes a word, searches for a word, lists all words, or starts wor
     $scramble
 `word` is the word you wish to add/remove/find.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1240,7 +1240,7 @@ Gives up a word scramble.
 
     $giveup
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1254,7 +1254,7 @@ Sets which channel you will be alerted in when DM is OFF.
     l$alert {channel}
 `channel` is a channel mention, `self`, or `None` (case-sensitive).
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1268,7 +1268,7 @@ Gets or sets the logchannel for the server.
     $logchannel [channel]
 `channel` is a channel mention.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -1281,7 +1281,7 @@ Rolls a random number between 1 and 6.
 
     $roll
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1294,7 +1294,7 @@ Shows all of the voice and text channels in a server.
 
     $channels
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1321,7 +1321,7 @@ multi-line:
 `ref` is a verse reference. This line is optional, and can be used as many times as is necessary.  
 `word` is a word or phrase.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1339,7 +1339,7 @@ Adds, removes, or shows all milestones within the levels system.
 `limit` is the number needed to complete the milestone.  
 `role` is a role mention.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -1355,7 +1355,7 @@ Plays slots, or shows the rules for slots.
 `bid` is how many credits you bet.
 
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1371,7 +1371,7 @@ Sets the DM or AlertChannel default values for the server.
 `val` is the value for the DM value. Must be either on/true/1 or off/false/0. False is default.  
 `channel` is a channel mention.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -1384,7 +1384,7 @@ Gets the default values for the server.
 
     l$defaults
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1398,7 +1398,7 @@ Gets or sets the server's default welcoming channel.
     l$defaultchannel [channel]
 `channel` is a channel mention.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -1412,7 +1412,7 @@ Reports a bug with the bot.
     $report {bug}
 `message` is your bug report. Please try to include as detailed a description as possible.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1425,7 +1425,7 @@ Shows the bug reports with the bot.
 
     $reports
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1439,7 +1439,7 @@ Views the strikes on a person.
     m$strikes [user]
 `user` is a mention. If not included, the bot will consider you as the user.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -1454,7 +1454,7 @@ Strikes a person.
 `user` is a user mention.  
 `reason` is the reason you struck this user.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -1468,7 +1468,7 @@ Removes a strike from a person.
     m$destrike {code}
 `code` is the strike code. It can be retrieved by viewing a user's strikes.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -1481,7 +1481,7 @@ Shows the Verse Module's settings for the server and you.
 
     v$settings
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1495,7 +1495,7 @@ Changes the server's prefix.
     $changeprefix {prefix}
 `prefix` is the new prefix.
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -1508,7 +1508,7 @@ Shows the server's prefix. Works with both the default ($) prefix as well as the
 
     $prefix
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1522,7 +1522,7 @@ Shows information about a role.
     $role {role}
 `role` can be a role's name, id, or mention.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1536,7 +1536,7 @@ Shows information about a role.
     $urban {word}
 `word` is the word you would like to look up.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1552,7 +1552,7 @@ Shows the definitions, antonyms, or synonyms of a word.
     $dict syn {word}
 `word` is the word you want information on.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1565,7 +1565,7 @@ Shows the server's log files.
 
     $files
 
-**Required Permissions**  
+**Required Level**  
 LogBot Admin
 
 ---
@@ -1578,7 +1578,7 @@ Shows the server's log files.
 
     c$show
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1591,7 +1591,7 @@ Adds a custom command to the list.
 
     c$add {trigger}||{response}
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1604,7 +1604,7 @@ Removes a custom command from the list.
 
     c$remove {trigger}
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1618,7 +1618,7 @@ Fetches GIF images from Giphy.
     $gif [tag]
 `tag` is the image tag.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
@@ -1632,7 +1632,7 @@ Calculates the number of significant figures in a number.
     $sf {n}
 `n` is a number. It can be a decimal.
 
-**Required Permissions**  
+**Required Level**  
 None
 
 ---
