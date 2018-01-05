@@ -459,6 +459,7 @@ def get_diff ( then: datetime, now: datetime ) -> str:
 	_str = _str.replace( "0 years,", "" ).replace( " 0 months,", "" ).replace( " 0 weeks,", "" ).replace( " 0 days,", "" ).replace( " 0 hours,", "" ).replace( " 0 minutes,", "" ).replace( " 0 seconds", "" )
 	return _str
 
+# noinspection PyShadowingNames
 def log_error ( error_text: str ):
 	file = f"{os.getcwd()}\\error_log.txt"
 	prev_text = ""
@@ -484,6 +485,7 @@ class Commands:
 		async def sf ( message: discord.Message, prefix: str ):
 			num = message.content.replace( f"{prefix}sf ", "" )
 			org_num = num
+			# noinspection PyUnusedLocal
 			sfs = 0
 			dot_found = False
 			while num[ 0 ] == "0" or num[ 0 ] == ".":
