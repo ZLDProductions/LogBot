@@ -30,17 +30,9 @@ import tools
 from logbot_data import *
 
 # <editor-fold desc="Base Variables">
-version = '16.8.0 Python'
+version = '16.8.1 Python'
 whats_new = [
-	"•Fixed custom commands. Now, each server can have their own commands. No more awkward moments!",
-	"•Revised the original polling system to make voting much simpler.",
-	"•Added $gif.",
-	"•Fixed $disable commands.",
-	"•Major speed increase in the levels plugin.",
-	"•Added the ability to fetch only a certain field for a user when using the $user command.",
-	"•Fixed 3/5 bugs regarding the $setup command!",
-	"•Added a significant figure calculator.",
-	"•Added error logging."
+	"•Added a section in the built-in help docs to show what admin permissions the bot needs to execute the command."
 ] # list of recent changes to the code.
 planned = [
 	"There is nothing planned at the moment."
