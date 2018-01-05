@@ -8,7 +8,8 @@ class kjv_sql( object ):
 		"""
 		:param books: A string list of the books of the Bible.
 		"""
-		self.settings = os.path.expanduser( "~\\Documents\\Discord Logs\\SETTINGS" )
+		# self.settings = os.path.expanduser( "~\\Documents\\Discord Logs\\SETTINGS" )
+		self.settings = os.getcwd() + "\\Discord Logs\\SETTINGS"
 		self.has_initialized = False
 		self.data = "{}\\bible.txt".format( self.settings )
 		self.connection = sqlite3.connect( "{}\\kjv.db".format( self.settings ) )
@@ -90,7 +91,8 @@ class sql_data( object ):
 		"""
 		:param books: A string array of the books of the Bible. Not required.
 		"""
-		self.settings = os.path.expanduser( "~\\Documents\\Discord Logs\\SETTINGS" )  # @UndefinedVariable
+		# self.settings = os.path.expanduser( "~\\Documents\\Discord Logs\\SETTINGS" )  # @UndefinedVariable
+		self.settings = os.getcwd() + "\\Discord Logs\\SETTINGS"
 		self.has_initialized = False
 		self.data = "{}\\akjv.txt".format( self.settings )
 		self.connection = sqlite3.connect( "{}\\akjv.db".format( self.settings ) )
@@ -176,7 +178,8 @@ class web_sql( object ):
 		"""
 		:param books: A list of book names. Not required.
 		"""
-		self.settings = os.path.expanduser( "~\\Documents\\Discord Logs\\SETTINGS" )
+		# self.settings = os.path.expanduser( "~\\Documents\\Discord Logs\\SETTINGS" )
+		self.settings = os.getcwd() + "\\Discord Logs\\SETTINGS"
 		self.has_initialized = False
 		self.data = "{}\\web.txt".format( self.settings )
 		self.connection = sqlite3.connect( "{}\\web.db".format( self.settings ) )

@@ -20,46 +20,51 @@ A. dev.py
 B. security.py
 C. moderation.py"""
 programs = {
-	"0":"logbot.py",
-	"1":"bible.py",
-	"2":"admin.py",
-	"3":"levels.py",
-	"4":"polling.py",
-	"5":"help.py",
-	"6":"ai.py",
-	"7":"games.py",
-	"8":"custom.py",
-	"9":"swearing_filter_v2.py",
-	"A":"dev.py",
-	"B":"security.py",
-	"C":"moderation.py"
+	"0": "logbot.py",
+	"1": "bible.py",
+	"2": "admin.py",
+	"3": "levels.py",
+	"4": "polling.py",
+	"5": "help.py",
+	"6": "ai.py",
+	"7": "games.py",
+	"8": "custom.py",
+	"9": "swearing_filter_v2.py",
+	"A": "dev.py",
+	"B": "security.py",
+	"C": "moderation.py"
 }
 titles = {
-	"0":"LogBot Main",
-	"1":"Bible Plugin",
-	"2":"Admin Plugin",
-	"3":"Levels Plugin",
-	"4":"Polling Plugin",
-	"5":"Help Plugin",
-	"6":"AI Plugin",
-	"7":"Games Plugin",
-	"8":"Custom Commands Plugin",
-	"9":"Swearing Filter V2 Plugin",
-	"A":"Dev Plugin",
-	"B":"Security Plugin",
-	"C":"Moderation Plugin"
+	"0": "LogBot Main",
+	"1": "Bible Plugin",
+	"2": "Admin Plugin",
+	"3": "Levels Plugin",
+	"4": "Polling Plugin",
+	"5": "Help Plugin",
+	"6": "AI Plugin",
+	"7": "Games Plugin",
+	"8": "Custom Commands Plugin",
+	"9": "Swearing Filter V2 Plugin",
+	"A": "Dev Plugin",
+	"B": "Security Plugin",
+	"C": "Moderation Plugin"
 }
 
 # <editor-fold desc="Standard initialization">
-try: cursor.execute( f"""
+try:
+	cursor.execute( f"""
 CREATE TABLE packages (name VARCHAR(50), sequence VARCHAR(50));
 """.replace( "\t", "" ) )
-except: pass
-try: cursor.execute( f"""
+except:
+	pass
+try:
+	cursor.execute( f"""
 CREATE INDEX pkg_index
 ON packages (name, sequence);
 """.replace( "\t", "" ) )
-except: pass
+except:
+	pass
+
 
 # </editor-fold>
 
@@ -76,6 +81,7 @@ def getRunPackages ( ):
 	for c in seq: subprocess.Popen( f"python \"{os.getcwd()}\\{programs[c]}\"" )
 	pass
 
+
 def main ( ):
 	print( "1. Run sequence\n2. Run package\n3. Create package\n4. Edit package\n5. Remove package." )
 	choice = int( input( "Operation: " ) )
@@ -86,7 +92,9 @@ def main ( ):
 		os.system( "cls" )
 		for c in files: subprocess.Popen( f"python \"{os.getcwd()}\\{programs[c]}\"" )
 		pass
-	elif choice == 2: getRunPackages( )
+	elif choice == 2:
+		getRunPackages( )
+		pass
 	elif choice == 3:
 		name = input( "Package name: " )
 		sequence = input( "Package sequence: " )
@@ -97,7 +105,8 @@ def main ( ):
 		OR sequence="{sequence}";
 		""".replace( "\t", "" ) )
 		res = cursor.fetchall( )
-		if len( res ) >= 1: print( "That package already exists." )
+		if len( res ) >= 1:
+			print( "That package already exists." )
 		else:
 			cursor.execute( f"""
 			INSERT INTO packages (name, sequence)
@@ -117,12 +126,21 @@ def main ( ):
 		name = input( "Package name to edit: " )
 		seq = input( "New Sequence: " )
 
-		try: cursor.execute( f"""
+		try:
+			cursor.execute( f"""
 		UPDATE packages
 		SET sequence="{seq}"
 		WHERE name="{name}";
-		""".replace( "\t", "" ) ); sql.commit( ); print( "Updated the package." ); input( "" )
-		except: print( "Could not update the package." ); print( traceback.format_exc( ) ); input( "" )
+		""".replace( "\t", "" ) )
+			sql.commit( )
+			print( "Updated the package." )
+			input( "" )
+			pass
+		except:
+			print( "Could not update the package." )
+			print( traceback.format_exc( ) )
+			input( "" )
+			pass
 		main( )
 		pass
 	elif choice == 5:
@@ -141,9 +159,15 @@ def main ( ):
 			sql.commit( )
 			print( "Removed the package." )
 			input( "" )
-		except: print( "Could not remove the package." ); print( traceback.format_exc( ) ); input( "" )
+			pass
+		except:
+			print( "Could not remove the package." )
+			print( traceback.format_exc( ) )
+			input( "" )
+			pass
 		main( )
 	pass
+
 
 main( )
 sql.commit( )
