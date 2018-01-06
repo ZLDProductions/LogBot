@@ -18,36 +18,39 @@ my_str = """0. logbot.py
 9. swearing_filter_v2.py
 A. dev.py
 B. security.py
-C. moderation.py"""
+C. moderation.py
+D. musiclaunch.py"""
 programs = {
-	"0": "logbot.py",
-	"1": "bible.py",
-	"2": "admin.py",
-	"3": "levels.py",
-	"4": "polling.py",
-	"5": "help.py",
-	"6": "ai.py",
-	"7": "games.py",
-	"8": "custom.py",
-	"9": "swearing_filter_v2.py",
-	"A": "dev.py",
-	"B": "security.py",
-	"C": "moderation.py"
+	"0":"logbot.py",
+	"1":"bible.py",
+	"2":"admin.py",
+	"3":"levels.py",
+	"4":"polling.py",
+	"5":"help.py",
+	"6":"ai.py",
+	"7":"games.py",
+	"8":"custom.py",
+	"9":"swearing_filter_v2.py",
+	"A":"dev.py",
+	"B":"security.py",
+	"C":"moderation.py",
+	"D":"musiclaunch.py"
 }
 titles = {
-	"0": "LogBot Main",
-	"1": "Bible Plugin",
-	"2": "Admin Plugin",
-	"3": "Levels Plugin",
-	"4": "Polling Plugin",
-	"5": "Help Plugin",
-	"6": "AI Plugin",
-	"7": "Games Plugin",
-	"8": "Custom Commands Plugin",
-	"9": "Swearing Filter V2 Plugin",
-	"A": "Dev Plugin",
-	"B": "Security Plugin",
-	"C": "Moderation Plugin"
+	"0":"LogBot Main",
+	"1":"Bible Plugin",
+	"2":"Admin Plugin",
+	"3":"Levels Plugin",
+	"4":"Polling Plugin",
+	"5":"Help Plugin",
+	"6":"AI Plugin",
+	"7":"Games Plugin",
+	"8":"Custom Commands Plugin",
+	"9":"Swearing Filter V2 Plugin",
+	"A":"Dev Plugin",
+	"B":"Security Plugin",
+	"C":"Moderation Plugin",
+	"D":"Music Plugin"
 }
 
 # <editor-fold desc="Standard initialization">
@@ -65,7 +68,6 @@ ON packages (name, sequence);
 except:
 	pass
 
-
 # </editor-fold>
 
 def getRunPackages ( ):
@@ -80,7 +82,6 @@ def getRunPackages ( ):
 	os.system( "cls" )
 	for c in seq: subprocess.Popen( f"python \"{os.getcwd()}\\{programs[c]}\"" )
 	pass
-
 
 def main ( ):
 	print( "1. Run sequence\n2. Run package\n3. Create package\n4. Edit package\n5. Remove package." )
@@ -167,7 +168,6 @@ def main ( ):
 			pass
 		main( )
 	pass
-
 
 main( )
 sql.commit( )
