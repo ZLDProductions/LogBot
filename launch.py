@@ -53,6 +53,8 @@ titles = {
 	"D":"Music Plugin"
 }
 
+ext_launch = False
+
 # <editor-fold desc="Standard initialization">
 try:
 	cursor.execute( f"""
@@ -78,20 +80,41 @@ def getRunPackages ( ):
 	res = cursor.fetchall( )
 	for pkg in res: print( f"{res.index(pkg)}. {pkg[0]} - {pkg[1]}" )
 	seq = res[ int( input( "Sequence to run: " ) ) ][ 1 ]
-	# for c in seq: os.system( f"start \"{titles[c]}\" /MAX /HIGH python \"{os.getcwd()}\\{programs[c]}\"" )
 	os.system( "cls" )
-	for c in seq: subprocess.Popen( f"python \"{os.getcwd()}\\{programs[c]}\"" )
+	if ext_launch:
+		for c in seq:
+			os.system( f"start \"{titles[c]}\" /MAX /HIGH python \"{os.getcwd()}\\{programs[c]}\"" )
+			pass
+		pass
+	else:
+		for c in seq:
+			subprocess.Popen( f"python \"{os.getcwd()}\\{programs[c]}\"" )
+			pass
+		pass
 	pass
 
 def main ( ):
+	global ext_launch
+	print( "T. Launch LogBot Externally\nF. Launch LogBot Internally" )
+	tmp = input( f"Choice: " )
+	ext_launch = (tmp.lower( ) == "t")
+
 	print( "1. Run sequence\n2. Run package\n3. Create package\n4. Edit package\n5. Remove package." )
 	choice = int( input( "Operation: " ) )
 	if choice == 1:
 		print( my_str )
 		files = input( "Programs to launch: " )
-		# for c in files: os.system( f"start \"{titles[c]}\" /MAX /HIGH python \"{os.getcwd()}\\{programs[c]}\"" )
 		os.system( "cls" )
-		for c in files: subprocess.Popen( f"python \"{os.getcwd()}\\{programs[c]}\"" )
+		if ext_launch:
+			for c in files:
+				os.system( f"start \"{titles[c]}\" /MAX /HIGH python \"{os.getcwd()}\\{programs[c]}\"" )
+				pass
+			pass
+		else:
+			for c in files:
+				subprocess.Popen( f"python \"{os.getcwd()}\\{programs[c]}\"" )
+				pass
+			pass
 		pass
 	elif choice == 2:
 		getRunPackages( )
