@@ -82,6 +82,7 @@ join_roles = { }
 log_channel = { }
 default_channel = { }
 dict_words = [ ]
+playlists = { }
 # </editor-fold>
 
 # <editor-fold desc="Paths">
@@ -99,6 +100,7 @@ _join_roles = f"{discord_settings}\\join_roles.txt"
 _defaults = f"{discord_settings}\\default_channels.txt"
 _dictionary = f"{discord_settings}\\censored_words.txt"
 _disables = f"{discord_settings}\\disables.txt"
+_playlists = f"{discord_settings}\\playlists.txt"
 # </editor-fold>
 
 if not os.path.exists( discord_settings ):
@@ -139,6 +141,15 @@ except: pass
 try:
 	reader = open( _disables, 'r' )
 	disables = ast.literal_eval( reader.read( ) )
+	reader.close( )
+	del reader
+	pass
+except: pass
+
+# Load the playlists.
+try:
+	reader = open( _playlists, 'r' )
+	playlists = ast.literal_eval( reader.read( ) )
 	reader.close( )
 	del reader
 	pass
@@ -2104,6 +2115,9 @@ async def on_message ( message: discord.Message ):
 				"permissions"   :False,
 				"gif"           :False
 			}
+			if not message.server.id in list( playlists.keys( ) ):
+				playlists[ message.server.id ] = { }
+				pass
 
 			sort( )
 
@@ -2548,7 +2562,6 @@ async def on_message ( message: discord.Message ):
 				elif startswith( f"{prefix}sf " ):
 					await Commands.Member.sf( message, prefix )
 					pass
-
 				# elif startswith(f"{prefix}yoda "):
 				# 	cnt = message.content.replace(f"{prefix}yoda ", "").replace(" ", "+")
 				# 	response = unirest.get(f"https://yoda.p.mashape.com/yoda?sentence={cnt}",
@@ -2579,6 +2592,63 @@ async def on_message ( message: discord.Message ):
 				pass
 			elif startswith( "$prefix" ):
 				await client.send_message( message.channel, f"The prefix is {prefix}" )
+				pass
+			elif startswith( f"mu$playlist " ):
+				tmp = message.content.split( " " )
+				tmp.remove( tmp[ 0 ] )
+				if tmp[ 0 ] == "list":
+					tmp.remove( tmp[ 0 ] )
+					lines = [ ]
+					for pl in list( playlists[ message.server.id ].keys( ) ):
+						lines.append( f"{pl} ({len(playlists[message.server.id][pl])})" )
+						pass
+					if len( lines ) > 0:
+						await client.send_message( message.channel, '\n'.join( lines ) )
+						pass
+					else:
+						await client.send_message( message.channel, f"```There are no playlists for this server.```" )
+						pass
+					pass
+				elif tmp[ 0 ] == "show":
+					tmp.remove( tmp[ 0 ] )
+					if not playlists[ message.server.id ].get( ' '.join( tmp ) ) is None:
+						await client.send_message( message.channel, '\n'.join( playlists[ message.server.id ][ ' '.join( tmp ) ] ) )
+						pass
+					else:
+						await client.send_message( message.channel, f"```No playlist with that name exists.```" )
+						pass
+					pass
+				elif tmp[ 0 ] == "edit":
+					tmp.remove( tmp[ 0 ] )
+					stuffs = ' '.join( tmp ).split( "||" )
+					name = stuffs[ 0 ]
+					new_songs = stuffs[ 1 ].split( "\n" )
+					playlists[ message.server.id ][ name ] = new_songs
+					await client.send_message( message.channel, f"```Edited the playlist!```" )
+					pass
+				elif tmp[ 0 ] == "new":
+					tmp.remove( tmp[ 0 ] )
+					tmp = ' '.join( tmp ).split( "||" )
+					name = tmp[ 0 ]
+					songs = tmp[ 1 ]
+					playlists[ message.server.id ][ name ] = songs.split( "\n" )
+					await client.send_message( message.channel, f"```Created the playlist!```" )
+					pass
+				elif tmp[ 0 ] == "remove":
+					tmp.remove( tmp[ 0 ] )
+					tmp = ' '.join( tmp )
+					try:
+						del playlists[ message.server.id ][ tmp ]
+						await client.send_message( message.channel, f"```Deleted the playlist!```" )
+						pass
+					except:
+						await client.send_message( message.channel, f"```No playlist with that name exists.```" )
+						pass
+					pass
+				writer = open( _playlists, 'w' )
+				writer.write( str( playlists ) )
+				writer.close( )
+				del writer
 				pass
 
 			for item in list( custom_commands.keys( ) ):
