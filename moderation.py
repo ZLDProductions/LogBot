@@ -33,7 +33,9 @@ def log_error ( error_text: str ):
 	writer = open( file, 'w' )
 	writer.write( f"{datetime.now()} (moderation.py) - {error_text}\n\n{prev_text}" )
 	writer.close( )
-	if "SystemExit" in error_text: exit( 0 )
+	if "SystemExit" in error_text:
+		exit( 0 )
+		pass
 	del writer
 	pass
 
@@ -52,6 +54,7 @@ def getprefix ( server: str ) -> str:
 
 @client.event
 async def on_message ( message: Message ):
+	global exiting
 	try:
 		admin_role = find( lambda r:r.name == "LogBot Admin", message.server.roles )
 		begins = message.content.startswith
@@ -60,8 +63,12 @@ async def on_message ( message: Message ):
 
 		if admin_role in message.author.roles:
 			if begins( f"m{prefix}strikes" ):
-				if " " in message.content: user = message.mentions[ 0 ]
-				else: user = message.author
+				if " " in message.content:
+					user = message.mentions[ 0 ]
+					pass
+				else:
+					user = message.author
+					pass
 				tmp = read( f"""SELECT * FROM _moderation WHERE server='{message.server.id}' AND member='{user.id}';""" )
 				print( tmp )
 				e = Embed( title="Strikes", description=f"For {user}" )
@@ -101,7 +108,9 @@ async def on_message ( message: Message ):
 				pass
 			pass
 		pass
-	except: log_error( traceback.format_exc( ) )
+	except:
+		log_error( traceback.format_exc( ) )
+		pass
 	pass
 
 @client.event
@@ -125,7 +134,7 @@ async def on_ready ( ):
 
 client.run( token )
 
-if exiting == False:
+if not exiting:
 	subprocess.Popen( f"python {os.getcwd()}\\moderation.py" )
 	exit( 0 )
 	pass

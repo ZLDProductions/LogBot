@@ -17,10 +17,12 @@ class SQL:
 		vals = ""
 		for k in key_names:
 			vals += str( f", " + str( k ) + " VARCHAR(100000)" )
+			pass
 		vals = vals[ 2: ]
 		cmd = f"""CREATE TABLE {table_name} ({vals});"""
 		try:
 			self.cursor.execute( cmd )
+			pass
 		except:
 			pass
 		self.connection.commit( )

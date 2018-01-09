@@ -58,15 +58,17 @@ ext_launch = False
 # <editor-fold desc="Standard initialization">
 try:
 	cursor.execute( f"""
-CREATE TABLE packages (name VARCHAR(50), sequence VARCHAR(50));
-""".replace( "\t", "" ) )
+	CREATE TABLE packages (name VARCHAR(50), sequence VARCHAR(50));
+	""".replace( "\t", "" ) )
+	pass
 except:
 	pass
 try:
 	cursor.execute( f"""
-CREATE INDEX pkg_index
-ON packages (name, sequence);
-""".replace( "\t", "" ) )
+	CREATE INDEX pkg_index
+	ON packages (name, sequence);
+	""".replace( "\t", "" ) )
+	pass
 except:
 	pass
 
@@ -78,7 +80,9 @@ def getRunPackages ( ):
 	FROM packages;
 	""".replace( "\t", "" ) )
 	res = cursor.fetchall( )
-	for pkg in res: print( f"{res.index(pkg)}. {pkg[0]} - {pkg[1]}" )
+	for pkg in res:
+		print( f"{res.index(pkg)}. {pkg[0]} - {pkg[1]}" )
+		pass
 	seq = res[ int( input( "Sequence to run: " ) ) ][ 1 ]
 	os.system( "cls" )
 	if ext_launch:
@@ -131,6 +135,7 @@ def main ( ):
 		res = cursor.fetchall( )
 		if len( res ) >= 1:
 			print( "That package already exists." )
+			pass
 		else:
 			cursor.execute( f"""
 			INSERT INTO packages (name, sequence)
@@ -146,16 +151,18 @@ def main ( ):
 			FROM packages;
 			""".replace( "\t", "" ) )
 		res = cursor.fetchall( )
-		for pkg in res: print( f"{res.index(pkg)}. {pkg[0]} - {pkg[1]}" )
+		for pkg in res:
+			print( f"{res.index(pkg)}. {pkg[0]} - {pkg[1]}" )
+			pass
 		name = input( "Package name to edit: " )
 		seq = input( "New Sequence: " )
 
 		try:
 			cursor.execute( f"""
-		UPDATE packages
-		SET sequence="{seq}"
-		WHERE name="{name}";
-		""".replace( "\t", "" ) )
+			UPDATE packages
+			SET sequence="{seq}"
+			WHERE name="{name}";
+			""".replace( "\t", "" ) )
 			sql.commit( )
 			print( "Updated the package." )
 			input( "" )
@@ -173,7 +180,9 @@ def main ( ):
 		FROM packages;
 		""".replace( "\t", "" ) )
 		res = cursor.fetchall( )
-		for pkg in res: print( f"{pkg[0]} - {pkg[1]}" )
+		for pkg in res:
+			print( f"{pkg[0]} - {pkg[1]}" )
+			pass
 		name = input( "Package name: " )
 		try:
 			cursor.execute( f"""

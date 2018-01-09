@@ -7,7 +7,7 @@ import discord
 import sqlite3
 from colorama import Fore, init
 
-from logbot_data import token
+from logbot_data import token, owner_id
 
 client = discord.Client( )
 init( )
@@ -870,7 +870,9 @@ def log_error ( error_text: str ):
 	writer = open( file, 'w' )
 	writer.write( f"{datetime.now()} (help.py) - {error_text}\n\n{prev_text}" )
 	writer.close( )
-	if "SystemExit" in error_text: exit( 0 )
+	if "SystemExit" in error_text:
+		exit( 0 )
+		pass
 	del writer
 	pass
 
@@ -887,19 +889,22 @@ async def on_ready ( ):
 
 @client.event
 async def on_message ( message ):
+	global exiting
 	try:
 		# noinspection PyUnusedLocal
 		def replace ( *args, val=message.content ):
 			_replace = val.replace
-			for reg, rep in args: val = _replace( reg, rep )
+			for reg, rep in args:
+				val = _replace( reg, rep )
+				pass
 			return val
 		def startswith ( *args, val=message.content ):
 			for arg in args:
-				if val.startswith( arg ): return True
+				if val.startswith( arg ):
+					return True
 				pass
 			return False
 			pass
-		owner_id = "239500860336373761"
 		do_update = False
 
 		prefix = sqlread( f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';" )[ 0 ][ 0 ]
@@ -909,12 +914,20 @@ async def on_message ( message ):
 			myembed = discord.Embed( title=content, description=f"Command Information for {content}\n{key}", colour=discord.Colour.dark_gold( ) )
 			items = { }
 			for item in infos.keys( ):
-				if item.replace( "_", "" ) == content.replace( prefix, "" ).replace( "$", "" ): items = infos[ item ]
+				if item.replace( "_", "" ) == content.replace( prefix, "" ).replace( "$", "" ):
+					items = infos[ item ]
+					pass
 				pass
-			for item in list( items.keys( ) ): myembed.add_field( name=item, value=items[ item ].replace( "$", prefix ) )
+			for item in list( items.keys( ) ):
+				myembed.add_field( name=item, value=items[ item ].replace( "$", prefix ) )
+				pass
 			myembed.set_footer( text=f"GitHub URL: {url}{content.replace(prefix, '')}" )
-			if not len( items.keys( ) ) == 0: await client.send_message( message.channel, f"Website URL: {web_url}{content.replace(prefix, '')}", embed=myembed )
-			else: await client.send_message( message.channel, f"```There is no command for \"{content}\" at this time.```" )
+			if not len( items.keys( ) ) == 0:
+				await client.send_message( message.channel, f"Website URL: {web_url}{content.replace(prefix, '')}", embed=myembed )
+				pass
+			else:
+				await client.send_message( message.channel, f"```There is no command for \"{content}\" at this time.```" )
+				pass
 			del content
 			del myembed
 			del items
@@ -922,14 +935,23 @@ async def on_message ( message ):
 		elif startswith( f"{prefix}help" ):
 			_cnt = message.content.replace( f"{prefix}help", "" )
 			_groupby = None
-			if "&GroupByType" in _cnt: _groupby = "type"
-			if "&GroupByPlugin" in _cnt: _groupby = "plugin"
+			if "&GroupByType" in _cnt:
+				_groupby = "type"
+				pass
+			if "&GroupByPlugin" in _cnt:
+				_groupby = "plugin"
+				pass
 			if _groupby == "type":
 				all_commands = { }
 				_str = ""
 				for item in infos:
-					if all_commands.get( infos[ item ][ "Type" ] ) is not None: all_commands[ infos[ item ][ "Type" ] ].append( item )
-					else: all_commands[ infos[ item ][ "Type" ] ] = list( ); all_commands[ infos[ item ][ "Type" ] ].append( item )
+					if all_commands.get( infos[ item ][ "Type" ] ) is not None:
+						all_commands[ infos[ item ][ "Type" ] ].append( item )
+						pass
+					else:
+						all_commands[ infos[ item ][ "Type" ] ] = list( )
+						all_commands[ infos[ item ][ "Type" ] ].append( item )
+						pass
 					pass
 				for item in all_commands:
 					_str += f"{item}:\n{', '.join(all_commands[item])}\n\n"
@@ -940,8 +962,13 @@ async def on_message ( message ):
 				all_commands = { }
 				_str = ""
 				for item in infos:
-					if all_commands.get( infos[ item ][ "Plugin" ] ) is not None: all_commands[ infos[ item ][ "Plugin" ] ].append( item )
-					else: all_commands[ infos[ item ][ "Plugin" ] ] = list( ); all_commands[ infos[ item ][ "Plugin" ] ].append( item )
+					if all_commands.get( infos[ item ][ "Plugin" ] ) is not None:
+						all_commands[ infos[ item ][ "Plugin" ] ].append( item )
+						pass
+					else:
+						all_commands[ infos[ item ][ "Plugin" ] ] = list( )
+						all_commands[ infos[ item ][ "Plugin" ] ].append( item )
+						pass
 					pass
 				for item in all_commands:
 					_str += f"{item}:\n{', '.join(all_commands[item])}\n\n"
@@ -978,10 +1005,15 @@ async def on_message ( message ):
 			del prefs
 			pass
 		elif startswith( f"$update", "logbot.help.update" ):
-			if message.author.id == owner_id: do_update = True
+			if message.author.id == owner_id:
+				do_update = True
+				pass
 			pass
 		elif startswith( "$exit", "logbot.help.exit" ):
-			if message.author.id == owner_id: exiting = True; await client.logout( )
+			if message.author.id == owner_id:
+				exiting = True
+				await client.logout( )
+				pass
 			pass
 		elif startswith( f"{prefix}ping" ):
 			tm = datetime.now( ) - message.timestamp
@@ -995,12 +1027,14 @@ async def on_message ( message ):
 			exit( 0 )
 			pass
 		pass
-	except: log_error( traceback.format_exc( ) )
+	except:
+		log_error( traceback.format_exc( ) )
+		pass
 	pass
 
 client.run( token )
 
-if exiting == False:
+if not exiting:
 	subprocess.Popen( f"python {os.getcwd()}\\help.py" )
 	exit( 0 )
 	pass

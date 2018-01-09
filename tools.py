@@ -13,7 +13,8 @@ def startswith ( *msgs: str, val: str = "" ) -> bool:
 	:return: True if `val` starts with one or more of the `msgs`, else False.
 	"""
 	for msg in msgs:
-		if val.startswith( msg ): return True
+		if val.startswith( msg ):
+			return True
 		pass
 	return False
 
@@ -25,8 +26,16 @@ def format_message ( message: str, length: int = 1000, code_block: bool = True )
 	:param code_block: Useful for Discord messages, True will surround the messages in ```, and False will return the message itself. Defaults to True.
 	:return: A list of strings.
 	"""
-	if len( message ) > length: return [ (f"```{item}```" if code_block else f"{item}") for item in [ message[ i:i + length ] for i in range( 0, len( message ), length ) ] ]
-	else: return [ f"```{message}```" if code_block else f"{message}" ]
+	if len( message ) > length:
+		return [
+			(f"```{item}```" if code_block else f"{item}")
+			for item in [
+				message[ i:i + length ]
+				for i in range( 0, len( message ), length )
+			]
+		]
+	else:
+		return [ f"```{message}```" if code_block else f"{message}" ]
 	pass
 
 def is_ascii ( message: str ) -> bool:
@@ -55,7 +64,10 @@ def parse_num ( num: Union[ str, int ] ) -> str:
 	"""
 	_num = str( num )
 	_num = _num[ ::-1 ]
-	_num = ','.join( [ _num[ i:i + 3 ] for i in range( 0, len( _num ), 3 ) ] )[ ::-1 ]
+	_num = ','.join( [
+		_num[ i:i + 3 ]
+		for i in range( 0, len( _num ), 3 )
+	] )[ ::-1 ]
 	return str( _num )
 	pass
 
@@ -66,7 +78,9 @@ def replace ( message: str, *repls: tuple ) -> str:
 	:param repls: One or more tuple arguments where the order is (old, new)
 	:return: The new string.
 	"""
-	for repl in repls: message = message.replace( repl[ 0 ], repl[ 1 ] )
+	for repl in repls:
+		message = message.replace( repl[ 0 ], repl[ 1 ] )
+		pass
 	return message
 	pass
 
@@ -90,13 +104,17 @@ def factor ( n: int, s: int = 0 ) -> list:
 	if s == 0:
 		ret = [ ]
 		for i in range( 1, n + 1 ):
-			if n % i == 0: ret.append( (i, int( n / i )) )
+			if n % i == 0:
+				ret.append( (i, int( n / i )) )
+				pass
 			pass
 		return ret
 	else:
 		ret = [ ]
 		for i in range( 1, n + 1 ):
-			if n % i == 0 and (i + int( n / i ) == s or -i + int( n / i ) == s or i + int( n / -i ) == s or -i + int( n / -i ) == s): ret.append( (i, int( n / i )) )
+			if n % i == 0 and (i + int( n / i ) == s or -i + int( n / i ) == s or i + int( n / -i ) == s or -i + int( n / -i ) == s):
+				ret.append( (i, int( n / i )) )
+				pass
 			pass
 		return ret
 	pass

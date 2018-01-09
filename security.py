@@ -26,12 +26,16 @@ def log_error ( error_text: str ):
 	writer = open( file, 'w' )
 	writer.write( f"{datetime.now()} (security.py) - {error_text}\n\n{prev_text}" )
 	writer.close( )
-	if "SystemExit" in error_text: exit( 0 )
+	if "SystemExit" in error_text:
+		exit( 0 )
+		pass
 	del writer
 	pass
 
+# noinspection PyUnresolvedReferences
 @client.event
 async def on_message ( message: Message ):
+	global exiting
 	try:
 		if not message.server is None:
 			# <editor-fold desc="Local Variables">

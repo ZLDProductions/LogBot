@@ -27,7 +27,12 @@ def format_message ( msg: str, _tag: str ) -> list:
 		len_str = 2000 - len_tag
 		ret = [ f"{_tag}{msg[i:i+len_str]}{_tag}" for i in range( 0, len( msg ), len_str ) ]
 		pass
-	else: ret = [ msg[ i:i + 2000 ] for i in range( 0, len( msg ), 2000 ) ]
+	else:
+		ret = [
+			msg[ i:i + 2000 ]
+			for i in range( 0, len( msg ), 2000 )
+		]
+		pass
 	return ret
 
 def log_error ( error_text: str ):
@@ -43,18 +48,25 @@ def log_error ( error_text: str ):
 	writer = open( file, 'w' )
 	writer.write( f"{datetime.now()} (dev.py) - {error_text}\n\n{prev_text}" )
 	writer.close( )
-	if "SystemExit" in error_text: exit( 0 )
+	if "SystemExit" in error_text:
+		exit( 0 )
+		pass
 	del writer
 	pass
 
 @client.event
 async def on_message ( message: discord.Message ):
+	global exiting
 	try:
 		begins = message.content.startswith
 		if message.author.id == owner_id:
 			if begins( "$edit-suggestions" ):
-				if not " " in message.content: page = 0
-				else: page = int( message.content.replace( "$edit-suggestions ", "" ) )
+				if not " " in message.content:
+					page = 0
+					pass
+				else:
+					page = int( message.content.replace( "$edit-suggestions ", "" ) )
+					pass
 				items = [ ]
 				# <editor-fold desc="Reading the Suggestions">
 				reader = open( suggestions, 'r' )
@@ -66,8 +78,13 @@ async def on_message ( message: discord.Message ):
 				index = 0
 				for item in tmp:
 					if not item == "":
-						if index % 5 == 0: items.append( f"\n{item}" )
-						else: items[ -1 ] += f"\n{item}"
+						if index % 5 == 0:
+							items.append( f"\n{item}" )
+							pass
+						else:
+							items[ -1 ] += f"\n{item}"
+							pass
+						pass
 					pass
 				# </editor-fold>
 				msg1 = await client.send_message( message.channel, f"```{items[page]}```" )
@@ -98,7 +115,9 @@ async def on_message ( message: discord.Message ):
 				ret = f"Suggestions:{reader.read()}"
 				reader.close( )
 				# </editor-fold>
-				for item in format_message( ret, "```" ): await client.send_message( message.channel, item )
+				for item in format_message( ret, "```" ):
+					await client.send_message( message.channel, item )
+					pass
 				del ret
 				del reader
 				pass
@@ -118,8 +137,13 @@ async def on_message ( message: discord.Message ):
 					_vars = { }
 					for line in lines:
 						try:
-							if " = " in line: name = line.split( " = " )[ 0 ]; func = eval( line.split( " = " )[ 1 ] ); _vars[ name ] = func
-							else: return str( eval( line ) ), "Success!"
+							if " = " in line:
+								name = line.split( " = " )[ 0 ]
+								func = eval( line.split( " = " )[ 1 ] )
+								_vars[ name ] = func
+								pass
+							else:
+								return str( eval( line ) ), "Success!"
 							pass
 						except: break
 						pass
@@ -147,7 +171,9 @@ async def on_message ( message: discord.Message ):
 				text = reader.read( )
 				reader.close( )
 				pass
-			except: text = ""
+			except:
+				text = ""
+				pass
 			if f"{cnt}\n" in text:
 				await client.send_message( message.channel, f"```There is already a report for \"{cnt}\"```" )
 				pass
@@ -167,7 +193,9 @@ async def on_message ( message: discord.Message ):
 			reader.close( )
 			if len( text ) > 0:
 				msgs = format_message( text, "```" )
-				for msg in msgs: await client.send_message( message.channel, msg )
+				for msg in msgs:
+					await client.send_message( message.channel, msg )
+					pass
 				pass
 			else:
 				await client.send_message( message.channel, f"```There are no bug reports yet.```" )
@@ -175,7 +203,9 @@ async def on_message ( message: discord.Message ):
 			del reader
 			pass
 		pass
-	except: log_error( traceback.format_exc( ) )
+	except:
+		log_error( traceback.format_exc( ) )
+		pass
 	pass
 
 @client.event
@@ -186,7 +216,7 @@ async def on_ready ( ):
 
 client.run( token )
 
-if exiting == False:
+if not exiting:
 	subprocess.Popen( f"python {os.getcwd()}\\dev.py" )
 	exit( 0 )
 	pass

@@ -1,7 +1,6 @@
 import ast
 import asyncio
 import math
-import os
 import random
 import re
 import subprocess
@@ -15,109 +14,115 @@ from colorama import Fore, init
 
 import sql_data
 import symbols
-from logbot_data import token
+from logbot_data import *
 
+akjv_books = [
+	"1 Samuel",
+	"2 Samuel",
+	"1 Kings",
+	"2 Kings",
+	"1 Chronicles",
+	"2 Chronicles",
+	"1 Corinthians",
+	"2 Corinthians",
+	"1 Thessalonians",
+	"2 Thessalonians",
+	"1 Timothy",
+	"2 Timothy",
+	"1 Peter",
+	"2 Peter",
+	"1 John",
+	"2 John",
+	"3 John",
+	"Genesis",
+	"Exodus",
+	"Leviticus",
+	"Numbers",
+	"Deuteronomy",
+	"Joshua",
+	"Judges",
+	"Ruth",
+	"Ezra",
+	"Nehemiah",
+	"Esther",
+	"Job",
+	"Psalms",
+	"Proverbs",
+	"Ecclesiastes",
+	"Songs",
+	"Isaiah",
+	"Jeremiah",
+	"Lamentations",
+	"Ezekiel",
+	"Daniel",
+	"Hosea",
+	"Joel",
+	"Amos",
+	"Obadiah",
+	"Jonah",
+	"Micah",
+	"Nahum",
+	"Habakkuk",
+	"Zephaniah",
+	"Haggai",
+	"Zechariah",
+	"Malachi",
+	"Matthew",
+	"Mark",
+	"Luke",
+	"John",
+	"Acts",
+	"Romans",
+	"Galatians",
+	"Ephesians",
+	"Philippians",
+	"Colossians",
+	"Titus",
+	"Philemon",
+	"Hebrews",
+	"James",
+	"Jude",
+	"Revelation"
+]
+# <editor-fold desc="Clients">
 client = discord.Client( )
 init( )
 exiting = False
-
-akjv_books = [ "1 Samuel",
-               "2 Samuel",
-               "1 Kings",
-               "2 Kings",
-               "1 Chronicles",
-               "2 Chronicles",
-               "1 Corinthians",
-               "2 Corinthians",
-               "1 Thessalonians",
-               "2 Thessalonians",
-               "1 Timothy",
-               "2 Timothy",
-               "1 Peter",
-               "2 Peter",
-               "1 John",
-               "2 John",
-               "3 John",
-               "Genesis",
-               "Exodus",
-               "Leviticus",
-               "Numbers",
-               "Deuteronomy",
-               "Joshua",
-               "Judges",
-               "Ruth",
-               "Ezra",
-               "Nehemiah",
-               "Esther",
-               "Job",
-               "Psalms",
-               "Proverbs",
-               "Ecclesiastes",
-               "Songs",
-               "Isaiah",
-               "Jeremiah",
-               "Lamentations",
-               "Ezekiel",
-               "Daniel",
-               "Hosea",
-               "Joel",
-               "Amos",
-               "Obadiah",
-               "Jonah",
-               "Micah",
-               "Nahum",
-               "Habakkuk",
-               "Zephaniah",
-               "Haggai",
-               "Zechariah",
-               "Malachi",
-               "Matthew",
-               "Mark",
-               "Luke",
-               "John",
-               "Acts",
-               "Romans",
-               "Galatians",
-               "Ephesians",
-               "Philippians",
-               "Colossians",
-               "Titus",
-               "Philemon",
-               "Hebrews",
-               "James",
-               "Jude",
-               "Revelation" ]
-
+# </editor-fold>
+# <editor-fold desc="Variables">
 verse_disable_list = [ ]
 bible_versions = { }
 bible_types = { }
 default_channel = { }
 last_day = 0
 votd = ""
-top_verses = [ "Psalms 23:4", "Psalms 34:8", "Psalms 34:19", "Psalms 37:4", "Psalms 55:22",
-               "Psalms 90:17", "Psalms 103:2-6", "Psalms 119:105", "Psalms 121:1-2", "Psalms 9:9",
-               "Psalms 16:8", "Psalms 16:8", "Psalms 27:4", "Psalms 27:14", "Psalms 30:6-7",
-               "Psalms 31:3", "Psalms 32:8", "Psalms 34:22", "Psalms 42:5-6", "Psalms 46:1-3",
-               "Psalms 118:14", "Psalms 119:114-115", "Psalms 119:25", "Psalms 119:50", "Psalms 120:1",
-               "Psalms 121:7-8", "Psalms 145:18-19", "Proverbs 3:5-6", "Proverbs 16:3", "Proverbs 18:10",
-               "Proverbs 2:7", "Proverbs 11:25", "Proverbs 17:17", "Isaiah 40:31", "Jeremiah 29:11",
-               "Matthew 11:28", "Romans 8:28", "Philippians 4:6-7", "Hebrews 2:18", "1 Peter 5:7",
-               "1 John 4:4", "Deuteronomy 7:9", "Deuteronomy 31:6", "Deuteronomy 31:8", "Joshua 1:9",
-               "Joshua 10:25", "Isaiah 26:3", "Isaiah 30:19", "Isaiah 41:13", "Isaiah 41:10",
-               "Isaiah 43:1", "Isaiah 54:17", "Isaiah 58:11", "Lamentations 3:25", "Nahum 1:7",
-               "Zephaniah 3:17", "Matthew 6:33", "Matthew 7:7-8", "Luke 10:19", "Luke 11:9-10",
-               "John 3:16", "John 6:47", "John 14:27", "John 15:4", "John 15:13",
-               "John 16:33", "Ephesians 3:20-21", "Philippians 4:8", "Philippians 4:4", "Philippians 4:13",
-               "1 Corinthians 10:13", "1 Corinthians 15:57", "1 Corinthians 16:13", "2 Corinthians 2:14", "2 Corinthians 4:8-9",
-               "2 Corinthians 4:16-18", "2 Corinthians 5:7", "2 Corinthians 5:17", "Romans 8:6", "Romans 8:28",
-               "Romans 8:31", "Romans 8:38-39", "Romans 15:4", "Ephesians 3:17-19", "Ephesians 3:20-21",
-               "Ephesians 6:10-11", "Philippians 3:7-9", "Philippians 4:19", "Colossians 3:15", "2 Thessalonians 3:3",
-               "2 Timothy 1:7", "2 Timothy 3:16-17", "2 Timothy 4:18", "Hebrews 2:18", "Hebrews 3:6",
-               "Hebrews 4:12", "Hebrews 10:19-23", "Hebrews 13:5", "James 1:2-4", "James 1:12-15",
-               "James 4:7-8", "1 Peter 5:7", "1 John 4:4", "1 John 4:18", "1 John 5:14-15", "Revelation 14:12" ]
+top_verses = [
+	"Psalms 23:4", "Psalms 34:8", "Psalms 34:19", "Psalms 37:4", "Psalms 55:22",
+	"Psalms 90:17", "Psalms 103:2-6", "Psalms 119:105", "Psalms 121:1-2", "Psalms 9:9",
+	"Psalms 16:8", "Psalms 16:8", "Psalms 27:4", "Psalms 27:14", "Psalms 30:6-7",
+	"Psalms 31:3", "Psalms 32:8", "Psalms 34:22", "Psalms 42:5-6", "Psalms 46:1-3",
+	"Psalms 118:14", "Psalms 119:114-115", "Psalms 119:25", "Psalms 119:50", "Psalms 120:1",
+	"Psalms 121:7-8", "Psalms 145:18-19", "Proverbs 3:5-6", "Proverbs 16:3", "Proverbs 18:10",
+	"Proverbs 2:7", "Proverbs 11:25", "Proverbs 17:17", "Isaiah 40:31", "Jeremiah 29:11",
+	"Matthew 11:28", "Romans 8:28", "Philippians 4:6-7", "Hebrews 2:18", "1 Peter 5:7",
+	"1 John 4:4", "Deuteronomy 7:9", "Deuteronomy 31:6", "Deuteronomy 31:8", "Joshua 1:9",
+	"Joshua 10:25", "Isaiah 26:3", "Isaiah 30:19", "Isaiah 41:13", "Isaiah 41:10",
+	"Isaiah 43:1", "Isaiah 54:17", "Isaiah 58:11", "Lamentations 3:25", "Nahum 1:7",
+	"Zephaniah 3:17", "Matthew 6:33", "Matthew 7:7-8", "Luke 10:19", "Luke 11:9-10",
+	"John 3:16", "John 6:47", "John 14:27", "John 15:4", "John 15:13",
+	"John 16:33", "Ephesians 3:20-21", "Philippians 4:8", "Philippians 4:4", "Philippians 4:13",
+	"1 Corinthians 10:13", "1 Corinthians 15:57", "1 Corinthians 16:13", "2 Corinthians 2:14", "2 Corinthians 4:8-9",
+	"2 Corinthians 4:16-18", "2 Corinthians 5:7", "2 Corinthians 5:17", "Romans 8:6", "Romans 8:28",
+	"Romans 8:31", "Romans 8:38-39", "Romans 15:4", "Ephesians 3:17-19", "Ephesians 3:20-21",
+	"Ephesians 6:10-11", "Philippians 3:7-9", "Philippians 4:19", "Colossians 3:15", "2 Thessalonians 3:3",
+	"2 Timothy 1:7", "2 Timothy 3:16-17", "2 Timothy 4:18", "Hebrews 2:18", "Hebrews 3:6",
+	"Hebrews 4:12", "Hebrews 10:19-23", "Hebrews 13:5", "James 1:2-4", "James 1:12-15",
+	"James 4:7-8", "1 Peter 5:7", "1 John 4:4", "1 John 4:18", "1 John 5:14-15", "Revelation 14:12"
+]
 disabled_channels = [ ]
 disabled_users = [ ]
-
+# </editor-fold>
+# <editor-fold desc="Paths">
 discord_settings = f"{os.getcwd()}\\Discord Logs\\SETTINGS"
 verse_disables = f"{discord_settings}\\verse_disable_list.txt"
 version_list = f"{discord_settings}\\bible_version.txt"
@@ -127,12 +132,15 @@ d_last_day = f"{discord_settings}\\last_day.txt"
 votd_d = f"{discord_settings}\\votd.txt"
 _disabled_channels = f"{discord_settings}\\bible_plugin\\Disabled Channels\\"
 _disabled_users = f"{discord_settings}\\bible_plugin\\Disabled Users\\"
-
+# </editor-fold>
+# <editor-fold desc="Databases">
 sqld = sql_data.sql_data( akjv_books )
 sqlkjv = sql_data.kjv_sql( akjv_books )
 sqlweb = sql_data.web_sql( akjv_books )
 sql = sqlite3.connect( f"{discord_settings}\\logbot.db" )
 cursor = sql.cursor( )
+
+# </editor-fold>
 
 class BibleInfo:
 	def __init__ ( self ):
@@ -293,7 +301,7 @@ class BibleInfo:
 		return "Someone hatches a genocidal plot to bring about Israel's extinction, and Esther must face the emperor to ask for help."
 	@staticmethod
 	def getJobAuthor ( ):
-		return "Possibly Job, ELihu, or Solomon"
+		return "Possibly Job, Elihu, or Solomon"
 	@staticmethod
 	def getJobChapters ( ):
 		return 42
@@ -317,7 +325,7 @@ class BibleInfo:
 		return 31
 	@staticmethod
 	def getProverbsSummary ( ):
-		return "A collection of sayings written to help peole make wise decisions that bring about justice."
+		return "A collection of sayings written to help people make wise decisions that bring about justice."
 	@staticmethod
 	def getEcclesiastesAuthor ( ):
 		return "Solomon"
@@ -587,7 +595,7 @@ class BibleInfo:
 		return 3
 	@staticmethod
 	def getPhilippiansSummary ( ):
-		return "An encouragin letter to the church of Philippi from Paul, telling them how to have joy in Christ."
+		return "An encouraging letter to the church of Philippi from Paul, telling them how to have joy in Christ."
 	@staticmethod
 	def getColossiansAuthor ( ):
 		return "Paul"
@@ -653,7 +661,7 @@ class BibleInfo:
 		return "Paul strongly recommends that Philemon accept his runaway slave as a brother, not a slave."
 	@staticmethod
 	def getHebrewsAuthor ( ):
-		return "Unkown"
+		return "Unknown"
 	@staticmethod
 	def getHebrewsChapters ( ):
 		return 12
@@ -734,6 +742,7 @@ class BibleInfo:
 		return "John sees visions of things that have been, things that are, and things that are yet to come."
 	pass
 
+# <editor-fold desc="File Readers">
 try:
 	reader = open( verse_disables, 'r' )
 	verse_disable_list = ast.literal_eval( reader.read( ) )
@@ -784,6 +793,8 @@ try:
 	pass
 except: pass
 
+# </editor-fold>
+
 def sqlread ( cmd: str ):
 	cursor.execute( cmd )
 	return cursor.fetchall( )
@@ -791,7 +802,10 @@ def sqlread ( cmd: str ):
 def parse_num ( num: int ) -> str:
 	_num = str( num )
 	_num = _num[ ::-1 ]
-	_num = ','.join( [ _num[ i:i + 3 ] for i in range( 0, len( _num ), 3 ) ] )[ ::-1 ]
+	_num = ','.join( [
+		_num[ i:i + 3 ]
+		for i in range( 0, len( _num ), 3 )
+	] )[ ::-1 ]
 	return str( _num )
 	pass
 
@@ -1053,6 +1067,7 @@ def getAKJVVerse ( key: str, ih: bool = True ) -> str:
 	except:
 		return "No such verse!"
 		pass
+	pass
 
 # noinspection PyUnusedLocal
 def getAKJVPassage ( key: str, ih: bool = True ) -> str:
@@ -1158,6 +1173,7 @@ def getWEBPassage ( key: str, ih: bool = True ) -> str:
 		return ret
 	pass
 
+# noinspection PyShadowingNames
 def getChapter ( key: str, version: str ) -> str:
 	"""
 	Fetch a chapter from the Bible. Deprecated due to errors.
@@ -1182,6 +1198,7 @@ def getChapter ( key: str, version: str ) -> str:
 		pass
 	return ret
 
+# noinspection PyShadowingNames
 def getRandomVerse ( version: str ) -> str:
 	"""
 	Fetches a random verse from `version`
@@ -1228,10 +1245,12 @@ def searchForVerse ( key: str, p: int = 0, v: str = "kjv" ) -> str:
 		for i in range( p * 10, p * 10 + 10 ):
 			ret += "{}\n".format( res[ i ][ 0 ] )
 			pass
+		pass
 	elif len( res ) > 0:
 		for i in range( 0, len( res ) ):
 			ret += "{}\n".format( res[ i ][ 0 ] )
 			pass
+		pass
 
 	for item in res:
 		total += len( re.findall( key, item[ 1 ], flags=2 ) )
@@ -1247,7 +1266,8 @@ def format_message ( cont: str ) -> list:
 	"""
 	if len( cont ) > 1994:
 		return [
-			f"{item}" for item in [
+			f"{item}"
+			for item in [
 				cont[ i:i + 1000 ]
 				for i in range( 0, len( cont ), 1000 )
 			]
@@ -1399,7 +1419,7 @@ class Commands:
 					ret += "Leviticus\nAuthor: {}\nChapters: {}\n{}".format( bi.getLeviticusAuthor( ), bi.getLeviticusChapters( ), bi.getLeviticusSummary( ) )
 					pass
 				elif cont == "Numbers":
-					ret += "Numbers\nAuthor: {}\nChapers: {}\n{}".format( bi.getNumbersAuthor( ), bi.getNumbersChapters( ), bi.getNumbersSummary( ) )
+					ret += "Numbers\nAuthor: {}\nChapters: {}\n{}".format( bi.getNumbersAuthor( ), bi.getNumbersChapters( ), bi.getNumbersSummary( ) )
 					pass
 				elif cont == "Deuteronomy":
 					ret += "Deuteronomy\nAuthor: {}\nChapters: {}\n{}".format( bi.getDeuteronomyAuthor( ), bi.getDeuteronomyChapters( ), bi.getDeuteronomySummary( ) )
@@ -1417,7 +1437,7 @@ class Commands:
 					ret = "1 Samuel\nAuthor: {}\nChapters: {}\n{}".format( bi.get1SamuelAuthor( ), bi.get1SamuelChapters( ), bi.get1SamuelSummary( ) )
 					pass
 				elif cont == "2 Samuel":
-					ret = "2 Samuel\nAuthor: {}\nChapers: {}\n{}".format( bi.get2SamuelAuthor( ), bi.get2SamuelChapters( ), bi.get2SamuelSummary( ) )
+					ret = "2 Samuel\nAuthor: {}\nChapters: {}\n{}".format( bi.get2SamuelAuthor( ), bi.get2SamuelChapters( ), bi.get2SamuelSummary( ) )
 					pass
 				elif cont == "1 Kings":
 					ret = "1 Kings\nAuthor: {}\nChapters: {}\n{}".format( bi.get1KingsAuthor( ), bi.get1KingsChapters( ), bi.get1KingsSummary( ) )
@@ -1703,7 +1723,10 @@ class Commands:
 				"Jude" :"Jude",
 				"Rev"  :"Revelation"
 			}
-			ret += '\n'.join( [ f"{books[item]} ~ {item}" for item in books.keys( ) ] ) + "```"
+			ret += '\n'.join( [
+				f"{books[item]} ~ {item}"
+				for item in books.keys( )
+			] ) + "```"
 			await client.send_message( message.channel, ret )
 			del ret
 			del books
@@ -1757,43 +1780,68 @@ class Commands:
 		@staticmethod
 		async def send_votd ( message: discord.Message ):
 			e = discord.Embed( title="Verse of the Day", description="Version: akjv", colour=discord.Colour.dark_blue( ) )
-			if "-" in votd: e.add_field( name=votd, value=getAKJVPassage( votd, ih=False ) )
-			else: e.add_field( name=votd, value=getAKJVVerse( votd, ih=False ) )
+			if "-" in votd:
+				e.add_field( name=votd, value=getAKJVPassage( votd, ih=False ) )
+				pass
+			else:
+				e.add_field( name=votd, value=getAKJVVerse( votd, ih=False ) )
+				pass
 			await client.send_message( message.channel, "", embed=e )
 			del e
 			pass
 		@staticmethod
 		async def setversion ( message: discord.Message, prefix: str ):
 			c = message.content.replace( f"{prefix}setversion ", "" )
-			if c == "kjv" or c == "akjv" or c == "web": bible_versions[ message.author.id ] = c
+			if c == "kjv" or c == "akjv" or c == "web":
+				bible_versions[ message.author.id ] = c
+				pass
 			await client.send_message( message.channel, f"Set version to {c}" )
 			del c
 			pass
 		@staticmethod
 		async def settype ( message: discord.Message, prefix: str ):
 			c = message.content.replace( f"{prefix}settype ", "" ).lower( )
-			if c == "text" or c == "embed": bible_types[ message.author.id ] = c
+			if c == "text" or c == "embed":
+				bible_types[ message.author.id ] = c
+				pass
 			await client.send_message( message.channel, f"```Set the type to: {c}```" )
 			del c
 			pass
 		@staticmethod
 		async def disables ( message: discord.Message ):
-			ret = [ str( await client.get_channel( _id ) ) for _id in disabled_channels if client.get_channel( _id ).server == message.server ]
+			ret = [
+				str( await client.get_channel( _id ) )
+				for _id in disabled_channels
+				if client.get_channel( _id ).server == message.server
+			]
 			ret = ', '.join( ret )
-			try: await client.send_message( message.channel, ret )
-			except: await client.send_message( message.channel, "```No channels have been disabled!```" )
+			try:
+				await client.send_message( message.channel, ret )
+				pass
+			except:
+				await client.send_message( message.channel, "```No channels have been disabled!```" )
+				pass
 			del ret
 			ret = [ ]
 			for _id in disabled_users:
 				try:
+					# noinspection PyUnresolvedReferences
 					tmp_user = await client.get_user_info( _id )
-					if not discord.utils.find( lambda u:u.id == _id, message.server.members ) is None: ret.append( str( tmp_user ) )
+					if not discord.utils.find( lambda u:u.id == _id, message.server.members ) is None:
+						ret.append( str( tmp_user ) )
+						pass
 					pass
-				except: traceback.format_exc( )
+				except:
+					traceback.format_exc( )
+					pass
 				pass
 			ret = ', '.join( ret )
-			try: await client.send_message( message.channel, ret )
-			except: await client.send_message( message.channel, "```No users have been disabled!```" )
+			try:
+				await client.send_message( message.channel, ret )
+				pass
+			except:
+				await client.send_message( message.channel, "```No users have been disabled!```" )
+				pass
 			del ret
 			pass
 		pass
@@ -1880,6 +1928,7 @@ def log_error ( error_text: str ):
 	file = f"{os.getcwd()}\\error_log.txt"
 	prev_text = ""
 	try:
+		# noinspection PyShadowingNames
 		reader = open( file, 'r' )
 		prev_text = reader.read( )
 		reader.close( )
@@ -1889,7 +1938,9 @@ def log_error ( error_text: str ):
 	writer = open( file, 'w' )
 	writer.write( f"{datetime.now()} (bible.py) - {error_text}\n\n{prev_text}" )
 	writer.close( )
-	if "SystemExit" in error_text: exit( 0 )
+	if "SystemExit" in error_text:
+		exit( 0 )
+		pass
 	del writer
 	pass
 
@@ -1904,8 +1955,12 @@ def trigger_votd ( ):
 		key = random.choice( top_verses )
 		votd = key
 		e = discord.Embed( title="Verse of the Day", description="Version: akjv", colour=discord.Colour.dark_blue( ) )
-		if "-" in key: e.add_field( name=key, value=getAKJVPassage( key, ih=False ) )
-		else: e.add_field( name=key, value=getAKJVVerse( key, ih=False ) )
+		if "-" in key:
+			e.add_field( name=key, value=getAKJVPassage( key, ih=False ) )
+			pass
+		else:
+			e.add_field( name=key, value=getAKJVVerse( key, ih=False ) )
+			pass
 		encountered = [ ]
 		for channel in client.get_all_channels( ):
 			server = channel.server
@@ -1926,6 +1981,7 @@ async def sendNoPerm ( message: discord.Message ):
 	"""
 	await client.send_message( message.channel, "```You do not have permission to use this command.```" )
 	print( "{}{} attempted to use a command.{}".format( Fore.LIGHTGREEN_EX, check( message.author.nick, message.author.name, message.author.id ), Fore.RESET ) )
+	pass
 
 @client.event
 async def sendDisabled ( message: discord.Message ):
@@ -1938,6 +1994,7 @@ async def sendDisabled ( message: discord.Message ):
 
 @client.event
 async def on_message ( message ):
+	global exiting
 	try:
 		prefix = sqlread( f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';" )[ 0 ][ 0 ]
 		await trigger_votd( )
@@ -2038,14 +2095,26 @@ async def on_message ( message ):
 									pass
 								else:
 									if "-" in v and not v in encountered:
-										if bible_versions[ message.author.id ] == "kjv": e.add_field( name=v, value=getPassage( v, ih=False ) )
-										elif bible_versions[ message.author.id ] == "akjv": e.add_field( name=v, value=getAKJVPassage( v, ih=False ) )
-										elif bible_versions[ message.author.id ] == "web": e.add_field( name=v, value=getWEBPassage( v, ih=False ) )
+										if bible_versions[ message.author.id ] == "kjv":
+											e.add_field( name=v, value=getPassage( v, ih=False ) )
+											pass
+										elif bible_versions[ message.author.id ] == "akjv":
+											e.add_field( name=v, value=getAKJVPassage( v, ih=False ) )
+											pass
+										elif bible_versions[ message.author.id ] == "web":
+											e.add_field( name=v, value=getWEBPassage( v, ih=False ) )
+											pass
 										pass
 									elif ":" in v and not v in encountered:
-										if bible_versions[ message.author.id ] == "kjv": e.add_field( name=v, value=getVerse( v, ih=False ) )
-										elif bible_versions[ message.author.id ] == "akjv": e.add_field( name=v, value=getAKJVVerse( v, ih=False ) )
-										elif bible_versions[ message.author.id ] == "web": e.add_field( name=v, value=getWEBVerse( v, ih=False ) )
+										if bible_versions[ message.author.id ] == "kjv":
+											e.add_field( name=v, value=getVerse( v, ih=False ) )
+											pass
+										elif bible_versions[ message.author.id ] == "akjv":
+											e.add_field( name=v, value=getAKJVVerse( v, ih=False ) )
+											pass
+										elif bible_versions[ message.author.id ] == "web":
+											e.add_field( name=v, value=getWEBVerse( v, ih=False ) )
+											pass
 										pass
 									pass
 								encountered.append( v )
@@ -2057,8 +2126,12 @@ async def on_message ( message ):
 									title = ""
 									has_found = False
 									for i in range( index + 1, len( mcont ) ):
-										if mcont[ i ] == "\"": has_found = True
-										if not has_found: title += mcont[ i ]
+										if mcont[ i ] == "\"":
+											has_found = True
+											pass
+										if not has_found:
+											title += mcont[ i ]
+											pass
 										pass
 									title = ' '.join( [ t for t in title.split( " " ) ] )
 									# </editor-fold>
@@ -2093,8 +2166,6 @@ async def on_message ( message ):
 			pass
 
 		do_update = False
-
-		owner_id = "239500860336373761"
 
 		admin_role = discord.utils.find( lambda r:r.name == "LogBot Admin", message.server.roles )
 		def startswith ( *msg, val=message.content ):
@@ -2280,6 +2351,7 @@ async def on_message ( message ):
 							pass
 						pass
 					_text = line.replace( "&passage=", "" )
+					# noinspection PyShadowingNames
 					version = bible_versions[ message.author.id ]
 					ret = analyzeVerse( cap_all_words( _text ), _version=version )
 					e.add_field( name=ret[ 0 ], value=ret[ 1 ], inline=False )
@@ -2362,6 +2434,7 @@ async def on_message ( message ):
 							pass
 						pass
 					_text = line.replace( "&passage=", "" )
+					# noinspection PyShadowingNames
 					version = bible_versions[ message.author.id ]
 					ret = analyzeVerse( cap_all_words( _text ), _version=version )
 					e.add_field( name=ret[ 0 ], value=ret[ 1 ], inline=False )
@@ -2433,7 +2506,7 @@ async def on_ready ( ):
 
 client.run( token )
 
-if exiting == False:
+if not exiting:
 	subprocess.Popen( f"python {os.getcwd()}\\bible.py" )
 	exit( 0 )
 	pass

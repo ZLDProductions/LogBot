@@ -54,6 +54,7 @@ class kjv_sql( object ):
 		cmd = """CREATE TABLE kjv (key VARCHAR(30), value VARCHAR(10000));"""
 		try:
 			self.cursor.execute( cmd )
+			pass
 		except:
 			pass
 		self.connection.commit( )
@@ -138,6 +139,7 @@ class sql_data( object ):
 		cmd = """CREATE TABLE akjv (key VARCHAR(30), value VARCHAR(10000));"""
 		try:
 			self.cursor.execute( cmd )
+			pass
 		except:
 			pass
 		self.connection.commit( )
@@ -225,6 +227,7 @@ class web_sql( object ):
 		cmd = """CREATE TABLE web (key VARCHAR(30), value VARCHAR(10000));"""
 		try:
 			self.cursor.execute( cmd )
+			pass
 		except:
 			pass
 		self.connection.commit( )

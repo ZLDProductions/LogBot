@@ -31,7 +31,9 @@ def log_error ( error_text: str ):
 	writer = open( file, 'w' )
 	writer.write( f"{datetime.now()} (admin.py) - {error_text}\n\n{prev_text}" )
 	writer.close( )
-	if "SystemExit" in error_text: exit( 0 )
+	if "SystemExit" in error_text:
+		exit( 0 )
+		pass
 	del writer
 	pass
 
@@ -78,16 +80,23 @@ class Commands:
 			logs = client.logs_from( message.channel, limit=1000000000 ).iterate
 			app = msgs.append
 			while True:
-				try: item = await logs( ); app( item )
+				try:
+					item = await logs( )
+					app( item )
+					pass
 				except: break
 				pass
 			for m in msgs:
 				if isinstance( m, Message ):
 					if _type == "&text":
-						if _param in m.content: count += 1
+						if _param in m.content:
+							count += 1
+							pass
 						pass
 					elif _type == "&from":
-						if m.author.id == user.id: count += 1
+						if m.author.id == user.id:
+							count += 1
+							pass
 						pass
 					pass
 				pass
@@ -113,18 +122,26 @@ async def on_message ( message: Message ):
 		if not message.channel.is_private:
 			admin_role = find( lambda r:r.name == "LogBot Admin", message.server.roles )
 			if startswith( f"a{prefix}count " ):
-				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.a_count_param( message, prefix )
+				if admin_role in message.author.roles or message.author.id == owner_id:
+					await Commands.Admin.a_count_param( message, prefix )
+					pass
 				pass
 			elif startswith( f"a{prefix}count" ):
-				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.a_count( message )
+				if admin_role in message.author.roles or message.author.id == owner_id:
+					await Commands.Admin.a_count( message )
+					pass
 				pass
 			elif startswith( f"a{prefix}total" ):
-				if admin_role in message.author.roles or message.author.id == owner_id: await Commands.Admin.a_total( message )
+				if admin_role in message.author.roles or message.author.id == owner_id:
+					await Commands.Admin.a_total( message )
+					pass
 				pass
 			pass
 
 		if startswith( "a$update", "logbot.admin.update", "$update" ):
-			if message.author.id == owner_id: do_update = True
+			if message.author.id == owner_id:
+				do_update = True
+				pass
 			pass
 		elif startswith( "logbot.admin.exit", "$exit" ):
 			if message.author.id == owner_id:
@@ -140,7 +157,9 @@ async def on_message ( message: Message ):
 			exit( 0 )
 			pass
 		pass
-	except: log_error( traceback.format_exc( ) )
+	except:
+		log_error( traceback.format_exc( ) )
+		pass
 	pass
 
 @client.event
@@ -151,7 +170,7 @@ async def on_ready ( ):
 
 client.run( token )
 
-if exiting == False:
+if not exiting:
 	subprocess.Popen( f"python {os.getcwd()}\\admin.py" )
 	exit( 0 )
 	pass

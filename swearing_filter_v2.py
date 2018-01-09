@@ -1,5 +1,4 @@
 import ast
-import os
 import sqlite3
 import subprocess
 import traceback
@@ -30,7 +29,9 @@ cursor = sql.cursor( )
 try:
 	reader = open( filter_disables, 'r' )
 	filter_disable_list = ast.literal_eval( reader.read( ) )
-	if isinstance( filter_disable_list, dict ): filter_disable_list = list( )
+	if isinstance( filter_disable_list, dict ):
+		filter_disable_list = list( )
+		pass
 	reader.close( )
 	del reader
 	pass
@@ -52,6 +53,7 @@ try:
 	pass
 except: pass
 
+# noinspection PyShadowingNames
 def log_error ( error_text: str ):
 	file = f"{os.getcwd()}\\error_log.txt"
 	prev_text = ""
@@ -74,8 +76,11 @@ def sqlread ( cmd: str ):
 
 @client.event
 async def on_message ( message: Message ):
+	global exiting
 	try:
-		if not message.server.id in list( filter_settings.keys( ) ): filter_settings[ message.server.id ] = 1
+		if not message.server.id in list( filter_settings.keys( ) ):
+			filter_settings[ message.server.id ] = 1
+			pass
 		words = message.content.replace( ".", "" ).replace( ",", "" ).replace( "!", "" ).replace( "?", "" ).split( " " )
 		for word in words:
 			if word.lower( ) in dict_words:
@@ -102,8 +107,12 @@ async def on_message ( message: Message ):
 		if startswith( f"{prefix}filter settype " ):
 			if admin_role in message.author.roles or message.author.id == owner_id:
 				cnt = message.content.replace( f"{prefix}filter settype ", "" )
-				if startswith( "d", val=cnt ): filter_settings[ message.server.id ] = 0
-				elif startswith( "e", val=cnt ): filter_settings[ message.server.id ] = 1
+				if startswith( "d", val=cnt ):
+					filter_settings[ message.server.id ] = 0
+					pass
+				elif startswith( "e", val=cnt ):
+					filter_settings[ message.server.id ] = 1
+					pass
 				await client.send_message( message.channel, f"```Set the filter type!```" )
 				pass
 			else:
@@ -165,13 +174,17 @@ async def on_message ( message: Message ):
 			exit( 0 )
 			pass
 		pass
-	except: log_error( traceback.format_exc( ) )
+	except:
+		log_error( traceback.format_exc( ) )
+		pass
 	pass
 
 # noinspection PyUnusedLocal
 @client.event
 async def on_message_edit ( before: Message, after: Message ):
-	if not after.server.id in list( filter_settings.keys( ) ): filter_settings[ after.server.id ] = 1
+	if not after.server.id in list( filter_settings.keys( ) ):
+		filter_settings[ after.server.id ] = 1
+		pass
 	words = after.content.replace( ",", "" ).replace( ".", "" ).split( " " )
 	for word in words:
 		if word.lower( ) in dict_words:

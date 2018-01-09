@@ -16,7 +16,6 @@ import discord
 import giphy_client
 import psutil
 import translate
-# import unirest
 import urbandictionary
 import wikipedia
 import wolframalpha
