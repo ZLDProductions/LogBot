@@ -28,10 +28,11 @@ import tools
 from logbot_data import *
 
 # <editor-fold desc="Base Variables">
-version = '16.9.1 Python'
+version = '16.10.0 Python'
 whats_new = [
-	"•Added a section in the built-in help docs to show what admin permissions the bot needs to execute the command.",
-	"•Added a music player (finally)!"
+	"• Added a magic 8 ball.",
+	"• Added NIV Bible.",
+	"• Code structure changes (should be more readable now)."
 ] # list of recent changes to the code.
 planned = [
 	"There is nothing planned at the moment."
