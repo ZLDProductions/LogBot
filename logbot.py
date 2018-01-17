@@ -2,7 +2,6 @@ import ast
 import codecs
 import configparser
 import decimal
-import os
 import random
 import re
 import subprocess
@@ -39,6 +38,27 @@ planned = [
 ] # list of what I plan to do.
 bootup_time = datetime.now( ) # the time the bot started.
 exiting = False # determines if the bot is closing. If False, the bot automatically restarts.
+eightball_pos = [
+	"It is certain",
+	"Without a doubt",
+	"Most likely",
+	"Yes",
+	"Signs point to yes"
+]
+eightball_neu = [
+	"Reply hazy try again",
+	"Ask again later",
+	"Better not tell you now",
+	"Cannot predict now",
+	"Concentrate and ask again"
+]
+eightball_neg = [
+	"Don't count on it",
+	"My reply is no",
+	"My sources say no",
+	"Outlook not so good",
+	"Very doubtful"
+]
 # </editor-fold>
 
 # <editor-fold desc="Clients and Classes">
@@ -82,6 +102,7 @@ log_channel = { }
 default_channel = { }
 dict_words = [ ]
 playlists = { }
+filter_settings = { }
 # </editor-fold>
 
 # <editor-fold desc="Paths">
@@ -100,6 +121,7 @@ _defaults = f"{discord_settings}\\default_channels.txt"
 _dictionary = f"{discord_settings}\\censored_words.txt"
 _disables = f"{discord_settings}\\disables.txt"
 _playlists = f"{discord_settings}\\playlists.txt"
+_fsettings = f"{discord_settings}\\filter_settings.txt"
 # </editor-fold>
 
 if not os.path.exists( discord_settings ):
@@ -151,6 +173,18 @@ try:
 	playlists = ast.literal_eval( reader.read( ) )
 	reader.close( )
 	del reader
+	pass
+except: pass
+
+# Load the Filter Settings
+try:
+	reader = open( _fsettings, 'r' )
+	filter_settings = ast.literal_eval( reader.read( ) )
+	reader.close( )
+	del reader
+	if filter_settings is None:
+		filter_settings = { }
+		pass
 	pass
 except: pass
 
@@ -272,6 +306,11 @@ def save ( sid: str ):
 	writer.close( )
 	del writer
 	# </editor-fold>
+	# <editor-fold desc="Filter Settings">
+	writer = open( _fsettings, "w" )
+	writer.write( str( filter_settings ) )
+	writer.close( )
+	# </editor-fold>
 
 	# <editor-fold desc="ini file">
 	with open( f"{discord_settings}\\data.ini", 'w' ) as configfile:
@@ -317,7 +356,7 @@ def update ( mid: str, cid: str ):
 	:param cid: The channel of the message. Necessary for client.get_message() to work.
 	"""
 	subprocess.Popen( f"python {os.getcwd()}\\logbot.py -m {mid} -c {cid} -t {bootup_time.month}.{bootup_time.day}.{bootup_time.year}.{bootup_time.hour}.{bootup_time.minute}.{bootup_time.second}.{bootup_time.microsecond}", False )
-	exit( 0 )
+	exit( 1 )
 	pass
 
 # noinspection PyUnusedLocal
@@ -485,13 +524,50 @@ def log_error ( error_text: str ):
 	writer.write( f"{datetime.now()} (logbot.py) - {error_text}\n\n{prev_text}" )
 	writer.close( )
 	if "SystemExit" in error_text:
-		exit( 0 )
+		exit( 1 )
 		pass
 	del writer
 	pass
 
 class Commands:
 	class Member:
+		@staticmethod
+		async def eightball ( message: discord.message ):
+			if "not" in message.content.lower():
+				if "kill" in message.content.lower() or "bomb" in message.content.lower() or "suicide" in message.content.lower() or "murder" in message.content.lower():
+					await client.send_message(message.channel, f"```{random.choice(eightball_pos)}```")
+					pass
+				else:
+					c = random.choice(["+", "-", "0"])
+					if c == "+":
+						await client.send_message(message.channel, f"```{random.choice(eightball_pos)}```")
+						pass
+					elif c == "-":
+						await client.send_message(message.channel, f"```{random.choice(eightball_neg)}```")
+						pass
+					else:
+						await client.send_message(message.channel, f"```{random.choice(eightball_neu)}```")
+						pass
+					pass
+				pass
+			else:
+				if "kill" in message.content or "bomb" in message.content or "suicide" in message.content or "murder" in message.content:
+					await client.send_message(message.channel, f"```{random.choice(eightball_neg)}```")
+					pass
+				else:
+					c = random.choice( [ "+", "-", "0" ] )
+					if c == "+":
+						await client.send_message( message.channel, f"```{random.choice(eightball_pos)}```" )
+						pass
+					elif c == "-":
+						await client.send_message( message.channel, f"```{random.choice(eightball_neg)}```" )
+						pass
+					else:
+						await client.send_message( message.channel, f"```{random.choice(eightball_neu)}```" )
+						pass
+					pass
+				pass
+			pass
 		@staticmethod
 		async def sf ( message: discord.Message, prefix: str ):
 			num = message.content.replace( f"{prefix}sf ", "" )
@@ -1176,6 +1252,97 @@ class Commands:
 		pass
 	# noinspection PyShadowingNames
 	class Admin:
+		@staticmethod
+		async def filter ( message: discord.Message, admin_role: discord.Role ):
+			# <editor-fold desc="Fetch the Server's Filter Settings">
+			server_filter = filter_settings.get( message.server.id )
+			if server_filter is None:
+				filter_settings[ message.server.id ] = {
+					"ACTIVE":False,
+					"ADMCHK":False,
+					"DELCPY":False,
+					"DELINV":False
+				}
+				server_filter = filter_settings.get( message.server.id )
+				pass
+			# </editor-fold>
+			if server_filter[ "ACTIVE" ] is True and not message.author.bot:
+				if server_filter[ "ADMCHK" ] is True:
+					if not admin_role in message.author.roles:
+						if server_filter[ "DELCPY" ] is True:
+							if len( message.content.split( "\n" ) ) >= 10 and (")" in message.content or "(" in message.content or "," in message.content or "▇" in message.content):
+								await client.delete_message( message )
+								pass
+							pass
+						if server_filter[ "DELINV" ] is True:
+							if "discord.gg/" in message.content:
+								await client.delete_message( message )
+								pass
+							pass
+						pass
+					pass
+				else:
+					if server_filter[ "DELCPY" ] is True:
+						if len( message.content.split( "\n" ) ) >= 10 and (")" in message.content or "(" in message.content or "," in message.content or "▇" in message.content):
+							await client.delete_message( message )
+							pass
+						pass
+					if server_filter[ "DELINV" ] is True:
+						if "discord.gg/" in message.content:
+							await client.delete_message( message )
+							pass
+						pass
+					pass
+				pass
+			pass
+		@staticmethod
+		async def filter_settings ( message: discord.Message, prefix: str ):
+			# <editor-fold desc="Fetch the Server's Filter Settings">
+			if filter_settings.get( message.server.id ) is None:
+				filter_settings[ message.server.id ] = {
+					"ACTIVE":False,
+					"ADMCHK":False,
+					"DELCPY":False,
+					"DELINV":False
+				}
+				pass
+			# </editor-fold>
+			cnt = message.content.replace( f"{prefix}spamfilter settings", "" )
+			if len( cnt ) > 0:
+				if cnt[ 0 ] == " ":
+					cnt = cnt.replace( " ", "", 1 )
+					pass
+				pass
+			tmp = cnt.split( " " )
+			keys = { }
+
+			if "=" in cnt:
+				for x in tmp:
+					_tmp = x.split( "=" )
+					keys[ _tmp[ 0 ] ] = _tmp[ 1 ]
+					pass
+				if "ACTIVE" in keys.keys( ):
+					filter_settings[ message.server.id ][ "ACTIVE" ] = ast.literal_eval( keys[ "ACTIVE" ] )
+					pass
+				if "ADMCHK" in keys.keys( ):
+					filter_settings[ message.server.id ][ "ADMCHK" ] = ast.literal_eval( keys[ "ADMCHK" ] )
+					pass
+				if "DELCPY" in keys.keys( ):
+					filter_settings[ message.server.id ][ "DELCPY" ] = ast.literal_eval( keys[ "DELCPY" ] )
+					pass
+				if "DELINV" in keys.keys( ):
+					filter_settings[ message.server.id ][ "DELINV" ] = ast.literal_eval( keys[ "DELINV" ] )
+					pass
+				pass
+			else:
+				e = discord.Embed( title="Filter Settings", description=f"Filter Settings for {message.server.name}", colour=discord.Colour.dark_blue( ) ) \
+					.add_field( name=f"ACTIVE", value=str( filter_settings[ message.server.id ][ 'ACTIVE' ] ) ) \
+					.add_field( name=f"ADMCHK", value=str( filter_settings[ message.server.id ][ 'ADMCHK' ] ) ) \
+					.add_field( name=f"DELCPY", value=str( filter_settings[ message.server.id ][ 'DELCPY' ] ) ) \
+					.add_field( name=f"DELINV", value=str( filter_settings[ message.server.id ][ 'DELINV' ] ) )
+				await client.send_message( message.channel, f"", embed=e )
+				pass
+			pass
 		@staticmethod
 		async def setup ( message: discord.Message, admin_role: discord.Role ):
 			# <editor-fold desc="Exclude">
@@ -2060,6 +2227,8 @@ async def on_message ( message: discord.Message ):
 		if not message.channel.is_private and not muted_role in message.author.roles:
 			admin_role = discord.utils.find( lambda r:r.name == "LogBot Admin", message.server.roles )
 
+			await Commands.Admin.filter( message, admin_role )
+
 			if not message.server.id in list( disables.keys( ) ): disables[ message.server.id ] = {
 				"exclude"       :False,
 				"excludechannel":False,
@@ -2560,6 +2729,17 @@ async def on_message ( message: discord.Message ):
 					pass
 				elif startswith( f"{prefix}sf " ):
 					await Commands.Member.sf( message, prefix )
+					pass
+				elif startswith( f"{prefix}spamfilter settings" ):
+					if admin_role in message.author.roles:
+						await Commands.Admin.filter_settings( message, prefix )
+						pass
+					else:
+						sendNoPerm( message )
+						pass
+					pass
+				elif startswith(f"{prefix}8ball "):
+					await Commands.Member.eightball(message)
 					pass
 				# elif startswith(f"{prefix}yoda "):
 				# 	cnt = message.content.replace(f"{prefix}yoda ", "").replace(" ", "+")
