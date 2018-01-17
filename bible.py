@@ -137,6 +137,7 @@ _disabled_users = f"{discord_settings}\\bible_plugin\\Disabled Users\\"
 sqld = sql_data.sql_data( akjv_books )
 sqlkjv = sql_data.kjv_sql( akjv_books )
 sqlweb = sql_data.web_sql( akjv_books )
+sqlniv = sql_data.niv_sql( akjv_books )
 sql = sqlite3.connect( f"{discord_settings}\\logbot.db" )
 cursor = sql.cursor( )
 
@@ -1034,6 +1035,75 @@ def getPassage ( key: str, ih: bool = True ) -> str:
 		return ret
 	pass
 
+def getNIVVerse ( key: str, ih: bool = True ) -> str:
+	"""
+	Fetch a verse from the King James Version of the Bible.
+	:param key: A key to search for a verse with.
+	:param ih: Whether or not to include `key` at the beginning of the message.
+	:return: A KJV Verse
+	"""
+	try:
+		d = key.split( " " )
+		book = ""
+		chapter = ""
+		verse = ""
+		if len( d ) == 3:
+			book = d[ 0 ] + " " + d[ 1 ]
+			chapter = d[ 2 ].split( ":" )[ 0 ]
+			verse = d[ 2 ].split( ":" )[ 1 ]
+			pass
+		else:
+			book = d[ 0 ]
+			chapter = d[ 1 ].split( ":" )[ 0 ]
+			verse = d[ 1 ].split( ":" )[ 1 ]
+			pass
+		ret = ""
+		if ih is True:
+			ret = f"**{key} ~ KJV**\n"
+			pass
+		ret += sqlniv.read( book, chapter, verse )
+		return ret
+		pass
+	except:
+		return "No such verse!"
+		pass
+	pass
+
+# noinspection PyUnusedLocal
+def getNIVPassage ( key: str, ih: bool = True ) -> str:
+	"""
+	Fetches a passage from the KJV Bible.
+	:param key: The verses to fetch.
+	:param ih: Whether or not to include `key` at the beginning of the reference.
+	:return: The passage referred to by `key`
+	"""
+	stuffs = key.split( ":" )
+	start = int( stuffs[ 1 ].split( "-" )[ 0 ] )
+	end = int( stuffs[ 1 ].split( "-" )[ 1 ] )
+	retpre = f"**{key} ~ NIV**\n"
+	ret = ""
+	d = key.split( " " )
+	qu = [ "", "", "" ]
+	if len( d ) == 3:
+		qu = [ d[ 0 ] + " " + d[ 1 ], d[ 2 ].split( ":" )[ 0 ], d[ 2 ].split( ":" )[ 1 ] ]
+		pass
+	else:
+		qu = [ d[ 0 ], d[ 1 ].split( ":" )[ 0 ], d[ 1 ].split( ":" )[ 1 ] ]
+		pass
+	for i in range( start, end + 1 ):
+		tmp = list( str( i ) )
+		for j in range( 0, len( tmp ) ):
+			tmp[ j ] = symbols.symbols[ "^" + tmp[ j ] ]
+			pass
+		tmp = ''.join( tmp )
+		ret += "{} {}".format( tmp, getNIVVerse( qu[ 0 ] + " " + qu[ 1 ] + ":" + str( i ), ih=False ) ) + "\n"
+		pass
+	if ih:
+		return retpre + ret
+	else:
+		return ret
+	pass
+
 # noinspection PyUnusedLocal
 def getAKJVVerse ( key: str, ih: bool = True ) -> str:
 	"""
@@ -1214,7 +1284,10 @@ def getRandomVerse ( version: str ) -> str:
 		res = sqld.execute( "SELECT * FROM akjv WHERE key LIKE '{}%'".format( book ) )
 		pass
 	elif version == "web":
-		res = sqld.execute( "SELECT * FROM web WHERE key LIKE '{}%'".format( book ) )
+		res = sqlweb.execute( "SELECT * FROM web WHERE key LIKE '{}%'".format( book ) )
+		pass
+	elif version == "niv":
+		res = sqlniv.execute( "SELECT * FROM niv WHERE key LIKE '{}%".format( book ) )
 		pass
 	s = random.choice( res )
 	ret = "{}\n{}".format( s[ 0 ], s[ 1 ] )
@@ -1237,6 +1310,9 @@ def searchForVerse ( key: str, p: int = 0, v: str = "kjv" ) -> str:
 		pass
 	elif v == "web":
 		res = sqlweb.execute( f"SELECT * FROM web WHERE value LIKE '%{key}%'" )
+		pass
+	elif v == "niv":
+		res = sqlniv.execute( f"SELECT * FROM niv WHERE value LIKE '%{key}%'" )
 		pass
 
 	ret = "```"
@@ -1792,7 +1868,7 @@ class Commands:
 		@staticmethod
 		async def setversion ( message: discord.Message, prefix: str ):
 			c = message.content.replace( f"{prefix}setversion ", "" )
-			if c == "kjv" or c == "akjv" or c == "web":
+			if c == "kjv" or c == "akjv" or c == "web" or c == "niv":
 				bible_versions[ message.author.id ] = c
 				pass
 			await client.send_message( message.channel, f"Set version to {c}" )
@@ -1995,6 +2071,7 @@ async def sendDisabled ( message: discord.Message ):
 @client.event
 async def on_message ( message ):
 	global exiting
+
 	try:
 		prefix = sqlread( f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';" )[ 0 ][ 0 ]
 		await trigger_votd( )
@@ -2065,6 +2142,14 @@ async def on_message ( message ):
 												await client.send_message( message.channel, m )
 												pass
 											pass
+										elif bible_versions[ message.author.id ] == "niv":
+											for m in format_message( getNIVPassage( v, ih=True ) ):
+												m = m.replace( "```", "" ).split( '\n' )
+												m[ 1 ] = f"```{m[1]}"
+												m = '\n'.join( m ) + "```"
+												await client.send_message( message.channel, m )
+												pass
+											pass
 										pass
 									elif ":" in v and not v in encountered:
 										if bible_versions[ message.author.id ] == "kjv":
@@ -2091,6 +2176,14 @@ async def on_message ( message ):
 												await client.send_message( message.channel, m )
 												pass
 											pass
+										elif bible_versions[ message.author.id ] == "niv":
+											for m in format_message( getNIVVerse( v, ih=True ) ):
+												m = m.replace( "```", "" ).split( '\n' )
+												m[ 1 ] = f"```{m[1]}"
+												m = '\n'.join( m ) + "```"
+												await client.send_message( message.channel, m )
+												pass
+											pass
 										pass
 									pass
 								else:
@@ -2104,6 +2197,9 @@ async def on_message ( message ):
 										elif bible_versions[ message.author.id ] == "web":
 											e.add_field( name=v, value=getWEBPassage( v, ih=False ) )
 											pass
+										elif bible_versions[ message.author.id ] == "niv":
+											e.add_field( name=v, value=getNIVPassage( v, ih=False ) )
+											pass
 										pass
 									elif ":" in v and not v in encountered:
 										if bible_versions[ message.author.id ] == "kjv":
@@ -2114,6 +2210,9 @@ async def on_message ( message ):
 											pass
 										elif bible_versions[ message.author.id ] == "web":
 											e.add_field( name=v, value=getWEBVerse( v, ih=False ) )
+											pass
+										elif bible_versions[ message.author.id ] == "niv":
+											e.add_field( name=v, value=getNIVVerse( v, ih=False ) )
 											pass
 										pass
 									pass
@@ -2349,6 +2448,12 @@ async def on_message ( message ):
 							else:
 								return [ _text, getWEBVerse( _text, ih=False ) ]
 							pass
+						elif _version == "niv":
+							if "-" in _text:
+								return [ _text, getNIVPassage( _text, ih=False ) ]
+							else:
+								return [ _text, getNIVVerse( _text, ih=False ) ]
+							pass
 						pass
 					_text = line.replace( "&passage=", "" )
 					# noinspection PyShadowingNames
@@ -2431,6 +2536,12 @@ async def on_message ( message ):
 								return [ _text, getWEBPassage( _text, ih=False ) ]
 							else:
 								return [ _text, getWEBVerse( _text, ih=False ) ]
+							pass
+						elif _version == "niv":
+							if "-" in _text:
+								return [ _text, getNIVPassage( _text, ih=False ) ]
+							else:
+								return [ _text, getNIVVerse( _text, ih=False ) ]
 							pass
 						pass
 					_text = line.replace( "&passage=", "" )
