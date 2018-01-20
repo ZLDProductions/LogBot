@@ -30,6 +30,8 @@ def log_error ( error_text: str ):
 		exit( 0 )
 		pass
 	del writer
+	del file
+	del prev_text
 	pass
 
 # noinspection PyUnresolvedReferences
@@ -50,6 +52,7 @@ async def on_message ( message: Message ):
 				perms = Permissions( send_messages=False )
 				muted = await client.create_role( message.server, name="LogBot Muted", permissions=perms )
 				print( "Created LogBot Muted" )
+				del perms
 				pass
 			if admin is None:
 				admin = await client.create_role( message.server, name="LogBot Admin" )
@@ -80,6 +83,11 @@ async def on_message ( message: Message ):
 					await client.logout( )
 					pass
 				pass
+			del owner
+			del bot
+			del muted
+			del admin
+			del member
 			pass
 		pass
 	except: log_error( traceback.format_exc( ) )

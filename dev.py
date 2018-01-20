@@ -160,6 +160,9 @@ async def on_message ( message: discord.Message ):
 					e.add_field( name="Problem", value=tmp[ 1 ] )
 					pass
 				await client.send_message( message.channel, "Here you go!", embed=e )
+				del cnt
+				del tmp
+				del e
 				pass
 
 			pass
@@ -170,6 +173,7 @@ async def on_message ( message: discord.Message ):
 				reader = open( reports, 'r' )
 				text = reader.read( )
 				reader.close( )
+				del reader
 				pass
 			except:
 				text = ""

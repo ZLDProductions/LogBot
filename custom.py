@@ -52,6 +52,8 @@ def log_error ( error_text: str ):
 		exit( 0 )
 		pass
 	del writer
+	del file
+	del prev_text
 	pass
 
 def sqlread ( cmd: str ):
@@ -112,6 +114,8 @@ async def on_message ( message: Message ):
 				await client.send_message( message.channel, commands[ message.server.id ][ item ] )
 				pass
 			pass
+		del prefix
+		del begins
 		pass
 	except:
 		log_error( traceback.format_exc( ) )

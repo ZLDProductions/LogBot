@@ -20,7 +20,11 @@ class ArgParser( object ):
 				tmp.remove( tmp[ 0 ] )
 				tmp_arg = ' '.join( tmp )
 				args[ key ] = tmp_arg
+				del tmp
+				del key
+				del tmp_arg
 				pass
 			return args
-		except: return None
+		except:
+			return None
 		pass

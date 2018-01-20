@@ -839,31 +839,37 @@ def save ( sid: str ):
 	writer = open( version_list, 'w' )
 	writer.write( str( bible_versions ) )
 	writer.close( )
+	del writer
 	# </editor-fold>
 	# <editor-fold desc="type_list">
 	writer = open( type_list, 'w' )
 	writer.write( str( bible_types ) )
 	writer.close( )
+	del writer
 	# </editor-fold>
 	# <editor-fold desc="verse_disables">
 	writer = open( verse_disables, 'w' )
 	writer.write( str( verse_disable_list ) )
 	writer.close( )
+	del writer
 	# </editor-fold>
 	# <editor-fold desc="c_list">
 	writer = open( c_list, 'w' )
 	writer.write( str( default_channel ) )
 	writer.close( )
+	del writer
 	# </editor-fold>
 	# <editor-fold desc="d_last_day">
 	writer = open( d_last_day, 'w' )
 	writer.write( str( last_day ) )
 	writer.close( )
+	del writer
 	# </editor-fold>
 	# <editor-fold desc="votd_d">
 	writer = open( votd_d, 'w' )
 	writer.write( votd )
 	writer.close( )
+	del writer
 	# </editor-fold>
 
 	# <editor-fold desc="PATH CHECK: _disabled_channels">
@@ -881,11 +887,13 @@ def save ( sid: str ):
 	writer = open( f"{_disabled_channels}{sid}.txt", 'w' )
 	writer.write( str( disabled_channels ) )
 	writer.close( )
+	del writer
 	# </editor-fold>
 	# <editor-fold desc="_disabled_users">
 	writer = open( f"{_disabled_users}{sid}.txt", 'w' )
 	writer.write( str( disabled_users ) )
 	writer.close( )
+	del writer
 	# </editor-fold>
 	del writer
 	pass
@@ -963,6 +971,7 @@ def abbr ( _msg: str ) -> str:
 	for item in _msg.split( " " ):
 		_msg = _msg.replace( item, item.capitalize( ) )
 		pass
+	del books
 	return _msg
 
 # noinspection PyUnusedLocal
@@ -993,6 +1002,10 @@ def getVerse ( key: str, ih: bool = True ) -> str:
 			ret = f"**{key} ~ KJV**\n"
 			pass
 		ret += sqlkjv.read( book, chapter, verse )
+		del d
+		del book
+		del chapter
+		del verse
 		return ret
 		pass
 	except:
@@ -1028,7 +1041,13 @@ def getPassage ( key: str, ih: bool = True ) -> str:
 			pass
 		tmp = ''.join( tmp )
 		ret += "{} {}".format( tmp, getVerse( qu[ 0 ] + " " + qu[ 1 ] + ":" + str( i ), ih=False ) ) + "\n"
+		del tmp
 		pass
+	del stuffs
+	del start
+	del end
+	del d
+	del qu
 	if ih:
 		return retpre + ret
 	else:
@@ -1062,6 +1081,10 @@ def getNIVVerse ( key: str, ih: bool = True ) -> str:
 			ret = f"**{key} ~ KJV**\n"
 			pass
 		ret += sqlniv.read( book, chapter, verse )
+		del d
+		del book
+		del chapter
+		del verse
 		return ret
 		pass
 	except:
@@ -1097,7 +1120,13 @@ def getNIVPassage ( key: str, ih: bool = True ) -> str:
 			pass
 		tmp = ''.join( tmp )
 		ret += "{} {}".format( tmp, getNIVVerse( qu[ 0 ] + " " + qu[ 1 ] + ":" + str( i ), ih=False ) ) + "\n"
+		del tmp
 		pass
+	del stuffs
+	del start
+	del end
+	del d
+	del qu
 	if ih:
 		return retpre + ret
 	else:
@@ -1132,6 +1161,10 @@ def getAKJVVerse ( key: str, ih: bool = True ) -> str:
 			ret = f"**{key} ~ AKJV**\n"
 			pass
 		ret += sqld.read( book, chapter, verse )
+		del d
+		del book
+		del chapter
+		del verse
 		return ret
 		pass
 	except:
@@ -1167,7 +1200,13 @@ def getAKJVPassage ( key: str, ih: bool = True ) -> str:
 			pass
 		tmp = ''.join( tmp )
 		ret += "{} {}".format( tmp, getAKJVVerse( qu[ 0 ] + " " + qu[ 1 ] + ":" + str( i ), ih=False ) ) + "\n"
+		del tmp
 		pass
+	del stuffs
+	del start
+	del end
+	del d
+	del qu
 	if ih:
 		return retpre + ret
 	else:
@@ -1202,6 +1241,10 @@ def getWEBVerse ( key: str, ih: bool = True ) -> str:
 			ret = f"**{key} ~ WEB**\n"
 			pass
 		ret += sqlweb.read( book, chapter, verse )
+		del d
+		del book
+		del chapter
+		del verse
 		return ret
 		pass
 	except:
@@ -1236,7 +1279,13 @@ def getWEBPassage ( key: str, ih: bool = True ) -> str:
 			pass
 		tmp = ''.join( tmp )
 		ret += "{} {}".format( tmp, getWEBVerse( qu[ 0 ] + " " + qu[ 1 ] + ":" + str( i ), ih=False ) ) + "\n"
+		del tmp
 		pass
+	del stuffs
+	del start
+	del end
+	del d
+	del qu
 	if ih:
 		return retpre + ret
 	else:
@@ -1265,7 +1314,9 @@ def getChapter ( key: str, version: str ) -> str:
 	for r in res:
 		v = r[ 0 ].split( ":" )[ 1 ]
 		ret += "[{}] {}".format( v, r[ 1 ] ) + "\n"
+		del v
 		pass
+	del res
 	return ret
 
 # noinspection PyShadowingNames
@@ -1291,6 +1342,9 @@ def getRandomVerse ( version: str ) -> str:
 		pass
 	s = random.choice( res )
 	ret = "{}\n{}".format( s[ 0 ], s[ 1 ] )
+	del s
+	del book
+	del res
 	return ret
 
 def searchForVerse ( key: str, p: int = 0, v: str = "kjv" ) -> str:
@@ -1332,6 +1386,8 @@ def searchForVerse ( key: str, p: int = 0, v: str = "kjv" ) -> str:
 		total += len( re.findall( key, item[ 1 ], flags=2 ) )
 		pass
 	ret += f"{parse_num(total)} occurences found, {parse_num(int(math.ceil(total / 10)))} pages overall!```"
+	del res
+	del total
 	return ret
 
 def format_message ( cont: str ) -> list:
@@ -1444,6 +1500,7 @@ class Commands:
 		async def ping ( message: discord.Message ):
 			tm = datetime.now( ) - message.timestamp
 			await client.send_message( message.channel, f"```LogBot Bible Online ~ {round(tm.microseconds / 1000)}```" )
+			del tm
 			pass
 		@staticmethod
 		async def verse_search ( message: discord.Message, prefix: str ):
@@ -1989,6 +2046,7 @@ class Commands:
 				pass
 			save( message.server.id )
 			await client.send_message( message.channel, ret )
+			del ret
 			pass
 		pass
 	class Owner:
@@ -2018,6 +2076,8 @@ def log_error ( error_text: str ):
 		exit( 0 )
 		pass
 	del writer
+	del file
+	del prev_text
 	pass
 
 @asyncio.coroutine
@@ -2045,7 +2105,12 @@ def trigger_votd ( ):
 				yield from client.send_message( channel, "Here is the VotD! :calendar_spiral:", embed=e )
 				encountered.append( server.id )
 				pass
+			del server
 			pass
+		del key
+		del votd
+		del e
+		del encountered
 		pass
 	pass
 
@@ -2236,6 +2301,9 @@ async def on_message ( message ):
 									# </editor-fold>
 									e.title = title
 									e.description = bible_versions[ message.author.id ]
+									del index
+									del title
+									del has_found
 									pass
 								except: pass
 
@@ -2246,8 +2314,6 @@ async def on_message ( message ):
 									pass
 
 								tm = datetime.now( ) - message.timestamp
-								# delay = int(divmod(tm.total_seconds(), 60)[1] * 1000)
-								# delay = int((tm.total_seconds() % 60) * 1000)
 								delay = int( tm.microseconds / 1000 )
 								if delay > 999:
 									delay = str( delay / 1000 )
@@ -2257,7 +2323,15 @@ async def on_message ( message ):
 									pass
 								await client.send_message( message.channel, f"Response in {delay} seconds! :smile:", embed=e )
 								print( f"Sending {', '.join(verse)} ~ Delay: {delay}s." )
+								del tm
+								del delay
 								pass
+							del e
+							del encountered
+							del tmp_content
+							del verse
+							del mc
+							del append
 							pass
 						pass
 					pass
@@ -2460,6 +2534,9 @@ async def on_message ( message ):
 					version = bible_versions[ message.author.id ]
 					ret = analyzeVerse( cap_all_words( _text ), _version=version )
 					e.add_field( name=ret[ 0 ], value=ret[ 1 ], inline=False )
+					del _text
+					del version
+					del ret
 					pass
 				elif line.startswith( "&text=" ):
 					if "|" in line:
@@ -2471,6 +2548,8 @@ async def on_message ( message ):
 						_text = line.replace( "&text=", "" )
 						pass
 					e.add_field( name=_title, value=_text, inline=False )
+					del _title
+					del _text
 					pass
 				elif line.startswith( "&keyword=" ):
 					text = line.replace( "&keyword=", "" )
@@ -2480,6 +2559,9 @@ async def on_message ( message ):
 				text = e.title
 				pass
 			await client.send_message( message.channel, text, embed=e )
+			del lines
+			del e
+			del text
 			pass
 		elif startswith( f"{prefix}devotional" ):
 			_msgs = [ ]
@@ -2549,6 +2631,9 @@ async def on_message ( message ):
 					version = bible_versions[ message.author.id ]
 					ret = analyzeVerse( cap_all_words( _text ), _version=version )
 					e.add_field( name=ret[ 0 ], value=ret[ 1 ], inline=False )
+					del version
+					del ret
+					del _text
 					pass
 				elif line.startswith( "&text=" ):
 					if "|" in line:
@@ -2560,6 +2645,8 @@ async def on_message ( message ):
 						_text = line.replace( "&text=", "" )
 						pass
 					e.add_field( name=_title, value=_text, inline=False )
+					del _title
+					del _text
 					pass
 				elif line.startswith( "&keyword=" ):
 					text = line.replace( "&keyword=", "" )
@@ -2570,6 +2657,12 @@ async def on_message ( message ):
 				pass
 			await client.send_message( message.channel, text, embed=e )
 			await client.delete_messages( _msgs )
+			del _msgs
+			del lines
+			del mappend
+			del lappend
+			del cont
+			del _msg
 			pass
 		elif startswith( f"v{prefix}settings" ):
 			channels = [ str( client.get_channel( _id ) ) if client.get_channel( _id ).server == message.server else None for _id in disabled_channels ]

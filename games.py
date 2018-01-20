@@ -44,11 +44,11 @@ def log_error ( error_text: str ):
 		exit( 0 )
 		pass
 	del writer
+	del file
+	del prev_text
 	pass
 
 def getprefix ( server: str ) -> str:
-	# _cursor.execute( f"SELECT prefix FROM Prefixes WHERE server='{server}';" )
-	# return _cursor.fetchall( )[ 0 ][ 0 ]
 	return db.read( "Prefixes", server )
 
 challenges = [
@@ -115,6 +115,11 @@ async def on_message ( message ):
 							pass
 						pass
 					await client.send_message( message.channel, f"Incorrect!\n{tmp[1]}\n{''.join(overall)}" )
+					del tmp
+					del word
+					del guessed
+					del overall
+					del length
 					pass
 				pass
 			except:
@@ -154,6 +159,8 @@ async def on_message ( message ):
 					ret += item[ 0 ]
 					pass
 				await client.send_message( message.channel, ret )
+				del res
+				del ret
 				pass
 			elif startswith( "list", val=content ):
 				res = _read( f"""SELECT * FROM wordlist ORDER BY word DESC;""" )
@@ -164,7 +171,9 @@ async def on_message ( message ):
 				for msg in format_message( ', '.join( res ) ):
 					await client.send_message( message.channel, msg )
 					pass
+				del res
 				pass
+			del content
 			pass
 		elif startswith( f"{prefix}scramble" ):
 			try:
@@ -175,6 +184,7 @@ async def on_message ( message ):
 					shuff = list( item )
 					random.shuffle( shuff )
 					shuffle += " " + "".join( shuff )
+					del shuff
 					pass
 				shuffle = shuffle[ 1: ]
 				_execute( f"""
@@ -185,6 +195,11 @@ async def on_message ( message ):
 				left = ""
 				print( f"{Fore.CYAN}Started word scramble: {word}, {shuffle}{Fore.RESET}" )
 				await client.send_message( message.channel, f"```Started a word scramble:\n{shuffle}```" )
+				del res
+				del word
+				del shuffle
+				del ret
+				del left
 				pass
 			except:
 				await client.send_message( message.channel, "```A scramble already exists!```" )
@@ -266,21 +281,28 @@ async def on_message ( message ):
 				pass
 
 			await client.send_message( message.channel, f"I chose {_choice}, you chose {_content}. {_winner} wins!" )
+			del _choices
+			del _content
+			del _choice
+			del _winner
 			pass
 		elif startswith( f"g{prefix}rules " ):
 			content = message.content.replace( f"g{prefix}rules ", "" )
 			if content == "rps":
 				ret = """**rock** smashes **scissors**\n**paper** covers **rock**\n**scissors** cut **paper**"""
 				await client.send_message( message.channel, ret )
+				del ret
 				pass
 			elif content == "rpsls":
 				ret = """**rock** smashes **scissors** and crushes **lizard**\n**paper** covers **rock** and blinds **Spock**\n**scissors** cut **paper** and decapitate **lizard**\n**lizard** eats **paper** and poisons **Spock**\n**Spock** destroys **rock** and disintegrates **scissors**"""
 				await client.send_message( message.channel, ret )
+				del ret
 				pass
 			elif content == "scramble":
 				ret = """The bot will scramble a word.
 				You have to find the original word.""".replace( "\t", "" )
 				await client.send_message( message.channel, ret )
+				del ret
 				pass
 			pass
 		elif startswith( "$exit", "logbot.games.exit" ):
@@ -297,6 +319,7 @@ async def on_message ( message ):
 		elif startswith( f"{prefix}ping" ):
 			tm = datetime.now( ) - message.timestamp
 			await client.send_message( message.channel, f"```LogBot Games Online ~ {round(tm.microseconds / 1000)}```" )
+			del tm
 			pass
 		elif startswith( f"g{prefix}get\n", "```sql\n--games\n--get" ):
 			if message.author.id == owner_id:
@@ -305,6 +328,7 @@ async def on_message ( message ):
 					for _msg in format_message( msg ):
 						await client.send_message( message.channel, _msg )
 						pass
+					del msg
 					pass
 				except:
 					await client.send_message( message.channel, f"```Execution Failed.\n{traceback.format_exc()}```" )

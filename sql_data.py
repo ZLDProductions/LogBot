@@ -9,17 +9,18 @@ class kjv_sql( object ):
 		:param books: A string list of the books of the Bible.
 		"""
 		# self.settings = os.path.expanduser( "~\\Documents\\Discord Logs\\SETTINGS" )
-		self.settings = os.getcwd() + "\\Discord Logs\\SETTINGS"
+		self.settings = f"{os.getcwd( )}\\Discord Logs\\SETTINGS"
 		self.has_initialized = False
-		self.data = "{}\\bible.txt".format( self.settings )
-		self.connection = sqlite3.connect( "{}\\kjv.db".format( self.settings ) )
+		self.data = f"{self.settings}\\bible.txt"
+		self.connection = sqlite3.connect( f"{self.settings}\\kjv.db" )
 		self.cursor = self.connection.cursor( )
 		init( )
 
 		try:
-			reader = open( "{}\\has_kjv_initialized.txt".format( self.settings ), 'r' )
+			reader = open( f"{self.settings}\\has_kjv_initialized.txt", 'r' )
 			self.has_initialized = True if reader.read( ) == "True" else False
 			reader.close( )
+			del reader
 			pass
 		except:
 			self.has_initialized = False
@@ -35,19 +36,25 @@ class kjv_sql( object ):
 				try:
 					l = line.split( "	" )
 					key = l[ 0 ]
-					self.cursor.execute( """INSERT INTO kjv (key, value)
-						VALUES ("{}", "{}");""".format( key, l[ 1 ] ) )
+					self.cursor.execute( f"""INSERT INTO kjv (key, value)
+						VALUES ("{key}", "{l[1]}");""" )
 					print( f"{Back.LIGHTWHITE_EX}{Fore.BLACK}Loading line {lines.index(line)} of {len(lines)}{Fore.RESET}{Back.RESET}" )
+					del l
+					del key
 					pass
 				except: pass
 				pass
-			print( "{}Committing data...{}".format( Back.LIGHTWHITE_EX + Fore.BLACK, Fore.RESET + Back.RESET ) )
+			print( f"{Back.LIGHTWHITE_EX + Fore.BLACK}Committing data...{Fore.RESET + Back.RESET}" )
 			self.connection.commit( )
 			self.has_initialized = True
 
-			writer = open( "{}\\has_kjv_initialized.txt".format( self.settings ), 'w+' )
+			writer = open( f"{self.settings}\\has_kjv_initialized.txt", 'w+' )
 			writer.write( str( self.has_initialized ) )
 			writer.close( )
+			del writer
+			del reader
+			del bible
+			del lines
 			pass
 		pass
 	def __create ( self ):
@@ -58,12 +65,14 @@ class kjv_sql( object ):
 		except:
 			pass
 		self.connection.commit( )
+		del cmd
 		pass
 	def __write ( self, key, value ):
-		cmd = """INSERT INTO kjv (key, value)
-			VALUES ("{}", "{}");""".format( key, value )
+		cmd = f"""INSERT INTO kjv (key, value)
+			VALUES ("{key}", "{value}");"""
 		self.cursor.execute( cmd )
 		self.connection.commit( )
+		del cmd
 		pass
 	def read ( self, book: str, chapter: str, verse: str ) -> str:
 		"""
@@ -92,18 +101,18 @@ class sql_data( object ):
 		"""
 		:param books: A string array of the books of the Bible. Not required.
 		"""
-		# self.settings = os.path.expanduser( "~\\Documents\\Discord Logs\\SETTINGS" )  # @UndefinedVariable
-		self.settings = os.getcwd() + "\\Discord Logs\\SETTINGS"
+		self.settings = f"{os.getcwd( )}\\Discord Logs\\SETTINGS"
 		self.has_initialized = False
-		self.data = "{}\\akjv.txt".format( self.settings )
-		self.connection = sqlite3.connect( "{}\\akjv.db".format( self.settings ) )
+		self.data = f"{self.settings}\\akjv.txt"
+		self.connection = sqlite3.connect( f"{self.settings}\\akjv.db" )
 		self.cursor = self.connection.cursor( )
 		init( )
 
 		try:
-			reader = open( "{}\\has_initialized.txt".format( self.settings ), 'r' )
+			reader = open( f"{self.settings}\\has_initialized.txt", 'r' )
 			self.has_initialized = True if reader.read( ) == "True" else False
 			reader.close( )
+			del reader
 			pass
 		except:
 			self.has_initialized = False
@@ -119,20 +128,25 @@ class sql_data( object ):
 				try:
 					l = line.split( "	" )
 					key = l[ 0 ]
-					self.cursor.execute( """INSERT INTO akjv (key, value)
-						VALUES ("{}", "{}");""".format( key, l[ 1 ] ) )
-					print( "{}Loading line {} of {}{}".format( Back.LIGHTWHITE_EX + Fore.BLACK, lines.index( line ), len( lines ), Fore.RESET + Back.RESET ) )
-					# if lines.index(line) % 1000 == 0:self.connection.commit()
+					self.cursor.execute( f"""INSERT INTO akjv (key, value)
+						VALUES ("{key}", "{l[1]}");""")
+					print( f"{Back.LIGHTWHITE_EX + Fore.BLACK}Loading line {lines.index(line)} of {len(lines)}{Fore.RESET + Back.RESET}" )
+					del l
+					del key
 					pass
 				except:
 					pass
-			print( "{}Committing data...{}".format( Back.LIGHTWHITE_EX + Fore.BLACK, Fore.RESET + Back.RESET ) )
+			print( f"{Back.LIGHTWHITE_EX}{Fore.BLACK}Committing data...{Fore.RESET}{Back.RESET}" )
 			self.connection.commit( )
 			self.has_initialized = True
 
-			writer = open( "{}\\has_initialized.txt".format( self.settings ), 'w+' )
+			writer = open( f"{self.settings}\\has_initialized.txt", 'w+' )
 			writer.write( str( self.has_initialized ) )
 			writer.close( )
+			del reader
+			del bible
+			del lines
+			del writer
 			pass
 		pass
 	def __create ( self ):
@@ -143,12 +157,14 @@ class sql_data( object ):
 		except:
 			pass
 		self.connection.commit( )
+		del cmd
 		pass
 	def __write ( self, key, value ):
-		cmd = """INSERT INTO akjv (key, value)
-			VALUES ("{}", "{}");""".format( key, value )
+		cmd = f"""INSERT INTO akjv (key, value)
+			VALUES ("{key}", "{value}");"""
 		self.cursor.execute( cmd )
 		self.connection.commit( )
+		del cmd
 		pass
 	def read ( self, book: str, chapter: str, verse: str ):
 		"""
@@ -181,17 +197,18 @@ class web_sql( object ):
 		:param books: A list of book names. Not required.
 		"""
 		# self.settings = os.path.expanduser( "~\\Documents\\Discord Logs\\SETTINGS" )
-		self.settings = os.getcwd() + "\\Discord Logs\\SETTINGS"
+		self.settings = f"{os.getcwd()}\\Discord Logs\\SETTINGS"
 		self.has_initialized = False
-		self.data = "{}\\web.txt".format( self.settings )
-		self.connection = sqlite3.connect( "{}\\web.db".format( self.settings ) )
+		self.data = f"{self.settings}\\web.txt"
+		self.connection = sqlite3.connect( f"{self.settings}\\web.db" )
 		self.cursor = self.connection.cursor( )
 		init( )
 
 		try:
-			reader = open( "{}\\has_web_initialized.txt".format( self.settings ), 'r' )
+			reader = open( f"{self.settings}\\has_web_initialized.txt", 'r' )
 			self.has_initialized = True if reader.read( ) == "True" else False
 			reader.close( )
+			del reader
 			pass
 		except:
 			self.has_initialized = False
@@ -207,20 +224,26 @@ class web_sql( object ):
 				try:
 					l = line.split( "	" )
 					key = l[ 0 ]
-					self.cursor.execute( """INSERT INTO web (key, value)
-						VALUES ("{}", "{}");""".format( key, l[ 1 ] ) )
-					print( "{}Loading line {} of {}{}".format( Back.LIGHTWHITE_EX + Fore.BLACK, lines.index( line ), len( lines ), Fore.RESET + Back.RESET ) )
+					self.cursor.execute( f"""INSERT INTO web (key, value)
+						VALUES ("{key}", "{l[1]}");""" )
+					print( f"{Back.LIGHTWHITE_EX}{Fore.BLACK}Loading line {lines.index(line)} of {len(lines)}{Fore.RESET}{Back.RESET}" )
+					del l
+					del key
 					pass
 				except:
 					pass
 				pass
-			print( "{}Committing data...{}".format( Back.LIGHTWHITE_EX + Fore.BLACK, Fore.RESET + Back.RESET ) )
+			print( f"{Back.LIGHTWHITE_EX}{Fore.BLACK}Committing data...{Fore.RESET}{Back.RESET}" )
 			self.connection.commit( )
 			self.has_initialized = True
 
-			writer = open( "{}\\has_web_initialized.txt".format( self.settings ), 'w+' )
+			writer = open( f"{self.settings}\\has_web_initialized.txt", 'w+' )
 			writer.write( str( self.has_initialized ) )
 			writer.close( )
+			del writer
+			del reader
+			del bible
+			del lines
 			pass
 		pass
 	def __create ( self ):
@@ -231,12 +254,14 @@ class web_sql( object ):
 		except:
 			pass
 		self.connection.commit( )
+		del cmd
 		pass
 	def __write ( self, key, value ):
 		cmd = """INSERT INTO web (key, value)
 			VALUES ("{}", "{}");""".format( key, value )
 		self.cursor.execute( cmd )
 		self.connection.commit( )
+		del cmd
 		pass
 	def read ( self, book: str, chapter: str, verse: str ) -> str:
 		"""
@@ -262,23 +287,20 @@ class web_sql( object ):
 		pass
 	pass
 
-class niv_sql(object):
-	def __init__ ( self, books: list ):
-		"""
-		:param books: A list of book names. Not required.
-		"""
-		# self.settings = os.path.expanduser( "~\\Documents\\Discord Logs\\SETTINGS" )
-		self.settings = os.getcwd() + "\\Discord Logs\\SETTINGS"
+class niv_sql( object ):
+	def __init__ ( self ):
+		self.settings = f"{os.getcwd()}\\Discord Logs\\SETTINGS"
 		self.has_initialized = False
-		self.data = "{}\\NIV_TEXT.txt".format( self.settings )
-		self.connection = sqlite3.connect( "{}\\niv.db".format( self.settings ) )
+		self.data = f"{self.settings}\\NIV_TEXT.txt"
+		self.connection = sqlite3.connect( f"{self.settings}\\niv.db" )
 		self.cursor = self.connection.cursor( )
 		init( )
 
 		try:
-			reader = open( "{}\\has_niv_initialized.txt".format( self.settings ), 'r' )
+			reader = open( f"{self.settings}\\has_niv_initialized.txt", 'r' )
 			self.has_initialized = True if reader.read( ) == "True" else False
 			reader.close( )
+			del reader
 			pass
 		except:
 			self.has_initialized = False
@@ -294,20 +316,26 @@ class niv_sql(object):
 				try:
 					l = line.split( "	" )
 					key = l[ 0 ]
-					self.cursor.execute( """INSERT INTO niv (key, value)
-						VALUES ("{}", "{}");""".format( key, l[ 1 ] ) )
-					print( "{}Loading line {} of {}{}".format( Back.LIGHTWHITE_EX + Fore.BLACK, lines.index( line ), len( lines ), Fore.RESET + Back.RESET ) )
+					self.cursor.execute( f"""INSERT INTO niv (key, value)
+						VALUES ("{key}", "{l[1]}");""" )
+					print( f"{Back.LIGHTWHITE_EX}{Fore.BLACK}Loading line {lines.index(line)} of {len(lines)}{Fore.RESET}{Back.RESET}" )
+					del l
+					del key
 					pass
 				except:
 					pass
 				pass
-			print( "{}Committing data...{}".format( Back.LIGHTWHITE_EX + Fore.BLACK, Fore.RESET + Back.RESET ) )
+			print( f"{Back.LIGHTWHITE_EX}{Fore.BLACK}Committing data...{Fore.RESET}{Back.RESET}" )
 			self.connection.commit( )
 			self.has_initialized = True
 
-			writer = open( "{}\\has_niv_initialized.txt".format( self.settings ), 'w+' )
+			writer = open( f"{self.settings}\\has_niv_initialized.txt", 'w+' )
 			writer.write( str( self.has_initialized ) )
 			writer.close( )
+			del writer
+			del reader
+			del bible
+			del lines
 			pass
 		pass
 	def __create ( self ):
@@ -318,12 +346,14 @@ class niv_sql(object):
 		except:
 			pass
 		self.connection.commit( )
+		del cmd
 		pass
 	def __write ( self, key, value ):
 		cmd = """INSERT INTO niv (key, value)
 			VALUES ("{}", "{}");""".format( key, value )
 		self.cursor.execute( cmd )
 		self.connection.commit( )
+		del cmd
 		pass
 	def read ( self, book: str, chapter: str, verse: str ) -> str:
 		"""

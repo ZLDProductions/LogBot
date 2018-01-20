@@ -68,6 +68,8 @@ def log_error ( error_text: str ):
 	writer.write( f"{datetime.now()} (swearing_filter_v2.py) - {error_text}\n\n{prev_text}" )
 	writer.close( )
 	del writer
+	del file
+	del prev_text
 	pass
 
 def sqlread ( cmd: str ):
@@ -114,6 +116,7 @@ async def on_message ( message: Message ):
 					filter_settings[ message.server.id ] = 1
 					pass
 				await client.send_message( message.channel, f"```Set the filter type!```" )
+				del cnt
 				pass
 			else:
 				await client.send_message( message.channel, f"```You do not have permission to use this command.```" )
@@ -122,6 +125,7 @@ async def on_message ( message: Message ):
 		elif startswith( f"{prefix}filter" ):
 			_stng = f"Type: {str(filter_settings[message.server.id]).replace('0', 'Delete').replace('1', 'Edit and Replace')}"
 			await client.send_message( message.channel, _stng )
+			del _stng
 			pass
 		elif startswith( "$update", "logbot.filter.update" ):
 			if message.author.id == owner_id:
@@ -137,6 +141,7 @@ async def on_message ( message: Message ):
 		elif startswith( f"{prefix}ping" ):
 			tm = datetime.now( ) - message.timestamp
 			await client.send_message( message.channel, f"```LogBot Swearing Filter Online ~ {round(tm.microseconds / 1000)}```" )
+			del tm
 			pass
 		elif startswith( f"f{prefix}disabled" ):
 			await client.send_message( message.channel, str( message.server.id in filter_disable_list ) )
@@ -173,6 +178,10 @@ async def on_message ( message: Message ):
 			subprocess.Popen( f"python {os.getcwd()}\\swearing_filter_v2.py", False )
 			exit( 0 )
 			pass
+		del do_update
+		del prefix
+		del admin_role
+		del words
 		pass
 	except:
 		log_error( traceback.format_exc( ) )
@@ -198,6 +207,7 @@ async def on_message_edit ( before: Message, after: Message ):
 			pass
 		print( f"{Fore.LIGHTMAGENTA_EX}{str(after.author)} just swore!{Fore.RESET}" )
 		pass
+	del words
 	pass
 
 @client.event

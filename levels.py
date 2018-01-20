@@ -984,6 +984,11 @@ async def on_message ( message: discord.Message ):
 					```
 					""".replace( "\t", "" )
 					await client.send_message( message.channel, string )
+					del udat
+					del creds
+					del ranks
+					del buy_tier
+					del string
 					pass
 				elif startswith( f"l{prefix}gift " ):
 					content = message.content.replace( f"l{prefix}gift ", "" ).split( " " )
@@ -1029,7 +1034,6 @@ async def on_message ( message: discord.Message ):
 							WHERE server='{message.server.id}'
 							AND member='{message.author.id}';
 							""".replace( "\t", "" ) )
-							# await client.send_message(message.channel, f"```Gifted {user} with {parse_num(str(gift).split('.')[0]) + str(gift).split('.')[1]} credits!```")
 							await client.send_message( message.channel, f"```Gifted {user} with {parse_num(str(gift).split('.')[0])} credits!```" )
 							pass
 						else:
@@ -1086,6 +1090,10 @@ async def on_message ( message: discord.Message ):
 							await client.send_message( message.channel, f"```You do not have enough credits to do that!```" )
 							pass
 						pass
+					del content
+					del gift
+					del user
+					del _type
 					pass
 				elif startswith( f"l{prefix}award " ):
 					if admin_role in message.author.roles or message.author.id == owner_id:
@@ -1380,6 +1388,12 @@ async def on_message ( message: discord.Message ):
 
 						save( message.server.id )
 						await client.send_message( message.channel, f"```Awarded {selection} with {parse_num(gift)} {_type}!```" )
+						del selection
+						del _type
+						del gift
+						del content
+						del user
+						del role
 						pass
 					else:
 						await client.send_message( message.channel, "```Only admins can award users!```" )
@@ -1394,6 +1408,7 @@ async def on_message ( message: discord.Message ):
 							total += round( base * (multi ** int( i )) )
 							pass
 						await client.send_message( message.channel, f"{content[0]}->{content[1]}\n{parse_num(total)} xp needed." )
+						del total
 						pass
 					except:
 						await client.send_message( message.channel, f"∞" )
@@ -1480,6 +1495,9 @@ async def on_message ( message: discord.Message ):
 					else:
 						await client.send_message( message.channel, "Your bid must be greater than or equal to 5." )
 						pass
+					del bid
+					del cnt
+					pass
 				elif startswith( f"l{prefix}slots" ):
 					await client.send_message( message.channel, slots_rules )
 					pass
@@ -1509,6 +1527,10 @@ async def on_message ( message: discord.Message ):
 							else:
 								await client.send_message( message.channel, "```That milestone already exists!```" )
 								pass
+							del _role
+							del _item
+							del _lim
+							del res
 							pass
 						elif startswith( "r", val=cnt[ 0 ] ):
 							cnt.remove( cnt[ 0 ] )
@@ -1523,6 +1545,9 @@ async def on_message ( message: discord.Message ):
 							AND role="{_role.id}";
 							""".replace( "\t", "" ) )
 							await client.send_message( message.channel, "```Removed milestone(s)```" )
+							del _role
+							del _lim
+							del _item
 							pass
 						elif startswith( "s", val=cnt[ 0 ] ):
 							cnt.remove( cnt[ 0 ] )
@@ -1541,6 +1566,7 @@ async def on_message ( message: discord.Message ):
 								else:
 									app( f"{item} {limit} {_role}" )
 									pass
+								del _role
 								pass
 							await client.send_message( message.channel, '\n'.join( stuffs ) )
 							del app
@@ -1548,6 +1574,7 @@ async def on_message ( message: discord.Message ):
 							del ms
 							del cnt
 							pass
+						del cnt
 						pass
 					else:
 						await client.send_message( message.channel, "```You do not have permission to use this command.```" )
@@ -1573,6 +1600,7 @@ async def on_message ( message: discord.Message ):
 							pass
 						user = await client.get_user_info( result[ i ][ 0 ] )
 						append( f"{user} : {(result[i][1]*100)+result[i][2]}" )
+						del user
 						pass
 					append = tmp.append
 					for i in range( 0, len( ret ) ):
@@ -1587,7 +1615,12 @@ async def on_message ( message: discord.Message ):
 						await client.send_message( message.channel, f"```{item}```" )
 						pass
 					await client.send_message( message.channel, f"```You are ranked: #{user_rank}```" )
-					pass
+					del _lim
+					del ret
+					del user_rank
+					del tmp
+					del result
+					del append
 					pass
 				elif startswith( f"l{prefix}leaderboards" ):
 					await client.send_typing( message.channel )
@@ -1608,6 +1641,7 @@ async def on_message ( message: discord.Message ):
 							pass
 						user = await client.get_user_info( result[ i ][ 0 ] )
 						append( f"{user} : {(result[i][1]*100)+result[i][2]}" )
+						del user
 						pass
 					append = tmp.append
 					for i in range( 0, len( ret ) ):
@@ -1622,6 +1656,11 @@ async def on_message ( message: discord.Message ):
 						await client.send_message( message.channel, f"```{item}```" )
 						pass
 					await client.send_message( message.channel, f"```You are ranked: #{user_rank}```" )
+					del append
+					del ret
+					del user_rank
+					del tmp
+					del result
 					pass
 				pass
 			if startswith( f"$update", "logbot.levels.update" ):
@@ -1646,6 +1685,7 @@ async def on_message ( message: discord.Message ):
 			elif startswith( f"{prefix}ping" ):
 				tm = datetime.now( ) - message.timestamp
 				await client.send_message( message.channel, f"```LogBot Levels Online ~ {round(tm.microseconds / 1000)}```" )
+				del tm
 				pass
 			elif startswith( f"l{prefix}disabled" ):
 				await client.send_message( message.channel, f"```{disabled}```" )
@@ -1697,6 +1737,8 @@ async def on_message ( message: discord.Message ):
 						for retu in ret:
 							await client.send_message( message.channel, retu )
 							pass
+						del _res
+						del ret
 						pass
 					except:
 						for i in format_message( traceback.format_exc( ).replace( "```", "`" ) ):
@@ -1728,6 +1770,7 @@ async def on_message ( message: discord.Message ):
 					""".replace( "\t", "" ) )
 					pass
 				await client.send_message( message.channel, "```Updated DM Channel.```" )
+				del content
 				pass
 			elif startswith( f"l{prefix}alert " ):
 				cnt = message.content.replace( f"l{prefix}alert ", "" )
@@ -1747,6 +1790,8 @@ async def on_message ( message: discord.Message ):
 				AND member="{message.author.id}";
 				""".replace( "\t", "" ) )
 				await client.send_message( message.channel, f"```Updated Alert Channel```" )
+				del new_alert
+				del cnt
 				pass
 			elif startswith( f"l{prefix}default " ):
 				if admin_role in message.author.roles or message.author.id == owner_id:
@@ -1772,7 +1817,9 @@ async def on_message ( message: discord.Message ):
 							pass
 						defaults[ message.server.id ][ "AlertChannel" ] = c
 						await client.send_message( message.channel, f"```Set the alert channel to {client.get_channel(c)}```" )
+						del c
 						pass
+					del cnt
 					pass
 				pass
 			elif startswith( f"l{prefix}defaults" ):

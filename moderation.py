@@ -37,6 +37,8 @@ def log_error ( error_text: str ):
 		exit( 0 )
 		pass
 	del writer
+	del file
+	del prev_text
 	pass
 
 def exe ( cmd: str ):
@@ -76,6 +78,9 @@ async def on_message ( message: Message ):
 					e.add_field( name=str( item[ 0 ] ), value=item[ 3 ] )
 					pass
 				await client.send_message( message.channel, "", embed=e )
+				del tmp
+				del e
+				del user
 				pass
 			elif begins( f"m{prefix}strike " ):
 				cnt = message.content.replace( f"m{prefix}strike ", "" )
@@ -86,6 +91,9 @@ async def on_message ( message: Message ):
 				VALUES ("{message.server.id}", "{user.id}", "{reason}");
 				""".replace( "\t", "" ) )
 				await client.send_message( message.channel, f"I have stricken {user}." )
+				del cnt
+				del reason
+				del user
 				pass
 			elif begins( f"m{prefix}destrike " ):
 				exe( f"""
@@ -107,6 +115,9 @@ async def on_message ( message: Message ):
 				await client.logout( )
 				pass
 			pass
+		del admin_role
+		del begins
+		del prefix
 		pass
 	except:
 		log_error( traceback.format_exc( ) )

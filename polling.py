@@ -40,6 +40,8 @@ def log_error ( error_text: str ):
 		exit( 0 )
 		pass
 	del writer
+	del file
+	del prev_text
 	pass
 
 def getprefix ( server: str ) -> str:
@@ -64,6 +66,7 @@ def parse_num ( num ) -> str:
 		for i in range( 0, len( _num ), 3 )
 	] )[ ::-1 ]
 	return str( _num )
+	del _num
 	pass
 
 async def sendNoPerm ( message: discord.Message ):
@@ -103,6 +106,11 @@ class Commands:
 			word = 'votes' if not _sum == "1" else 'vote'
 			e.set_footer( text=f"{_sum} {word} so far..." )
 			await client.send_message( message.channel, "Poll status...", embed=e )
+			del content
+			del dat
+			del e
+			del _sum
+			del word
 			pass
 		@staticmethod
 		async def p_vote ( message: discord.Message ):
@@ -147,33 +155,12 @@ class Commands:
 				await client.send_message( message.channel, f"```You have already voted!```" )
 				pass
 			await client.delete_messages( msgs )
-
-			# vote = message.content.replace( f"p{prefix}vote ", "", 1 ).split( " " )
-			# res = _read( f"""
-			# SELECT voted
-			# FROM polls
-			# WHERE server = "{message.server.id}"
-			# AND topic_index = {vote[0]};
-			# """.replace( "\t", "" ) )
-			# v = res[ 0 ][ 0 ]
-			# if v is None: v = ""
-			# if not message.author.id in v.split( " " ):
-			# 	_execute( f"""
-			# 	UPDATE polls
-			# 	SET result = result + 1
-			# 	WHERE server = "{message.server.id}"
-			# 	AND topic_index = {vote[0]}
-			# 	AND choice_index = {vote[1]};
-			# 	""".replace( "\t", "" ) )
-			# 	_execute( f"""
-			# 	UPDATE polls
-			# 	SET voted = "{f"{v}{message.author.id} "}"
-			# 	WHERE server = "{message.server.id}"
-			# 	AND topic_index = {vote[0]};
-			# 	""".replace( "\t", "" ) )
-			# 	await client.send_message( message.channel, f"Voted! :white_check_mark:" )
-			# 	pass
-			# else: await client.send_message( message.channel, f"```You have already voted!```" )
+			del msgs
+			del tmp1
+			del pindex
+			del cindex
+			del res
+			del v
 			pass
 		@staticmethod
 		async def p_polls ( message: discord.Message ):
@@ -204,6 +191,10 @@ class Commands:
 			if len( ret ) == 0:
 				await client.send_message( message.channel, "```There are no polls so far...```" )
 				pass
+			del res
+			del stuffs
+			del append
+			del ret
 			pass
 		pass
 	# noinspection PyUnusedLocal
@@ -235,6 +226,10 @@ class Commands:
 			if len( ret ) == 0:
 				await client.send_message( message.channel, f"```There are no saved polls so far...```" )
 				pass
+			del res
+			del stuffs
+			del ret
+			del append
 			pass
 		@staticmethod
 		async def p_remove ( message: discord.Message, prefix: str ):
@@ -270,6 +265,10 @@ class Commands:
 			word = 'votes' if not _sum == '1' else 'vote'
 			e.set_footer( text=f"{_sum} {word}..." )
 			await client.send_message( message.channel, "Poll status... :clipboard:", embed=e )
+			del dat
+			del e
+			del _sum
+			del word
 			pass
 		@staticmethod
 		async def p_save ( message: discord.Message, prefix: str ):
@@ -295,6 +294,8 @@ class Commands:
 			AND polls.topic_index="{content}";
 			""".replace( "\t", "" ) )
 			await client.send_message( message.channel, ":floppy_disk: Saved the poll!" )
+			del content
+			del res
 			pass
 		@staticmethod
 		async def p_start ( message: discord.Message, prefix: str ):
@@ -332,9 +333,15 @@ class Commands:
 					pass
 				tmp = '\n'.join( [ f"{item}: {ind + 1}" for ind, item in enumerate( choices ) ] )
 				await client.send_message( message.channel, f":hourglass_flowing_sand: Started a poll with an index of {topic_index+1}!", embed=e )
+				del topic_index
+				del e
+				del tmp
 			else:
 				await client.send_message( message.channel, "```That poll already exists!```" )
 				pass
+			del content
+			del topic
+			del choices
 			pass
 		@staticmethod
 		async def p_end ( message: discord.Message, prefix: str ):
@@ -368,6 +375,11 @@ class Commands:
 			WHERE server = "{message.server.id}"
 			AND topic_index = "{content}";
 			""".replace( "\t", "" ) )
+			del content
+			del dat
+			del e
+			del _sum
+			del word
 			pass
 		pass
 	class Owner:
@@ -462,6 +474,7 @@ async def on_message ( message ):
 			elif startswith( f"{prefix}ping" ):
 				tm = datetime.now( ) - message.timestamp
 				await client.send_message( message.channel, f"```LogBot Polling Online ~ {round(tm.microseconds / 1000)}```" )
+				del tm
 				pass
 			elif startswith( "$prefix", "logbot.polling.exit" ):
 				if message.author.id == owner_id:
@@ -477,6 +490,9 @@ async def on_message ( message ):
 			subprocess.Popen( f"python {os.getcwd()}\\polling.py", False )
 			exit( 0 )
 			pass
+		del prefix
+		del admin_role
+		del do_update
 		pass
 	except:
 		log_error( traceback.format_exc( ) )

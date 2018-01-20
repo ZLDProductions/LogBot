@@ -35,6 +35,8 @@ def log_error ( error_text: str ):
 		exit( 0 )
 		pass
 	del writer
+	del file
+	del prev_text
 	pass
 
 class Commands:
@@ -51,6 +53,8 @@ class Commands:
 				except: break
 				pass
 			await client.send_message( message.channel, f"```{count} messages found!```" )
+			del count
+			del logs
 			pass
 		@staticmethod
 		async def a_total ( message: Message ):
@@ -64,8 +68,10 @@ class Commands:
 						pass
 					except: break
 					pass
+				del logs
 				pass
 			await client.send_message( message.channel, f"```{count} messages found!```" )
+			del count
 			pass
 		# noinspection PyShadowingNames
 		@staticmethod
@@ -83,6 +89,7 @@ class Commands:
 				try:
 					item = await logs( )
 					app( item )
+					del item
 					pass
 				except: break
 				pass
@@ -101,6 +108,14 @@ class Commands:
 					pass
 				pass
 			await client.send_message( message.channel, f"```{count} messages found!```" )
+			del _cnt
+			del _type
+			del _param
+			del user
+			del msgs
+			del count
+			del logs
+			del app
 			pass
 		pass
 	pass
@@ -115,7 +130,8 @@ async def on_message ( message: Message ):
 		do_update = False
 		def startswith ( *args: str, val: str = message.content ) -> bool:
 			for arg in args:
-				if val.startswith( arg ): return True
+				if val.startswith( arg ):
+					return True
 				pass
 			return False
 		prefix = sqlread( f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';" )[ 0 ][ 0 ]
@@ -136,6 +152,7 @@ async def on_message ( message: Message ):
 					await Commands.Admin.a_total( message )
 					pass
 				pass
+			del admin_role
 			pass
 
 		if startswith( "a$update", "logbot.admin.update", "$update" ):
@@ -156,6 +173,8 @@ async def on_message ( message: Message ):
 			subprocess.Popen( f"python {os.getcwd()}\\admin.py" )
 			exit( 0 )
 			pass
+		del do_update
+		del prefix
 		pass
 	except:
 		log_error( traceback.format_exc( ) )

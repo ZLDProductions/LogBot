@@ -32,7 +32,8 @@ version = '16.10.0 Python'
 whats_new = [
 	"• Added a magic 8 ball.",
 	"• Added NIV Bible.",
-	"• Code structure changes (should be more readable now)."
+	"• Code structure changes (should be more readable now).",
+	"• Updated copypasta character list."
 ] # list of recent changes to the code.
 planned = [
 	"There is nothing planned at the moment."
@@ -247,6 +248,7 @@ def send ( message: str, servername: str, channel: str = "event" ):
 		# converts the message to unicode, then prints to the pyconsole.
 		message = u"{}".format( message )
 		print( message )
+		del message
 		pass
 	except:
 		print( f"{servername} ~ {Fore.LIGHTRED_EX}There was an error with the encoding of the message.{Fore.RESET}" )
@@ -294,6 +296,7 @@ def save ( sid: str ):
 	writer = open( f"{discord_settings}\\disables.txt", 'w' )
 	writer.write( str( disables ) )
 	writer.close( )
+	del writer
 	# </editor-fold>
 	# <editor-fold desc="Join Roles">
 	writer = open( _join_roles, 'w' )
@@ -360,23 +363,6 @@ def update ( mid: str, cid: str ):
 	exit( 1 )
 	pass
 
-# noinspection PyUnusedLocal
-def read ( sid: str ):
-	"""
-	Reads the data for the specified server.
-	:param sid: The server id.
-	"""
-	# global disables
-
-	# # <editor-fold desc="Disables">
-	# # noinspection PyShadowingNames
-	# reader = open( f"{server_settings}\\{sid}\\disables.txt", 'r' )
-	# disables = ast.literal_eval( reader.read( ) )
-	# reader.close( )
-	# del reader
-	# # </editor-fold>
-	pass
-
 def send_notification ( _nick: str, _name: str, _id: str, _server: str, _content: str, _who: discord.User ):
 	"""
 	Sends a windows notification.
@@ -390,6 +376,8 @@ def send_notification ( _nick: str, _name: str, _id: str, _server: str, _content
 	_n = check( _nick, _name, _id )
 	_header = f"{_n} ({_server}) mentioned {_who}!"
 	sti.showMessage( _header, _content )
+	del _n
+	del _header
 	pass
 
 def notify ( header: str, body: str ):
@@ -414,14 +402,6 @@ def _filter ( text: str ) -> str:
 	:param text: The uncensored text.
 	:return: The censored text.
 	"""
-	# words = text.replace( ",", "" ).replace( ".", "" ).replace( "!", "" ).replace( "?", "" ).split( " " )
-	# for word in words:
-	# 	if word.lower( ) in dict_words:
-	# 		words[ words.index( word ) ] = "\\*" * len( word )
-	# 		pass
-	# 	pass
-	# if "\\*" in ' '.join( words ): return ' '.join( words )
-	# else: return text
 	return tools.filter_text( text )
 
 async def check_purge ( message: discord.Message, limit=100, _check=None ) -> int:
@@ -508,6 +488,13 @@ def get_diff ( then: datetime, now: datetime ) -> str:
 
 	_str = f"{years} {'years' if not years == 1 else 'year'}, {months} {'months' if not months == 1 else 'month'}, {weeks} {'weeks' if not weeks == 1 else 'week'}, {days} {'days' if not days == 1 else 'day'}, {hours} {'hours' if not hours == 1 else 'hour'}, {minutes} {'minutes' if not minutes == 1 else 'minute'}, {seconds} {'seconds' if not seconds == 1 else 'second'}"
 	_str = _str.replace( "0 years,", "" ).replace( " 0 months,", "" ).replace( " 0 weeks,", "" ).replace( " 0 days,", "" ).replace( " 0 hours,", "" ).replace( " 0 minutes,", "" ).replace( " 0 seconds", "" )
+	del years
+	del months
+	del days
+	del weeks
+	del hours
+	del minutes
+	del seconds
 	return _str
 
 # noinspection PyShadowingNames
@@ -527,6 +514,8 @@ def log_error ( error_text: str ):
 	if "SystemExit" in error_text:
 		exit( 1 )
 		pass
+	del prev_text
+	del file
 	del writer
 	pass
 
@@ -534,26 +523,9 @@ class Commands:
 	class Member:
 		@staticmethod
 		async def eightball ( message: discord.message ):
-			if "not" in message.content.lower():
-				if "kill" in message.content.lower() or "bomb" in message.content.lower() or "suicide" in message.content.lower() or "murder" in message.content.lower():
-					await client.send_message(message.channel, f"```{random.choice(eightball_pos)}```")
-					pass
-				else:
-					c = random.choice(["+", "-", "0"])
-					if c == "+":
-						await client.send_message(message.channel, f"```{random.choice(eightball_pos)}```")
-						pass
-					elif c == "-":
-						await client.send_message(message.channel, f"```{random.choice(eightball_neg)}```")
-						pass
-					else:
-						await client.send_message(message.channel, f"```{random.choice(eightball_neu)}```")
-						pass
-					pass
-				pass
-			else:
-				if "kill" in message.content or "bomb" in message.content or "suicide" in message.content or "murder" in message.content:
-					await client.send_message(message.channel, f"```{random.choice(eightball_neg)}```")
+			if "not" in message.content.lower( ):
+				if "kill" in message.content.lower( ) or "bomb" in message.content.lower( ) or "suicide" in message.content.lower( ) or "murder" in message.content.lower( ):
+					await client.send_message( message.channel, f"```{random.choice(eightball_pos)}```" )
 					pass
 				else:
 					c = random.choice( [ "+", "-", "0" ] )
@@ -566,6 +538,25 @@ class Commands:
 					else:
 						await client.send_message( message.channel, f"```{random.choice(eightball_neu)}```" )
 						pass
+					del c
+					pass
+				pass
+			else:
+				if "kill" in message.content or "bomb" in message.content or "suicide" in message.content or "murder" in message.content:
+					await client.send_message( message.channel, f"```{random.choice(eightball_neg)}```" )
+					pass
+				else:
+					c = random.choice( [ "+", "-", "0" ] )
+					if c == "+":
+						await client.send_message( message.channel, f"```{random.choice(eightball_pos)}```" )
+						pass
+					elif c == "-":
+						await client.send_message( message.channel, f"```{random.choice(eightball_neg)}```" )
+						pass
+					else:
+						await client.send_message( message.channel, f"```{random.choice(eightball_neu)}```" )
+						pass
+					del c
 					pass
 				pass
 			pass
@@ -595,6 +586,10 @@ class Commands:
 				sfs = len( num )
 				pass
 			await client.send_message( message.channel, f"```{org_num} has {sfs} significant figures ({num})!```" )
+			del num
+			del org_num
+			del sfs
+			del dot_found
 			pass
 		@staticmethod
 		async def gif ( message: discord.Message, prefix: str ):
@@ -839,13 +834,13 @@ class Commands:
 					.replace( "'", "" )
 				pass
 			elif content.startswith( "utf-8 ", ):
-				ret = "{}".format( codecs.utf_8_encode( content.replace( "utf-8 ", "" ), 'backslashreplace' )[ 0 ] ).replace( "b'\\u", "" ).replace( "'", "" )
+				ret = f"{codecs.utf_8_encode(content.replace('utf-8 ', ''), 'backslashreplace')[0]}".replace( "b'\\u", "" ).replace( "'", "" )
 				pass
 			elif content.startswith( "ascii " ):
-				ret = "{}".format( codecs.ascii_encode( content.replace( "ascii ", "" ), 'backslashreplace' )[ 0 ] ).replace( "b'\\u", "" ).replace( "'", "" )
+				ret = f"{codecs.ascii_encode( content.replace( 'ascii ', '' ), 'backslashreplace' )[ 0 ]}".replace( "b'\\u", "" ).replace( "'", "" )
 				pass
 			elif content.startswith( "oem " ):
-				ret = "{}".format( codecs.oem_encode( content.replace( "oem ", "" ), 'backslashreplace' )[ 0 ] ).replace( "b'\\u", "" ).replace( "'", "" )
+				ret = f"{codecs.oem_encode( content.replace( 'oem ', '' ), 'backslashreplace' )[ 0 ]}".replace( "b'\\u", "" ).replace( "'", "" )
 				pass
 			else:
 				ret = "Not a valid value."
@@ -1029,48 +1024,6 @@ class Commands:
 			await client.send_message( message.channel, f"```Coming Soon:\n{tmp}```" )
 			del tmp
 			pass
-		# @staticmethod
-		# async def cmd ( message: discord.Message ):
-		# 	content = message.content.split( ' ' )
-		# 	content.remove( content[ 0 ] )
-		# 	if content[ 0 ] == 'a':
-		# 		content.remove( content[ 0 ] )
-		# 		text = ' '.join( content )
-		# 		cmd = text.split( "|" )
-		# 		if cmd[ 0 ] is not None:
-		# 			custom_commands[ cmd[ 0 ] ] = cmd[ 1 ]
-		# 			await client.send_message( message.channel, "```Created the command.```" )
-		# 			print( f"{Fore.LIGHTMAGENTA_EX}Command {cmd[0]}:{cmd[1]} was created.{Fore.RESET}" )
-		# 			send( f"Command {cmd[0]}{cmd[1]} was created.", message.server.name )
-		# 			pass
-		# 		else:
-		# 			await client.send_message( message.channel, "```A command cannot be nothing!!!```" )
-		# 			print( f"{Fore.LIGHTMAGENTA_EX}{message.author} attempted to create a universal command!{Fore.RESET}" )
-		# 			send( f"{message.author} attempted to create a universal command!", message.server.name )
-		# 			pass
-		# 		del text
-		# 		del cmd
-		# 		pass
-		# 	elif content[ 0 ] == 'r':
-		# 		content.remove( content[ 0 ] )
-		# 		cmd = ' '.join( content )
-		# 		data = { cmd:custom_commands[ cmd ] }
-		# 		del custom_commands[ cmd ]
-		# 		await client.send_message( message.channel, "```Deleted the command.```" )
-		# 		print( f"{Fore.LIGHTMAGENTA_EX}Command {cmd}:{data[cmd]} was deleted.{Fore.RESET}" )
-		# 		send( f"Command {cmd}:{data[cmd]} was deleted.", message.server.name )
-		# 		del data
-		# 		del cmd
-		# 		pass
-		# 	elif content[ 0 ] == 's':
-		# 		tmp = '\n'.join( list( custom_commands.keys( ) ) )
-		# 		ret = f"```Commands:\n{tmp}```"
-		# 		await client.send_message( message.channel, ret )
-		# 		del tmp
-		# 		del ret
-		# 		pass
-		# 	del content
-		# 	pass
 		@staticmethod
 		async def query ( message: discord.Message, prefix: str ):
 			try:
@@ -1271,7 +1224,7 @@ class Commands:
 				if server_filter[ "ADMCHK" ] is True:
 					if not admin_role in message.author.roles:
 						if server_filter[ "DELCPY" ] is True:
-							if len( message.content.split( "\n" ) ) >= 10 and (")" in message.content or "(" in message.content or "," in message.content or "▇" in message.content):
+							if len( message.content.split( "\n" ) ) >= 10 and (")" in message.content or "(" in message.content or "," in message.content or "▇" in message.content or "╰" in message.content or "▅" in message.content or "━" in message.content or "┣" in message.content or "▇" in message.content or "┃" in message.content or "━" in message.content or "╭" in message.content):
 								await client.delete_message( message )
 								pass
 							pass
@@ -1284,7 +1237,7 @@ class Commands:
 					pass
 				else:
 					if server_filter[ "DELCPY" ] is True:
-						if len( message.content.split( "\n" ) ) >= 10 and (")" in message.content or "(" in message.content or "," in message.content or "▇" in message.content):
+						if len( message.content.split( "\n" ) ) >= 10 and (")" in message.content or "(" in message.content or "," in message.content or "▇" in message.content or "╰" in message.content or "▅" in message.content or "━" in message.content or "┣" in message.content or "▇" in message.content or "┃" in message.content or "━" in message.content or "╭" in message.content):
 							await client.delete_message( message )
 							pass
 						pass
@@ -2179,6 +2132,87 @@ class Commands:
 				pass
 			del content
 			pass
+		@staticmethod
+		async def decide ( message: discord.Message, prefix: str ):
+			pass
+		@staticmethod
+		async def convert ( message: discord.Message, prefix: str ):
+			pass
+		@staticmethod
+		async def urban ( message: discord.Message ):
+			pass
+		@staticmethod
+		async def gif ( message: discord.Message, prefix: str ):
+			tag = message.content.replace( f"{prefix}gif", "" )
+			image = gc.gifs_random_get( giphy_key, tag=tag ).data
+			e = discord.Embed( ).set_image( url=image.image_url )
+			await client.send_message( message.channel, "", embed=e )
+			del e
+			del image
+			del tag
+			pass
+		@staticmethod
+		async def sf ( message: discord.Message ):
+			num = message.content.replace( f"$sf ", "" )
+			org_num = num
+			dot_found = False
+			while num[ 0 ] == "0" or num[ 0 ] == ".":
+				if num[ 0 ] == ".":
+					dot_found = True
+					pass
+				num = num[ 1: ]
+				pass
+			if "." in num:
+				sfs = len( num ) - 1
+				pass
+			elif dot_found:
+				sfs = len( num )
+				pass
+			else:
+				while num[ -1 ] == "0":
+					num = num[ 0:len( num ) - 1 ]
+					pass
+				sfs = len( num )
+				pass
+			await client.send_message( message.channel, f"```{org_num} has {sfs} significant figures ({num})!```" )
+			pass
+		@staticmethod
+		async def eightball ( message: discord.Message ):
+			if "not" in message.content.lower( ):
+				if "kill" in message.content.lower( ) or "bomb" in message.content.lower( ) or "suicide" in message.content.lower( ) or "murder" in message.content.lower( ):
+					await client.send_message( message.channel, f"```{random.choice(eightball_pos)}```" )
+					pass
+				else:
+					c = random.choice( [ "+", "-", "0" ] )
+					if c == "+":
+						await client.send_message( message.channel, f"```{random.choice(eightball_pos)}```" )
+						pass
+					elif c == "-":
+						await client.send_message( message.channel, f"```{random.choice(eightball_neg)}```" )
+						pass
+					else:
+						await client.send_message( message.channel, f"```{random.choice(eightball_neu)}```" )
+						pass
+					pass
+				pass
+			else:
+				if "kill" in message.content.lower( ) or "bomb" in message.content.lower( ) or "suicide" in message.content.lower( ) or "murder" in message.content.lower( ):
+					await client.send_message( message.channel, f"```{random.choice(eightball_neg)}```" )
+					pass
+				else:
+					c = random.choice( [ "+", "-", "0" ] )
+					if c == "+":
+						await client.send_message( message.channel, f"```{random.choice(eightball_pos)}```" )
+						pass
+					elif c == "-":
+						await client.send_message( message.channel, f"```{random.choice(eightball_neg)}```" )
+						pass
+					else:
+						await client.send_message( message.channel, f"```{random.choice(eightball_neu)}```" )
+						pass
+					pass
+				pass
+			pass
 		pass
 	pass
 
@@ -2739,8 +2773,8 @@ async def on_message ( message: discord.Message ):
 						sendNoPerm( message )
 						pass
 					pass
-				elif startswith(f"{prefix}8ball "):
-					await Commands.Member.eightball(message)
+				elif startswith( f"{prefix}8ball " ):
+					await Commands.Member.eightball( message )
 					pass
 				# elif startswith(f"{prefix}yoda "):
 				# 	cnt = message.content.replace(f"{prefix}yoda ", "").replace(" ", "+")
@@ -2888,7 +2922,6 @@ async def on_message ( message: discord.Message ):
 			pass
 
 		tm = int( (datetime.now( ) - message.timestamp).microseconds ) / 1000000
-		print( tm )
 		times.append( tm )
 		del tm
 		pass
@@ -2946,7 +2979,6 @@ async def on_member_join ( member: discord.Member ):
 	m = datetime.now( )
 	ret = f"Member Joined: {member.server.name} ~ {member} joined ~ {m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	send( ret, member.server.name )
-	read( member.server.id )
 	if not disables[ "welcome" ]:
 		welcome_tmp = db.read( "Welcomes", member.server.id )
 
@@ -2982,7 +3014,6 @@ async def on_member_remove ( member: discord.Member ):
 	time = f"{m.day}.{m.month}.{m.year} {m.hour}:{m.minute}"
 	ret = f"Member Left: {member.server.name} ~ {member} left ~ {time}"
 	send( ret, member.server.name )
-	read( member.server.id )
 	if not disables[ "goodbye" ]:
 		goodbye_tmp = db.read( "Goodbyes", member.server.id )
 		goodbye_tmp = re.sub( "{server}", member.server.name, goodbye_tmp, flags=2 )

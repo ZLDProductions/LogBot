@@ -874,6 +874,8 @@ def log_error ( error_text: str ):
 		exit( 0 )
 		pass
 	del writer
+	del file
+	del prev_text
 	pass
 
 def sqlread ( cmd: str ):
@@ -982,15 +984,17 @@ async def on_message ( message ):
 				pass
 			await client.send_message( message.channel, f"```Use {prefix}help to get the list of commands.\nUse {prefix}help [command] to get more information on [command].\nUse {prefix}git to visit the GitHub Documentation.\nThe prefix is {prefix}```" )
 			await client.send_message( message.channel, f"```Commands:\n{all_commands.replace('_', prefix)}```" )
+			del _cnt
+			del _groupby
 			pass
 		elif startswith( f"h{prefix}prefix " ):
-			prefix = message.content.replace( "h{prefix}prefix ", "" )
-			data = prefixes.get( prefix )
+			_prefix = message.content.replace( "h{prefix}prefix ", "" )
+			data = prefixes.get( _prefix )
 			if data is None:
-				await client.send_message( message.channel, f"```There is no prefix \"{prefix}\"" )
+				await client.send_message( message.channel, f"```There is no prefix \"{_prefix}\"" )
 				pass
 			else:
-				e = discord.Embed( title=prefix, description=f"Prefix Information for {prefix}", colour=discord.Colour.dark_gold( ) ) \
+				e = discord.Embed( title=_prefix, description=f"Prefix Information for {_prefix}", colour=discord.Colour.dark_gold( ) ) \
 					.add_field( name="Plugin", value=data )
 				await client.send_message( message.channel, "Here you go!", embed=e )
 				del e

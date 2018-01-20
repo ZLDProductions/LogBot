@@ -26,6 +26,8 @@ class SQL:
 		except:
 			pass
 		self.connection.commit( )
+		del vals
+		del cmd
 		pass
 	def write ( self, table: str, *values: dict ):
 		"""
@@ -46,6 +48,10 @@ class SQL:
 			VALUES ({tmp2});"""
 		self.cursor.execute( cmd )
 		self.connection.commit( )
+		del tmp1
+		del tmp2
+		del vals
+		del cmd
 		pass
 	def read ( self, table: str, server: str, arg: str = 'server' ) -> str:
 		"""
@@ -72,6 +78,7 @@ class SQL:
 		WHERE server='{server}'"""
 		self.cursor.execute( cmd )
 		self.connection.commit( )
+		del cmd
 		pass
 	def fmany ( self, cmd: str, num: int = 3 ) -> list:
 		"""
@@ -86,7 +93,9 @@ class SQL:
 		while not done:
 			arr = self.cursor.fetchmany( num )
 			results.append( arr )
+			del arr
 			pass
+		del done
 		return random.choice( results )
 		pass
 	def execute ( self, cmd: str ) -> list:
