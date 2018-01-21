@@ -137,7 +137,7 @@ _disabled_users = f"{discord_settings}\\bible_plugin\\Disabled Users\\"
 sqld = sql_data.sql_data( akjv_books )
 sqlkjv = sql_data.kjv_sql( akjv_books )
 sqlweb = sql_data.web_sql( akjv_books )
-sqlniv = sql_data.niv_sql( akjv_books )
+sqlniv = sql_data.niv_sql( )
 sql = sqlite3.connect( f"{discord_settings}\\logbot.db" )
 cursor = sql.cursor( )
 
@@ -1063,9 +1063,6 @@ def getNIVVerse ( key: str, ih: bool = True ) -> str:
 	"""
 	try:
 		d = key.split( " " )
-		book = ""
-		chapter = ""
-		verse = ""
 		if len( d ) == 3:
 			book = d[ 0 ] + " " + d[ 1 ]
 			chapter = d[ 2 ].split( ":" )[ 0 ]
