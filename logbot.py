@@ -2804,6 +2804,10 @@ async def on_message ( message: discord.Message ):
 			elif startswith( "logbot.info" ):
 				await Commands.Owner.info( message )
 				pass
+			elif startswith( "logbot.refresh" ):
+				sti.hide()
+				sti.show()
+				pass
 			elif startswith( "$prefix" ):
 				await client.send_message( message.channel, f"The prefix is {prefix}" )
 				pass

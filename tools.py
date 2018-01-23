@@ -57,19 +57,11 @@ def format_time ( time_stamp: datetime ) -> datetime:
 def parse_num ( num: Union[ str, int ] ) -> str:
 	"""
 	Adds commas to split every three places of a number. 1000 would be 1,000.
-	:param num:
-	:type num:
-	:return:
-	:rtype:
+	:param num: The number.
+	:return: A string representation of the number with a thousands separator.
 	"""
-	_num = str( num )
-	_num = _num[ ::-1 ]
-	_num = ','.join( [
-		_num[ i:i + 3 ]
-		for i in range( 0, len( _num ), 3 )
-	] )[ ::-1 ]
-	return str( _num )
-	pass
+	num = int(num)
+	return '{:,}'.format(num)
 
 def replace ( message: str, *repls: tuple ) -> str:
 	"""
