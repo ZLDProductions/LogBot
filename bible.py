@@ -839,37 +839,31 @@ def save ( sid: str ):
 	writer = open( version_list, 'w' )
 	writer.write( str( bible_versions ) )
 	writer.close( )
-	del writer
 	# </editor-fold>
 	# <editor-fold desc="type_list">
 	writer = open( type_list, 'w' )
 	writer.write( str( bible_types ) )
 	writer.close( )
-	del writer
 	# </editor-fold>
 	# <editor-fold desc="verse_disables">
 	writer = open( verse_disables, 'w' )
 	writer.write( str( verse_disable_list ) )
 	writer.close( )
-	del writer
 	# </editor-fold>
 	# <editor-fold desc="c_list">
 	writer = open( c_list, 'w' )
 	writer.write( str( default_channel ) )
 	writer.close( )
-	del writer
 	# </editor-fold>
 	# <editor-fold desc="d_last_day">
 	writer = open( d_last_day, 'w' )
 	writer.write( str( last_day ) )
 	writer.close( )
-	del writer
 	# </editor-fold>
 	# <editor-fold desc="votd_d">
 	writer = open( votd_d, 'w' )
 	writer.write( votd )
 	writer.close( )
-	del writer
 	# </editor-fold>
 
 	# <editor-fold desc="PATH CHECK: _disabled_channels">
@@ -887,13 +881,11 @@ def save ( sid: str ):
 	writer = open( f"{_disabled_channels}{sid}.txt", 'w' )
 	writer.write( str( disabled_channels ) )
 	writer.close( )
-	del writer
 	# </editor-fold>
 	# <editor-fold desc="_disabled_users">
 	writer = open( f"{_disabled_users}{sid}.txt", 'w' )
 	writer.write( str( disabled_users ) )
 	writer.close( )
-	del writer
 	# </editor-fold>
 	del writer
 	pass
@@ -2105,7 +2097,6 @@ def trigger_votd ( ):
 			del server
 			pass
 		del key
-		del votd
 		del e
 		del encountered
 		pass
