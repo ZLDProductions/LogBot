@@ -2136,7 +2136,7 @@ async def on_message ( message ):
 				if not message.content.startswith( f"{prefix}verse " ) and not message.content.startswith( f"{prefix}devotional\n" ):
 					if not message.channel.id in disabled_channels and not message.author.id in disabled_users:
 						for mcont in message.content.split( "\n" ):
-							e = discord.Embed( title=bible_versions[ message.author.id ], colour=discord.Colour.purple( ) )
+							e = discord.Embed( colour=discord.Colour.purple( ) )
 							encountered = [ ]
 							tmp_content = mcont.replace( ".", " " ) \
 								.replace( "`", "" ) \
@@ -2171,7 +2171,27 @@ async def on_message ( message ):
 							for v in verse:
 								if bible_types[ message.author.id ] == "text":
 									if "-" in v and not v in encountered:
-										if bible_versions[ message.author.id ] == "kjv":
+										if "AKJV" in message.content:
+											for m in format_message( getAKJVPassage( v, ih=True ) ):
+												await client.send_message( message.channel, f"```{m.replace('```','')}```" )
+												pass
+											pass
+										elif "KJV" in message.content:
+											for m in format_message( getPassage( v, ih=True ) ):
+												await client.send_message( message.channel, f"```{m.replace('```','')}```" )
+												pass
+											pass
+										elif "WEB" in message.content:
+											for m in format_message( getWEBPassage( v, ih=True ) ):
+												await client.send_message( message.channel, f"```{m.replace('```','')}```" )
+												pass
+											pass
+										elif "NIV" in message.content:
+											for m in format_message( getNIVPassage( v, ih=True ) ):
+												await client.send_message( message.channel, f"```{m.replace('```','')}```" )
+												pass
+											pass
+										elif bible_versions[ message.author.id ] == "kjv":
 											for m in format_message( getPassage( v, ih=True ) ):
 												m = m.replace( "```", "" ).split( '\n' )
 												m[ 1 ] = f"```{m[1]}"
@@ -2205,7 +2225,27 @@ async def on_message ( message ):
 											pass
 										pass
 									elif ":" in v and not v in encountered:
-										if bible_versions[ message.author.id ] == "kjv":
+										if "AKJV" in message.content:
+											for m in format_message( getAKJVVerse( v, ih=True ) ):
+												await client.send_message( message.channel, f"```{m.replace('```','')}```" )
+												pass
+											pass
+										elif "KJV" in message.content:
+											for m in format_message( getVerse( v, ih=True ) ):
+												await client.send_message( message.channel, f"```{m.replace('```','')}```" )
+												pass
+											pass
+										elif "WEB" in message.content:
+											for m in format_message( getWEBVerse( v, ih=True ) ):
+												await client.send_message( message.channel, f"```{m.replace('```','')}```" )
+												pass
+											pass
+										elif "NIV" in message.content:
+											for m in format_message( getNIVVerse( v, ih=True ) ):
+												await client.send_message( message.channel, f"```{m.replace('```','')}```" )
+												pass
+											pass
+										elif bible_versions[ message.author.id ] == "kjv":
 											for m in format_message( getVerse( v, ih=True ) ):
 												m = m.replace( "```", "" ).split( '\n' )
 												m[ 1 ] = f"```{m[1]}"
@@ -2241,7 +2281,19 @@ async def on_message ( message ):
 									pass
 								else:
 									if "-" in v and not v in encountered:
-										if bible_versions[ message.author.id ] == "kjv":
+										if "AKJV" in message.content:
+											e.add_field( name=v, value=getAKJVPassage( v, ih=False ) )
+											pass
+										elif "KJV" in message.content:
+											e.add_field( name=v, value=getPassage( v, ih=False ) )
+											pass
+										elif "WEB" in message.content:
+											e.add_field( name=v, value=getWEBPassage( v, ih=False ) )
+											pass
+										elif "NIV" in message.content:
+											e.add_field( name=v, value=getNIVPassage( v, ih=False ) )
+											pass
+										elif bible_versions[ message.author.id ] == "kjv":
 											e.add_field( name=v, value=getPassage( v, ih=False ) )
 											pass
 										elif bible_versions[ message.author.id ] == "akjv":
@@ -2255,7 +2307,19 @@ async def on_message ( message ):
 											pass
 										pass
 									elif ":" in v and not v in encountered:
-										if bible_versions[ message.author.id ] == "kjv":
+										if "AKJV" in message.content:
+											e.add_field( name=v, value=getAKJVVerse( v, ih=False ) )
+											pass
+										elif "KJV" in message.content:
+											e.add_field( name=v, value=getVerse( v, ih=False ) )
+											pass
+										elif "WEB" in message.content:
+											e.add_field( name=v, value=getWEBVerse( v, ih=False ) )
+											pass
+										elif "NIV" in message.content:
+											e.add_field( name=v, value=getNIVVerse( v, ih=False ) )
+											pass
+										elif bible_versions[ message.author.id ] == "kjv":
 											e.add_field( name=v, value=getVerse( v, ih=False ) )
 											pass
 										elif bible_versions[ message.author.id ] == "akjv":
@@ -2285,13 +2349,33 @@ async def on_message ( message ):
 											title += mcont[ i ]
 											pass
 										pass
-									title = ' '.join( [ t for t in title.split( " " ) ] )
 									# </editor-fold>
 									e.title = title
-									e.description = bible_versions[ message.author.id ]
 									del index
 									del title
 									del has_found
+									pass
+								except: pass
+								try:
+									# <editor-fold desc="Fetching Description">
+									if "AKJV" in message.content:
+										description = "akjv"
+										pass
+									elif "KJV" in message.content:
+										description = "kjv"
+										pass
+									elif "WEB" in message.content:
+										description = "web"
+										pass
+									elif "NIV" in message.content:
+										description = "niv"
+										pass
+									else:
+										description = bible_versions[ message.author.id ]
+										pass
+									# </editor-fold>
+									e.description = description.upper( )
+									del description
 									pass
 								except: pass
 
@@ -2668,7 +2752,7 @@ async def on_message ( message ):
 			_personal.add_field( name="Type", value=bible_types[ message.author.id ] )
 			_personal.add_field( name="Version", value=bible_versions[ message.author.id ] )
 			_server = discord.Embed( title="Server", description="Verse Module Settings", colour=discord.Colour.dark_blue( ) )
-			_server.add_field( name="Verse Channel", value=default_channel[ message.server.id ] )
+			_server.add_field( name="Verse Channel", value=default_channel.get( message.server.id ) )
 			_server.add_field( name="Disabled Channels", value=''.join( channels ) if not len( channels ) == 0 else "No disabled channels." )
 
 			await client.send_message( message.channel, "", embed=_personal )
@@ -2688,6 +2772,7 @@ async def on_message ( message ):
 			pass
 		pass
 	except: log_error( traceback.format_exc( ) )
+	pass
 
 @client.event
 async def on_ready ( ):
