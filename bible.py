@@ -912,7 +912,7 @@ def abbr ( _msg: str ) -> str:
 		"1 Chr ":"1 Chronicles ",
 		"2 Chr ":"2 Chronicles ",
 		"Neh "  :"Nehemiah ",
-		"Est "  :"Esther",
+		"Est "  :"Esther ",
 		"Psa "  :"Psalms ",
 		"Pro "  :"Proverbs ",
 		"Ecc "  :"Ecclesiastes ",

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../GlobalShortcut/.idea/GlobalShortcut.iml" filepath="$PROJECT_DIR$/../GlobalShortcut/.idea/GlobalShortcut.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/LogBot.iml" filepath="$PROJECT_DIR$/.idea/LogBot.iml" />
     </modules>
   </component>
