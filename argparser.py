@@ -1,4 +1,10 @@
+"""
+ArgParser Tool
+"""
 class ArgParser( object ):
+	"""
+	Used to parse strings.
+	"""
 	def __init__ ( self, switch: str = "-", sep: str = "=" ):
 		"""
 		:param switch: The switch character. Defaults to '-'.
@@ -6,11 +12,10 @@ class ArgParser( object ):
 		"""
 		self.switch = switch
 		self.sep = sep
-		pass
 	def parse ( self, cmd: str ):
 		"""
 		:param cmd: The command to parse. Uses switch and sep to parse the command.
-		:return A dictionary of arguments. [switch]:[arg]. If there is no switches in the command, returns None.
+		:return A dictionary of arguments: [switch]:[arg].
 		"""
 		try:
 			args = { }
@@ -23,8 +28,6 @@ class ArgParser( object ):
 				del tmp
 				del key
 				del tmp_arg
-				pass
 			return args
-		except:
+		except Exception:
 			return None
-		pass

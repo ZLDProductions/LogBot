@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from typing import Union
 
 import requests
-from PyQt5.Qt import QSystemTrayIcon
+import nltk
 
 def startswith ( *msgs: str, val: str = "" ) -> bool:
 	"""
@@ -15,7 +15,6 @@ def startswith ( *msgs: str, val: str = "" ) -> bool:
 	for msg in msgs:
 		if val.startswith( msg ):
 			return True
-		pass
 	return False
 
 def format_message ( message: str, length: int = 1000, code_block: bool = True ) -> list:
@@ -34,9 +33,7 @@ def format_message ( message: str, length: int = 1000, code_block: bool = True )
 				for i in range( 0, len( message ), length )
 			]
 		]
-	else:
-		return [ f"```{message}```" if code_block else f"{message}" ]
-	pass
+	return [ f"```{message}```" if code_block else f"{message}" ]
 
 def is_ascii ( message: str ) -> bool:
 	"""
@@ -60,8 +57,8 @@ def parse_num ( num: Union[ str, int ] ) -> str:
 	:param num: The number.
 	:return: A string representation of the number with a thousands separator.
 	"""
-	num = int(num)
-	return '{:,}'.format(num)
+	num = int( num )
+	return '{:,}'.format( num )
 
 def replace ( message: str, *repls: tuple ) -> str:
 	"""
@@ -72,46 +69,37 @@ def replace ( message: str, *repls: tuple ) -> str:
 	"""
 	for repl in repls:
 		message = message.replace( repl[ 0 ], repl[ 1 ] )
-		pass
 	return message
-	pass
-
-def notify ( header: str, body: str, sti: QSystemTrayIcon ):
-	sti.showMessage( header, body )
-	pass
 
 def filter_text ( text: str ) -> str:
 	url = "http://www.purgomalum.com/service/plain?text=" + text
-	r = requests.get( url )
-	return r.text.replace( "*", "\\*" )
+	res = requests.get( url )
+	return res.text.replace( "*", "\\*" )
 
-def factor ( n: int, s: int = 0 ) -> list:
+def factor ( num: int, _sum: int = 0 ) -> list:
 	"""
 	Gets the factors of n.
-	:param n: The whole integer to factor.
-	:param s: The (optional) sum of the factors. If they do not add up to this, then they are excluded from the statement.
+	:param num: The whole integer to factor.
+	:param _sum: The (optional) sum of the factors. If they do not add up to this, then they are excluded from the statement.
 	:return: A list of tuples containing the factors for n.
 	"""
-	n = abs( n )
-	if s == 0:
+	num = abs( num )
+	if _sum == 0:
 		ret = [ ]
-		for i in range( 1, n + 1 ):
-			if n % i == 0:
-				ret.append( (i, int( n / i )) )
-				pass
-			pass
+		for i in range( 1, num + 1 ):
+			if num % i == 0:
+				ret.append( (i, int( num / i )) )
 		return ret
-	else:
-		ret = [ ]
-		for i in range( 1, n + 1 ):
-			if n % i == 0 and (i + int( n / i ) == s or -i + int( n / i ) == s or i + int( n / -i ) == s or -i + int( n / -i ) == s):
-				ret.append( (i, int( n / i )) )
-				pass
-			pass
-		return ret
-	pass
+	ret = [ ]
+	for i in range( 1, num + 1 ):
+		if num % i == 0 and (i + int( num / i ) == _sum or -i + int( num / i ) == _sum or i + int( num / -i ) == _sum or -i + int( num / -i ) == _sum):
+			ret.append( (i, int( num / i )) )
+	return ret
 
-def threaded ( fn ):
+def threaded ( func ):
 	def wrapper ( *args, **kwargs ):
-		threading.Thread( target=fn, args=args, kwargs=kwargs ).start( )
+		threading.Thread( target=func, args=args, kwargs=kwargs ).start( )
 	return wrapper
+
+def split_into_words ( text: str ) -> list:
+	return nltk.word_tokenize(text)

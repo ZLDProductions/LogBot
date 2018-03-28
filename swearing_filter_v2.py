@@ -4,98 +4,94 @@ import subprocess
 import traceback
 from datetime import datetime
 
+import os
 from colorama import Fore, init
 from discord import Client, Message
 from discord.utils import find
 
-from logbot_data import *
+from logbot_data import owner_id, token
+from tools import split_into_words
 
-client = Client( )
+CLIENT = Client( )
 init( )
-exiting = False
+EXITING = False
 
-dict_words = [ ]
-filter_disable_list = [ ]
-filter_settings = { }
+DICT_WORDS = [ ]
+FILTER_DISABLE_LIST = [ ]
+FILTER_SETTINGS = { }
 
-discord_settings = f"{os.getcwd()}\\Discord Logs\\SETTINGS"
-dictionary = f"{discord_settings}\\censored_words.txt"
-filter_disables = f"{discord_settings}\\filter_disable_list.txt"
-_settings = f"{discord_settings}\\filter_setting.txt"
+DISCORD_SETTINGS_PATH = f"{os.getcwd()}\\Discord Logs\\SETTINGS"
+DICTIONARY_PATH = f"{DISCORD_SETTINGS_PATH}\\censored_words.txt"
+FILTER_DISABLES = f"{DISCORD_SETTINGS_PATH}\\filter_disable_list.txt"
+SETTINGS_PATH = f"{DISCORD_SETTINGS_PATH}\\filter_setting.txt"
 
-sql = sqlite3.connect( f"{discord_settings}\\logbot.db" )
-cursor = sql.cursor( )
-
-try:
-	reader = open( filter_disables, 'r' )
-	filter_disable_list = ast.literal_eval( reader.read( ) )
-	if isinstance( filter_disable_list, dict ):
-		filter_disable_list = list( )
-		pass
-	reader.close( )
-	del reader
-	pass
-except: pass
+SQL = sqlite3.connect( f"{DISCORD_SETTINGS_PATH}\\logbot.db" )
+CURSOR = SQL.cursor( )
 
 try:
-	reader = open( _settings, 'r' )
-	filter_settings = ast.literal_eval( reader.read( ) )
-	reader.close( )
-	del reader
+	READER = open( FILTER_DISABLES, 'r' )
+	FILTER_DISABLE_LIST = ast.literal_eval( READER.read( ) )
+	if isinstance( FILTER_DISABLE_LIST, dict ):
+		FILTER_DISABLE_LIST = list( )
+	READER.close( )
+	del READER
+except Exception:
 	pass
-except: pass
 
 try:
-	reader = open( dictionary, 'r' )
-	dict_words = reader.read( ).split( "\n" )
-	reader.close( )
-	del reader
+	READER = open( SETTINGS_PATH, 'r' )
+	FILTER_SETTINGS = ast.literal_eval( READER.read( ) )
+	READER.close( )
+	del READER
+except Exception:
 	pass
-except: pass
+
+try:
+	READER = open( DICTIONARY_PATH, 'r' )
+	DICT_WORDS = READER.read( ).split( "\n" )
+	READER.close( )
+	del READER
+except Exception:
+	pass
 
 # noinspection PyShadowingNames
 def log_error ( error_text: str ):
 	file = f"{os.getcwd()}\\error_log.txt"
 	prev_text = ""
 	try:
-		reader = open( file, 'r' )
-		prev_text = reader.read( )
-		reader.close( )
-		del reader
+		reader_obj = open( file, 'r' )
+		prev_text = reader_obj.read( )
+		reader_obj.close( )
+		del reader_obj
+	except Exception:
 		pass
-	except: pass
 	writer = open( file, 'w' )
 	writer.write( f"{datetime.now()} (swearing_filter_v2.py) - {error_text}\n\n{prev_text}" )
 	writer.close( )
 	del writer
 	del file
 	del prev_text
-	pass
 
 def sqlread ( cmd: str ):
-	cursor.execute( cmd )
-	return cursor.fetchall( )
+	CURSOR.execute( cmd )
+	return CURSOR.fetchall( )
 
-@client.event
+@CLIENT.event
 async def on_message ( message: Message ):
-	global exiting
+	global EXITING
 	try:
-		if not message.server.id in list( filter_settings.keys( ) ):
-			filter_settings[ message.server.id ] = 1
-			pass
-		words = message.content.replace( ".", "" ).replace( ",", "" ).replace( "!", "" ).replace( "?", "" ).split( " " )
+		if not message.server.id in list( FILTER_SETTINGS.keys( ) ):
+			FILTER_SETTINGS[ message.server.id ] = 1
+		words = split_into_words(message.content)
+		# words = message.content.replace( ".", "" ).replace( ",", "" ).replace( "!", "" ).replace( "?", "" ).split( " " )
 		for word in words:
-			if word.lower( ) in dict_words:
+			if word.lower( ) in DICT_WORDS:
 				words[ words.index( word ) ] = "\\*" * len( word )
-				pass
-			pass
-		if not ' '.join( words ) == message.content.replace( ".", "" ).replace( ",", "" ).replace( "!", "" ).replace( "?", "" ) and not message.server.id in filter_disable_list:
-			await client.delete_message( message )
-			if filter_settings[ message.server.id ] == 1:
-				await client.send_message( message.channel, f"[{message.author.mention}] {' '.join(words)}" )
-				pass
+		if not ' '.join( words ) == message.content.replace( ".", "" ).replace( ",", "" ).replace( "!", "" ).replace( "?", "" ) and not message.server.id in FILTER_DISABLE_LIST:
+			await CLIENT.delete_message( message )
+			if FILTER_SETTINGS[ message.server.id ] == 1:
+				await CLIENT.send_message( message.channel, f"[{message.author.mention}] {' '.join(words)}" )
 			print( f"{Fore.LIGHTMAGENTA_EX}{str(message.author)} just swore!{Fore.RESET}" )
-			pass
 
 		do_update = False
 		prefix = sqlread( f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';" )[ 0 ][ 0 ]
@@ -104,121 +100,90 @@ async def on_message ( message: Message ):
 			for msg in msgs:
 				if val.startswith( msg ):
 					return True
-				pass
 			return False
 		if startswith( f"{prefix}filter settype " ):
 			if admin_role in message.author.roles or message.author.id == owner_id:
 				cnt = message.content.replace( f"{prefix}filter settype ", "" )
 				if startswith( "d", val=cnt ):
-					filter_settings[ message.server.id ] = 0
-					pass
+					FILTER_SETTINGS[ message.server.id ] = 0
 				elif startswith( "e", val=cnt ):
-					filter_settings[ message.server.id ] = 1
-					pass
-				await client.send_message( message.channel, f"```Set the filter type!```" )
+					FILTER_SETTINGS[ message.server.id ] = 1
+				await CLIENT.send_message( message.channel, f"```Set the filter type!```" )
 				del cnt
-				pass
 			else:
-				await client.send_message( message.channel, f"```You do not have permission to use this command.```" )
-				pass
-			pass
+				await CLIENT.send_message( message.channel, f"```You do not have permission to use this command.```" )
 		elif startswith( f"{prefix}filter" ):
-			_stng = f"Type: {str(filter_settings[message.server.id]).replace('0', 'Delete').replace('1', 'Edit and Replace')}"
-			await client.send_message( message.channel, _stng )
+			_stng = f"Type: {str(FILTER_SETTINGS[message.server.id]).replace('0', 'Delete').replace('1', 'Edit and Replace')}"
+			await CLIENT.send_message( message.channel, _stng )
 			del _stng
-			pass
 		elif startswith( "$update", "logbot.filter.update" ):
 			if message.author.id == owner_id:
 				do_update = True
-				pass
-			pass
 		elif startswith( "$exit", "logbot.filter.exit" ):
 			if message.author.id == owner_id:
-				exiting = True
-				await client.logout( )
-				pass
-			pass
+				EXITING = True
+				await CLIENT.logout( )
 		elif startswith( f"{prefix}ping" ):
-			tm = datetime.now( ) - message.timestamp
-			await client.send_message( message.channel, f"```LogBot Swearing Filter Online ~ {round(tm.microseconds / 1000)}```" )
-			del tm
-			pass
+			timestamp = datetime.now( ) - message.timestamp
+			await CLIENT.send_message( message.channel, f"```LogBot Swearing Filter Online ~ {round(timestamp.microseconds / 1000)}```" )
+			del timestamp
 		elif startswith( f"f{prefix}disabled" ):
-			await client.send_message( message.channel, str( message.server.id in filter_disable_list ) )
-			pass
+			await CLIENT.send_message( message.channel, str( message.server.id in FILTER_DISABLE_LIST ) )
 		elif startswith( f"f{prefix}disable" ):
 			if admin_role in message.author.roles or message.author.id == owner_id:
-				filter_disable_list.append( message.server.id )
-				await client.send_message( message.channel, f"Disabled filter..." )
-				pass
+				FILTER_DISABLE_LIST.append( message.server.id )
+				await CLIENT.send_message( message.channel, f"Disabled filter..." )
 			else:
-				await client.send_message( message.channel, f"```You do not have permission to use this command.```" )
-				pass
-			pass
+				await CLIENT.send_message( message.channel, f"```You do not have permission to use this command.```" )
 		elif startswith( f"f{prefix}enable" ):
 			if admin_role in message.author.roles or message.author.id == owner_id:
-				filter_disable_list.remove( message.server.id )
-				await client.send_message( message.channel, f"Enabled filter..." )
-				pass
+				FILTER_DISABLE_LIST.remove( message.server.id )
+				await CLIENT.send_message( message.channel, f"Enabled filter..." )
 			else:
-				await client.send_message( message.channel, f"```You do not have permission to use this command.```" )
-				pass
-			pass
+				await CLIENT.send_message( message.channel, f"```You do not have permission to use this command.```" )
 
-		writer = open( _settings, 'w' )
-		writer.write( str( filter_settings ) )
+		writer = open( SETTINGS_PATH, 'w' )
+		writer.write( str( FILTER_SETTINGS ) )
 		writer.close( )
-		writer = open( filter_disables, 'w' )
-		writer.write( str( filter_disable_list ) )
+		writer = open( FILTER_DISABLES, 'w' )
+		writer.write( str( FILTER_DISABLE_LIST ) )
 		writer.close( )
 		del writer
 		if do_update:
 			print( f"{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}" )
-			await client.close( )
+			await CLIENT.close( )
 			subprocess.Popen( f"python {os.getcwd()}\\swearing_filter_v2.py", False )
 			exit( 0 )
-			pass
 		del do_update
 		del prefix
 		del admin_role
 		del words
-		pass
-	except:
+	except Exception:
 		log_error( traceback.format_exc( ) )
-		pass
-	pass
 
 # noinspection PyUnusedLocal
-@client.event
+@CLIENT.event
 async def on_message_edit ( before: Message, after: Message ):
-	if not after.server.id in list( filter_settings.keys( ) ):
-		filter_settings[ after.server.id ] = 1
-		pass
+	if not after.server.id in list( FILTER_SETTINGS.keys( ) ):
+		FILTER_SETTINGS[ after.server.id ] = 1
 	words = after.content.replace( ",", "" ).replace( ".", "" ).split( " " )
 	for word in words:
-		if word.lower( ) in dict_words:
+		if word.lower( ) in DICT_WORDS:
 			words[ words.index( word ) ] = "\\*" * len( word )
-			pass
-		pass
-	if not ' '.join( words ) == after.content.replace( ",", "" ).replace( ".", "" ) and not before.server.id in filter_disable_list:
-		await client.delete_message( after )
-		if filter_settings[ after.server.id ] == 1:
-			await client.send_message( after.channel, f"[{after.author.mention}] {' '.join(words)}" )
-			pass
+	if not ' '.join( words ) == after.content.replace( ",", "" ).replace( ".", "" ) and not before.server.id in FILTER_DISABLE_LIST:
+		await CLIENT.delete_message( after )
+		if FILTER_SETTINGS[ after.server.id ] == 1:
+			await CLIENT.send_message( after.channel, f"[{after.author.mention}] {' '.join(words)}" )
 		print( f"{Fore.LIGHTMAGENTA_EX}{str(after.author)} just swore!{Fore.RESET}" )
-		pass
 	del words
-	pass
 
-@client.event
+@CLIENT.event
 async def on_ready ( ):
 	# os.system( "cls" )
 	print( f"{Fore.MAGENTA}Filter Ready!!!{Fore.RESET}" )
-	pass
 
-client.run( token )
+CLIENT.run( token )
 
-if not exiting:
+if not EXITING:
 	subprocess.Popen( f"python {os.getcwd()}\\swearing_filter_v2.py" )
 	exit( 0 )
-	pass

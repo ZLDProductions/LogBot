@@ -1,12 +1,15 @@
+"""
+Launch the bot.
+"""
 import os
 import sqlite3
 import subprocess
 import traceback
 
-sql = sqlite3.connect( "launch.db" )
-cursor = sql.cursor( )
+SQL = sqlite3.connect( "launch.db" )
+CURSOR = SQL.cursor( )
 
-my_str = """0. logbot.py
+MY_STR = """0. logbot.py
 1. bible.py
 2. admin.py
 3. levels.py
@@ -20,7 +23,7 @@ A. dev.py
 B. security.py
 C. moderation.py
 D. musiclaunch.py"""
-programs = {
+PROGRAMS = {
 	"0":"logbot.py",
 	"1":"bible.py",
 	"2":"admin.py",
@@ -36,7 +39,7 @@ programs = {
 	"C":"moderation.py",
 	"D":"musiclaunch.py"
 }
-titles = {
+TITLES = {
 	"0":"LogBot Main",
 	"1":"Bible Plugin",
 	"2":"Admin Plugin",
@@ -53,153 +56,138 @@ titles = {
 	"D":"Music Plugin"
 }
 
-ext_launch = False
+EXT_LAUNCH = False
 
 # <editor-fold desc="Standard initialization">
 try:
-	cursor.execute( f"""
+	CURSOR.execute( f"""
 	CREATE TABLE packages (name VARCHAR(50), sequence VARCHAR(50));
 	""".replace( "\t", "" ) )
-	pass
-except:
+except Exception:
 	pass
 try:
-	cursor.execute( f"""
+	CURSOR.execute( f"""
 	CREATE INDEX pkg_index
 	ON packages (name, sequence);
 	""".replace( "\t", "" ) )
-	pass
-except:
+except Exception:
 	pass
 
 # </editor-fold>
 
-def getRunPackages ( ):
-	cursor.execute( f"""
+def get_run_packages ( ):
+	"""
+	Package runner.
+	"""
+	CURSOR.execute( f"""
 	SELECT *
 	FROM packages;
 	""".replace( "\t", "" ) )
-	res = cursor.fetchall( )
+	res = CURSOR.fetchall( )
 	for pkg in res:
 		print( f"{res.index(pkg)}. {pkg[0]} - {pkg[1]}" )
-		pass
 	seq = res[ int( input( "Sequence to run: " ) ) ][ 1 ]
 	os.system( "cls" )
-	if ext_launch:
-		for c in seq:
-			os.system( f"start \"{titles[c]}\" /MAX /HIGH python \"{os.getcwd()}\\{programs[c]}\"" )
-			pass
-		pass
+	if EXT_LAUNCH:
+		for character in seq:
+			os.system(
+				f"start \"{TITLES[character]}\" /MAX /HIGH python \"{os.getcwd()}\\{PROGRAMS[character]}\""
+			)
 	else:
-		for c in seq:
-			subprocess.Popen( f"python \"{os.getcwd()}\\{programs[c]}\"" )
-			pass
-		pass
-	pass
+		for character in seq:
+			subprocess.Popen( f"python \"{os.getcwd()}\\{PROGRAMS[character]}\"" )
 
 def main ( ):
-	global ext_launch
+	"""
+	Main Menu
+	"""
+	global EXT_LAUNCH
 	print( "T. Launch LogBot Externally\nF. Launch LogBot Internally" )
 	tmp = input( f"Choice: " )
-	ext_launch = (tmp.lower( ) == "t")
+	EXT_LAUNCH = (tmp.lower( ) == "t")
 
 	print( "1. Run sequence\n2. Run package\n3. Create package\n4. Edit package\n5. Remove package." )
 	choice = int( input( "Operation: " ) )
 	if choice == 1:
-		print( my_str )
+		print( MY_STR )
 		files = input( "Programs to launch: " )
 		os.system( "cls" )
-		if ext_launch:
-			for c in files:
-				os.system( f"start \"{titles[c]}\" /MAX /HIGH python \"{os.getcwd()}\\{programs[c]}\"" )
-				pass
-			pass
+		if EXT_LAUNCH:
+			for character in files:
+				os.system(
+					f"start \"{TITLES[character]}\" /MAX /HIGH python \"{os.getcwd()}\\{PROGRAMS[character]}\""
+				)
 		else:
-			for c in files:
-				subprocess.Popen( f"python \"{os.getcwd()}\\{programs[c]}\"" )
-				pass
-			pass
-		pass
+			for character in files:
+				subprocess.Popen( f"python \"{os.getcwd()}\\{PROGRAMS[character]}\"" )
 	elif choice == 2:
-		getRunPackages( )
-		pass
+		get_run_packages( )
 	elif choice == 3:
 		name = input( "Package name: " )
 		sequence = input( "Package sequence: " )
-		cursor.execute( f"""
+		CURSOR.execute( f"""
 		SELECT *
 		FROM packages
 		WHERE name="{name}"
 		OR sequence="{sequence}";
 		""".replace( "\t", "" ) )
-		res = cursor.fetchall( )
+		res = CURSOR.fetchall( )
 		if len( res ) >= 1:
 			print( "That package already exists." )
-			pass
 		else:
-			cursor.execute( f"""
+			CURSOR.execute( f"""
 			INSERT INTO packages (name, sequence)
 			VALUES ("{name}", "{sequence}");
 			""".replace( "\t", "" ) )
 			print( "Created the package." )
-			pass
 		main( )
-		pass
 	elif choice == 4:
-		cursor.execute( f"""
+		CURSOR.execute( f"""
 			SELECT *
 			FROM packages;
 			""".replace( "\t", "" ) )
-		res = cursor.fetchall( )
+		res = CURSOR.fetchall( )
 		for pkg in res:
 			print( f"{res.index(pkg)}. {pkg[0]} - {pkg[1]}" )
-			pass
 		name = input( "Package name to edit: " )
 		seq = input( "New Sequence: " )
 
 		try:
-			cursor.execute( f"""
+			CURSOR.execute( f"""
 			UPDATE packages
 			SET sequence="{seq}"
 			WHERE name="{name}";
 			""".replace( "\t", "" ) )
-			sql.commit( )
+			SQL.commit( )
 			print( "Updated the package." )
 			input( "" )
-			pass
-		except:
+		except Exception:
 			print( "Could not update the package." )
 			print( traceback.format_exc( ) )
 			input( "" )
-			pass
 		main( )
-		pass
 	elif choice == 5:
-		cursor.execute( f"""
+		CURSOR.execute( f"""
 		SELECT *
 		FROM packages;
 		""".replace( "\t", "" ) )
-		res = cursor.fetchall( )
+		res = CURSOR.fetchall( )
 		for pkg in res:
 			print( f"{pkg[0]} - {pkg[1]}" )
-			pass
 		name = input( "Package name: " )
 		try:
-			cursor.execute( f"""
+			CURSOR.execute( f"""
 			DELETE FROM packages
 			WHERE name="{name}";
 			""".replace( "\t", "" ) )
-			sql.commit( )
+			SQL.commit( )
 			print( "Removed the package." )
 			input( "" )
-			pass
-		except:
+		except Exception:
 			print( "Could not remove the package." )
 			print( traceback.format_exc( ) )
 			input( "" )
-			pass
 		main( )
-	pass
 
 main( )
-sql.commit( )
+SQL.commit( )

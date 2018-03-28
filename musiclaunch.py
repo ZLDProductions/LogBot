@@ -1,25 +1,26 @@
+"""
+Music launcher.
+"""
 from discord.ext import commands
-from discord.voice_client import VoiceClient
 from colorama import Fore, init
 
 from logbot_data import token
 
 init( )
-bot = commands.Bot( "mu$" )
-startup_extensions = [ "Music" ]
+BOT = commands.Bot( "mu$" )
+STARTUP_EXTENSIONS = [ "Music" ]
 
-@bot.event
+@BOT.event
 async def on_ready ( ):
+	"""
+	Called when the bot logs in.
+	"""
 	print( f"{Fore.MAGENTA}Music Ready!!!{Fore.RESET}" )
-	pass
 
-for extension in startup_extensions:
+for extension in STARTUP_EXTENSIONS:
 	try:
-		bot.load_extension( extension )
-		pass
+		BOT.load_extension( extension )
 	except Exception as ex:
 		print( "Error loading extension!" )
-		pass
-	pass
 
-bot.run( token )
+BOT.run( token )

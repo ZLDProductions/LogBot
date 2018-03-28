@@ -1,3 +1,6 @@
+"""
+Music module.
+"""
 import asyncio
 import discord
 from discord.ext import commands
@@ -14,6 +17,9 @@ def __init__ ( self, bot ):
 	self.bot = bot
 
 class VoiceEntry:
+	"""
+	VoiceEntry class.
+	"""
 	def __init__ ( self, message, player ):
 		self.requester = message.author
 		self.channel = message.channel
@@ -26,6 +32,9 @@ class VoiceEntry:
 		return fmt.format( self.player, self.requester )
 
 class VoiceState:
+	"""
+	VoiceState class.
+	"""
 	def __init__ ( self, bot ):
 		self.current = None
 		self.voice = None
@@ -35,6 +44,9 @@ class VoiceState:
 		self.skip_votes = set( ) # a set of user_ids that voted
 		self.audio_player = self.bot.loop.create_task( self.audio_player_task( ) )
 	def is_playing ( self ):
+		"""
+		Gets the playing status.
+		"""
 		if self.voice is None or self.current is None:
 			return False
 
@@ -42,14 +54,26 @@ class VoiceState:
 		return not player.is_done( )
 	@property
 	def player ( self ):
+		"""
+		Gets the audio player.
+		"""
 		return self.current.player
 	def skip ( self ):
+		"""
+		Skips a song.
+		"""
 		self.skip_votes.clear( )
 		if self.is_playing( ):
 			self.player.stop( )
 	def toggle_next ( self ):
+		"""
+		Sets whether or not to play the next song.
+		"""
 		self.bot.loop.call_soon_threadsafe( self.play_next_song.set )
 	async def audio_player_task ( self ):
+		"""
+		Starts the next song.
+		"""
 		while True:
 			self.play_next_song.clear( )
 			self.current = await self.songs.get( )
@@ -65,6 +89,10 @@ class Music:
 		self.bot = bot
 		self.voice_states = { }
 	def get_voice_state ( self, server ):
+		"""
+		Gets the voice state.
+		:param server: The server.
+		"""
 		state = self.voice_states.get( server.id )
 		if state is None:
 			state = VoiceState( self.bot )
@@ -72,6 +100,10 @@ class Music:
 
 		return state
 	async def create_voice_client ( self, channel ):
+		"""
+		Creates a voice client.
+		:param channel: The channel.
+		"""
 		voice = await self.bot.join_voice_channel( channel )
 		state = self.get_voice_state( channel.server )
 		state.voice = voice
@@ -81,17 +113,19 @@ class Music:
 				state.audio_player.cancel( )
 				if state.voice:
 					self.bot.loop.create_task( state.voice.disconnect( ) )
-			except:
+			except Exception:
 				pass
 	@commands.command( pass_context=True, no_pm=True )
 	async def join ( self, ctx, *, channel: discord.Channel ):
 		"""Joins a voice channel."""
+		msg = ctx.message
+		del msg
 		try:
 			await self.create_voice_client( channel )
-		except discord.ClientException:
-			await self.bot.say( 'Already in a voice channel...' )
 		except discord.InvalidArgument:
 			await self.bot.say( 'This is not a voice channel...' )
+		except discord.ClientException:
+			await self.bot.say( 'Already in a voice channel...' )
 		else:
 			await self.bot.say( 'Ready to play audio in **' + channel.name )
 	@commands.command( pass_context=True, no_pm=True )
@@ -132,9 +166,9 @@ class Music:
 
 		try:
 			player = await state.voice.create_ytdl_player( song, ytdl_options=opts, after=state.toggle_next )
-		except Exception as e:
+		except Exception as exception:
 			fmt = 'An error occurred while processing this request: ```py\n{}: {}\n```'
-			await self.bot.send_message( ctx.message.channel, fmt.format( type( e ).__name__, e ) )
+			await self.bot.send_message( ctx.message.channel, fmt.format( type( exception ).__name__, exception ) )
 		else:
 			player.volume = 0.6
 			entry = VoiceEntry( ctx.message, player )
@@ -173,7 +207,7 @@ class Music:
 			del self.voice_states[ server.id ]
 			await state.voice.disconnect( )
 			await self.bot.say( "Cleared the queue and disconnected from voice channel " )
-		except:
+		except Exception:
 			pass
 	@commands.command( pass_context=True, no_pm=True )
 	async def skip ( self, ctx ):
@@ -212,5 +246,9 @@ class Music:
 			await self.bot.say( 'Now playing {} [skips: {}/3]'.format( state.current, skip_count ) )
 
 def setup ( bot ):
+	"""
+	Bot setup.
+	:param bot: The bot.
+	"""
 	bot.add_cog( Music( bot ) )
 	print( 'Music is loaded' )

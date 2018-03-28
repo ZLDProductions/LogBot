@@ -1,26 +1,29 @@
+"""
+Help module.
+"""
 import os
+import sqlite3
 import subprocess
 import traceback
 from datetime import datetime
 
 import discord
-import sqlite3
 from colorama import Fore, init
 
-from logbot_data import token, owner_id
+from logbot_data import owner_id, token
 
-client = discord.Client( )
+CLIENT = discord.Client( )
 init( )
-exiting = False
+EXITING = False
 
-key = """
+KEY = """
 [] - optional parameter
 {} - required parameter
 {name: [choices]} - required parameter with possible choices.
 [name: [choices]} - optional parameter with possible choices.
 """
 
-infos = dict( {
+INFOS = dict( {
 	"_exclude"       :{
 		"Info"          :"Used to exclude a single message from the logs this bot creates.",
 		"Usage"         :"$exclude {message}\n$ex {message}",
@@ -50,7 +53,9 @@ infos = dict( {
 		"Plugin"        :"Main"
 	},
 	"_admin"         :{
-		"Info"                :"Used to add, remove, or show the admins for this bot.\nServer owners are _\\*always\\*_ an admin.",
+		"Info"                :
+			"Used to add, remove, or show the admins for this bot.\n"
+			"Server owners are _\\*always\\*_ an admin.",
 		"Usage"               :"$admin a {mention(s)}\n$admin r {mention(s)}\n$admin s",
 		"Required Level"      :"LogBot Admin",
 		"Type"                :"Moderation",
@@ -72,22 +77,32 @@ infos = dict( {
 		"Plugin"        :"Main"
 	},
 	"_help"          :{
-		"Info"          :"Shows the help dialog for a specific command (this), or, if no [command] was stated, shows a list of commands. Adding `&GroupByType` or `&GroupByPlugin` changes the format of the command list.",
+		"Info"          :
+			"Shows the help dialog for a specific command (this), or, if no [command] was stated, "
+			"shows a list of commands. Adding `&GroupByType` or `&GroupByPlugin` "
+			"changes the format of the command list.",
 		"Usage"         :"$help[group: [&GroupByType/&GroupByPlugin]] [command]",
 		"Required Level":"LogBot Member",
 		"Type"          :"Help",
 		"Plugin"        :"Help"
 	},
 	"_version"       :{
-		"Info"          :"Shows the current bot version, and what programming language it was written in.",
+		"Info"          :
+			"Shows the current bot version, and what programming language it was written in.",
 		"Usage"         :"$version",
 		"Required Level":"LogBot Member",
 		"Type"          :"Stats",
 		"Plugin"        :"Main"
 	},
 	"_channel"       :{
-		"Info"                :"Creates a channel, edits a channel, shows a list of channels created by the bot, or deletes a bot-created channel.",
-		"Usage"               :"$channel new {type: [text/voice]} {name} {permission level: [admin/member/everyone]}\n$channel del {channel mention or name}\n$channel edit {new permission level: [admin/member/everyone]} {channel mention or name}\n$channel show",
+		"Info"                :
+			"Creates a channel, edits a channel, shows a list of channels created by the bot, "
+			"or deletes a bot-created channel.",
+		"Usage"               :
+			"$channel new {type: [text/voice]} {name} {permission level: [admin/member/everyone]}\n"
+			"$channel del {channel mention or name}\n"
+			"$channel edit {new permission level: [admin/member/everyone]} {channel mention or name}\n"
+			"$channel show",
 		"Required Level"      :"LogBot Admin",
 		"Type"                :"Utility",
 		"Plugin"              :"Main",
@@ -130,7 +145,13 @@ infos = dict( {
 	},
 	"_verse"         :{
 		"Info"          :"Fetches information from the Bible.",
-		"Usage"         :"$verse info:book {book}\n$verse info:chapter {book} {chapter}\n$verse info:verse {book} {chapter}:{verse}\n$verse random\n$verse help\n$verse search {query}",
+		"Usage"         :
+			"$verse info:book {book}\n"
+			"$verse info:chapter {book} {chapter}\n"
+			"$verse info:verse {book} {chapter}:{verse}\n"
+			"$verse random\n"
+			"$verse help\n"
+			"$verse search {query}",
 		"Required Level":"LogBot Member",
 		"Type"          :"Fun",
 		"Plugin"        :"Bible"
@@ -179,7 +200,9 @@ infos = dict( {
 		"Plugin"        :"Dev"
 	},
 	"_suggestions"   :{
-		"Info"          :"Shows suggestions received so far, unless they have been completed (and therefore removed).",
+		"Info"          :
+			"Shows suggestions received so far, unless they have been completed "
+			"(and therefore removed).",
 		"Usage"         :"$suggestions",
 		"Required Level":"Owner",
 		"Type"          :"Feedback",
@@ -221,8 +244,19 @@ infos = dict( {
 		"Plugin"        :"Main"
 	},
 	"_purge"         :{
-		"Info"                :"Purges messages from the channel it is sent through. Restraint through the switches. If switches are present, and there is a problem, the bot will delete the trigger.",
-		"Usage"               :"$purge limit=[num]&&contains=[text]&&from=[mention]&&attached=[True/False]&&embedded=[True/False]&&pinned=[True/False]&&mentions=[mention]&&mentions_channel=[channel_mention]&&mentions_role=[role_mention]",
+		"Info"                :
+			"Purges messages from the channel it is sent through. Restraint through the switches. "
+			"If switches are present, and there is a problem, the bot will delete the trigger.",
+		"Usage"               :
+			"$purge limit=[num]&&"
+			"contains=[text]&&"
+			"from=[mention]&&"
+			"attached=[True/False]&&"
+			"embedded=[True/False]&&"
+			"pinned=[True/False]&&"
+			"mentions=[mention]&&"
+			"mentions_channel=[channel_mention]&&"
+			"mentions_role=[role_mention]",
 		"Required Level"      :"LogBot Admin",
 		"Type"                :"Moderation",
 		"Plugin"              :"Main",
@@ -245,7 +279,9 @@ infos = dict( {
 		"Required Permissions":"Ban Members"
 	},
 	"_permissions"   :{
-		"Info"          :"Shows the permissions of the user that sent it or the mentioned user, in the specified channel, if mentioned, or in the entire server.",
+		"Info"          :
+			"Shows the permissions of the user that sent it or the mentioned user,"
+			" in the specified channel, if mentioned, or in the entire server.",
 		"Usage"         :"$permissions [channel-mention] [user-mention]",
 		"Required Level":"LogBot Member",
 		"Type"          :"Fun",
@@ -287,7 +323,9 @@ infos = dict( {
 		"Plugin"        :"Main"
 	},
 	"_mute"          :{
-		"Info"                :"Mutes a person, deleting any and all messages sent by them in the channel the command was sent in.",
+		"Info"                :
+			"Mutes a person, deleting any and all messages sent by them in the channel the command "
+			"was sent in.",
 		"Usage"               :"$mute {mention(s)}",
 		"Required Level"      :"LogBot Admin",
 		"Type"                :"Moderation",
@@ -295,7 +333,9 @@ infos = dict( {
 		"Required Permissions":"Manage Roles"
 	},
 	"_unmute"        :{
-		"Info"                :"Unmutes a person, allowing them to send a message in the channel the command was sent in.",
+		"Info"                :
+			"Unmutes a person, allowing them to send a message in the channel the command "
+			"was sent in.",
 		"Usage"               :"$unmute {mention(s)}",
 		"Required Level"      :"LogBot Admin",
 		"Type"                :"Moderation",
@@ -345,7 +385,9 @@ infos = dict( {
 		"Plugin"        :"Levels"
 	},
 	"l_levels"       :{
-		"Info"          :"Shows a list of everyone in the server, sorted by their ranks. Users with rank 0 are not listed.",
+		"Info"          :
+			"Shows a list of everyone in the server, sorted by their ranks. Users with rank 0 "
+			"are not listed.",
 		"Usage"         :"l$levels",
 		"Required Level":"None",
 		"Type"          :"Fun",
@@ -415,21 +457,26 @@ infos = dict( {
 		"Plugin"        :"Levels"
 	},
 	"v_disable"      :{
-		"Info"          :"Disables verse recognition for the channel(s). If no channel is mentioned, it disables this feature for the channel in which the message was sent.",
+		"Info"          :
+			"Disables verse recognition for the channel(s). If no channel is mentioned,"
+			" it disables this feature for the channel in which the message was sent.",
 		"Usage"         :"v$disable [channel_mentions(s)]",
 		"Required Level":"LogBot Admin",
 		"Type"          :"Moderation",
 		"Plugin"        :"Bible"
 	},
 	"v_enable"       :{
-		"Info"          :"Enables verse recognition for the channel(s). If no channel is mentioned, it enables this feature for the channel in which the message was sent.",
+		"Info"          :
+			"Enables verse recognition for the channel(s). If no channel is mentioned, it enables "
+			"this feature for the channel in which the message was sent.",
 		"Usage"         :"v$enable [channel_mention(s)]",
 		"Required Level":"LogBot Admin",
 		"Type"          :"Moderation",
 		"Plugin"        :"Bible"
 	},
 	"v_disables"     :{
-		"Info"          :"Shows a list of the channels in this server where verse recognition is disabled.",
+		"Info"          :
+			"Shows a list of the channels in this server where verse recognition is disabled.",
 		"Usage"         :"v$disables",
 		"Required Level":"None",
 		"Type"          :"Moderation",
@@ -520,7 +567,8 @@ infos = dict( {
 		"Plugin"        :"Polling"
 	},
 	"l_dm"           :{
-		"Info"          :"Sets whether or not to send level/tier up notifications in DM or server channel.",
+		"Info"          :
+			"Sets whether or not to send level/tier up notifications in DM or server channel.",
 		"Usage"         :"l$dm {val: [t/f]}",
 		"Required Level":"None",
 		"Type"          :"Fun",
@@ -556,7 +604,10 @@ infos = dict( {
 		"Required Permissions":"Attach Files"
 	},
 	"h_prefix"       :{
-		"Info"          :"Much like $help, this command will either show a list of prefixes (if no prefix parameter is present), or the plugin for the provided prefix.",
+		"Info"          :
+			"Much like $help, this command will either show a list of prefixes "
+			"(if no prefix parameter is present), or the plugin for the "
+			"provided prefix.",
 		"Usage"         :"h$prefix [prefix]",
 		"Required Level":"None",
 		"Type"          :"Help",
@@ -584,8 +635,15 @@ infos = dict( {
 		"Plugin"        :"Games"
 	},
 	"_scramble"      :{
-		"Info"          :"Adds a word, removes a word, searches for a word, lists all words, or starts a word scramble (respectively).",
-		"Usage"         :"$scramble add {word}\n$scramble rem {word}\n$scramble find {word}\n$scramble list\n$scramble",
+		"Info"          :
+			"Adds a word, removes a word, searches for a word, lists all"
+			" words, or starts a word scramble (respectively).",
+		"Usage"         :
+			"$scramble add {word}\n"
+			"$scramble rem {word}\n"
+			"$scramble find {word}\n"
+			"$scramble list\n"
+			"$scramble",
 		"Required Level":"LogBot Member",
 		"Type"          :"Fun",
 		"Plugin"        :"Games"
@@ -626,13 +684,17 @@ infos = dict( {
 		"Plugin"        :"Main"
 	},
 	"_devotional"    :{
-		"Error" :"Since the help content is too large to display properly, please use the documentation on github (use `$git`)",
+		"Error" :
+			"Please use the documentation on github (use `$git`)",
 		"Type"  :"Fun",
 		"Plugin":"Bible"
 	},
 	"l_milestone"    :{
 		"Info"          :"Adds to, removes from, or shows the milestones in the levels system.",
-		"Usage"         :"l$milestone a {item: [tier/rank]} {limit} {role_mention}\nl$milestone r {item: [tier/rank]} {limit} {role_mention}\nl$milestone s",
+		"Usage"         :
+			"l$milestone a {item: [tier/rank]} {limit} {role_mention}\n"
+			"l$milestone r {item: [tier/rank]} {limit} {role_mention}\n"
+			"l$milestone s",
 		"Required Level":"LogBot Admin",
 		"Type"          :"Utility",
 		"Plugin"        :"Levels"
@@ -666,7 +728,8 @@ infos = dict( {
 		"Plugin"        :"Main"
 	},
 	"_report"        :{
-		"Info"          :"Reports a bug with the bot. Please try to include as detailed a description as possible.",
+		"Info"          :
+			"Reports a bug with the bot. Please try to include as detailed a description as possible.",
 		"Usage"         :"$report {bug}",
 		"Required Level":"None",
 		"Type"          :"Feedback",
@@ -729,7 +792,8 @@ infos = dict( {
 		"Plugin"        :"Main"
 	},
 	"_urban"         :{
-		"Info"          :"Shows the UrbanDictionary definition, examples, upvotes, and downvotes of a word.",
+		"Info"          :
+			"Shows the UrbanDictionary definition, examples, upvotes, and downvotes of a word.",
 		"Usage"         :"$urban {word}",
 		"Required Level":"None",
 		"Type"          :"Fun",
@@ -779,7 +843,8 @@ infos = dict( {
 		"Required Permissions":"Send Images"
 	},
 	"_sf"            :{
-		"Info"          :"Calculates the number of significant figures in a number, which can be a decimal.",
+		"Info"          :
+			"Calculates the number of significant figures in a number, which can be a decimal.",
 		"Usage"         :"$sf {num}",
 		"Required Level":"None",
 		"Plugin"        :"Main",
@@ -842,7 +907,7 @@ infos = dict( {
 		"Type"          :"Fun"
 	}
 } )
-prefixes = {
+PREFIXES = {
 	"a$":"Admin Plugin",
 	"v$":"Bible Plugin",
 	"g$":"Games Plugin",
@@ -851,13 +916,17 @@ prefixes = {
 	"p$":"Polling Plugin",
 	"h$":"Help Plugin"
 }
-url = "http://bit.ly/logbot_repo#"
-web_url = "https://zldproductions.github.io/LogBot/Commands.html#"
+URL = "http://bit.ly/logbot_repo#"
+WEB_URL = "https://zldproductions.github.io/LogBot/Commands.html#"
 
-sql = sqlite3.connect( f"{os.getcwd()}\\Discord Logs\\SETTINGS\\logbot.db" )
-cursor = sql.cursor( )
+SQL = sqlite3.connect( f"{os.getcwd()}\\Discord Logs\\SETTINGS\\logbot.db" )
+CURSOR = SQL.cursor( )
 
 def log_error ( error_text: str ):
+	"""
+	Logs the bot's errors.
+	:param error_text: The error message.
+	"""
 	file = f"{os.getcwd()}\\error_log.txt"
 	prev_text = ""
 	try:
@@ -865,180 +934,179 @@ def log_error ( error_text: str ):
 		prev_text = reader.read( )
 		reader.close( )
 		del reader
+	except Exception:
 		pass
-	except: pass
 	writer = open( file, 'w' )
 	writer.write( f"{datetime.now()} (help.py) - {error_text}\n\n{prev_text}" )
 	writer.close( )
 	if "SystemExit" in error_text:
 		exit( 0 )
-		pass
 	del writer
 	del file
 	del prev_text
-	pass
 
 def sqlread ( cmd: str ):
-	cursor.execute( cmd )
-	return cursor.fetchall( )
+	"""
+	Read from the DB.
+	:param cmd: The SQL Read command.
+	:return: The data.
+	"""
+	CURSOR.execute( cmd )
+	return CURSOR.fetchall( )
 
-@client.event
+@CLIENT.event
 async def on_ready ( ):
-	await client.change_presence( game=None )
+	"""
+	Occurs when the bot logs in.
+	"""
+	await CLIENT.change_presence( game=None )
 	# os.system( "cls" )
 	print( f"{Fore.MAGENTA}Help Ready!!!{Fore.RESET}" )
-	pass
 
-@client.event
+@CLIENT.event
 async def on_message ( message ):
-	global exiting
+	"""
+	Occurs when the bot receives a message.
+	:param message: A discord.Message object.
+	"""
+	global EXITING
 	try:
 		# noinspection PyUnusedLocal
-		def replace ( *args, val=message.content ):
-			_replace = val.replace
-			for reg, rep in args:
-				val = _replace( reg, rep )
-				pass
-			return val
 		def startswith ( *args, val=message.content ):
+			"""
+			Checks for substrings at the beginning of `val`.
+			:param args: The substrings.
+			:param val: The string.
+			:return: True or False
+			"""
 			for arg in args:
 				if val.startswith( arg ):
 					return True
-				pass
 			return False
-			pass
 		do_update = False
 
 		prefix = sqlread( f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';" )[ 0 ][ 0 ]
 
 		if startswith( f"{prefix}help " ):
 			content = message.content.replace( f"{prefix}help ", "", 1 )
-			myembed = discord.Embed( title=content, description=f"Command Information for {content}\n{key}", colour=discord.Colour.dark_gold( ) )
+			myembed = discord.Embed(
+				title=content,
+				description=f"Command Information for {content}\n{KEY}",
+				colour=discord.Colour.dark_gold( )
+			)
 			items = { }
-			for item in infos.keys( ):
+			for item, val in INFOS.items( ):
 				if item.replace( "_", "" ) == content.replace( prefix, "" ).replace( "$", "" ):
-					items = infos[ item ]
-					pass
-				pass
+					items = val
 			for item in list( items.keys( ) ):
 				myembed.add_field( name=item, value=items[ item ].replace( "$", prefix ) )
-				pass
-			myembed.set_footer( text=f"GitHub URL: {url}{content.replace(prefix, '')}" )
-			if not len( items.keys( ) ) == 0:
-				await client.send_message( message.channel, f"Website URL: {web_url}{content.replace(prefix, '')}", embed=myembed )
-				pass
+			myembed.set_footer( text=f"GitHub URL: {URL}{content.replace(prefix, '')}" )
+			if items.keys( ):
+				await CLIENT.send_message(
+					message.channel,
+					f"Website URL: {WEB_URL}{content.replace(prefix, '')}", embed=myembed
+				)
 			else:
-				await client.send_message( message.channel, f"```There is no command for \"{content}\" at this time.```" )
-				pass
+				await CLIENT.send_message(
+					message.channel,
+					f"```There is no command for \"{content}\" at this time.```"
+				)
 			del content
 			del myembed
 			del items
-			pass
 		elif startswith( f"{prefix}help" ):
 			_cnt = message.content.replace( f"{prefix}help", "" )
 			_groupby = None
 			if "&GroupByType" in _cnt:
 				_groupby = "type"
-				pass
 			if "&GroupByPlugin" in _cnt:
 				_groupby = "plugin"
-				pass
 			if _groupby == "type":
 				all_commands = { }
 				_str = ""
-				for item in infos:
-					if all_commands.get( infos[ item ][ "Type" ] ) is not None:
-						all_commands[ infos[ item ][ "Type" ] ].append( item )
-						pass
+				for item in INFOS:
+					if all_commands.get( INFOS[ item ][ "Type" ] ) is not None:
+						all_commands[ INFOS[ item ][ "Type" ] ].append( item )
 					else:
-						all_commands[ infos[ item ][ "Type" ] ] = list( )
-						all_commands[ infos[ item ][ "Type" ] ].append( item )
-						pass
-					pass
+						all_commands[ INFOS[ item ][ "Type" ] ] = list( )
+						all_commands[ INFOS[ item ][ "Type" ] ].append( item )
 				for item in all_commands:
 					_str += f"{item}:\n{', '.join(all_commands[item])}\n\n"
-					pass
 				all_commands = _str
-				pass
 			elif _groupby == "plugin":
 				all_commands = { }
 				_str = ""
-				for item in infos:
-					if all_commands.get( infos[ item ][ "Plugin" ] ) is not None:
-						all_commands[ infos[ item ][ "Plugin" ] ].append( item )
-						pass
+				for item in INFOS:
+					if all_commands.get( INFOS[ item ][ "Plugin" ] ) is not None:
+						all_commands[ INFOS[ item ][ "Plugin" ] ].append( item )
 					else:
-						all_commands[ infos[ item ][ "Plugin" ] ] = list( )
-						all_commands[ infos[ item ][ "Plugin" ] ].append( item )
-						pass
-					pass
+						all_commands[ INFOS[ item ][ "Plugin" ] ] = list( )
+						all_commands[ INFOS[ item ][ "Plugin" ] ].append( item )
 				for item in all_commands:
 					_str += f"{item}:\n{', '.join(all_commands[item])}\n\n"
-					pass
 				all_commands = _str
-				pass
 			else:
-				all_commands = list( infos.keys( ) )
+				all_commands = list( INFOS.keys( ) )
 				all_commands.sort( )
 				all_commands = ', '.join( all_commands ).replace( "_", prefix )
-				pass
-			await client.send_message( message.channel, f"```Use {prefix}help to get the list of commands.\nUse {prefix}help [command] to get more information on [command].\nUse {prefix}git to visit the GitHub Documentation.\nThe prefix is {prefix}```" )
-			await client.send_message( message.channel, f"```Commands:\n{all_commands.replace('_', prefix)}```" )
+			await CLIENT.send_message(
+				message.channel,
+				f"```Use {prefix}help to get the list of commands."
+				f"Use {prefix}help [command] to get more information on [command]."
+				f"Use {prefix}git to visit the GitHub Documentation."
+				f"The prefix is {prefix}```"
+			)
+			await CLIENT.send_message(
+				message.channel,
+				f"```Commands:\n{all_commands.replace('_', prefix)}```"
+			)
 			del _cnt
 			del _groupby
-			pass
 		elif startswith( f"h{prefix}prefix " ):
 			_prefix = message.content.replace( "h{prefix}prefix ", "" )
-			data = prefixes.get( _prefix )
+			data = PREFIXES.get( _prefix )
 			if data is None:
-				await client.send_message( message.channel, f"```There is no prefix \"{_prefix}\"" )
-				pass
+				await CLIENT.send_message( message.channel, f"```There is no prefix \"{_prefix}\"" )
 			else:
-				e = discord.Embed( title=_prefix, description=f"Prefix Information for {_prefix}", colour=discord.Colour.dark_gold( ) ) \
+				embed_obj = discord.Embed(
+					title=_prefix,
+					description=f"Prefix Information for {_prefix}",
+					colour=discord.Colour.dark_gold( )
+				) \
 					.add_field( name="Plugin", value=data )
-				await client.send_message( message.channel, "Here you go!", embed=e )
-				del e
-				pass
+				await CLIENT.send_message( message.channel, "Here you go!", embed=embed_obj )
+				del embed_obj
 			del prefix
 			del data
-			pass
 		elif startswith( f"h{prefix}prefix" ):
-			prefs = list( prefixes.keys( ) )
+			prefs = list( PREFIXES.keys( ) )
 			prefs.sort( )
-			await client.send_message( message.channel, f"```{', '.join(prefs)}```" )
+			await CLIENT.send_message( message.channel, f"```{', '.join(prefs)}```" )
 			del prefs
-			pass
 		elif startswith( f"$update", "logbot.help.update" ):
 			if message.author.id == owner_id:
 				do_update = True
-				pass
-			pass
 		elif startswith( "$exit", "logbot.help.exit" ):
 			if message.author.id == owner_id:
-				exiting = True
-				await client.logout( )
-				pass
-			pass
+				EXITING = True
+				await CLIENT.logout( )
 		elif startswith( f"{prefix}ping" ):
-			tm = datetime.now( ) - message.timestamp
-			await client.send_message( message.channel, f"```LogBot Help Online ~ {round(tm.microseconds / 1000)}```" )
-			pass
+			timestamp = datetime.now( ) - message.timestamp
+			await CLIENT.send_message(
+				message.channel,
+				f"```LogBot Help Online ~ {round(timestamp.microseconds / 1000)}```"
+			)
 
 		if do_update:
 			print( f"{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}" )
-			await client.close( )
+			await CLIENT.close( )
 			subprocess.Popen( f"python {os.getcwd()}\\help.py", False )
 			exit( 0 )
-			pass
-		pass
-	except:
+	except Exception:
 		log_error( traceback.format_exc( ) )
-		pass
-	pass
 
-client.run( token )
+CLIENT.run( token )
 
-if not exiting:
+if not EXITING:
 	subprocess.Popen( f"python {os.getcwd()}\\help.py" )
 	exit( 0 )
-	pass

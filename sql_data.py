@@ -1,12 +1,17 @@
+"""
+SQL Data Tool
+"""
 import sqlite3
 import os
 from colorama import Fore, Back, init
 
 # noinspection PyUnusedLocal
-class kjv_sql( object ):
-	def __init__ ( self, books: list ):
+class KJVSQL( object ):
+	"""
+	KJVSQL class
+	"""
+	def __init__ ( self ):
 		"""
-		:param books: A string list of the books of the Bible.
 		"""
 		# self.settings = os.path.expanduser( "~\\Documents\\Discord Logs\\SETTINGS" )
 		self.settings = f"{os.getcwd( )}\\Discord Logs\\SETTINGS"
@@ -21,10 +26,8 @@ class kjv_sql( object ):
 			self.has_initialized = True if reader.read( ) == "True" else False
 			reader.close( )
 			del reader
-			pass
-		except:
+		except Exception:
 			self.has_initialized = False
-			pass
 
 		if not self.has_initialized:
 			self.__create( )
@@ -34,16 +37,15 @@ class kjv_sql( object ):
 			lines = bible.split( "\n" )
 			for line in lines:
 				try:
-					l = line.split( "	" )
-					key = l[ 0 ]
+					line_part = line.split( "	" )
+					key = line_part[ 0 ]
 					self.cursor.execute( f"""INSERT INTO kjv (key, value)
-						VALUES ("{key}", "{l[1]}");""" )
+						VALUES ("{key}", "{line_part[1]}");""" )
 					print( f"{Back.LIGHTWHITE_EX}{Fore.BLACK}Loading line {lines.index(line)} of {len(lines)}{Fore.RESET}{Back.RESET}" )
-					del l
+					del line_part
 					del key
+				except Exception:
 					pass
-				except: pass
-				pass
 			print( f"{Back.LIGHTWHITE_EX + Fore.BLACK}Committing data...{Fore.RESET + Back.RESET}" )
 			self.connection.commit( )
 			self.has_initialized = True
@@ -55,25 +57,20 @@ class kjv_sql( object ):
 			del reader
 			del bible
 			del lines
-			pass
-		pass
 	def __create ( self ):
 		cmd = """CREATE TABLE kjv (key VARCHAR(30), value VARCHAR(10000));"""
 		try:
 			self.cursor.execute( cmd )
-			pass
-		except:
+		except Exception:
 			pass
 		self.connection.commit( )
 		del cmd
-		pass
 	def __write ( self, key, value ):
 		cmd = f"""INSERT INTO kjv (key, value)
 			VALUES ("{key}", "{value}");"""
 		self.cursor.execute( cmd )
 		self.connection.commit( )
 		del cmd
-		pass
 	def read ( self, book: str, chapter: str, verse: str ) -> str:
 		"""
 		Fetches a verse from the Bible.
@@ -86,6 +83,11 @@ class kjv_sql( object ):
 		result = self.cursor.fetchall( )
 		return result[ 0 ][ 1 ]
 	def execute ( self, cmd ):
+		"""
+		Executes a command.
+		:param cmd: The command.
+		:return: The resulting data.
+		"""
 		self.cursor.execute( cmd )
 		return self.cursor.fetchall( )
 	def close ( self ):
@@ -93,14 +95,13 @@ class kjv_sql( object ):
 		Closes the SQL connection.
 		"""
 		self.connection.close( )
-		pass
 
 # noinspection PyUnusedLocal
-class sql_data( object ):
-	def __init__ ( self, books: list ):
-		"""
-		:param books: A string array of the books of the Bible. Not required.
-		"""
+class AKJVSQL( object ):
+	"""
+	AKJVSQL class
+	"""
+	def __init__ ( self):
 		self.settings = f"{os.getcwd( )}\\Discord Logs\\SETTINGS"
 		self.has_initialized = False
 		self.data = f"{self.settings}\\akjv.txt"
@@ -113,10 +114,8 @@ class sql_data( object ):
 			self.has_initialized = True if reader.read( ) == "True" else False
 			reader.close( )
 			del reader
-			pass
-		except:
+		except Exception:
 			self.has_initialized = False
-			pass
 
 		if not self.has_initialized:
 			self.__create( )
@@ -126,15 +125,14 @@ class sql_data( object ):
 			lines = bible.split( "\n" )
 			for line in lines:
 				try:
-					l = line.split( "	" )
-					key = l[ 0 ]
+					line_part = line.split( "	" )
+					key = line_part[ 0 ]
 					self.cursor.execute( f"""INSERT INTO akjv (key, value)
-						VALUES ("{key}", "{l[1]}");""")
+						VALUES ("{key}", "{line_part[1]}");""")
 					print( f"{Back.LIGHTWHITE_EX + Fore.BLACK}Loading line {lines.index(line)} of {len(lines)}{Fore.RESET + Back.RESET}" )
-					del l
+					del line_part
 					del key
-					pass
-				except:
+				except Exception:
 					pass
 			print( f"{Back.LIGHTWHITE_EX}{Fore.BLACK}Committing data...{Fore.RESET}{Back.RESET}" )
 			self.connection.commit( )
@@ -147,25 +145,20 @@ class sql_data( object ):
 			del bible
 			del lines
 			del writer
-			pass
-		pass
 	def __create ( self ):
 		cmd = """CREATE TABLE akjv (key VARCHAR(30), value VARCHAR(10000));"""
 		try:
 			self.cursor.execute( cmd )
-			pass
-		except:
+		except Exception:
 			pass
 		self.connection.commit( )
 		del cmd
-		pass
 	def __write ( self, key, value ):
 		cmd = f"""INSERT INTO akjv (key, value)
 			VALUES ("{key}", "{value}");"""
 		self.cursor.execute( cmd )
 		self.connection.commit( )
 		del cmd
-		pass
 	def read ( self, book: str, chapter: str, verse: str ):
 		"""
 		Fetches a verse from the Bible.
@@ -177,24 +170,27 @@ class sql_data( object ):
 		self.cursor.execute( f"SELECT * FROM akjv WHERE key IN ('{book} {chapter}:{verse}');" )
 		result = self.cursor.fetchall( )
 		return result[ 0 ][ 1 ]
-		pass
 	def execute ( self, cmd ):
+		"""
+		Executes a command.
+		:param cmd: The command.
+		:return: The resulting data.
+		"""
 		self.cursor.execute( cmd )
 		return self.cursor.fetchall( )
-		pass
 	def close ( self ):
 		"""
 		Closes the SQL connection.
 		"""
 		self.connection.close( )
-		pass
-	pass
 
 # noinspection PyUnusedLocal
-class web_sql( object ):
-	def __init__ ( self, books: list ):
+class WEBSQL( object ):
+	"""
+	WEBSQL class.
+	"""
+	def __init__ ( self):
 		"""
-		:param books: A list of book names. Not required.
 		"""
 		# self.settings = os.path.expanduser( "~\\Documents\\Discord Logs\\SETTINGS" )
 		self.settings = f"{os.getcwd()}\\Discord Logs\\SETTINGS"
@@ -209,10 +205,8 @@ class web_sql( object ):
 			self.has_initialized = True if reader.read( ) == "True" else False
 			reader.close( )
 			del reader
-			pass
-		except:
+		except Exception:
 			self.has_initialized = False
-			pass
 
 		if not self.has_initialized:
 			self.__create( )
@@ -222,17 +216,15 @@ class web_sql( object ):
 			lines = bible.split( '\n' )
 			for line in lines:
 				try:
-					l = line.split( "	" )
-					key = l[ 0 ]
+					line_part = line.split( "	" )
+					key = line_part[ 0 ]
 					self.cursor.execute( f"""INSERT INTO web (key, value)
-						VALUES ("{key}", "{l[1]}");""" )
+						VALUES ("{key}", "{line_part[1]}");""" )
 					print( f"{Back.LIGHTWHITE_EX}{Fore.BLACK}Loading line {lines.index(line)} of {len(lines)}{Fore.RESET}{Back.RESET}" )
-					del l
+					del line_part
 					del key
+				except Exception:
 					pass
-				except:
-					pass
-				pass
 			print( f"{Back.LIGHTWHITE_EX}{Fore.BLACK}Committing data...{Fore.RESET}{Back.RESET}" )
 			self.connection.commit( )
 			self.has_initialized = True
@@ -244,25 +236,20 @@ class web_sql( object ):
 			del reader
 			del bible
 			del lines
-			pass
-		pass
 	def __create ( self ):
 		cmd = """CREATE TABLE web (key VARCHAR(30), value VARCHAR(10000));"""
 		try:
 			self.cursor.execute( cmd )
-			pass
-		except:
+		except Exception:
 			pass
 		self.connection.commit( )
 		del cmd
-		pass
 	def __write ( self, key, value ):
 		cmd = """INSERT INTO web (key, value)
 			VALUES ("{}", "{}");""".format( key, value )
 		self.cursor.execute( cmd )
 		self.connection.commit( )
 		del cmd
-		pass
 	def read ( self, book: str, chapter: str, verse: str ) -> str:
 		"""
 		Fetch a verse from the Bible.
@@ -274,20 +261,24 @@ class web_sql( object ):
 		self.cursor.execute( f"SELECT * FROM web WHERE key IN ('{book} {chapter}:{verse}');" )
 		result = self.cursor.fetchall( )
 		return result[ 0 ][ 1 ]
-		pass
 	def execute ( self, cmd ):
+		"""
+		Executes a command.
+		:param cmd: The command.
+		:return: The resulting information.
+		"""
 		self.cursor.execute( cmd )
 		return self.cursor.fetchall( )
-		pass
 	def close ( self ):
 		"""
 		Closes the SQL connection.
 		"""
 		self.connection.close( )
-		pass
-	pass
 
-class niv_sql( object ):
+class NIVSQL( object ):
+	"""
+	NIVSQL class
+	"""
 	def __init__ ( self ):
 		self.settings = f"{os.getcwd()}\\Discord Logs\\SETTINGS"
 		self.has_initialized = False
@@ -301,10 +292,8 @@ class niv_sql( object ):
 			self.has_initialized = True if reader.read( ) == "True" else False
 			reader.close( )
 			del reader
-			pass
-		except:
+		except Exception:
 			self.has_initialized = False
-			pass
 
 		if not self.has_initialized:
 			self.__create( )
@@ -314,17 +303,15 @@ class niv_sql( object ):
 			lines = bible.split( '\n' )
 			for line in lines:
 				try:
-					l = line.split( "	" )
-					key = l[ 0 ]
+					line_part = line.split( "	" )
+					key = line_part[ 0 ]
 					self.cursor.execute( f"""INSERT INTO niv (key, value)
-						VALUES ("{key}", "{l[1]}");""" )
+						VALUES ("{key}", "{line_part[1]}");""" )
 					print( f"{Back.LIGHTWHITE_EX}{Fore.BLACK}Loading line {lines.index(line)} of {len(lines)}{Fore.RESET}{Back.RESET}" )
-					del l
+					del line_part
 					del key
+				except Exception:
 					pass
-				except:
-					pass
-				pass
 			print( f"{Back.LIGHTWHITE_EX}{Fore.BLACK}Committing data...{Fore.RESET}{Back.RESET}" )
 			self.connection.commit( )
 			self.has_initialized = True
@@ -336,25 +323,20 @@ class niv_sql( object ):
 			del reader
 			del bible
 			del lines
-			pass
-		pass
 	def __create ( self ):
 		cmd = """CREATE TABLE niv (key VARCHAR(30), value VARCHAR(10000));"""
 		try:
 			self.cursor.execute( cmd )
-			pass
-		except:
+		except Exception:
 			pass
 		self.connection.commit( )
 		del cmd
-		pass
 	def __write ( self, key, value ):
 		cmd = """INSERT INTO niv (key, value)
 			VALUES ("{}", "{}");""".format( key, value )
 		self.cursor.execute( cmd )
 		self.connection.commit( )
 		del cmd
-		pass
 	def read ( self, book: str, chapter: str, verse: str ) -> str:
 		"""
 		Fetch a verse from the Bible.
@@ -366,15 +348,16 @@ class niv_sql( object ):
 		self.cursor.execute( f"SELECT * FROM niv WHERE key IN ('{book} {chapter}:{verse}');" )
 		result = self.cursor.fetchall( )
 		return result[ 0 ][ 1 ]
-		pass
 	def execute ( self, cmd ):
+		"""
+		Executes `cmd`
+		:param cmd: The command.
+		:return: the results.
+		"""
 		self.cursor.execute( cmd )
 		return self.cursor.fetchall( )
-		pass
 	def close ( self ):
 		"""
 		Closes the SQL connection.
 		"""
 		self.connection.close( )
-		pass
-	pass

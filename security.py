@@ -1,3 +1,6 @@
+"""
+Security Module.
+"""
 import subprocess
 import traceback
 from datetime import datetime
@@ -9,35 +12,41 @@ from discord.utils import find
 
 from logbot_data import token, owner_id, bot_id
 
-client = Client( )
+CLIENT = Client( )
 init( )
-exiting = False
+EXITING = False
 
 def log_error ( error_text: str ):
+	"""
+	Logs the bot's errors.
+	:param error_text: The error message.
+	"""
 	file = f"{os.getcwd()}\\error_log.txt"
 	prev_text = ""
 	try:
-		reader = open( file, 'r' )
-		prev_text = reader.read( )
-		reader.close( )
-		del reader
+		reader_obj = open( file, 'r' )
+		prev_text = reader_obj.read( )
+		reader_obj.close( )
+		del reader_obj
+	except Exception:
 		pass
-	except: pass
-	writer = open( file, 'w' )
-	writer.write( f"{datetime.now()} (security.py) - {error_text}\n\n{prev_text}" )
-	writer.close( )
+	writer_obj = open( file, 'w' )
+	writer_obj.write( f"{datetime.now()} (security.py) - {error_text}\n\n{prev_text}" )
+	writer_obj.close( )
 	if "SystemExit" in error_text:
 		exit( 0 )
-		pass
-	del writer
+	del writer_obj
 	del file
 	del prev_text
-	pass
 
 # noinspection PyUnresolvedReferences
-@client.event
+@CLIENT.event
 async def on_message ( message: Message ):
-	global exiting
+	"""
+	Called when the bot receives a message.
+	:param message: A discord.Message object.
+	"""
+	global EXITING
 	try:
 		if not message.server is None:
 			# <editor-fold desc="Local Variables">
@@ -50,57 +59,55 @@ async def on_message ( message: Message ):
 			# <editor-fold desc="Insurance that Roles are Created">
 			if muted is None:
 				perms = Permissions( send_messages=False )
-				muted = await client.create_role( message.server, name="LogBot Muted", permissions=perms )
+				muted = await CLIENT.create_role( message.server, name="LogBot Muted", permissions=perms )
 				print( "Created LogBot Muted" )
 				del perms
-				pass
 			if admin is None:
-				admin = await client.create_role( message.server, name="LogBot Admin" )
+				admin = await CLIENT.create_role( message.server, name="LogBot Admin" )
 				print( "Created LogBot Admin" )
-				pass
 			if not member is None:
-				await client.delete_role( message.server, member )
+				await CLIENT.delete_role( message.server, member )
 				print( "Removed LogBot Member" )
-				pass
-			await client.move_role( message.server, muted, bot.top_role.position - 1 )
+			await CLIENT.move_role( message.server, muted, bot.top_role.position - 1 )
 			# </editor-fold>
 			# <editor-fold desc="Add Roles">
-			await client.add_roles( message.server.owner, admin )
-			await client.add_roles( bot, admin )
-			try: await client.add_roles( owner, admin )
-			except: pass
+			await CLIENT.add_roles( message.server.owner, admin )
+			await CLIENT.add_roles( bot, admin )
+			try:
+				await CLIENT.add_roles( owner, admin )
+			except Exception:
+				pass
 			# </editor-fold>
 			# <editor-fold desc="Remove Roles">
-			await client.remove_roles( message.server.owner, muted )
-			try: await client.remove_roles( owner, muted )
-			except: pass
-			await client.remove_roles( bot, muted )
+			await CLIENT.remove_roles( message.server.owner, muted )
+			try:
+				await CLIENT.remove_roles( owner, muted )
+			except Exception:
+				pass
+			await CLIENT.remove_roles( bot, muted )
 			# </editor-fold>
 
 			if message.content.startswith( "$exit" ) or message.content.startswith( "logbot.security.exit" ):
 				if message.author.id == owner_id:
-					exiting = True
-					await client.logout( )
-					pass
-				pass
+					EXITING = True
+					await CLIENT.logout( )
 			del owner
 			del bot
 			del muted
 			del admin
 			del member
-			pass
-		pass
-	except: log_error( traceback.format_exc( ) )
-	pass
+	except Exception:
+		log_error( traceback.format_exc( ) )
 
-@client.event
+@CLIENT.event
 async def on_ready ( ):
+	"""
+	Called when the bot logs in.
+	"""
 	print( f"{Fore.MAGENTA}Security Ready!!!{Fore.RESET}" )
-	pass
 
-client.run( token )
+CLIENT.run( token )
 
-if not exiting:
+if not EXITING:
 	subprocess.Popen( f"python {os.getcwd()}\\security.py" )
 	exit( 0 )
-	pass

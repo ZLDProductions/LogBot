@@ -1,13 +1,18 @@
+"""
+SQL tool.
+"""
 import sqlite3
 import os
 import random
 
 class SQL:
+	"""
+	SQL class.
+	"""
 	def __init__ ( self, file: str = "logbot" ):
 		self.settings = f"{os.getcwd()}\\Discord Logs\\SETTINGS"
 		self.connection = sqlite3.connect( f"{self.settings}\\{file}.db" )
 		self.cursor = self.connection.cursor( )
-		pass
 	def create ( self, table_name: str, *key_names: str ):
 		"""
 		Create an SQL Table if it does not already exist.
@@ -17,18 +22,15 @@ class SQL:
 		vals = ""
 		for k in key_names:
 			vals += str( f", " + str( k ) + " VARCHAR(100000)" )
-			pass
 		vals = vals[ 2: ]
 		cmd = f"""CREATE TABLE {table_name} ({vals});"""
 		try:
 			self.cursor.execute( cmd )
-			pass
-		except:
+		except Exception:
 			pass
 		self.connection.commit( )
 		del vals
 		del cmd
-		pass
 	def write ( self, table: str, *values: dict ):
 		"""
 		Write data to a table.
@@ -38,10 +40,9 @@ class SQL:
 		tmp1 = ""
 		tmp2 = ""
 		vals = values[ 0 ]
-		for v in list( vals.keys( ) ):
-			tmp1 += f", '{v}'"
-			tmp2 += f", '{vals[v]}'"
-			pass
+		for val in list( vals.keys( ) ):
+			tmp1 += f", '{val}'"
+			tmp2 += f", '{vals[val]}'"
 		tmp1 = tmp1[ 2: ]
 		tmp2 = tmp2[ 2: ]
 		cmd = f"""INSERT INTO {table} ({tmp1})
@@ -52,7 +53,6 @@ class SQL:
 		del tmp2
 		del vals
 		del cmd
-		pass
 	def read ( self, table: str, server: str, arg: str = 'server' ) -> str:
 		"""
 		Read SQL data.
@@ -64,7 +64,6 @@ class SQL:
 		self.cursor.execute( f"SELECT * FROM {table} WHERE {arg}='{server}';" )
 		result = self.cursor.fetchall( )
 		return result[ 0 ][ 1 ]
-		pass
 	def update ( self, table: str, key: str, val: str, server: str ):
 		"""
 		Update an item in a table.
@@ -79,7 +78,6 @@ class SQL:
 		self.cursor.execute( cmd )
 		self.connection.commit( )
 		del cmd
-		pass
 	def fmany ( self, cmd: str, num: int = 3 ) -> list:
 		"""
 		Returns a random result of `cmd`
@@ -94,10 +92,8 @@ class SQL:
 			arr = self.cursor.fetchmany( num )
 			results.append( arr )
 			del arr
-			pass
 		del done
 		return random.choice( results )
-		pass
 	def execute ( self, cmd: str ) -> list:
 		"""
 		Executes a command and returns values of that command.
@@ -106,10 +102,8 @@ class SQL:
 		"""
 		self.cursor.execute( cmd )
 		return self.cursor.fetchall( )
-		pass
 	def close ( self ):
 		"""
 		Closes the SQL connection.
 		"""
 		self.connection.close( )
-		pass
