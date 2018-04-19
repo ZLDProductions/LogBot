@@ -12,6 +12,7 @@ import discord
 from colorama import Fore, init
 
 from logbot_data import token, owner_id
+import sql
 
 # noinspection SpellCheckingInspection
 CLIENT = discord.Client( )
@@ -25,7 +26,7 @@ LEFT = ""
 
 LOGS_PATH = f'{os.getcwd()}\\Discord Logs'
 SETTINGS_PATH = f"{LOGS_PATH}\\SETTINGS"
-DB = SQL( )
+DB = sql.SQL( )
 _SQL = sqlite3.connect( f"{SETTINGS_PATH}\\logbot.db" )
 _CURSOR = SQL.cursor( )
 
@@ -96,6 +97,7 @@ async def on_message ( message ):
 		prefix = getprefix( message.server.id )
 
 		do_update = False
+
 		def startswith ( *msgs, val=message.content ):
 			"""
 			Checks if a string starts with several other substrings.
@@ -107,6 +109,7 @@ async def on_message ( message ):
 				if val.startswith( _msg_ ):
 					return True
 			return False
+		# noinspection SpellCheckingInspection
 		def replace ( *stuffs, repl="", val=message.content ):
 			"""
 			Replaces several different substrings within a string.

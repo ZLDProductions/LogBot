@@ -1,0 +1,1338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="01fc81a6-1a7d-48ed-a928-e37eb87f6faa" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/swearing_filter_v2.py" afterPath="$PROJECT_DIR$/swearing_filter_v2.py" />
+    </list>
+    <ignored path="process_list.txt" />
+    <ignored path="music.py" />
+    <ignored path="moderation.db" />
+    <ignored path="logbot_data.py" />
+    <ignored path="logbot.db" />
+    <ignored path="libopus.dll" />
+    <ignored path="launch.db" />
+    <ignored path="error_log.txt" />
+    <ignored path="SelfBot/selfbot.py" />
+    <ignored path="SelfBot/selfbotv2.py" />
+    <ignored path="Discord Logs/file_tree.txt" />
+    <ignored path="Discord Logs/filter_list.py" />
+    <ignored path="Discord Logs/Unirest-1.1.7.macosx-10.10-intel.exe" />
+    <ignored path="Discord Logs/Adrien's public test server!/abandonned_lab.txt" />
+    <ignored path="Discord Logs/Adrien's public test server!/conference_room.txt" />
+    <ignored path="Discord Logs/Adrien's public test server!/event.txt" />
+    <ignored path="Discord Logs/Adrien's public test server!/labo-2.txt" />
+    <ignored path="Discord Logs/Adrien's public test server!/labo_1_monitor_a.txt" />
+    <ignored path="Discord Logs/Bayek Official Discord/event.txt" />
+    <ignored path="Discord Logs/Bible Crafter Development/admin-only.txt" />
+    <ignored path="Discord Logs/Bible Crafter Development/event.txt" />
+    <ignored path="Discord Logs/Bible Crafter Development/general.txt" />
+    <ignored path="Discord Logs/Bible Crafter Development/resources.txt" />
+    <ignored path="Discord Logs/Bible Crafter Development/rules.txt" />
+    <ignored path="Discord Logs/Bible Crafter Development/suggestions-improvements.txt" />
+    <ignored path="Discord Logs/Bible Crafter Development/updates-dowloads.txt" />
+    <ignored path="Discord Logs/Bot Server/announcements.txt" />
+    <ignored path="Discord Logs/Bot Server/bot-support.txt" />
+    <ignored path="Discord Logs/Bot Server/event.txt" />
+    <ignored path="Discord Logs/Bot Server/general.txt" />
+    <ignored path="Discord Logs/Bot Server/log.txt" />
+    <ignored path="Discord Logs/Bot Server/meme.txt" />
+    <ignored path="Discord Logs/Bot Server/spam-bot.txt" />
+    <ignored path="Discord Logs/Bot Server/text.txt" />
+    <ignored path="Discord Logs/im so hot/event.txt" />
+    <ignored path="Discord Logs/LogBot HQ/advertisements.txt" />
+    <ignored path="Discord Logs/LogBot HQ/command-help.txt" />
+    <ignored path="Discord Logs/LogBot HQ/command-testing.txt" />
+    <ignored path="Discord Logs/LogBot HQ/daily-verse.txt" />
+    <ignored path="Discord Logs/LogBot HQ/event.txt" />
+    <ignored path="Discord Logs/LogBot HQ/general.txt" />
+    <ignored path="Discord Logs/LogBot HQ/github.txt" />
+    <ignored path="Discord Logs/LogBot HQ/level-ups.txt" />
+    <ignored path="Discord Logs/LogBot HQ/levelup-spam.txt" />
+    <ignored path="Discord Logs/LogBot HQ/logs.txt" />
+    <ignored path="Discord Logs/LogBot HQ/moderation.txt" />
+    <ignored path="Discord Logs/LogBot HQ/recent-changes.txt" />
+    <ignored path="Discord Logs/LogBot HQ/rules.txt" />
+    <ignored path="Discord Logs/POSSIBLE_ADDITIONS/English__American_Standard_Version__asv__LTR.txt" />
+    <ignored path="Discord Logs/POSSIBLE_ADDITIONS/WEB -OLD&amp;NEW-.txt" />
+    <ignored path="Discord Logs/POSSIBLE_ADDITIONS/WEB Bible -FULL-.txt" />
+    <ignored path="Discord Logs/Presidential Gaming/announcements.txt" />
+    <ignored path="Discord Logs/Presidential Gaming/commands.txt" />
+    <ignored path="Discord Logs/Presidential Gaming/event.txt" />
+    <ignored path="Discord Logs/Presidential Gaming/general.txt" />
+    <ignored path="Discord Logs/Presidential Gaming/guests.txt" />
+    <ignored path="Discord Logs/Presidential Gaming/images_memes.txt" />
+    <ignored path="Discord Logs/Presidential Gaming/information.txt" />
+    <ignored path="Discord Logs/Presidential Gaming/l-----chat-----l.txt" />
+    <ignored path="Discord Logs/Presidential Gaming/l-----images-----l.txt" />
+    <ignored path="Discord Logs/Presidential Gaming/l-----info-----l.txt" />
+    <ignored path="Discord Logs/Presidential Gaming/l-----logs-----l.txt" />
+    <ignored path="Discord Logs/Presidential Gaming/logs.txt" />
+    <ignored path="Discord Logs/Presidential Gaming/poth.txt" />
+    <ignored path="Discord Logs/Presidential Gaming/rules.txt" />
+    <ignored path="Discord Logs/Presidential Gaming/staff-logs.txt" />
+    <ignored path="Discord Logs/Presidential Gaming/staff_area.txt" />
+    <ignored path="Discord Logs/Presidential Gaming/staff_lounge.txt" />
+    <ignored path="Discord Logs/Radio Shack/announcements.txt" />
+    <ignored path="Discord Logs/Radio Shack/art.txt" />
+    <ignored path="Discord Logs/Radio Shack/bot-stuff.txt" />
+    <ignored path="Discord Logs/Radio Shack/event.txt" />
+    <ignored path="Discord Logs/Radio Shack/events.txt" />
+    <ignored path="Discord Logs/Radio Shack/general.txt" />
+    <ignored path="Discord Logs/Radio Shack/music-videos.txt" />
+    <ignored path="Discord Logs/Radio Shack/nsfw.txt" />
+    <ignored path="Discord Logs/Radio Shack/secret-staff-place.txt" />
+    <ignored path="Discord Logs/Radio Shack/self-promotion.txt" />
+    <ignored path="Discord Logs/Radio Shack/serious-topics.txt" />
+    <ignored path="Discord Logs/Radio Shack/shitpost.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/advertisement.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/announcements.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/ask-staff.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/bot-and-music.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/bumps.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/checkpoint.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/deletedmessages-logs.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/developer.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/eternal-worlds-chat.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/event.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/giveaways.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/guests.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/levelups.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/logger-logs.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/logs.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/main-chat.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/management-chat.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/nickname-changes.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/owner-chat.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/owners.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/partners.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/redhero-chat.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/scammer-numbers.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/staff-chat.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/staff-commands.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/staff-voting.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/trusted-chat.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/xd-memes.txt" />
+    <ignored path="Discord Logs/Scammers Exposed/yoshi-bot-music.txt" />
+    <ignored path="Discord Logs/SETTINGS/akjv.txt" />
+    <ignored path="Discord Logs/SETTINGS/avatar5.jpg" />
+    <ignored path="Discord Logs/SETTINGS/avatar6.jpg" />
+    <ignored path="Discord Logs/SETTINGS/bible.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_types.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_version.txt" />
+    <ignored path="Discord Logs/SETTINGS/bugs.txt" />
+    <ignored path="Discord Logs/SETTINGS/channel_settings.ini" />
+    <ignored path="Discord Logs/SETTINGS/credentials.txt" />
+    <ignored path="Discord Logs/SETTINGS/custom_commands.txt" />
+    <ignored path="Discord Logs/SETTINGS/data.ini" />
+    <ignored path="Discord Logs/SETTINGS/default_channel.txt" />
+    <ignored path="Discord Logs/SETTINGS/default_channels.txt" />
+    <ignored path="Discord Logs/SETTINGS/disables.txt" />
+    <ignored path="Discord Logs/SETTINGS/download.png" />
+    <ignored path="Discord Logs/SETTINGS/filter_disable_list.txt" />
+    <ignored path="Discord Logs/SETTINGS/filter_setting.txt" />
+    <ignored path="Discord Logs/SETTINGS/has_initialized.txt" />
+    <ignored path="Discord Logs/SETTINGS/has_kjv_initialized.txt" />
+    <ignored path="Discord Logs/SETTINGS/has_web_initialized.txt" />
+    <ignored path="Discord Logs/SETTINGS/join_roles.txt" />
+    <ignored path="Discord Logs/SETTINGS/languages.txt" />
+    <ignored path="Discord Logs/SETTINGS/last_day.txt" />
+    <ignored path="Discord Logs/SETTINGS/list of swear words.txt" />
+    <ignored path="Discord Logs/SETTINGS/logbot.db" />
+    <ignored path="Discord Logs/SETTINGS/scramble_words.txt" />
+    <ignored path="Discord Logs/SETTINGS/suggestions.txt" />
+    <ignored path="Discord Logs/SETTINGS/verse_disable_list.txt" />
+    <ignored path="Discord Logs/SETTINGS/votd.txt" />
+    <ignored path="Discord Logs/SETTINGS/votd_version_list.txt" />
+    <ignored path="Discord Logs/SETTINGS/web.txt" />
+    <ignored path="Discord Logs/SETTINGS/word_list.txt" />
+    <ignored path="Discord Logs/Student Help Club/bot-testing.txt" />
+    <ignored path="Discord Logs/Student Help Club/commandcenter.txt" />
+    <ignored path="Discord Logs/Student Help Club/discord-help.txt" />
+    <ignored path="Discord Logs/Student Help Club/encouragement.txt" />
+    <ignored path="Discord Logs/Student Help Club/event.txt" />
+    <ignored path="Discord Logs/Student Help Club/general-chat.txt" />
+    <ignored path="Discord Logs/Student Help Club/joining-place.txt" />
+    <ignored path="Discord Logs/Student Help Club/leaders.txt" />
+    <ignored path="Discord Logs/Student Help Club/music-input.txt" />
+    <ignored path="Discord Logs/Student Help Club/time-out.txt" />
+    <ignored path="Discord Logs/The Great House of God/art.txt" />
+    <ignored path="Discord Logs/The Great House of God/bible_q-a_discussion.txt" />
+    <ignored path="Discord Logs/The Great House of God/bot-commands.txt" />
+    <ignored path="Discord Logs/The Great House of God/cool-videos.txt" />
+    <ignored path="Discord Logs/The Great House of God/daily-scripture.txt" />
+    <ignored path="Discord Logs/The Great House of God/devotionals.txt" />
+    <ignored path="Discord Logs/The Great House of God/event.txt" />
+    <ignored path="Discord Logs/The Great House of God/game-room.txt" />
+    <ignored path="Discord Logs/The Great House of God/general.txt" />
+    <ignored path="Discord Logs/The Great House of God/godly_literature.txt" />
+    <ignored path="Discord Logs/The Great House of God/hardship_helpline.txt" />
+    <ignored path="Discord Logs/The Great House of God/joke-room.txt" />
+    <ignored path="Discord Logs/The Great House of God/music-worship.txt" />
+    <ignored path="Discord Logs/The Great House of God/peacekeeper-hq.txt" />
+    <ignored path="Discord Logs/The Great House of God/praise-reports.txt" />
+    <ignored path="Discord Logs/The Great House of God/suggestions.txt" />
+    <ignored path="Discord Logs/The Great House of God/testimonies.txt" />
+    <ignored path="Discord Logs/The Great House of God/the-chapel.txt" />
+    <ignored path="Discord Logs/The Great House of God/the-kitchen.txt" />
+    <ignored path="Discord Logs/The Great House of God/trinity_q-a_discussion.txt" />
+    <ignored path="Discord Logs/The Great House of God/weekly-scripture.txt" />
+    <ignored path="Discord Logs/The Underground School/event.txt" />
+    <ignored path="Discord Logs/The Underground School/main-lobby.txt" />
+    <ignored path="Discord Logs/The Underground School/student-command-bunker.txt" />
+    <ignored path="Discord Logs/United Gaming/announcements.txt" />
+    <ignored path="Discord Logs/United Gaming/commands.txt" />
+    <ignored path="Discord Logs/United Gaming/event.txt" />
+    <ignored path="Discord Logs/United Gaming/general.txt" />
+    <ignored path="Discord Logs/United Gaming/images_memes.txt" />
+    <ignored path="Discord Logs/United Gaming/poth.txt" />
+    <ignored path="Discord Logs/United Gaming/private.txt" />
+    <ignored path="Discord Logs/United Gaming/staff-logs.txt" />
+    <ignored path="Discord Logs/YoItsCore's meme lounge/announcements.txt" />
+    <ignored path="Discord Logs/YoItsCore's meme lounge/bot-and-music.txt" />
+    <ignored path="Discord Logs/YoItsCore's meme lounge/event.txt" />
+    <ignored path="Discord Logs/YoItsCore's meme lounge/guests.txt" />
+    <ignored path="Discord Logs/YoItsCore's meme lounge/logs.txt" />
+    <ignored path="Discord Logs/YoItsCore's meme lounge/main-chat.txt" />
+    <ignored path="Discord Logs/YoItsCore's meme lounge/xd-memes.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Channel/chat.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Channel/creator-music.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Channel/creator-text.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Channel/crew-text.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Channel/event.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Channel/music.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Channel/questions.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Channel/ragecraft-text.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Channel/rules.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Channel/translate.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Channel/welcome.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Channel/youtube.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Discord/chat.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Discord/creator-music.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Discord/creator-text.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Discord/event.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Discord/translate.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Discord/welcome.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Official/chat.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Official/creator-music.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Official/creator-text.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Official/crew-text.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Official/event.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Official/music.txt" />
+    <ignored path="Discord Logs/{CaptainDief} Official/welcome.txt" />
+    <ignored path="Discord Logs/{InFernoBayek} Discord/event.txt" />
+    <ignored path="Discord Logs/{InFernoBayek} Discord/welcome.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/bible_3d_angle.png" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/bible_3d_flat.png" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/bible_smooth.png" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/cross.png" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/votd.db" />
+    <ignored path="Discord Logs/SETTINGS/level_data/data.db" />
+    <ignored path="Discord Logs/SETTINGS/level_data/defaults.txt" />
+    <ignored path="Discord Logs/SETTINGS/Polling/polling.db" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Channels/227812249849430016.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Channels/238055263817433096.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Channels/240190333936205835.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Channels/243039858098962433.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Channels/271384819521421324.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Channels/278622356790837258.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Channels/285813354860118016.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Channels/308584935382450176.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Channels/329277719370137602.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Channels/331147003167899658.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Channels/346757631102287872.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Channels/351024683308679168.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Channels/357394156659671040.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Channels/367027604185808905.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Channels/383957010347065345.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Users/240190333936205835.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Users/243039858098962433.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Users/271384819521421324.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Users/278622356790837258.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Users/285813354860118016.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Users/308584935382450176.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Users/331147003167899658.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Users/357394156659671040.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Users/367027604185808905.txt" />
+    <ignored path="Discord Logs/SETTINGS/bible_plugin/Disabled Users/383957010347065345.txt" />
+    <ignored path="Discord Logs/SETTINGS/level_data/disables/240190333936205835.txt" />
+    <ignored path="Discord Logs/SETTINGS/level_data/disables/243039858098962433.txt" />
+    <ignored path="Discord Logs/SETTINGS/level_data/disables/271384819521421324.txt" />
+    <ignored path="Discord Logs/SETTINGS/level_data/disables/276423190601924609.txt" />
+    <ignored path="Discord Logs/SETTINGS/level_data/disables/278622356790837258.txt" />
+    <ignored path="Discord Logs/SETTINGS/level_data/disables/278624406631219212.txt" />
+    <ignored path="Discord Logs/SETTINGS/level_data/disables/288761032900345868.txt" />
+    <ignored path="Discord Logs/SETTINGS/SERVER SETTINGS/227812249849430016/disables.txt" />
+    <ignored path="Discord Logs/SETTINGS/SERVER SETTINGS/238055263817433096/disables.txt" />
+    <ignored path="Discord Logs/SETTINGS/SERVER SETTINGS/240190333936205835/disables.txt" />
+    <ignored path="Discord Logs/SETTINGS/SERVER SETTINGS/240190333936205835/prefix.txt" />
+    <ignored path="Discord Logs/SETTINGS/SERVER SETTINGS/243039858098962433/disables.txt" />
+    <ignored path="Discord Logs/SETTINGS/SERVER SETTINGS/271384819521421324/disables.txt" />
+    <ignored path="Discord Logs/SETTINGS/SERVER SETTINGS/271384819521421324/prefix.txt" />
+    <ignored path="Discord Logs/SETTINGS/SERVER SETTINGS/278622356790837258/disables.txt" />
+    <ignored path="Discord Logs/SETTINGS/SERVER SETTINGS/278622356790837258/prefix.txt" />
+    <ignored path="Discord Logs/SETTINGS/SERVER SETTINGS/285813354860118016/disables.txt" />
+    <ignored path="Discord Logs/SETTINGS/SERVER SETTINGS/308584935382450176/disables.txt" />
+    <ignored path="Discord Logs/SETTINGS/SERVER SETTINGS/331147003167899658/disables.txt" />
+    <ignored path="Discord Logs/SETTINGS/SERVER SETTINGS/346757631102287872/disables.txt" />
+    <ignored path="Discord Logs/SETTINGS/SERVER SETTINGS/351024683308679168/disables.txt" />
+    <ignored path="Discord Logs/SETTINGS/SERVER SETTINGS/357394156659671040/disables.txt" />
+    <ignored path="Discord Logs/SETTINGS/SERVER SETTINGS/367027604185808905/disables.txt" />
+    <ignored path="Beta/logbot.py" />
+    <ignored path="Beta/logbot_data.py" />
+    <ignored path=".idea/dictionaries/emsav.xml" />
+    <ignored path=".idea/preferred-vcs.xml" />
+    <ignored path="Discord Logs/SETTINGS/playlists.txt" />
+    <ignored path="Discord Logs/SETTINGS/_playlists.txt" />
+    <ignored path="Discord Logs/Student Help Club/funny-memes.txt" />
+    <ignored path="Discord Logs/!            Art!/event.txt" />
+    <ignored path="Discord Logs/!A/event.txt" />
+    <ignored path="Beta/LogBot_COMB.py" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="tools.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tools.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="340">
+              <caret line="103" column="42" lean-forward="false" selection-start-line="103" selection-start-column="42" selection-end-line="103" selection-end-column="42" />
+              <folding>
+                <element signature="e#167#377#1" expanded="false" />
+                <element signature="e#398#438#0" expanded="false" />
+                <element signature="e#545#903#1" expanded="false" />
+                <element signature="e#935#1095#0" expanded="false" />
+                <element signature="e#1200#1364#1" expanded="false" />
+                <element signature="e#1468#1580#1" expanded="false" />
+                <element signature="e#1704#1888#1" expanded="false" />
+                <element signature="e#1990#2156#1" expanded="false" />
+                <element signature="e#2462#2716#1" expanded="false" />
+                <element signature="e#2752#2864#0" expanded="false" />
+                <element signature="e#2797#2851#0" expanded="false" />
+                <element signature="e#2909#3089#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="swearing_filter_v2.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/swearing_filter_v2.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-324">
+              <caret line="13" column="0" lean-forward="true" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+              <folding>
+                <element signature="e#711#912#0" expanded="false" />
+                <element signature="e#944#1062#0" expanded="false" />
+                <element signature="e#1094#1203#0" expanded="false" />
+                <element signature="e#1360#1462#0" expanded="false" />
+                <element signature="e#1821#5511#0" expanded="false" />
+                <element signature="e#2065#2151#0" expanded="false" />
+                <element signature="e#2327#2595#0" expanded="false" />
+                <element signature="e#2868#2910#0" expanded="false" />
+                <element signature="e#2977#3488#0" expanded="false" />
+                <element signature="e#3053#3372#0" expanded="false" />
+                <element signature="e#3532#3714#0" expanded="false" />
+                <element signature="e#3774#3828#0" expanded="false" />
+                <element signature="e#3884#3963#0" expanded="false" />
+                <element signature="e#3922#3963#0" expanded="false" />
+                <element signature="e#4005#4198#0" expanded="false" />
+                <element signature="e#4384#4695#0" expanded="false" />
+                <element signature="e#4460#4579#0" expanded="false" />
+                <element signature="e#4740#5050#0" expanded="false" />
+                <element signature="e#4816#4934#0" expanded="false" />
+                <element signature="e#5284#5453#0" expanded="false" />
+                <element signature="e#5874#5959#0" expanded="false" />
+                <element signature="e#6092#6347#0" expanded="false" />
+                <element signature="e#6514#6591#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>Required Permissions</find>
+      <find>Required Permission</find>
+      <find>traceback.format_exc</find>
+      <find>yield from</find>
+      <find>playlists</find>
+      <find>{}</find>
+      <find>.format</find>
+      <find>parse_num</find>
+      <find>del writer</find>
+      <find>John</find>
+      <find>John 3:16</find>
+      <find>e.title</find>
+      <find>.get</find>
+      <find>except: pass</find>
+      <find>default_channel</find>
+      <find>analyzeVerse</find>
+      <find>bi</find>
+      <find>bi</find>
+      <find>exiting</find>
+      <find>pass</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>Required Level</replace>
+      <replace>await</replace>
+      <replace>_playlists</replace>
+      <replace>DEFAULT_CHANNEL</replace>
+      <replace>EXITING</replace>
+    </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/Commands.html" />
+        <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/logbot_data.py" />
+        <option value="$PROJECT_DIR$/music.py" />
+        <option value="$PROJECT_DIR$/musicbeta.py" />
+        <option value="$PROJECT_DIR$/NIV.py" />
+        <option value="$PROJECT_DIR$/Discord Logs/SETTINGS/suggestions.txt" />
+        <option value="$PROJECT_DIR$/Discord Logs/SETTINGS/NIV_TEXT.txt" />
+        <option value="$PROJECT_DIR$/error_log.txt" />
+        <option value="$PROJECT_DIR$/Beta/logbot_data.py" />
+        <option value="$PROJECT_DIR$/Beta/LogBot_COMB.py" />
+        <option value="$PROJECT_DIR$/argparser.py" />
+        <option value="$PROJECT_DIR$/games.py" />
+        <option value="$PROJECT_DIR$/help.py" />
+        <option value="$PROJECT_DIR$/launch.py" />
+        <option value="$PROJECT_DIR$/levels.py" />
+        <option value="$PROJECT_DIR$/logbot.py" />
+        <option value="$PROJECT_DIR$/moderation.py" />
+        <option value="$PROJECT_DIR$/Music.py" />
+        <option value="$PROJECT_DIR$/musiclaunch.py" />
+        <option value="$PROJECT_DIR$/polling.py" />
+        <option value="$PROJECT_DIR$/security.py" />
+        <option value="$PROJECT_DIR$/sql.py" />
+        <option value="$PROJECT_DIR$/sql_data.py" />
+        <option value="$PROJECT_DIR$/symbols.py" />
+        <option value="$PROJECT_DIR$/../GlobalShortcut/main.py" />
+        <option value="$PROJECT_DIR$/admin.py" />
+        <option value="$PROJECT_DIR$/ai.py" />
+        <option value="$PROJECT_DIR$/dev.py" />
+        <option value="$PROJECT_DIR$/custom.py" />
+        <option value="$PROJECT_DIR$/bible.py" />
+        <option value="$PROJECT_DIR$/tools.py" />
+        <option value="$PROJECT_DIR$/swearing_filter_v3.py" />
+        <option value="$PROJECT_DIR$/swearing_filter_v2.py" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="676" />
+    <option name="width" value="697" />
+    <option name="height" value="775" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="LogBot" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LogBot" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scratches" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../GlobalShortcut" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Python.main">
+    <configuration name="bible" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="LogBot" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bible.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="launch" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="LogBot" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/launch.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="logbot" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="LogBot" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/logbot.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../GlobalShortcut" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="GlobalShortcut" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../GlobalShortcut/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="musiclaunch" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="LogBot" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/musiclaunch.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <list size="5">
+      <item index="0" class="java.lang.String" itemvalue="Python.launch" />
+      <item index="1" class="java.lang.String" itemvalue="Python.musiclaunch" />
+      <item index="2" class="java.lang.String" itemvalue="Python.logbot" />
+      <item index="3" class="java.lang.String" itemvalue="Python.bible" />
+      <item index="4" class="java.lang.String" itemvalue="Python.main" />
+    </list>
+    <recent_temporary>
+      <list size="5">
+        <item index="0" class="java.lang.String" itemvalue="Python.main" />
+        <item index="1" class="java.lang.String" itemvalue="Python.bible" />
+        <item index="2" class="java.lang.String" itemvalue="Python.launch" />
+        <item index="3" class="java.lang.String" itemvalue="Python.logbot" />
+        <item index="4" class="java.lang.String" itemvalue="Python.musiclaunch" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="01fc81a6-1a7d-48ed-a928-e37eb87f6faa" name="Default" comment="" />
+      <created>1514594856153</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1514594856153</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Bot Updates.">
+      <created>1515172907441</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1515172907441</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Updated Help Contents">
+      <created>1515173639661</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1515173639661</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Updated project dictionary.">
+      <created>1515173840712</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1515173840712</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Version bump.">
+      <created>1515173937387</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1515173937387</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Updated Project Dictionary.">
+      <created>1515174174255</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1515174174255</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Many thanks to YetiGuy for providing the music player code.">
+      <created>1515196823724</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1515196823724</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Version bump.">
+      <created>1515196987836</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1515196987836</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Added external launch option.">
+      <created>1515481232086</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1515481232086</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Some additions to the code.">
+      <created>1515481396858</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1515481396858</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Code reformatting.">
+      <created>1515517563203</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1515517563203</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Added another Bible version.">
+      <created>1516169128658</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1516169128658</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Added an 8 Ball">
+      <created>1516169150232</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1516169150232</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Version bump.">
+      <created>1516172347699</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1516172347699</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Code version updates.">
+      <created>1516424205054</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1516424205054</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Bug fixes.">
+      <created>1516567637013</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1516567637013</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Bug Fixes and Performance Improvements.">
+      <created>1516736363135</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1516736363135</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Bug Fixes and Performance Improvements.">
+      <created>1517441519263</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1517441519263</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Feature additions.">
+      <created>1517443341265</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1517443341265</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Fixed a bug involving verse fetching coming after &quot;est&quot;.">
+      <created>1518486413232</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1518486413232</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Updated $purge to make more sense.">
+      <created>1519789811707</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1519789811707</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Major code and performance improvements.">
+      <created>1522210972560</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1522210972560</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
+    <servers />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1382" height="784" extended-state="6" />
+    <layout>
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25945538" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" x="517" y="48" width="332" height="671" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.328" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.328" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24962178" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="SFDX" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Execute Anonymous" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32954547" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Log Manager" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Salesforce" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Bot Updates." />
+    <MESSAGE value="Updated Help Contents" />
+    <MESSAGE value="Updated project dictionary." />
+    <MESSAGE value="Updated Project Dictionary." />
+    <MESSAGE value="Many thanks to YetiGuy for providing the music player code." />
+    <MESSAGE value="Added external launch option." />
+    <MESSAGE value="Some additions to the code." />
+    <MESSAGE value="Code reformatting." />
+    <MESSAGE value="Added another Bible version." />
+    <MESSAGE value="Added an 8 Ball" />
+    <MESSAGE value="Version bump." />
+    <MESSAGE value="Code version updates." />
+    <MESSAGE value="Bug fixes." />
+    <MESSAGE value="Bug Fixes and Performance Improvements." />
+    <MESSAGE value="Feature additions." />
+    <MESSAGE value="Fixed a bug involving verse fetching coming after &quot;est&quot;." />
+    <MESSAGE value="Updated $purge to make more sense." />
+    <MESSAGE value="Major code and performance improvements." />
+    <option name="LAST_COMMIT_MESSAGE" value="Major code and performance improvements." />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="1" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/launch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/launch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Discord Logs/SETTINGS/has_kjv_initialized.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Discord Logs/SETTINGS/has_web_initialized.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Discord Logs/SETTINGS/has_initialized.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Commands.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="5" lean-forward="false" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="532">
+          <caret line="1640" column="2" lean-forward="false" selection-start-line="1640" selection-start-column="2" selection-end-line="1640" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Program Files/Python36/Lib/site-packages/discord/ext/commands/bot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="145" column="33" lean-forward="true" selection-start-line="145" selection-start-column="33" selection-end-line="145" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Program Files/Python36/Lib/site-packages/discord/client.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="1670" column="15" lean-forward="false" selection-start-line="1670" selection-start-column="11" selection-end-line="1670" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Discord Logs/SETTINGS/_playlists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Discord Logs/SETTINGS/playlists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="146" lean-forward="false" selection-start-line="0" selection-start-column="146" selection-end-line="0" selection-end-column="146" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/musicbeta.py" />
+    <entry file="file://$PROJECT_DIR$/Discord Logs/SETTINGS/filter_settings.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Discord Logs/Adrien's public test server!/labo-2.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="3" column="234" lean-forward="false" selection-start-line="3" selection-start-column="234" selection-end-line="3" selection-end-column="234" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/NIV.py" />
+    <entry file="file://$PROJECT_DIR$/Discord Logs/SETTINGS/bugs.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Discord Logs/SETTINGS/suggestions.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="53" lean-forward="false" selection-start-line="1" selection-start-column="53" selection-end-line="1" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Discord Logs/SETTINGS/NIV_TEXT.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="227">
+          <caret line="23293" column="142" lean-forward="false" selection-start-line="23293" selection-start-column="142" selection-end-line="23293" selection-end-column="142" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Program Files/Python36/Lib/site-packages/keyboard/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="149">
+          <caret line="231" column="24" lean-forward="true" selection-start-line="231" selection-start-column="24" selection-end-line="231" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/error_log.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ToS.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="65" column="0" lean-forward="true" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Beta/logbot.py" />
+    <entry file="file://$PROJECT_DIR$/logbot_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="9" lean-forward="true" selection-start-line="0" selection-start-column="9" selection-end-line="0" selection-end-column="9" />
+          <folding>
+            <element signature="e#21#50#0" expanded="false" />
+            <element signature="e#317#345#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Beta/logbot_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="16" lean-forward="false" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Beta/LogBot_COMB.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="23" lean-forward="false" selection-start-line="5" selection-start-column="23" selection-end-line="5" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3/builtins.pyi">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="32" column="17" lean-forward="true" selection-start-line="32" selection-start-column="17" selection-end-line="32" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/games.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="512">
+          <caret line="223" column="16" lean-forward="false" selection-start-line="223" selection-start-column="16" selection-end-line="223" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/help.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="25" column="15" lean-forward="false" selection-start-line="25" selection-start-column="15" selection-end-line="25" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/launch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="77" column="25" lean-forward="false" selection-start-line="77" selection-start-column="25" selection-end-line="77" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/levels.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="203" column="50" lean-forward="false" selection-start-line="203" selection-start-column="50" selection-end-line="203" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/moderation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Music.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="13" lean-forward="false" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/musiclaunch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/polling.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="48" column="17" lean-forward="true" selection-start-line="48" selection-start-column="17" selection-end-line="48" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/security.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="15" column="7" lean-forward="true" selection-start-line="15" selection-start-column="7" selection-end-line="15" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sql.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="7" column="10" lean-forward="false" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sql_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="277" column="6" lean-forward="false" selection-start-line="277" selection-start-column="6" selection-end-line="277" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/swearing_filter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/symbols.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="4" lean-forward="false" selection-start-line="0" selection-start-column="4" selection-end-line="0" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/logbot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="69" column="0" lean-forward="false" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../GlobalShortcut/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="6" column="4" lean-forward="true" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/admin.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="237" column="15" lean-forward="false" selection-start-line="237" selection-start-column="15" selection-end-line="237" selection-end-column="15" />
+          <folding>
+            <element signature="e#520#599#1" expanded="false" />
+            <element signature="e#664#750#0" expanded="false" />
+            <element signature="e#999#3253#0" expanded="false" />
+            <element signature="e#1042#3253#0" expanded="false" />
+            <element signature="e#1128#1236#1" expanded="false" />
+            <element signature="e#1352#1424#0" expanded="false" />
+            <element signature="e#1362#1391#0" expanded="false" />
+            <element signature="e#1604#1711#1" expanded="false" />
+            <element signature="e#1772#1957#0" expanded="false" />
+            <element signature="e#1868#1944#0" expanded="false" />
+            <element signature="e#1879#1909#0" expanded="false" />
+            <element signature="e#2178#2304#1" expanded="false" />
+            <element signature="e#2755#2849#0" expanded="false" />
+            <element signature="e#2765#2816#0" expanded="false" />
+            <element signature="e#2874#3061#0" expanded="false" />
+            <element signature="e#2910#3061#0" expanded="false" />
+            <element signature="e#2937#2980#0" expanded="false" />
+            <element signature="e#3015#3061#0" expanded="false" />
+            <element signature="e#3282#3368#1" expanded="false" />
+            <element signature="e#3478#3570#1" expanded="false" />
+            <element signature="e#3595#5008#0" expanded="false" />
+            <element signature="e#3685#3871#1" expanded="false" />
+            <element signature="e#3896#3938#0" expanded="false" />
+            <element signature="e#4099#4553#0" expanded="false" />
+            <element signature="e#4266#4535#0" expanded="false" />
+            <element signature="e#4786#4826#0" expanded="false" />
+            <element signature="e#4855#4979#0" expanded="false" />
+            <element signature="e#5107#5145#1" expanded="false" />
+            <element signature="e#5261#5325#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ai.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="98" column="0" lean-forward="true" selection-start-line="98" selection-start-column="0" selection-end-line="98" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/argparser.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+          <folding>
+            <element signature="e#51#777#0" expanded="false" />
+            <element signature="e#145#278#1" expanded="false" />
+            <element signature="e#352#492#1" expanded="false" />
+            <element signature="e#503#742#0" expanded="false" />
+            <element signature="e#558#727#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dev.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="301" column="15" lean-forward="false" selection-start-line="301" selection-start-column="15" selection-end-line="301" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/custom.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="91" column="42" lean-forward="false" selection-start-line="91" selection-start-column="42" selection-end-line="91" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bible.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="638" column="4" lean-forward="false" selection-start-line="638" selection-start-column="4" selection-end-line="638" selection-end-column="4" />
+          <folding>
+            <element signature="e#4226#17684#0" expanded="false" />
+            <element signature="e#4287#4313#1" expanded="false" />
+            <element signature="e#17567#17651#1" expanded="false" />
+            <element signature="e#17726#17858#0" expanded="false" />
+            <element signature="e#17890#18018#0" expanded="false" />
+            <element signature="e#18050#18172#0" expanded="false" />
+            <element signature="e#18204#18331#0" expanded="false" />
+            <element signature="e#18363#18466#0" expanded="false" />
+            <element signature="e#18536#18630#0" expanded="false" />
+            <element signature="e#18701#18781#1" expanded="false" />
+            <element signature="e#18869#19000#1" expanded="false" />
+            <element signature="e#19190#19283#1" expanded="false" />
+            <element signature="e#19371#19540#1" expanded="false" />
+            <element signature="e#19561#19594#0" expanded="false" />
+            <element signature="e#19652#19708#1" expanded="false" />
+            <element signature="e#20035#20072#0" expanded="false" />
+            <element signature="e#20195#20224#0" expanded="false" />
+            <element signature="e#20342#20375#0" expanded="false" />
+            <element signature="e#20482#20511#0" expanded="false" />
+            <element signature="e#20604#20657#0" expanded="false" />
+            <element signature="e#20767#20817#0" expanded="false" />
+            <element signature="e#20922#20963#0" expanded="false" />
+            <element signature="e#21102#21140#0" expanded="false" />
+            <element signature="e#21317#23084#0" expanded="false" />
+            <element signature="e#21472#22879#0" expanded="false" />
+            <element signature="e#23184#23951#0" expanded="false" />
+            <element signature="e#24051#25104#0" expanded="false" />
+            <element signature="e#25175#25902#0" expanded="false" />
+            <element signature="e#26002#27055#0" expanded="false" />
+            <element signature="e#27156#27896#0" expanded="false" />
+            <element signature="e#27997#29048#0" expanded="false" />
+            <element signature="e#29148#29864#0" expanded="false" />
+            <element signature="e#29964#30988#0" expanded="false" />
+            <element signature="e#31074#31719#0" expanded="false" />
+            <element signature="e#31800#32530#0" expanded="false" />
+            <element signature="e#32612#33688#0" expanded="false" />
+            <element signature="e#33733#34080#0" expanded="false" />
+            <element signature="e#33930#34030#0" expanded="false" />
+            <element signature="e#33958#34027#0" expanded="false" />
+            <element signature="e#34058#34080#0" expanded="false" />
+            <element signature="e#34106#34870#0" expanded="false" />
+            <element signature="e#34906#35089#0" expanded="false" />
+            <element signature="e#35148#35205#1" expanded="false" />
+            <element signature="e#35338#35359#0" expanded="false" />
+            <element signature="e#35451#36180#0" expanded="false" />
+            <element signature="e#36199#36246#1" expanded="false" />
+            <element signature="e#36264#36289#1" expanded="false" />
+            <element signature="e#36356#36627#0" expanded="false" />
+            <element signature="e#36715#37372#0" expanded="false" />
+            <element signature="e#37447#38147#0" expanded="false" />
+            <element signature="e#38249#40117#0" expanded="false" />
+            <element signature="e#38620#38726#0" expanded="false" />
+            <element signature="e#38989#39058#0" expanded="false" />
+            <element signature="e#39523#39655#0" expanded="false" />
+            <element signature="e#40190#42073#0" expanded="false" />
+            <element signature="e#40349#41898#0" expanded="false" />
+            <element signature="e#41920#41986#0" expanded="false" />
+            <element signature="e#42162#44679#0" expanded="false" />
+            <element signature="e#42536#42772#0" expanded="false" />
+            <element signature="e#42936#43166#0" expanded="false" />
+            <element signature="e#43322#43558#0" expanded="false" />
+            <element signature="e#44008#44238#0" expanded="false" />
+            <element signature="e#44751#45281#0" expanded="false" />
+            <element signature="e#45367#45824#0" expanded="false" />
+            <element signature="e#45907#46305#0" expanded="false" />
+            <element signature="e#46376#47356#0" expanded="false" />
+            <element signature="e#46479#46619#0" expanded="false" />
+            <element signature="e#47373#47410#1" expanded="false" />
+            <element signature="e#47483#47951#0" expanded="false" />
+            <element signature="e#48021#48172#0" expanded="false" />
+            <element signature="e#48241#48391#0" expanded="false" />
+            <element signature="e#48463#49155#0" expanded="false" />
+            <element signature="e#49226#49906#0" expanded="false" />
+            <element signature="e#49923#49964#1" expanded="false" />
+            <element signature="e#50006#50073#0" expanded="false" />
+            <element signature="e#50111#50611#0" expanded="false" />
+            <element signature="e#50655#51658#0" expanded="false" />
+            <element signature="e#51728#52123#0" expanded="false" />
+            <element signature="e#52194#52388#0" expanded="false" />
+            <element signature="e#52439#77058#0" expanded="false" />
+            <element signature="e#53981#54020#0" expanded="false" />
+            <element signature="e#63409#63449#0" expanded="false" />
+            <element signature="e#63895#63938#0" expanded="false" />
+            <element signature="e#65349#65673#0" expanded="false" />
+            <element signature="e#70350#71405#0" expanded="false" />
+            <element signature="e#71371#71405#0" expanded="false" />
+            <element signature="e#73506#74561#0" expanded="false" />
+            <element signature="e#74527#74561#0" expanded="false" />
+            <element signature="e#75624#75772#0" expanded="false" />
+            <element signature="e#77099#77256#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/swearing_filter_v3.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tools.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="103" column="42" lean-forward="false" selection-start-line="103" selection-start-column="42" selection-end-line="103" selection-end-column="42" />
+          <folding>
+            <element signature="e#167#377#1" expanded="false" />
+            <element signature="e#398#438#0" expanded="false" />
+            <element signature="e#545#903#1" expanded="false" />
+            <element signature="e#935#1095#0" expanded="false" />
+            <element signature="e#1200#1364#1" expanded="false" />
+            <element signature="e#1468#1580#1" expanded="false" />
+            <element signature="e#1704#1888#1" expanded="false" />
+            <element signature="e#1990#2156#1" expanded="false" />
+            <element signature="e#2462#2716#1" expanded="false" />
+            <element signature="e#2752#2864#0" expanded="false" />
+            <element signature="e#2797#2851#0" expanded="false" />
+            <element signature="e#2909#3089#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/swearing_filter_v2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-324">
+          <caret line="13" column="0" lean-forward="true" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+          <folding>
+            <element signature="e#711#912#0" expanded="false" />
+            <element signature="e#944#1062#0" expanded="false" />
+            <element signature="e#1094#1203#0" expanded="false" />
+            <element signature="e#1360#1462#0" expanded="false" />
+            <element signature="e#1821#5511#0" expanded="false" />
+            <element signature="e#2065#2151#0" expanded="false" />
+            <element signature="e#2327#2595#0" expanded="false" />
+            <element signature="e#2868#2910#0" expanded="false" />
+            <element signature="e#2977#3488#0" expanded="false" />
+            <element signature="e#3053#3372#0" expanded="false" />
+            <element signature="e#3532#3714#0" expanded="false" />
+            <element signature="e#3774#3828#0" expanded="false" />
+            <element signature="e#3884#3963#0" expanded="false" />
+            <element signature="e#3922#3963#0" expanded="false" />
+            <element signature="e#4005#4198#0" expanded="false" />
+            <element signature="e#4384#4695#0" expanded="false" />
+            <element signature="e#4460#4579#0" expanded="false" />
+            <element signature="e#4740#5050#0" expanded="false" />
+            <element signature="e#4816#4934#0" expanded="false" />
+            <element signature="e#5284#5453#0" expanded="false" />
+            <element signature="e#5874#5959#0" expanded="false" />
+            <element signature="e#6092#6347#0" expanded="false" />
+            <element signature="e#6514#6591#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

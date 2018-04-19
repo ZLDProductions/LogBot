@@ -5,12 +5,12 @@ import traceback
 from datetime import datetime
 
 import os
+
 from colorama import Fore, init
 from discord import Client, Message
 from discord.utils import find
 
 from logbot_data import owner_id, token
-from tools import split_into_words
 
 CLIENT = Client( )
 init( )
@@ -82,8 +82,7 @@ async def on_message ( message: Message ):
 	try:
 		if not message.server.id in list( FILTER_SETTINGS.keys( ) ):
 			FILTER_SETTINGS[ message.server.id ] = 1
-		words = split_into_words(message.content)
-		# words = message.content.replace( ".", "" ).replace( ",", "" ).replace( "!", "" ).replace( "?", "" ).split( " " )
+		words = message.content.replace( ".", "" ).replace( ",", "" ).replace( "!", "" ).replace( "?", "" ).split( " " )
 		for word in words:
 			if word.lower( ) in DICT_WORDS:
 				words[ words.index( word ) ] = "\\*" * len( word )
