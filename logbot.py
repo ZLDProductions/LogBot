@@ -533,7 +533,7 @@ class Commands:
 				log_error( traceback.format_exc( ) )
 		@staticmethod
 		async def tos ( message: discord.Message ):
-			msg = [
+			msgs = [
 				"This bot follows Discord' Terms of Service.",
 				"Because of this, I am require to state, exactly, what information the bot stores.",
 				"The bot stores only information necessary to continue running the bot. It stores logs of every channel in a server, but they are not able to be viewed by anyone except me, as the developer, and the admins of the server they belong to. I will not-and have not-viewed any logs of a server I am not moderating or that I do not own.",
@@ -541,10 +541,9 @@ class Commands:
 				"In addition, by using this bot, you agree that you will not abuse commands, such as spamming them or giving wild parameters to test it's durability, in any way, and that storing this information it perfectly acceptable by you."
 			]
 			embed_obj = discord.Embed( title="LogBot's Terms of Service." )
-			for message in msg:
-				embed_obj.add_field( name="", value=message )
+			for msg in msgs:
+				embed_obj.add_field( name="", value=msg )
 			await CLIENT.send_message( message.channel, "", embed=embed_obj )
-			pass
 		@staticmethod
 		async def eightball ( message: discord.Message ):
 			"""
