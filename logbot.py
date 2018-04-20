@@ -17,6 +17,7 @@ from typing import List, Union
 
 import discord
 import giphy_client
+import lyricwikia
 import psutil
 import translate
 import urbandictionary
@@ -400,7 +401,7 @@ async def check_purge ( message: discord.Message, limit=100, _check=None ) -> in
 		:param msg: The message.
 		:return: True or False.
 		"""
-		if not msg is None:
+		if msg is not None:
 			return True
 		return False
 	if _check is None:
@@ -512,7 +513,40 @@ class Commands:
 		For everyone!
 		"""
 		@staticmethod
-		async def eightball ( message: discord.message ):
+		async def lyrics ( message: discord.Message, prefix: str ):
+			cnt = message.content.replace( f"{prefix}lyrics ", "" ).split( "|" )
+			print( cnt )
+			song = cnt[ 0 ]
+			artist = cnt[ 1 ]
+			try:
+				lyrics = str( lyricwikia.get_lyrics( artist, song ) ).split( '\n\n' )
+				embed_obj = discord.Embed(title=song, description=f"By {artist}")
+				for item in lyrics:
+					embed_obj.add_field(name=".", value=item, inline=False)
+				await CLIENT.send_message(message.channel, "", embed=embed_obj)
+				# for msg in lyrics:
+				# 	await CLIENT.send_message(message.channel, msg)
+			except lyricwikia.LyricsNotFound:
+				await CLIENT.send_message( message.channel, 'No lyrics found for this song.' )
+			except Exception:
+				await CLIENT.send_message( message.channel, 'An error occurred!' )
+				log_error( traceback.format_exc( ) )
+		@staticmethod
+		async def tos ( message: discord.Message ):
+			msg = [
+				"This bot follows Discord' Terms of Service.",
+				"Because of this, I am require to state, exactly, what information the bot stores.",
+				"The bot stores only information necessary to continue running the bot. It stores logs of every channel in a server, but they are not able to be viewed by anyone except me, as the developer, and the admins of the server they belong to. I will not-and have not-viewed any logs of a server I am not moderating or that I do not own.",
+				"Logs include status changes (when a member goes online/offline), server changes, channel changes, message actions, and other publicly available data (data which can be received from the Discord app), as well as leveling data (rank, tier, etc.) which is used by the Levels module.",
+				"In addition, by using this bot, you agree that you will not abuse commands, such as spamming them or giving wild parameters to test it's durability, in any way, and that storing this information it perfectly acceptable by you."
+			]
+			embed_obj = discord.Embed( title="LogBot's Terms of Service." )
+			for message in msg:
+				embed_obj.add_field( name="", value=message )
+			await CLIENT.send_message( message.channel, "", embed=embed_obj )
+			pass
+		@staticmethod
+		async def eightball ( message: discord.Message ):
 			"""
 			Asks the magic 8ball a question.
 			:param message: A discord.Message object.
@@ -1222,7 +1256,7 @@ class Commands:
 			# </editor-fold>
 			if server_filter[ "ACTIVE" ] is True and not message.author.bot:
 				if server_filter[ "ADMCHK" ] is True:
-					if not admin_role in message.author.roles:
+					if admin_role not in message.author.roles:
 						if server_filter[ "DELCPY" ] is True:
 							if len( message.content.split( "\n" ) ) >= 10 and (")" in message.content or "(" in message.content or "," in message.content or "▇" in message.content or "╰" in message.content or "▅" in message.content or "━" in message.content or "┣" in message.content or "▇" in message.content or "┃" in message.content or "━" in message.content or "╭" in message.content):
 								await CLIENT.delete_message( message )
@@ -1317,13 +1351,13 @@ class Commands:
 			# </editor-fold>
 
 			for _channel in excludes:
-				if not _channel.id in EXCLUDE_CHANNEL_LIST:
+				if _channel.id not in EXCLUDE_CHANNEL_LIST:
 					EXCLUDE_CHANNEL_LIST.append( _channel.id )
 			for _user in admins:
-				if not admin_role in _user.roles:
+				if admin_role not in _user.roles:
 					await CLIENT.add_roles( _user, admin_role )
 			for _channel in marks:
-				if not _channel.id in MARKLIST:
+				if _channel.id not in MARKLIST:
 					MARKLIST.append( _channel.id )
 
 			if welcome.startswith( "read(" ):
@@ -1349,7 +1383,8 @@ class Commands:
 					except Exception:
 						pass
 					DB.update( "Welcomes", "message", welcome, message.server.id )
-				else: DB.update( "Welcomes", "message", "", message.server.id )
+				else:
+					DB.update( "Welcomes", "message", "", message.server.id )
 			if not goodbye == "None":
 				DB.write(
 					"Goodbyes",
@@ -1447,7 +1482,7 @@ class Commands:
 				else:
 					try:
 						_m = message.server.get_member_named( item )
-						if not _m is None:
+						if _m is not None:
 							users_to_mute.append(
 								(
 									message.server.get_member_named(
@@ -1509,7 +1544,8 @@ class Commands:
 			if temp == "[all]":
 				for key in list( DISABLES[ message.server.id ].keys( ) ):
 					DISABLES[ message.server.id ][ key ] = True
-			else: DISABLES[ message.server.id ][ temp ] = True
+			else:
+				DISABLES[ message.server.id ][ temp ] = True
 			await CLIENT.send_message( message.channel, f"Disabled {temp} :no_entry_sign:" )
 			del temp
 		@staticmethod
@@ -1523,7 +1559,8 @@ class Commands:
 			if temp == "[all]":
 				for key in list( DISABLES[ message.server.id ].keys( ) ):
 					DISABLES[ message.server.id ][ key ] = False
-			else: DISABLES[ message.server.id ][ temp ] = False
+			else:
+				DISABLES[ message.server.id ][ temp ] = False
 			await CLIENT.send_message( message.channel, f"Enabled {temp} :white_check_mark:" )
 			del temp
 		@staticmethod
@@ -1546,7 +1583,7 @@ class Commands:
 			if content[ 0 ] == 'a':
 				added_list = [ ]
 				for user in users:
-					if not admin_role in user.roles:
+					if admin_role not in user.roles:
 						await CLIENT.add_roles( user, admin_role )
 						added_list.append( str( user ) )
 				await CLIENT.send_message( message.channel, f"Added {', '.join(added_list)} to the admin list. :heavy_plus_sign:" )
@@ -1675,7 +1712,7 @@ class Commands:
 				overwrite.connect = tmp.get( "connect" )
 				overwrite.speak = tmp.get( "speak" )
 				overwrite.use_voice_activation = tmp.get( "use_voice_activation" )
-				target_a = role if not role is None else message.server.default_role
+				target_a = role if role is not None else message.server.default_role
 				await CLIENT.edit_channel_permissions( channel, target_a if mentions is None else mentions, overwrite=overwrite )
 				await CLIENT.send_message( message.channel, f"Changed permissions for {f'<@&{role.id}>' if not role is None else f'{mentions.mention}'}" )
 				del content
@@ -1693,7 +1730,7 @@ class Commands:
 			:param message: A discord.Message object.
 			:param prefix: The server's prefix.
 			"""
-			if not bot_id in message.content:
+			if bot_id not in message.content:
 				content = message.content.replace( f"{prefix}say ", "", 1 ).split( "|" )
 				mentions = content[ 0 ].split( " " )
 				text = content[ 1 ]
@@ -1710,13 +1747,13 @@ class Commands:
 			"""
 			eapp = EXCLUDE_CHANNEL_LIST.append
 			for channel in message.channel_mentions:
-				if not channel.id in EXCLUDE_CHANNEL_LIST:
+				if channel.id not in EXCLUDE_CHANNEL_LIST:
 					eapp( channel.id )
 					await CLIENT.send_message( message.channel, f"Excluding {channel.mention} from the logs." )
 					send( f"Excluding {channel.id} from the logs.", message.server.name )
 			if "all" in message.content.lower:
 				for channel in message.server.channels:
-					if not channel.id in EXCLUDE_CHANNEL_LIST:
+					if channel.id not in EXCLUDE_CHANNEL_LIST:
 						eapp( channel.id )
 						await CLIENT.send_message( message.channel, f"Excluding {channel.mention} from the logs." )
 						send( f"Excluding {channel.id} from the logs.", message.server.name )
@@ -1748,7 +1785,7 @@ class Commands:
 			content = message.content.replace( f"{prefix}mark ", "" )
 			if content[ 0 ] == 'a':
 				for channel in message.channel_mentions:
-					if not channel.id in MARKLIST:
+					if channel.id not in MARKLIST:
 						MARKLIST.append( channel.id )
 						await CLIENT.send_message( message.channel, f"Marking {channel.mention}" )
 			elif content[ 0 ] == 'r':
@@ -1995,7 +2032,7 @@ class Commands:
 			:param admin_role: The bot's admin role.
 			"""
 			for user in message.mentions:
-				if not admin_role in user.roles:
+				if admin_role not in user.roles:
 					await CLIENT.kick( user )
 					await CLIENT.send_message( message.channel, f"{user} has been kicked!" )
 				else:
@@ -2008,7 +2045,7 @@ class Commands:
 			:param admin_role: The bot's admin role.
 			"""
 			for item in message.mentions:
-				if not admin_role in item.roles:
+				if admin_role not in item.roles:
 					await CLIENT.ban( item )
 					await CLIENT.send_message( message.channel, f"{item} has been banned." )
 				else:
@@ -2069,7 +2106,7 @@ class Commands:
 			_users = [ ]
 			uapp = _users.append
 			for mem in _members:
-				if not mem.id in _users:
+				if mem.id not in _users:
 					uapp( mem.id )
 			time_t = 0.0
 			for time in TIMES:
@@ -2460,12 +2497,12 @@ async def on_message ( message: discord.Message ):
 				if val.startswith( msg ):
 					return True
 			return False
-		if not message.channel.is_private and not muted_role in message.author.roles:
+		if not message.channel.is_private and muted_role not in message.author.roles:
 			admin_role = discord.utils.find( lambda r:r.name == "LogBot Admin", message.server.roles )
 
 			await Commands.Admin.filter( message, admin_role )
 
-			if not message.server.id in list( DISABLES.keys( ) ):
+			if message.server.id not in list( DISABLES.keys( ) ):
 				DISABLES[ message.server.id ] = {
 					"exclude"       :False,
 					"excludechannel":False,
@@ -2521,7 +2558,7 @@ async def on_message ( message: discord.Message ):
 					"permissions"   :False,
 					"gif"           :False
 				}
-			if not message.server.id in list( PLAYLISTS.keys( ) ):
+			if message.server.id not in list( PLAYLISTS.keys( ) ):
 				PLAYLISTS[ message.server.id ] = { }
 
 			sort( )
@@ -2542,7 +2579,8 @@ async def on_message ( message: discord.Message ):
 						await Commands.Admin.exclude( message, time )
 					elif DISABLES[ message.server.id ][ "exclude" ]:
 						await CLIENT.send_message( message.channel, "```That command has been disabled!```" )
-					else: await send_no_perm( message )
+					else:
+						await send_no_perm( message )
 				elif startswith( f"{prefix}excludechannel ", f"{prefix}exc " ):
 					if (admin_role in message.author.roles and not DISABLES[ message.server.id ].get( "excludechannel" ) is True) or message.author.id == owner_id:
 						await Commands.Admin.excludechannel( message )
@@ -2697,7 +2735,8 @@ async def on_message ( message: discord.Message ):
 						await Commands.Member.user( message, prefix )
 					elif DISABLES[ message.server.id ][ "user" ]:
 						await CLIENT.send_message( message.channel, "```That command has been disabled!```" )
-					else: await send_no_perm( message )
+					else:
+						await send_no_perm( message )
 				elif startswith( f"{prefix}invite" ):
 					await CLIENT.send_message( message.channel, "https://discordapp.com/oauth2/authorize?client_id=255379748828610561&scope=bot&permissions=268696670" )
 				elif startswith( f"{prefix}purge " ):
@@ -2729,7 +2768,8 @@ async def on_message ( message: discord.Message ):
 				elif startswith( f"{prefix}permissions" ):
 					if not DISABLES[ message.server.id ].get( "permissions" ) is True:
 						await Commands.Member.user_permissions( message, prefix )
-					else: await CLIENT.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await CLIENT.send_message( message.channel, "```That command has been disabled!```" )
 				elif startswith( f"{prefix}translate.get" ):
 					if not DISABLES[ message.server.id ].get( "translate" ) is True or message.author.id == owner_id:
 						await Commands.Member.translate_get( message )
@@ -2762,7 +2802,8 @@ async def on_message ( message: discord.Message ):
 				elif startswith( f"{prefix}dict " ):
 					if not DISABLES[ message.server.id ].get( "dict" ) is True:
 						await Commands.Member.dict( message, prefix )
-					else: await CLIENT.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await CLIENT.send_message( message.channel, "```That command has been disabled!```" )
 				elif startswith( f"{prefix}setup" ):
 					if message.author.id == message.server.owner.id or message.author.id == owner_id:
 						await Commands.Admin.setup( message, admin_role )
@@ -2771,11 +2812,13 @@ async def on_message ( message: discord.Message ):
 				elif startswith( f"{prefix}server" ):
 					if not DISABLES[ message.server.id ].get( "server" ) is True:
 						await Commands.Member.server( message )
-					else: await CLIENT.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await CLIENT.send_message( message.channel, "```That command has been disabled!```" )
 				elif startswith( f"{prefix}convert " ):
 					if not DISABLES[ message.server.id ].get( "convert" ) is True:
 						await Commands.Member.convert( message, prefix )
-					else: await CLIENT.send_message( message.channel, "```That command has been disabled!```" )
+					else:
+						await CLIENT.send_message( message.channel, "```That command has been disabled!```" )
 				elif startswith( f"{prefix}mute " ):
 					if admin_role in message.author.roles or message.author.id == owner_id:
 						await Commands.Admin.mute( message, muted_role )
@@ -2895,6 +2938,10 @@ async def on_message ( message: discord.Message ):
 						send_no_perm( message )
 				elif startswith( f"{prefix}8ball " ):
 					await Commands.Member.eightball( message )
+				elif startswith( f"{prefix}ToS" ):
+					await Commands.Member.tos( message )
+				elif startswith( f"{prefix}lyrics " ):
+					await Commands.Member.lyrics( message, prefix )
 				# elif startswith(f"{prefix}yoda "):
 				# 	cnt = message.content.replace(f"{prefix}yoda ", "").replace(" ", "+")
 				# 	response = unirest.get(f"https://yoda.p.mashape.com/yoda?sentence={cnt}",
@@ -3045,7 +3092,7 @@ async def on_message_delete ( message: discord.Message ):
 		ret = f"Message Deleted: {message.server.name} ~ {message.channel} ~ \"{message.content}\" was deleted ~ {author_name} ~ {current_time.day}.{current_time.month}.{current_time.year} {current_time.hour}:{current_time.minute} ~ {message.attachments}"
 		send( ret, message.server.name, message.channel.name )
 		channel_obj = CLIENT.get_channel( PARSER[ message.server.id ][ "logchannel" ] )
-		if not channel_obj is None:
+		if channel_obj is not None:
 			embed_obj = discord.Embed( title="Message Deleted!", description="A message was deleted!", colour=discord.Colour.red( ) ) \
 				.add_field( name="Author", value=str( message.author ), inline=False ) \
 				.add_field( name="Content", value=message.content, inline=False ) \
@@ -3069,7 +3116,7 @@ async def on_message_edit ( before: discord.Message, after: discord.Message ):
 		ret = f"Message Edited: {after.server.name} ~ {before.channel.name} ~ \"{before.content}\" ~ \"{after.content}\" ~ {attachments} ~ {before.author} ~ {current_time.day}.{current_time.month}.{current_time.year} {current_time.hour}:{current_time.minute}"
 		send( ret, after.server.name, after.channel.name )
 		channel_obj = CLIENT.get_channel( PARSER[ before.server.id ][ "logchannel" ] )
-		if not channel_obj is None and not before.content == after.content:
+		if channel_obj is not None and not before.content == after.content:
 			embed_obj = discord.Embed( title="Message Edited!", description="A message was edited!", colour=discord.Colour.red( ) ) \
 				.add_field( name="Author", value=str( before.author ), inline=False ) \
 				.add_field( name="Old Content", value=before.content, inline=False ) \
@@ -3110,7 +3157,7 @@ async def on_member_join ( member: discord.Member ):
 		except Exception:
 			await CLIENT.send_message( member.server.default_channel, welcome_tmp )
 	channel_obj = CLIENT.get_channel( PARSER[ member.server.id ][ "logchannel" ] )
-	if not channel_obj is None:
+	if channel_obj is not None:
 		embed_obj = discord.Embed( title="Member Joined!", description="A member joined!", colour=discord.Colour.red( ) )
 		embed_obj.add_field( name="Name", value=str( member ), inline=False )
 		embed_obj.add_field( name="ID", value=member.id, inline=False )
@@ -3133,7 +3180,7 @@ async def on_member_remove ( member: discord.Member ):
 		goodbye_tmp = re.sub( "{user}", member.mention, goodbye_tmp, flags=2 )
 		await CLIENT.send_message( member.server.default_channel, goodbye_tmp )
 	channel_obj = CLIENT.get_channel( PARSER[ member.server.id ][ "logchannel" ] )
-	if not channel_obj is None:
+	if channel_obj is not None:
 		embed_obj = discord.Embed( title="Member Left!", description="A member left!", colour=discord.Colour.red( ) )
 		embed_obj.add_field( name="Name", value=str( member ), inline=False )
 		embed_obj.add_field( name="ID", value=member.id, inline=False )
@@ -3163,11 +3210,11 @@ async def on_member_update ( before: discord.Member, after: discord.Member ):
 			is_role_removed = False
 			role = after.server.default_role
 			for item in before.roles:
-				if not item in after.roles:
+				if item not in after.roles:
 					is_role_removed = True
 					role = item
 			for item in after.roles:
-				if not item in before.roles:
+				if item not in before.roles:
 					is_role_added = True
 					role = item
 			if is_role_added:
@@ -3188,7 +3235,7 @@ async def on_member_ban ( member: discord.Member ):
 	sent_str = f"Member Banned: {member.server.name} ~ {check(member.nick, member.name, member.id)} was banned ~ {current_time.day}.{current_time.month}.{current_time.year} {current_time.hour}:{current_time.minute}"
 	send( sent_str, member.server.name )
 	channel_obj = CLIENT.get_channel( PARSER[ member.server.id ][ "logchannel" ] )
-	if not channel_obj is None:
+	if channel_obj is not None:
 		embed_obj = discord.Embed( title="Member Banned!", description="A member was banned!", colour=discord.Colour.red( ) )
 		embed_obj.add_field( name="Name", value=str( member ), inline=False )
 		embed_obj.add_field( name="ID", value=member.id, inline=False )
@@ -3206,7 +3253,7 @@ async def on_member_unban ( server: discord.Server, user: discord.User ):
 	sent_str = f"Member Unbanned: {server.name} ~ {check(user.display_name, user.name, user.id)} was unbanned ~ {current_time.day}.{current_time.month}.{current_time.year} {current_time.hour}:{current_time.minute}"
 	send( sent_str, server.name )
 	channel_obj = CLIENT.get_channel( PARSER[ server.id ][ "logchannel" ] )
-	if not channel_obj is None:
+	if channel_obj is not None:
 		embed_obj = discord.Embed( title="Member Unbanned!", description="A member was unbanned!", colour=discord.Colour.red( ) )
 		embed_obj.add_field( name="Name", value=str( user ), inline=False )
 		embed_obj.add_field( name="ID", value=user.id, inline=False )
@@ -3241,7 +3288,7 @@ async def on_channel_update ( before: discord.Channel, after: discord.Channel ):
 		send( f"Channel Updated: {after.server.name} ~ {after.name}'s bitrate was changed from {before.bitrate} to {after.bitrate}", after.server.name )
 	else: send( f"Channel Updated: {after.server.name} ~ {after.name} was updated.", after.server.name )
 	channel_obj = CLIENT.get_channel( PARSER[ before.server.id ][ "logchannel" ] )
-	if not channel_obj is None:
+	if channel_obj is not None:
 		embed_obj = discord.Embed( title="Channel Updated!", description="A channel was updated!", colour=discord.Colour.gold( ) )
 		if str( before ) != str( after ):
 			embed_obj.add_field( name="Old Name", value=str( before ), inline=False )
@@ -3307,7 +3354,7 @@ async def on_channel_delete ( channel: discord.Channel ):
 	ret = f"Channel Deleted: {channel.server.name} ~ \"{channel.name}\" was deleted ~ {current_time.day}.{current_time.month}.{current_time.year} {current_time.hour}:{current_time.minute}"
 	send( ret, channel.server.name )
 	channel_obj = CLIENT.get_channel( PARSER[ channel.server.id ][ "logchannel" ] )
-	if not channel_obj is None:
+	if channel_obj is not None:
 		embed_obj = discord.Embed( title="Channel Deleted!", description="A channel was deleted!", colour=discord.Colour.red( ) )
 		embed_obj.add_field( name="Name", value=str( channel ), inline=False )
 		embed_obj.add_field( name="ID", value=channel.id, inline=False )
@@ -3328,7 +3375,7 @@ async def on_channel_create ( channel: discord.Channel ):
 		send( ret, f"DM{channel.name}" )
 	channel_obj \
 		= CLIENT.get_channel( PARSER[ channel.server.id ][ "logchannel" ] )
-	if not channel_obj is None:
+	if channel_obj is not None:
 		embed_obj = discord.Embed( title="Channel Created!", description="A channel was created!", colour=discord.Colour.green( ) )
 		embed_obj.add_field( name="Name", value=str( channel ), inline=False )
 		embed_obj.add_field( name="ID", value=channel.id, inline=False )
@@ -3365,7 +3412,7 @@ async def on_server_update ( before: discord.Server, after: discord.Server ):
 	if before.verification_level != after.verification_level:
 		send( f"Server Updated: {after.name} ~ The server's verification level was changed from {before.verification_level} to {after.verification_level}.", after.name )
 	channel_obj = CLIENT.get_channel( PARSER[ before.id ][ "logchannel" ] )
-	if not channel_obj is None:
+	if channel_obj is not None:
 		embed_obj = discord.Embed( title="Server Updated!", description="The server was updated!", colour=discord.Colour.gold( ) )
 		if str( before ) != str( after ):
 			embed_obj.add_field( name="Old Name", value=str( before ), inline=False )
@@ -3393,7 +3440,7 @@ async def on_server_role_create ( role: discord.Role ):
 	sent_str = f"Role Created: {role.server.name} ~ {role.name} was created ~ {occurrence_time.day}.{occurrence_time.month}.{occurrence_time.year} {occurrence_time.hour}:{occurrence_time.minute}"
 	send( sent_str, role.server.name )
 	channel_obj = CLIENT.get_channel( PARSER[ role.server.id ][ "logchannel" ] )
-	if not channel_obj is None:
+	if channel_obj is not None:
 		embed_obj = discord.Embed( title="Role Created!", description="A role was created!", colour=discord.Colour.green( ) )
 		embed_obj.add_field( name="Name", value=str( role ), inline=False )
 		embed_obj.add_field( name="ID", value=role.id, inline=False )
@@ -3411,7 +3458,7 @@ async def on_server_role_delete ( role: discord.Role ):
 	sent_str = f"Role Deleted: {role.server.name} ~ {role.name} was deleted ~ {occurrence_time.day}.{occurrence_time.month}.{occurrence_time.year} {occurrence_time.hour}:{occurrence_time.minute}"
 	send( sent_str, role.server.name )
 	channel_obj = CLIENT.get_channel( PARSER[ role.server.id ][ "logchannel" ] )
-	if not channel_obj is None:
+	if channel_obj is not None:
 		embed_obj = discord.Embed( title="Role Deleted!", description="A role was deleted!", colour=discord.Colour.red( ) ) \
 			.add_field( name="Name", value=str( role ), inline=False ) \
 			.add_field( name="ID", value=role.id, inline=False ) \
@@ -3530,7 +3577,7 @@ async def on_server_role_update ( before: discord.Role, after: discord.Role ):
 	send( sent_str, before.server.name )
 
 	channel_obj = CLIENT.get_channel( PARSER[ before.server.id ][ "logchannel" ] )
-	if not channel_obj is None:
+	if channel_obj is not None:
 		embed_obj = discord.Embed( title="Role Updated!", description="A role was updated!", colour=discord.Colour.gold( ) )
 		if str( before ) != str( after ):
 			embed_obj.add_field( name="Old Name", value=str( before ), inline=False )
@@ -3618,7 +3665,7 @@ async def on_ready ( ):
 	# os.system( 'cls' )
 	print( f"{Fore.MAGENTA}Signed in and waiting...\nRunning version: Logbot Version {VERSION}{Fore.RESET}" )
 	for server in CLIENT.servers:
-		if not server.id in PARSER.sections( ):
+		if server.id not in PARSER.sections( ):
 			PARSER[ server.id ] = {
 				"logchannel":"None"
 			}
