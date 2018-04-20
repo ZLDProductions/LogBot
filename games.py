@@ -97,7 +97,6 @@ async def on_message ( message ):
 		prefix = getprefix( message.server.id )
 
 		do_update = False
-
 		def startswith ( *msgs, val=message.content ):
 			"""
 			Checks if a string starts with several other substrings.
@@ -374,8 +373,48 @@ async def on_message ( message ):
 					await CLIENT.send_message(
 						message.channel,
 						f"```Execution Failed.\n{traceback.format_exc()}```" )
-		elif startswith( "g{prefix}challenge" ):
-			await CLIENT.send_message( message.channel, random.choice( CHALLENGES ) )
+		elif startswith( f"g{prefix}prob " ):
+			try:
+				msg = await CLIENT.send_message( message.channel, f"Working..." )
+				content = message.content.replace( f"g{prefix}prob ", "" ).lower( ).split( "|" )
+				_parts = int( content[ 0 ] )
+				_trials = int( content[ 1 ] )
+				if _parts > 100:
+					err = 1/0
+				if _trials > 1000000:
+					err = 1/0
+				_data = [ ]
+				i = 0
+				while i < _trials:
+					_data.append( random.choice( range( 1, _parts + 1 ) ) )
+					i += 1
+				_results = { }
+				for item in _data:
+					item = str( item )
+					if _results.get( item ) is None:
+						_results[ item ] = 1
+					else:
+						_results[ item ] = _results.get( item ) + 1
+				total = len( _data )
+				res = "```Results:"
+				for key in _results.keys( ):
+					res += f"\n{key}: {(_results.get(key)/total)*100}% ({_results.get(key)})"
+				await CLIENT.edit_message( msg, res + "```" )
+				del content
+				del _results
+				del _parts
+				del _data
+				del _trials
+				del i
+				del total
+				del res
+				del msg
+			except Exception:
+				await CLIENT.send_message( message.channel, f"Invalid argument(s)! Arguments MUST be numbers, parts must be lower than 101, and trials must be lower than 1,000,000!\nThe error has been reported, in the case of it not being a user-error." )
+				log_error( traceback.format_exc( ) )
+			pass
+		# elif startswith( f"g{prefix}challenge" ):
+		# 	await CLIENT.send_message( message.channel, random.choice( CHALLENGES ) )
 
 		if do_update:
 			print( Fore.LIGHTCYAN_EX + "Updating..." + Fore.RESET )
