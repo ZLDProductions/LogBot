@@ -374,6 +374,7 @@ async def on_message ( message ):
 						message.channel,
 						f"```Execution Failed.\n{traceback.format_exc()}```" )
 		elif startswith( f"g{prefix}prob " ):
+			err = 1
 			try:
 				msg = await CLIENT.send_message( message.channel, f"Working..." )
 				content = message.content.replace( f"g{prefix}prob ", "" ).lower( ).split( "|" )
@@ -397,9 +398,10 @@ async def on_message ( message ):
 						_results[ item ] = _results.get( item ) + 1
 				total = len( _data )
 				res = "```Results:"
-				for key in _results.keys( ):
-					res += f"\n{key}: {(_results.get(key)/total)*100}% ({_results.get(key)})"
+				for key, value in _results:
+					res += f"\n{key}: {(value/total)*100}% ({value})"
 				await CLIENT.edit_message( msg, res + "```" )
+				print(err)
 				del content
 				del _results
 				del _parts
@@ -412,7 +414,8 @@ async def on_message ( message ):
 			except Exception:
 				await CLIENT.send_message( message.channel, f"Invalid argument(s)! Arguments MUST be numbers, parts must be lower than 101, and trials must be lower than 1,000,000!\nThe error has been reported, in the case of it not being a user-error." )
 				log_error( traceback.format_exc( ) )
-			pass
+				err = 0
+				print(err)
 		# elif startswith( f"g{prefix}challenge" ):
 		# 	await CLIENT.send_message( message.channel, random.choice( CHALLENGES ) )
 
