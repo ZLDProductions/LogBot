@@ -905,6 +905,13 @@ INFOS = dict( {
 		"Required Level":"None",
 		"Plugin"        :"Music",
 		"Type"          :"Fun"
+	},
+	"g$prob"         :{
+		"Info"          :"Calculates probabilities.",
+		"Usage"         :"g_prob",
+		"Required Level":"None",
+		"Plugin"        :"Games",
+		"Type"          :"Fun"
 	}
 } )
 PREFIXES = {
@@ -971,7 +978,7 @@ async def on_message ( message ):
 	"""
 	global EXITING
 	try:
-		# noinspection PyUnusedLocal
+		# noinspection PyUnusedLocal,PyShadowingNames
 		def startswith ( *args, val=message.content ):
 			"""
 			Checks for substrings at the beginning of `val`.

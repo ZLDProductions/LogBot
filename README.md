@@ -1637,6 +1637,128 @@ None
 
 ---
 
+#### g$prob
+**Info**  
+Calculates probabilities with numbers, and gives the results of trials back to you.
+
+**Usage**  
+
+    g$prob {parts}|{trials}
+`parts` is the number of choices the bot can choose from (like the choices on a spinner). For lag, memory, and message issues, must be equal to or below 100.  
+`trials` is the number of trials to perform. For lag, memory, and message issues, must be equal to or below 1,000,000.
+
+**Required Level**  
+None
+
+---
+
+#### mu$playing
+**Info**  
+Shows if the bot is playing a song in your server.
+
+**Usage**  
+
+    mu$playing
+
+**Required Level**  
+None
+
+---
+
+#### mu$join
+**Info**  
+Joins a voice channel.
+
+**Usage**  
+
+    mu$join {channel}
+`channel` is a channel name.
+
+**Required Level**  
+None
+
+---
+
+#### mu$summon
+**Info**  
+Joins the voice channel you are currently in.
+
+**Usage**  
+
+    mu$summon
+
+**Required Level**  
+None
+
+---
+
+#### mu$play
+**Info**  
+Plays a song.
+
+**Usage**  
+
+    mu$play {song}
+`song` is the name of a song or youtube video.
+
+**Required Level**  
+None
+
+---
+
+#### mu$volume
+**Info**  
+Sets the player volume.
+
+**Usage**  
+
+    mu$volume {level}
+`volume` is a number.
+
+**Required Level**  
+None
+
+---
+
+#### mu$resume
+**Info**  
+Resumes the player.
+
+**Usage**  
+
+    mu$resume
+
+**Required Level**  
+None
+
+---
+
+#### mu$stop
+**Info**  
+Stops the player, clears the queue, and disconnects from the voice channel.
+
+**Usage**  
+
+    mu$stop
+
+**Required Level**  
+None
+
+---
+
+#### mu$skip
+**Info**  
+Votes to skip the song. The song's requestor can automatically skip.
+
+**Usage**  
+
+    mu$skip
+
+**Required Level**  
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.
