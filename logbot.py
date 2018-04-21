@@ -19,6 +19,7 @@ import discord
 import giphy_client
 import lyricwikia
 import psutil
+import requests
 import translate
 import urbandictionary
 import wikipedia
@@ -30,7 +31,8 @@ from colorama import Fore, init
 import argparser
 import sql
 import tools
-from logbot_data import bot_id, giphy_key, git_link, hq_link, owner_id, token, wa_token
+from logbot_data import bot_id, giphy_key, git_link, hq_link, owner_id, token, wa_token, yodaspeak_api
+from parse_url import URL
 
 # <editor-fold desc="Base Variables">
 VERSION = '16.10.0 Python'
@@ -513,6 +515,14 @@ class Commands:
 		For everyone!
 		"""
 		@staticmethod
+		async def yoda ( message: discord.Message, prefix: str ):
+			cnt = message.content.replace( f"{prefix}yoda ", "" )
+			# sentences = nltk.sent_tokenize(cnt)
+			parser = URL( yodaspeak_api )
+			ret = requests.get( parser.encode( cnt ) ).text
+			result = ast.literal_eval( ret )
+			await CLIENT.send_message( message.channel, result[ "yodish" ] )
+		@staticmethod
 		async def lyrics ( message: discord.Message, prefix: str ):
 			cnt = message.content.replace( f"{prefix}lyrics ", "" ).split( "|" )
 			print( cnt )
@@ -520,12 +530,12 @@ class Commands:
 			artist = cnt[ 1 ]
 			try:
 				lyrics = str( lyricwikia.get_lyrics( artist, song ) ).split( '\n\n' )
-				embed_obj = discord.Embed(title=song, description=f"By {artist}")
+				embed_obj = discord.Embed( title=song, description=f"By {artist}" )
 				for item in lyrics:
-					embed_obj.add_field(name=".", value=item, inline=False)
-				await CLIENT.send_message(message.channel, "", embed=embed_obj)
-				# for msg in lyrics:
-				# 	await CLIENT.send_message(message.channel, msg)
+					embed_obj.add_field( name=".", value=item, inline=False )
+				await CLIENT.send_message( message.channel, "", embed=embed_obj )
+			# for msg in lyrics:
+			# 	await CLIENT.send_message(message.channel, msg)
 			except lyricwikia.LyricsNotFound:
 				await CLIENT.send_message( message.channel, 'No lyrics found for this song.' )
 			except Exception:
@@ -2941,6 +2951,8 @@ async def on_message ( message: discord.Message ):
 					await Commands.Member.tos( message )
 				elif startswith( f"{prefix}lyrics " ):
 					await Commands.Member.lyrics( message, prefix )
+				elif startswith( f"{prefix}yoda " ):
+					await Commands.Member.yoda( message, prefix )
 				# elif startswith(f"{prefix}yoda "):
 				# 	cnt = message.content.replace(f"{prefix}yoda ", "").replace(" ", "+")
 				# 	response = unirest.get(f"https://yoda.p.mashape.com/yoda?sentence={cnt}",
