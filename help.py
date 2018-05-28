@@ -906,12 +906,19 @@ INFOS = dict( {
 		"Plugin"        :"Music",
 		"Type"          :"Fun"
 	},
-	"g$prob"         :{
+	"g_prob"         :{
 		"Info"          :"Calculates probabilities.",
 		"Usage"         :"g_prob",
 		"Required Level":"None",
 		"Plugin"        :"Games",
 		"Type"          :"Fun"
+	},
+	"_tz"            :{
+		"Info"          :"Sets or gets the server's time zone setting relating to the bot's chat logs.",
+		"Usage"         :"_tz set UTC+{number}\n_tz set UTC-{number}\n_tz get",
+		"Required Level":"LogBot Admin",
+		"Plugin"        :"Main",
+		"Type"          :"Customization"
 	}
 } )
 PREFIXES = {

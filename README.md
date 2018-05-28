@@ -1759,6 +1759,21 @@ None
 
 ---
 
+#### $tz
+**Info**  
+Sets or gets the server's time zone setting relating to the bot's chat logs.
+
+**Usage**  
+
+    $tz set {time_offset}
+    $tz get
+`time_offset` is the UTC offset of a time zone. UTC time would be represented as UTC+0, and Pacific Standard Time (8 hours behind UTC) would be represented as UTC-8. The bot does not automatically account for Daylight Savings Time, so you will need to adjust as appropriate.
+
+**Required Level**  
+LogBot Admin
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.
