@@ -22,7 +22,8 @@ MY_STR = """0. logbot.py
 A. dev.py
 B. security.py
 C. moderation.py
-D. musiclaunch.py"""
+D. musiclaunch.py
+E. reminders.py"""
 PROGRAMS = {
 	"0":"logbot.py",
 	"1":"bible.py",
@@ -37,7 +38,8 @@ PROGRAMS = {
 	"A":"dev.py",
 	"B":"security.py",
 	"C":"moderation.py",
-	"D":"musiclaunch.py"
+	"D":"musiclaunch.py",
+	"E":"reminders.py"
 }
 TITLES = {
 	"0":"LogBot Main",
@@ -53,7 +55,8 @@ TITLES = {
 	"A":"Dev Plugin",
 	"B":"Security Plugin",
 	"C":"Moderation Plugin",
-	"D":"Music Plugin"
+	"D":"Music Plugin",
+	"E":"Reminders Plugin"
 }
 
 EXT_LAUNCH = False
