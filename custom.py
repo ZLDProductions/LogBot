@@ -100,7 +100,7 @@ async def on_message ( message: Message ):
 			f"SELECT prefix FROM Prefixes WHERE server='{message.server.id}';"
 		)[ 0 ][ 0 ]
 		begins = message.content.startswith
-		if not message.server.id in COMMANDS.keys( ):
+		if message.server.id not in COMMANDS.keys( ):
 			COMMANDS[ message.server.id ] = dict( )
 
 		if begins( f"c{prefix}add " ):
@@ -165,6 +165,8 @@ async def on_message ( message: Message ):
 					message.channel,
 					value
 				)
+				if message.author.id == bot_id:
+					await CLIENT.delete_message( message )
 		del prefix
 		del begins
 	except Exception:

@@ -11,7 +11,7 @@ import re
 import subprocess
 import traceback
 from asyncio import sleep
-from datetime import datetime, timezone
+from datetime import datetime, timedelta
 from sys import argv
 from typing import List, Union
 
@@ -27,12 +27,12 @@ import wolframalpha
 from PyDictionary import PyDictionary
 from PyQt5 import Qt
 from colorama import Fore, init
+from dateutil import tz
 
 import argparser
 import sql
 import tools
 from logbot_data import bot_id, giphy_key, git_link, hq_link, owner_id, token, wa_token, yodaspeak_api
-from parse_url import URL
 
 # <editor-fold desc="Base Variables">
 VERSION = '16.10.0 Python'
@@ -112,6 +112,7 @@ DEFAULT_CHANNEL = { }
 DICT_WORDS = [ ]
 PLAYLISTS = { }
 FILTER_SETTINGS = { }
+TIME_ZONES = { }
 # </editor-fold>
 
 # <editor-fold desc="Paths">
@@ -131,6 +132,7 @@ DICTIONARY_PATH = f"{DISCORD_SETTINGS_PATH}\\censored_words.txt"
 DISABLES_PATH = f"{DISCORD_SETTINGS_PATH}\\disables.txt"
 PLAYLISTS_PATH = f"{DISCORD_SETTINGS_PATH}\\playlists.txt"
 FILTER_SETTINGS_PATH = f"{DISCORD_SETTINGS_PATH}\\filter_settings.txt"
+TIME_ZONE_PATH = f"{DISCORD_SETTINGS_PATH}\\tz_settings.txt"
 # </editor-fold>
 
 if not os.path.exists( DISCORD_SETTINGS_PATH ):
@@ -192,6 +194,14 @@ try:
 	del READER
 	if FILTER_SETTINGS is None:
 		FILTER_SETTINGS = { }
+except Exception:
+	pass
+
+try:
+	READER = open( TIME_ZONE_PATH, 'r' )
+	TIME_ZONES = ast.literal_eval( READER.read( ) )
+	READER.close( )
+	del READER
 except Exception:
 	pass
 
@@ -259,13 +269,24 @@ def is_ascii ( string: str ) -> bool:
 	return all( ord( c ) < 128 for c in string ) # Returns true if the string has no unicode characters.
 
 # Changes the time from UTC to PST (-8 hrs)
-def format_time ( time_stamp: datetime ) -> datetime:
+def format_time ( time_stamp: datetime, message: discord.Message ) -> datetime:
 	"""
 	Converts the time from UTC +0 to PST -8.
 	:param time_stamp: A UTC timestamp.
+	:param message: A discord.Message object.
 	:return: A PST timestamp.
 	"""
-	return time_stamp.replace( tzinfo=timezone.utc ).astimezone( tz=None ) # Converts the datetime from UTC to the machine's local time.
+	if TIME_ZONES.get( message.server.id ) is None:
+		TIME_ZONES[ message.server.id ] = 'UTC+0'
+	_tz = int( TIME_ZONES[ message.server.id ].replace( 'UTC', '' ).replace( '+', '' ).replace( "-", "" ) )
+	minute = _tz * 60
+	td = timedelta( minutes=minute )
+	ret = time_stamp
+	if "-" in TIME_ZONES.get(message.server.id):
+		ret -= td
+	else:
+		ret += td
+	return ret
 
 def save ( sid: str ):
 	"""
@@ -307,6 +328,11 @@ def save ( sid: str ):
 	# <editor-fold desc="Filter Settings">
 	writer = open( FILTER_SETTINGS_PATH, "w" )
 	writer.write( str( FILTER_SETTINGS ) )
+	writer.close( )
+	# </editor-fold>
+	# <editor-fold desc="Time Zone Settings">
+	writer = open( TIME_ZONE_PATH, 'w' )
+	writer.write( str( TIME_ZONES ) )
 	writer.close( )
 	# </editor-fold>
 
@@ -518,8 +544,9 @@ class Commands:
 		async def yoda ( message: discord.Message, prefix: str ):
 			cnt = message.content.replace( f"{prefix}yoda ", "" )
 			# sentences = nltk.sent_tokenize(cnt)
-			parser = URL( yodaspeak_api )
-			ret = requests.get( parser.encode( cnt ) ).text
+			# parser = URL( yodaspeak_api )
+			# ret = requests.get( parser.encode( cnt ) ).text
+			ret = requests.get( yodaspeak_api + cnt ).text
 			result = ast.literal_eval( ret )
 			await CLIENT.send_message( message.channel, result[ "yodish" ] )
 		@staticmethod
@@ -654,7 +681,7 @@ class Commands:
 			elif field == "type":
 				await CLIENT.send_message( message.channel, "Bot" if _user.bot is True else "User" )
 			elif field == "date":
-				user_created_at = format_time( _user.created_at )
+				user_created_at = format_time( _user.created_at, message )
 				await CLIENT.send_message( message.channel, f"{get_diff(user_created_at, datetime.now())} ago ({user_created_at.month}.{user_created_at.day}.{user_created_at.year} {user_created_at.hour}:{user_created_at.minute})" )
 			elif field == "status":
 				await CLIENT.send_message( message.channel, str( _user.status ) )
@@ -677,7 +704,7 @@ class Commands:
 			_user = discord.utils.find( lambda u:u.id == cnt or u.name == cnt or str( u ) == cnt or u.mention == cnt, message.server.members )
 			if _user is None and message.mentions:
 				_user = message.mentions[ 0 ]
-			user_created_at = format_time( _user.created_at )
+			user_created_at = format_time( _user.created_at, message )
 			embed_obj = discord.Embed( title=_user.name, description=f"Information for {_user.name}", color=discord.Colour.gold( ) ) \
 				.add_field( name="Nickname", value=str( _user.nick ) ) \
 				.add_field( name="Name", value=str( _user ) ) \
@@ -871,7 +898,7 @@ class Commands:
 			Fetches server information.
 			:param message: A discord.Message object from on_message
 			"""
-			server_created_at = format_time( message.server.created_at )
+			server_created_at = format_time( message.server.created_at, message )
 			server = message.server
 			roles = [
 				f"{str(role).replace('@', '')} ({role.position}) [{role.id}]"
@@ -1245,6 +1272,19 @@ class Commands:
 		"""
 		For admins only!
 		"""
+		@staticmethod
+		async def time_zone ( message: discord.Message, prefix: str ):
+			cnt = message.content.replace( f"{prefix}tz ", "" ).split( " " )
+			if cnt[ 0 ] == "set":
+				new_tz = cnt[ 1 ]
+				if not new_tz.startswith( f"UTC" ):
+					new_tz = "UTC+0"
+				elif "+" not in new_tz and "-" not in new_tz:
+					new_tz = "UTC+0"
+				TIME_ZONES[ message.server.id ] = new_tz
+				await CLIENT.send_message( message.channel, f"Set the server's time zone to {new_tz}." )
+			else:
+				await CLIENT.send_message( message.channel, f"The time zone for this server is {TIME_ZONES[message.server.id]}." )
 		@staticmethod
 		async def filter ( message: discord.Message, admin_role: discord.Role ):
 			"""
@@ -2573,7 +2613,7 @@ async def on_message ( message: discord.Message ):
 			sort( )
 
 			# save( message.server.id )
-			time = format_time( message.timestamp )
+			time = format_time( message.timestamp, message )
 
 			try:
 				prefix = DB.read( "Prefixes", message.server.id )
@@ -2953,16 +2993,11 @@ async def on_message ( message: discord.Message ):
 					await Commands.Member.lyrics( message, prefix )
 				elif startswith( f"{prefix}yoda " ):
 					await Commands.Member.yoda( message, prefix )
-				# elif startswith(f"{prefix}yoda "):
-				# 	cnt = message.content.replace(f"{prefix}yoda ", "").replace(" ", "+")
-				# 	response = unirest.get(f"https://yoda.p.mashape.com/yoda?sentence={cnt}",
-				# 		headers={
-				# 			"X-Mashape-Key":"RGua7KFPvXmshXY96pU0btMbDbmyp1yIZkpjsnC2za8zQ3OzgV",
-				# 			"Accept"       :"text/plain"
-				# 		}
-				# 	)
-				# 	_body = response.raw_body
-				# 	print(_body)
+				elif startswith( f"{prefix}tz " ):
+					if admin_role in message.author.roles or message.author.id is owner_id:
+						await Commands.Admin.time_zone( message, prefix )
+					else:
+						send_no_perm( message )
 			elif startswith( f"$update", "logbot.update" ):
 				if message.author.id == owner_id:
 					msg = await CLIENT.send_message( message.channel, "```Updating...```" )
@@ -3098,7 +3133,7 @@ async def on_message_delete ( message: discord.Message ):
 	try:
 		EXCLUDE_CHANNEL_LIST.index( message.channel.id )
 	except Exception:
-		current_time = format_time( message.timestamp )
+		current_time = format_time( message.timestamp, message )
 		author_name = str( message.author )
 		ret = f"Message Deleted: {message.server.name} ~ {message.channel} ~ \"{message.content}\" was deleted ~ {author_name} ~ {current_time.day}.{current_time.month}.{current_time.year} {current_time.hour}:{current_time.minute} ~ {message.attachments}"
 		send( ret, message.server.name, message.channel.name )
@@ -3122,7 +3157,7 @@ async def on_message_edit ( before: discord.Message, after: discord.Message ):
 	try:
 		EXCLUDE_CHANNEL_LIST.index( before.channel.id )
 	except Exception:
-		current_time = format_time( after.timestamp )
+		current_time = format_time( after.timestamp, after )
 		attachments = after.attachments
 		ret = f"Message Edited: {after.server.name} ~ {before.channel.name} ~ \"{before.content}\" ~ \"{after.content}\" ~ {attachments} ~ {before.author} ~ {current_time.day}.{current_time.month}.{current_time.year} {current_time.hour}:{current_time.minute}"
 		send( ret, after.server.name, after.channel.name )
