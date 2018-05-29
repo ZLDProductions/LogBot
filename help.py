@@ -919,6 +919,20 @@ INFOS = dict( {
 		"Required Level":"LogBot Admin",
 		"Plugin"        :"Main",
 		"Type"          :"Customization"
+	},
+	"r_reminder"     :{
+		"Info"          :"Adds or removes a reminder. All names are abbreviated (weekday and month names).",
+		"Usage"         :"r_reminder add {AbbreviatedDayOfWeek} {AbbreviatedMonth} {DayOfMonth} {HH}:{MM}:{SS} {YYYY}||{text}\nr_reminder remove {index}",
+		"Required Level":"None",
+		"Plugin"        :"Reminders",
+		"Type"          :"Fun"
+	},
+	"r_reminders"    :{
+		"Info"          :"Shows a list of the server's reminders.",
+		"Usage"         :"r_reminders",
+		"Required Level":"None",
+		"Plugin"        :"Reminders",
+		"Type"          :"Fun"
 	}
 } )
 PREFIXES = {

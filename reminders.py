@@ -2,6 +2,7 @@ import asyncio
 import os
 import sqlite3
 import subprocess
+import traceback
 from datetime import datetime
 
 from colorama import Fore, init
@@ -29,6 +30,29 @@ class Timer:
 		await self._callback( self._args )
 	def cancel ( self ):
 		self._task.cancel( )
+
+def log_error ( error_text: str ):
+	"""
+	Logs the bot's errors.
+	:param error_text: The error message.
+	"""
+	file = f"{os.getcwd()}\\error_log.txt"
+	prev_text = ""
+	try:
+		reader = open( file, 'r' )
+		prev_text = reader.read( )
+		reader.close( )
+		del reader
+	except Exception:
+		pass
+	writer = open( file, 'w' )
+	writer.write( f"{datetime.now()} (reminders.py) - {error_text}\n\n{prev_text}" )
+	writer.close( )
+	if "SystemExit" in error_text:
+		exit( 0 )
+	del writer
+	del file
+	del prev_text
 
 def get_prefix ( server: str ):
 	cmd = f"""SELECT prefix
@@ -77,71 +101,74 @@ async def do_task ( args ) -> None:
 @CLIENT.event
 async def on_message ( message: Message ):
 	global REMINDERS, EXITING
-	def begins ( *args, val=message.content ):
-		for arg in args:
-			if val.startswith( arg ):
-				return True
-		return False
-	prefix = get_prefix( message.server.id )
-	do_update = False
+	try:
+		def begins ( *args, val=message.content ):
+			for arg in args:
+				if val.startswith( arg ):
+					return True
+			return False
+		prefix = get_prefix( message.server.id )
+		do_update = False
 
-	# <editor-fold desc="Check for server membership">
-	if REMINDERS.get( message.server.id ) is None:
-		REMINDERS[ message.server.id ] = [ ]
-	# </editor-fold>
-	# <editor-fold desc="Commands">
-	if begins( f"r{prefix}reminder " ):
-		# Create, remove, or edit a reminder
-		cnt = message.content.split( " " )
-		cnt.remove( cnt[ 0 ] )
-		switch = cnt[ 0 ]
-		cnt.remove( cnt[ 0 ] )
-		options = ' '.join( cnt ).split( "||" )
-		if switch == "add":
-			# Create a new reminder
-			server = message.server.id
-			if "in " in options[ 0 ]:
-				time = parse_time( options[ 0 ].replace( "in ", "" ) )
-			else:
-				time = calculate_time( options[ 0 ] )
-			msg = options[ 1 ]
-			try:
-				t_tmp = float( (time - datetime.now( )).total_seconds( ) )
-			except Exception:
-				t_tmp = time
-			timer = Timer( t_tmp, CLIENT.async_event( do_task ), [ msg, message.author, message.server.id, (time, msg) ] )
-			REMINDERS[ server ].append( (time, msg, timer) )
-			await CLIENT.send_message( message.channel, f"Created a new reminder:\n{time}\n{msg}" )
-		elif switch == "remove":
-			# Remove a reminder
-			index = int( options[ 0 ] )
-			try:
-				REMINDERS[ message.server.id ][ index ][ 2 ].cancel( )
-				REMINDERS[ message.server.id ].remove( REMINDERS[ message.server.id ][ index ] )
-				await CLIENT.send_message( message.channel, f"Removed the timer." )
-			except Exception:
-				await CLIENT.send_message( message.channel, f"Could not remove the timer." )
-	elif begins( f"r{prefix}reminders" ):
-		# Show the reminders
-		ret = ""
-		for item in REMINDERS[ message.server.id ]:
-			ret += f"{item[0]} - {item[1]}"
-		await CLIENT.send_message( message.channel, ret )
-	elif begins( f"logbot.reminders.update", f"$update" ):
-		# Update the module
-		if message.author.id == owner_id:
-			do_update = True
-	elif begins( f"logbot.reminders.exit", f"$exit" ):
-		# Exit the module
-		if message.author.id == owner_id:
-			EXITING = True
-			await CLIENT.logout( )
-	# </editor-fold>
-	if do_update:
-		print( f"{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}" )
-		await CLIENT.close( )
-		subprocess.Popen( f"python {os.getcwd()}\\reminders.py", False )
-		exit( 0 )
+		# <editor-fold desc="Check for server membership">
+		if REMINDERS.get( message.author.id ) is None:
+			REMINDERS[ message.author.id ] = [ ]
+		# </editor-fold>
+		# <editor-fold desc="Commands">
+		if begins( f"r{prefix}reminder " ):
+			# Create, remove, or edit a reminder
+			cnt = message.content.split( " " )
+			cnt.remove( cnt[ 0 ] )
+			switch = cnt[ 0 ]
+			cnt.remove( cnt[ 0 ] )
+			options = ' '.join( cnt ).split( "||" )
+			if switch == "add":
+				# Create a new reminder
+				server = message.author.id
+				if "in " in options[ 0 ]:
+					time = parse_time( options[ 0 ].replace( "in ", "" ) )
+				else:
+					time = calculate_time( options[ 0 ] )
+				msg = options[ 1 ]
+				try:
+					t_tmp = float( (time - datetime.now( )).total_seconds( ) )
+				except Exception:
+					t_tmp = time
+				timer = Timer( t_tmp, CLIENT.async_event( do_task ), [ msg, message.author, message.author.id, (time, msg) ] )
+				REMINDERS[ server ].append( (time, msg, timer) )
+				await CLIENT.send_message( message.channel, f"Created a new reminder:\n{time}\n{msg}" )
+			elif switch == "remove":
+				# Remove a reminder
+				index = int( options[ 0 ] )
+				try:
+					REMINDERS[ message.author.id ][ index ][ 2 ].cancel( )
+					REMINDERS[ message.author.id ].remove( REMINDERS[ message.server.id ][ index ] )
+					await CLIENT.send_message( message.channel, f"Removed the timer." )
+				except Exception:
+					await CLIENT.send_message( message.channel, f"Could not remove the timer." )
+		elif begins( f"r{prefix}reminders" ):
+			# Show the reminders
+			ret = ""
+			for item in REMINDERS[ message.author.id ]:
+				ret += f"{item[0]} - {item[1]}"
+			await CLIENT.send_message( message.channel, ret )
+		elif begins( f"logbot.reminders.update", f"$update" ):
+			# Update the module
+			if message.author.id == owner_id:
+				do_update = True
+		elif begins( f"logbot.reminders.exit", f"$exit" ):
+			# Exit the module
+			if message.author.id == owner_id:
+				EXITING = True
+				await CLIENT.logout( )
+		# </editor-fold>
+		if do_update:
+			print( f"{Fore.LIGHTCYAN_EX}Updating...{Fore.RESET}" )
+			await CLIENT.close( )
+			subprocess.Popen( f"python {os.getcwd()}\\reminders.py", False )
+			exit( 0 )
+	except Exception:
+		log_error( traceback.format_exc( ) )
 
 @CLIENT.event
 async def on_ready ( ):
