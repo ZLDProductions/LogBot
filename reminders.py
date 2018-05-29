@@ -1,21 +1,34 @@
+import asyncio
+import os
 import sqlite3
 import subprocess
 from datetime import datetime
-from threading import Timer
 
 from colorama import Fore, init
 from discord import Client, Message
 
-from logbot_data import *
+from logbot_data import owner_id, token
 
 CLIENT = Client( )
 init( )
 
-SQL = sqlite3.connect( f"{os.getcwd()}\\Discord Logs\\SETTINGS\logbot.db" )
+SQL = sqlite3.connect( f"{os.getcwd()}\\Discord Logs\\SETTINGS\\logbot.db" )
 CURSOR = SQL.cursor( )
 
 EXITING = False
 REMINDERS = { }
+
+class Timer:
+	def __init__ ( self, timeout, callback, args ):
+		self._timeout = timeout
+		self._callback = callback
+		self._task = asyncio.ensure_future( self._job( ) )
+		self._args = args
+	async def _job ( self ):
+		await asyncio.sleep( self._timeout )
+		await self._callback( self._args )
+	def cancel ( self ):
+		self._task.cancel( )
 
 def get_prefix ( server: str ):
 	cmd = f"""SELECT prefix
@@ -37,13 +50,29 @@ def calculate_time ( time: str ):
 	except Exception:
 		return "Incorrectly formatted time."
 
-def do_task ( arg: str, channel ) -> None:
+def parse_time ( time: str ):
+	parts = time.split( " " )
+	time = 0
+	for part in parts:
+		if "d" in part:
+			time += 86400 * int( part.replace( "d", "" ) )
+		elif "h" in part:
+			time += 3600 * int( part.replace( "h", "" ) )
+		elif "m" in part:
+			time += 60 * int( part.replace( "m", "" ) )
+		elif "s" in part:
+			time += int( part.replace( "s", "" ) )
+	return time
+
+async def do_task ( args ) -> None:
 	"""
 	Sends a reminder message.
-	:param arg: The message.
-	:param channel: The channel.
 	"""
-	yield from CLIENT.send_message( channel, arg )
+	await CLIENT.send_message( args[ 1 ], args[ 0 ] )
+	tmp = REMINDERS[ args[ 2 ] ]
+	for item in tmp:
+		if item[ 0 ] == args[ 3 ][ 0 ] and item[ 1 ] == args[ 3 ][ 1 ]:
+			REMINDERS[ args[ 2 ] ].remove( item )
 
 @CLIENT.event
 async def on_message ( message: Message ):
@@ -68,17 +97,22 @@ async def on_message ( message: Message ):
 		switch = cnt[ 0 ]
 		cnt.remove( cnt[ 0 ] )
 		options = ' '.join( cnt ).split( "||" )
-		if switch is "add":
+		if switch == "add":
 			# Create a new reminder
 			server = message.server.id
-			time = calculate_time( options[ 0 ] )
+			if "in " in options[ 0 ]:
+				time = parse_time( options[ 0 ].replace( "in ", "" ) )
+			else:
+				time = calculate_time( options[ 0 ] )
 			msg = options[ 1 ]
-			t_tmp = float( (time - datetime.now( )).total_seconds( ) )
-			t = Timer( t_tmp, do_task, [ msg, message.author ] )
-			t.start( )
-			REMINDERS[ server ].append( (time, msg, t) )
+			try:
+				t_tmp = float( (time - datetime.now( )).total_seconds( ) )
+			except Exception:
+				t_tmp = time
+			timer = Timer( t_tmp, CLIENT.async_event( do_task ), [ msg, message.author, message.server.id, (time, msg) ] )
+			REMINDERS[ server ].append( (time, msg, timer) )
 			await CLIENT.send_message( message.channel, f"Created a new reminder:\n{time}\n{msg}" )
-		elif switch is "remove":
+		elif switch == "remove":
 			# Remove a reminder
 			index = int( options[ 0 ] )
 			try:
@@ -90,8 +124,8 @@ async def on_message ( message: Message ):
 	elif begins( f"r{prefix}reminders" ):
 		# Show the reminders
 		ret = ""
-		for time, msg, t in REMINDERS:
-			ret += f"{time} - {msg}"
+		for item in REMINDERS[ message.server.id ]:
+			ret += f"{item[0]} - {item[1]}"
 		await CLIENT.send_message( message.channel, ret )
 	elif begins( f"logbot.reminders.update", f"$update" ):
 		# Update the module
