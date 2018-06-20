@@ -244,6 +244,17 @@ class Music:
 		else:
 			skip_count = len( state.skip_votes )
 			await self.bot.say( 'Now playing {} [skips: {}/3]'.format( state.current, skip_count ) )
+	@commands.command(pass_context=True, no_pm=True)
+	async def queue(self, ctx):
+		"""
+		Shows the bot's queue.
+		"""
+		state = self.get_voice_state(ctx.message.server)
+		temp = []
+		while not state.songs.empty():
+			temp.append(state.songs.get_nowait())
+		song_list = [str(s) for s in temp]
+		await self.bot.say(f"Song Queue:\n" + "\n".join(song_list))
 
 def setup ( bot ):
 	"""

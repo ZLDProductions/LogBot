@@ -922,7 +922,7 @@ INFOS = dict( {
 	},
 	"r_reminder"     :{
 		"Info"          :"Adds or removes a reminder. All names are abbreviated (weekday and month names).",
-		"Usage"         :"r_reminder add {AbbreviatedDayOfWeek} {AbbreviatedMonth} {DayOfMonth} {HH}:{MM}:{SS} {YYYY}||{text}\nr_reminder remove {index}",
+		"Usage"         :"r_reminder add {DayOfWeek} {Month} {DD} {HH}:{MM}:{SS} {YYYY}||{text}\nr_reminder remove {index}",
 		"Required Level":"None",
 		"Plugin"        :"Reminders",
 		"Type"          :"Fun"

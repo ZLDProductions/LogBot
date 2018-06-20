@@ -1379,7 +1379,7 @@ async def on_message ( message: discord.Message ):
 							del _item
 							del _lim
 							del res
-						elif startswith( "_role", val=cnt[ 0 ] ):
+						elif startswith( "r", val=cnt[ 0 ] ):
 							cnt.remove( cnt[ 0 ] )
 							_role = message.role_mentions[ 0 ]
 							_lim = int( cnt[ 1 ] )

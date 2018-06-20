@@ -27,7 +27,6 @@ import wolframalpha
 from PyDictionary import PyDictionary
 from PyQt5 import Qt
 from colorama import Fore, init
-from dateutil import tz
 
 import argparser
 import sql

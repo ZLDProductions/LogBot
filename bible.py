@@ -605,7 +605,7 @@ def is_ascii ( msg: str ):
 		[
 			ord( C ) < 128
 			for C in msg
-		 ]
+		]
 	)
 
 def check ( *msgs: str ):
@@ -668,7 +668,6 @@ def save ( sid: str ):
 	writer.write( VOTD )
 	writer.close( )
 	# </editor-fold>
-
 	# <editor-fold desc="PATH CHECK: _disabled_channels">
 	if not os.path.exists( DISABLED_CHANNELS_PATH ):
 		os.makedirs( DISABLED_CHANNELS_PATH )
@@ -677,7 +676,6 @@ def save ( sid: str ):
 	if not os.path.exists( DISABLED_USERS_PATH ):
 		os.makedirs( DISABLED_USERS_PATH )
 	# </editor-fold>
-
 	# <editor-fold desc="_disabled_channels">
 	writer = open( f"{DISABLED_CHANNELS_PATH}{sid}.txt", 'w' )
 	writer.write( str( DISABLED_CHANNELS ) )
@@ -764,21 +762,18 @@ def abbr ( _msg: str ) -> str:
 	del books
 	return _msg
 
-# noinspection PyUnusedLocal
-def get_kjv_verse ( key: str, include_header: bool = True ) -> str:
+def get_verse ( key: str, version: str, include_header: bool = True ) -> str:
 	"""
-	Fetch a verse from the King James Version of the Bible.
-	:param key: A key to search for a verse with.
-	:param include_header: Whether or not to include `key` at the beginning of the message.
-	:return: A KJV Verse
+	Fetch a verse from the Bible.
+	:param key: The verse.
+	:param version: The Bible version.
+	:param include_header: Whether or not to include `key` at the beginning of the result.
+	:return: A verse from the Bible.
 	"""
 	try:
 		data = key.split( " " )
-		book = ""
-		chapter = ""
-		verse = ""
 		if len( data ) == 3:
-			book = data[ 0 ] + " " + data[ 1 ]
+			book = f"{data[0]} {data[1]}"
 			chapter = data[ 2 ].split( ":" )[ 0 ]
 			verse = data[ 2 ].split( ":" )[ 1 ]
 		else:
@@ -786,9 +781,17 @@ def get_kjv_verse ( key: str, include_header: bool = True ) -> str:
 			chapter = data[ 1 ].split( ":" )[ 0 ]
 			verse = data[ 1 ].split( ":" )[ 1 ]
 		ret = ""
+		version = version.upper( )
 		if include_header is True:
-			ret = f"**{key} ~ KJV**\n"
-		ret += SQLKJV.read( book, chapter, verse )
+			ret = f"**{key} ~ {version}**\n"
+		if version == "AKJV":
+			ret += SQLD.read( book, chapter, verse )
+		elif version == "KJV":
+			ret += SQLKJV.read( book, chapter, verse )
+		elif version == "WEB":
+			ret += SQLWEB.read( book, chapter, verse )
+		elif version == "NIV":
+			ret += SQLNIV.read( book, chapter, verse )
 		del data
 		del book
 		del chapter
@@ -798,254 +801,46 @@ def get_kjv_verse ( key: str, include_header: bool = True ) -> str:
 		return "No such verse!"
 
 # noinspection PyUnusedLocal
-def get_kjv_passage ( key: str, include_header: bool = True ) -> str:
+def get_passage ( key: str, version: str, include_header: bool = True ) -> str:
 	"""
-	Fetches a passage from the KJV Bible.
+	Fetches a passage from the Bible.
 	:param key: The verses to fetch.
+	:param version: The version of the Bible to use.
 	:param include_header: Whether or not to include `key` at the beginning of the reference.
 	:return: The passage referred to by `key`
 	"""
 	stuffs = key.split( ":" )
 	start = int( stuffs[ 1 ].split( "-" )[ 0 ] )
 	end = int( stuffs[ 1 ].split( "-" )[ 1 ] )
-	retpre = f"**{key} ~ KJV**\n"
+	version = version.upper( )
+	retpre = f"**{key} ~ {version}**\n"
 	ret = ""
 	data = key.split( " " )
-	query = [ "", "", "" ]
+	book = ""
+	chapter = ""
+	verse = ""
 	if len( data ) == 3:
-		query = [ data[ 0 ] + " " + data[ 1 ], data[ 2 ].split( ":" )[ 0 ], data[ 2 ].split( ":" )[ 1 ] ]
+		book = f"{data[0]} {data[1]}"
+		chapter = data[ 2 ].split( ":" )[ 0 ]
+		verse = data[ 2 ].split( ":" )[ 1 ]
 	else:
-		query = [ data[ 0 ], data[ 1 ].split( ":" )[ 0 ], data[ 1 ].split( ":" )[ 1 ] ]
+		book = data[ 0 ]
+		chapter = data[ 1 ].split( ":" )[ 0 ]
+		verse = data[ 1 ].split( ":" )[ 1 ]
 	for i in range( start, end + 1 ):
 		tmp = list( str( i ) )
 		for index, item in enumerate( tmp ):
-			tmp[ index ] = symbols.SYMBOLS[ "^" + item ]
+			tmp[ index ] = symbols.SYMBOLS[ f"^{item}" ]
 		tmp = ''.join( tmp )
-		ret += "{} {}\n".format(
-			tmp,
-			get_kjv_verse(
-				query[ 0 ] + " " + query[ 1 ] + ":" + str( i ),
-				include_header=False
-			)
-		)
+		ret += f"{tmp} {get_verse(f'{book} {chapter}:{i}', version, include_header=False)}\n"
 		del tmp
 	del stuffs
 	del start
 	del end
 	del data
-	del query
-	return retpre + ret if include_header else ret
-
-def get_niv_verse ( key: str, include_header: bool = True ) -> str:
-	"""
-	Fetch a verse from the King James Version of the Bible.
-	:param key: A key to search for a verse with.
-	:param include_header: Whether or not to include `key` at the beginning of the message.
-	:return: A KJV Verse
-	"""
-	try:
-		data = key.split( " " )
-		if len( data ) == 3:
-			book = data[ 0 ] + " " + data[ 1 ]
-			chapter = data[ 2 ].split( ":" )[ 0 ]
-			verse = data[ 2 ].split( ":" )[ 1 ]
-		else:
-			book = data[ 0 ]
-			chapter = data[ 1 ].split( ":" )[ 0 ]
-			verse = data[ 1 ].split( ":" )[ 1 ]
-		ret = ""
-		if include_header is True:
-			ret = f"**{key} ~ KJV**\n"
-		ret += SQLNIV.read( book, chapter, verse )
-		del data
-		del book
-		del chapter
-		del verse
-		return ret
-	except Exception:
-		return "No such verse!"
-
-# noinspection PyUnusedLocal
-def get_niv_passage ( key: str, include_header: bool = True ) -> str:
-	"""
-	Fetches a passage from the KJV Bible.
-	:param key: The verses to fetch.
-	:param include_header: Whether or not to include `key` at the beginning of the reference.
-	:return: The passage referred to by `key`
-	"""
-	stuffs = key.split( ":" )
-	start = int( stuffs[ 1 ].split( "-" )[ 0 ] )
-	end = int( stuffs[ 1 ].split( "-" )[ 1 ] )
-	retpre = f"**{key} ~ NIV**\n"
-	ret = ""
-	data = key.split( " " )
-	query = [ "", "", "" ]
-	if len( data ) == 3:
-		query = [ data[ 0 ] + " " + data[ 1 ], data[ 2 ].split( ":" )[ 0 ], data[ 2 ].split( ":" )[ 1 ] ]
-	else:
-		query = [ data[ 0 ], data[ 1 ].split( ":" )[ 0 ], data[ 1 ].split( ":" )[ 1 ] ]
-	for i in range( start, end + 1 ):
-		tmp = list( str( i ) )
-		for index, item in enumerate( tmp ):
-			tmp[ index ] = symbols.SYMBOLS[ "^" + item ]
-		tmp = ''.join( tmp )
-		ret += "{} {}\n".format(
-			tmp,
-			get_niv_verse(
-				query[ 0 ] + " " + query[ 1 ] + ":" + str( i ),
-				include_header=False
-			)
-		)
-		del tmp
-	del stuffs
-	del start
-	del end
-	del data
-	del query
-	return retpre + ret if include_header else ret
-
-# noinspection PyUnusedLocal
-def get_akjv_verse ( key: str, include_header: bool = True ) -> str:
-	"""
-	Fetch a verse from the AKJV Bible.
-	:param key: The verse to fetch.
-	:param include_header: Whether or not to include `key` at the beginning of the reference.
-	:return: The verse `key` refers to.
-	"""
-	try:
-		data = key.split( " " )
-		book = ""
-		chapter = ""
-		verse = ""
-		if len( data ) == 3:
-			book = data[ 0 ] + " " + data[ 1 ]
-			chapter = data[ 2 ].split( ":" )[ 0 ]
-			verse = data[ 2 ].split( ":" )[ 1 ]
-		else:
-			book = data[ 0 ]
-			chapter = data[ 1 ].split( ":" )[ 0 ]
-			verse = data[ 1 ].split( ":" )[ 1 ]
-		ret = ""
-		if include_header:
-			ret = f"**{key} ~ AKJV**\n"
-		ret += SQLD.read( book, chapter, verse )
-		del data
-		del book
-		del chapter
-		del verse
-		return ret
-	except Exception:
-		return "No such verse!"
-
-# noinspection PyUnusedLocal
-def get_akjv_passage ( key: str, include_header: bool = True ) -> str:
-	"""
-	Fetch a passage from the AKJV Bible.
-	:param key: The passage to fetch.
-	:param include_header: Whether or not to include `key` at the beginning of the reference.
-	:return: The passage `key` refers to.
-	"""
-	stuffs = key.split( ":" )
-	start = int( stuffs[ 1 ].split( "-" )[ 0 ] )
-	end = int( stuffs[ 1 ].split( "-" )[ 1 ] )
-	retpre = f"**{key} ~ AKJV**\n"
-	ret = ""
-	data = key.split( " " )
-	query = [ "", "", "" ]
-	if len( data ) == 3:
-		query = [ data[ 0 ] + " " + data[ 1 ], data[ 2 ].split( ":" )[ 0 ], data[ 2 ].split( ":" )[ 1 ] ]
-	else:
-		query = [ data[ 0 ], data[ 1 ].split( ":" )[ 0 ], data[ 1 ].split( ":" )[ 1 ] ]
-	for i in range( start, end + 1 ):
-		tmp = list( str( i ) )
-		for index, item in enumerate( tmp ):
-			tmp[ index ] = symbols.SYMBOLS[ "^" + item ]
-		tmp = ''.join( tmp )
-		ret += "{} {}\n".format(
-			tmp,
-			get_akjv_verse(
-				query[ 0 ] + " " + query[ 1 ] + ":" + str( i ),
-				include_header=False
-			)
-		)
-		del tmp
-	del stuffs
-	del start
-	del end
-	del data
-	del query
-	return retpre + ret if include_header else ret
-
-# noinspection PyUnusedLocal
-def get_web_verse ( key: str, include_header: bool = True ) -> str:
-	"""
-	Fetch a verse from the WEB Bible.
-	:param key: The verse to fetch.
-	:param include_header: Whether or not to include `key` in the reference.
-	:return: The referred verse.
-	"""
-	try:
-		data = key.split( " " )
-		book = ""
-		chapter = ""
-		verse = ""
-		if len( data ) == 3:
-			book = data[ 0 ] + " " + data[ 1 ]
-			chapter = data[ 2 ].split( ":" )[ 0 ]
-			verse = data[ 2 ].split( ":" )[ 1 ]
-		else:
-			book = data[ 0 ]
-			chapter = data[ 1 ].split( ":" )[ 0 ]
-			verse = data[ 1 ].split( ":" )[ 1 ]
-		ret = ""
-		if include_header:
-			ret = f"**{key} ~ WEB**\n"
-		ret += SQLWEB.read( book, chapter, verse )
-		del data
-		del book
-		del chapter
-		del verse
-		return ret
-	except Exception:
-		return "No such verse!"
-
-# noinspection PyUnusedLocal
-def get_web_passage ( key: str, include_header: bool = True ) -> str:
-	"""
-	Fetch a passage from the WEB Bible.
-	:param key: The passage to fetch.
-	:param include_header: Whether or not to include `key` in the reference.
-	:return: The referred passage.
-	"""
-	stuffs = key.split( ":" )
-	start = int( stuffs[ 1 ].split( "-" )[ 0 ] )
-	end = int( stuffs[ 1 ].split( "-" )[ 1 ] )
-	retpre = f"**{key} ~ WEB**\n"
-	ret = ""
-	data = key.split( " " )
-	query = [ "", "", "" ]
-	if len( data ) == 3:
-		query = [ data[ 0 ] + " " + data[ 1 ], data[ 2 ].split( ":" )[ 0 ], data[ 2 ].split( ":" )[ 1 ] ]
-	else:
-		query = [ data[ 0 ], data[ 1 ].split( ":" )[ 0 ], data[ 1 ].split( ":" )[ 1 ] ]
-	for i in range( start, end + 1 ):
-		tmp = list( str( i ) )
-		for index, item in enumerate( tmp ):
-			tmp[ index ] = symbols.SYMBOLS[ "^" + item ]
-		tmp = ''.join( tmp )
-		ret += "{} {}\n".format(
-			tmp,
-			get_web_verse(
-				query[ 0 ] + " " + query[ 1 ] + ":" + str( i ),
-				include_header=False
-			)
-		)
-		del tmp
-	del stuffs
-	del start
-	del end
-	del data
-	del query
+	del book
+	del chapter
+	del verse
 	return retpre + ret if include_header else ret
 
 # noinspection PyShadowingNames
@@ -1348,7 +1143,7 @@ class Commands:
 				del index
 			elif ":verse" in message.content:
 				cont = message.content.replace( f"{prefix}verse info:verse ", "" )
-				verse_str = get_kjv_verse( cont, include_header=False )
+				verse_str = get_verse( cont, "kjv", include_header=False )
 				words = len( verse_str.split( " " ) )
 				characters = len( verse_str )
 				await CLIENT.send_message(
@@ -1450,16 +1245,19 @@ class Commands:
 				await CLIENT.send_message( message.channel, "```" + content + "```" )
 				if "-" in content:
 					stuffs = [
-						get_kjv_passage(
+						get_passage(
 							content,
+							"kjv",
 							include_header=False
 						),
-						get_akjv_passage(
+						get_passage(
 							content,
+							"akjv",
 							include_header=False
 						),
-						get_web_passage(
+						get_passage(
 							content,
+							"web",
 							include_header=False
 						)
 					]
@@ -1469,16 +1267,19 @@ class Commands:
 					del stuffs
 				else:
 					stuffs = [
-						get_kjv_verse(
+						get_verse(
 							content,
+							"kjv",
 							include_header=False
 						),
-						get_akjv_verse(
+						get_verse(
 							content,
+							"akjv",
 							include_header=False
 						),
-						get_web_verse(
+						get_verse(
 							content,
+							"web",
 							include_header=False
 						)
 					]
@@ -1488,16 +1289,19 @@ class Commands:
 			else:
 				if "-" in content:
 					stuffs = [
-						get_kjv_passage(
+						get_passage(
 							content,
+							"kjv",
 							include_header=False
 						),
-						get_akjv_passage(
+						get_passage(
 							content,
+							"akjv",
 							include_header=False
 						),
-						get_web_passage(
+						get_passage(
 							content,
+							"web",
 							include_header=False
 						)
 					]
@@ -1514,16 +1318,19 @@ class Commands:
 					del embed_obj
 				else:
 					stuffs = [
-						get_kjv_verse(
+						get_verse(
 							content,
+							"kjv",
 							include_header=False
 						),
-						get_akjv_verse(
+						get_verse(
 							content,
+							"akjv",
 							include_header=False
 						),
-						get_web_verse(
+						get_verse(
 							content,
+							"web",
 							include_header=False
 						)
 					]
@@ -1551,9 +1358,9 @@ class Commands:
 				colour=discord.Colour.dark_blue( )
 			)
 			if "-" in VOTD:
-				embed_obj.add_field( name=VOTD, value=get_akjv_passage( VOTD, include_header=False ) )
+				embed_obj.add_field( name=VOTD, value=get_passage( VOTD, "akjv", include_header=False ) )
 			else:
-				embed_obj.add_field( name=VOTD, value=get_akjv_verse( VOTD, include_header=False ) )
+				embed_obj.add_field( name=VOTD, value=get_verse( VOTD, "akjv", include_header=False ) )
 			await CLIENT.send_message( message.channel, "", embed=embed_obj )
 			del embed_obj
 		@staticmethod
@@ -1743,9 +1550,9 @@ def trigger_votd ( ):
 			colour=discord.Colour.dark_blue( )
 		)
 		if "-" in key:
-			embed_obj.add_field( name=key, value=get_akjv_passage( key, include_header=False ) )
+			embed_obj.add_field( name=key, value=get_passage( key, "akjv", include_header=False ) )
 		else:
-			embed_obj.add_field( name=key, value=get_akjv_verse( key, include_header=False ) )
+			embed_obj.add_field( name=key, value=get_verse( key, "akjv", include_header=False ) )
 		encountered = [ ]
 		for channel in CLIENT.get_all_channels( ):
 			server = channel.server
@@ -1807,306 +1614,321 @@ async def on_message ( message ):
 			else "akjv"
 		BIBLE_TYPES[ message.author.id ] = BIBLE_TYPES[ message.author.id ] \
 			if not BIBLE_TYPES.get( message.author.id ) is None else "embed"
-		if not message.server.id in VERSE_DISABLE_LIST:
-			if not message.author.bot:
-				if not message.content.startswith( f"{prefix}verse " ) \
-						and not message.content.startswith( f"{prefix}devotional\n" ):
-					if not message.channel.id in DISABLED_CHANNELS and not message.author.id in DISABLED_USERS:
-						for mcont in message.content.split( "\n" ):
-							embed_obj = discord.Embed( colour=discord.Colour.purple( ) )
-							encountered = [ ]
-							tmp_content = mcont.replace( ".", " " ) \
-								.replace( "`", "" ) \
-								.replace( "*", "" ) \
-								.replace( "_", "" )
-							verse = [ ]
-							tmp_content = abbr( tmp_content )
-							for i in range( 0, 17 ):
-								tmp_content = tmp_content.replace( AKJV_BOOKS[ i ], AKJV_BOOKS[ i ].replace( " ", "|" ) )
-							msg_cont = tmp_content.split( " " )
-							append = verse.append
-							for item in enumerate( msg_cont ):
-								msg_cont[ item[ 0 ] ] = abbr( item[ 1 ].replace( "|", " " ).capitalize( ) )
-							# for i in range( 0, len( msg_cont ) ):
-							# 	msg_cont[ i ] = abbr( msg_cont[ i ].replace( "|", " " ).capitalize( ) )
-							for book in AKJV_BOOKS:
-								while book in msg_cont:
-									index = msg_cont.index( book )
-									if not index == len( msg_cont ) - 1:
-										if "," in msg_cont[ index + 1 ]:
-											for item in msg_cont[ index + 1 ].split( ":" )[ 1 ].split( "," ):
-												append( f"{msg_cont[index]} {msg_cont[index+1].split(':')[0]}:{item}" )
-										else:
-											verse.append( f"{msg_cont[index]} {msg_cont[index+1]}" )
-									msg_cont.remove( book )
-							for verse_item in verse:
-								if BIBLE_TYPES[ message.author.id ] == "text":
-									if "-" in verse_item and not verse_item in encountered:
-										if "AKJV" in message.content:
-											for msg in format_message( get_akjv_passage( verse_item, include_header=True ) ):
-												await CLIENT.send_message( message.channel, f"```{msg.replace('```','')}```" )
-										elif "KJV" in message.content:
-											for msg in format_message( get_kjv_passage( verse_item, include_header=True ) ):
-												await CLIENT.send_message( message.channel, f"```{msg.replace('```','')}```" )
-										elif "WEB" in message.content:
-											for msg in format_message( get_web_passage( verse_item, include_header=True ) ):
-												await CLIENT.send_message( message.channel, f"```{msg.replace('```','')}```" )
-										elif "NIV" in message.content:
-											for msg in format_message( get_niv_passage( verse_item, include_header=True ) ):
-												await CLIENT.send_message( message.channel, f"```{msg.replace('```','')}```" )
-										elif BIBLE_VERSIONS[ message.author.id ] == "kjv":
-											for msg in format_message( get_kjv_passage( verse_item, include_header=True ) ):
-												msg = msg.replace( "```", "" ).split( '\n' )
-												msg[ 1 ] = f"```{msg[1]}"
-												msg = '\n'.join( msg ) + "```"
-												await CLIENT.send_message( message.channel, msg )
-										elif BIBLE_VERSIONS[ message.author.id ] == "akjv":
-											for msg in format_message( get_akjv_passage( verse_item, include_header=True ) ):
-												msg = msg.replace( "```", "" ).split( '\n' )
-												msg[ 1 ] = f"```{msg[1]}"
-												msg = '\n'.join( msg ) + "```"
-												await CLIENT.send_message( message.channel, msg )
-										elif BIBLE_VERSIONS[ message.author.id ] == "web":
-											for msg in format_message( get_web_passage( verse_item, include_header=True ) ):
-												msg = msg.replace( "```", "" ).split( '\n' )
-												msg[ 1 ] = f"```{msg[1]}"
-												msg = '\n'.join( msg ) + "```"
-												await CLIENT.send_message( message.channel, msg )
-										elif BIBLE_VERSIONS[ message.author.id ] == "niv":
-											for msg in format_message( get_niv_passage( verse_item, include_header=True ) ):
-												msg = msg.replace( "```", "" ).split( '\n' )
-												msg[ 1 ] = f"```{msg[1]}"
-												msg = '\n'.join( msg ) + "```"
-												await CLIENT.send_message( message.channel, msg )
-									elif ":" in verse_item and not verse_item in encountered:
-										if "AKJV" in message.content:
-											for msg in format_message( get_akjv_verse( verse_item, include_header=True ) ):
-												await CLIENT.send_message( message.channel, f"```{msg.replace('```','')}```" )
-										elif "KJV" in message.content:
-											for msg in format_message( get_kjv_verse( verse_item, include_header=True ) ):
-												await CLIENT.send_message( message.channel, f"```{msg.replace('```','')}```" )
-										elif "WEB" in message.content:
-											for msg in format_message( get_web_verse( verse_item, include_header=True ) ):
-												await CLIENT.send_message( message.channel, f"```{msg.replace('```','')}```" )
-										elif "NIV" in message.content:
-											for msg in format_message( get_niv_verse( verse_item, include_header=True ) ):
-												await CLIENT.send_message( message.channel, f"```{msg.replace('```','')}```" )
-										elif BIBLE_VERSIONS[ message.author.id ] == "kjv":
-											for msg in format_message( get_kjv_verse( verse_item, include_header=True ) ):
-												msg = msg.replace( "```", "" ).split( '\n' )
-												msg[ 1 ] = f"```{msg[1]}"
-												msg = '\n'.join( msg ) + "```"
-												await CLIENT.send_message( message.channel, msg )
-										elif BIBLE_VERSIONS[ message.author.id ] == "akjv":
-											for msg in format_message( get_akjv_verse( verse_item, include_header=True ) ):
-												msg = msg.replace( "```", "" ).split( '\n' )
-												msg[ 1 ] = f"```{msg[1]}"
-												msg = '\n'.join( msg ) + "```"
-												await CLIENT.send_message( message.channel, msg )
-										elif BIBLE_VERSIONS[ message.author.id ] == "web":
-											for msg in format_message( get_web_verse( verse_item, include_header=True ) ):
-												msg = msg.replace( "```", "" ).split( '\n' )
-												msg[ 1 ] = f"```{msg[1]}"
-												msg = '\n'.join( msg ) + "```"
-												await CLIENT.send_message( message.channel, msg )
-										elif BIBLE_VERSIONS[ message.author.id ] == "niv":
-											for msg in format_message( get_niv_verse( verse_item, include_header=True ) ):
-												msg = msg.replace( "```", "" ).split( '\n' )
-												msg[ 1 ] = f"```{msg[1]}"
-												msg = '\n'.join( msg ) + "```"
-												await CLIENT.send_message( message.channel, msg )
-								else:
-									if "-" in verse_item and not verse_item in encountered:
-										if "AKJV" in message.content:
-											embed_obj.add_field(
-												name=verse_item,
-												value=get_akjv_passage(
-													verse_item,
-													include_header=False
-												)
-											)
-										elif "KJV" in message.content:
-											embed_obj.add_field(
-												name=verse_item,
-												value=get_kjv_passage(
-													verse_item,
-													include_header=False
-												)
-											)
-										elif "WEB" in message.content:
-											embed_obj.add_field(
-												name=verse_item,
-												value=get_web_passage(
-													verse_item,
-													include_header=False
-												)
-											)
-										elif "NIV" in message.content:
-											embed_obj.add_field(
-												name=verse_item,
-												value=get_niv_passage(
-													verse_item,
-													include_header=False
-												)
-											)
-										elif BIBLE_VERSIONS[ message.author.id ] == "kjv":
-											embed_obj.add_field(
-												name=verse_item,
-												value=get_kjv_passage(
-													verse_item,
-													include_header=False
-												)
-											)
-										elif BIBLE_VERSIONS[ message.author.id ] == "akjv":
-											embed_obj.add_field(
-												name=verse_item,
-												value=get_akjv_passage(
-													verse_item,
-													include_header=False
-												)
-											)
-										elif BIBLE_VERSIONS[ message.author.id ] == "web":
-											embed_obj.add_field(
-												name=verse_item,
-												value=get_web_passage(
-													verse_item,
-													include_header=False
-												)
-											)
-										elif BIBLE_VERSIONS[ message.author.id ] == "niv":
-											embed_obj.add_field(
-												name=verse_item,
-												value=get_niv_passage(
-													verse_item,
-													include_header=False
-												)
-											)
-									elif ":" in verse_item and not verse_item in encountered:
-										if "AKJV" in message.content:
-											embed_obj.add_field(
-												name=verse_item,
-												value=get_akjv_verse(
-													verse_item,
-													include_header=False
-												)
-											)
-										elif "KJV" in message.content:
-											embed_obj.add_field(
-												name=verse_item,
-												value=get_kjv_verse(
-													verse_item,
-													include_header=False
-												)
-											)
-										elif "WEB" in message.content:
-											embed_obj.add_field(
-												name=verse_item,
-												value=get_web_verse(
-													verse_item,
-													include_header=False
-												)
-											)
-										elif "NIV" in message.content:
-											embed_obj.add_field(
-												name=verse_item,
-												value=get_niv_verse(
-													verse_item,
-													include_header=False
-												)
-											)
-										elif BIBLE_VERSIONS[ message.author.id ] == "kjv":
-											embed_obj.add_field(
-												name=verse_item,
-												value=get_kjv_verse(
-													verse_item,
-													include_header=False
-												)
-											)
-										elif BIBLE_VERSIONS[ message.author.id ] == "akjv":
-											embed_obj.add_field(
-												name=verse_item,
-												value=get_akjv_verse(
-													verse_item,
-													include_header=False
-												)
-											)
-										elif BIBLE_VERSIONS[ message.author.id ] == "web":
-											embed_obj.add_field(
-												name=verse_item,
-												value=get_web_verse(
-													verse_item,
-													include_header=False
-												)
-											)
-										elif BIBLE_VERSIONS[ message.author.id ] == "niv":
-											embed_obj.add_field(
-												name=verse_item,
-												value=get_niv_verse(
-													verse_item,
-													include_header=False
-												)
-											)
-								encountered.append( verse_item )
-							if BIBLE_TYPES[ message.author.id ] == "embed" and len( embed_obj.fields ) >= 1:
-								try:
-									# <editor-fold desc="Fetching Title...">
-									index = list( mcont ).index( '"' )
-									title = ""
-									has_found = False
-									for i in range( index + 1, len( mcont ) ):
-										if mcont[ i ] == "\"":
-											has_found = True
-										if not has_found:
-											title += mcont[ i ]
-									# </editor-fold>
-									embed_obj.title = title
-									del index
-									del title
-									del has_found
-								except Exception:
-									pass
-								try:
-									# <editor-fold desc="Fetching Description">
-									if "AKJV" in message.content:
-										description = "akjv"
-									elif "KJV" in message.content:
-										description = "kjv"
-									elif "WEB" in message.content:
-										description = "web"
-									elif "NIV" in message.content:
-										description = "niv"
-									else:
-										description = BIBLE_VERSIONS[ message.author.id ]
-									# </editor-fold>
-									embed_obj.description = description.upper( )
-									del description
-								except Exception:
-									pass
 
-								for i in range( 0, len( embed_obj.fields ) ):
-									if embed_obj.fields[ i ].value == "No such verse!":
-										embed_obj.remove_field( i )
-
-								timestamp = datetime.now( ) - message.timestamp
-								delay = int( timestamp.microseconds / 1000 )
-								if delay > 999:
-									delay = str( delay / 1000 )
-								else:
-									delay = f"0.{delay}"
-								await CLIENT.send_message(
-									message.channel,
-									f"Response in {delay} seconds! :smile:",
-									embed=embed_obj
+		if not message.server.id in VERSE_DISABLE_LIST \
+				and not message.author.bot \
+				and not message.content.startswith( f"{prefix}verse" ) \
+				and not message.content.startswith( f"{prefix}devotional\n" ) \
+				and not message.channel.id in DISABLED_CHANNELS \
+				and not message.author.id in DISABLED_USERS:
+			for line in message.content.split( "\n" ):  # Checks if all of the conditions are met.
+				embed_obj = discord.Embed( colour=discord.Colour.purple( ) )
+				encountered = [ ]
+				tmp_line = line.replace( ".", " " ) \
+					.replace( "`", "" ) \
+					.replace( "*", "" ) \
+					.replace( "_", "" )  # Removes unwanted characters from the line.
+				verse = [ ]
+				tmp_line = abbr( tmp_line )  # Finds book abbreviations and expands them.
+				for book in AKJV_BOOKS:
+					tmp_line = tmp_line.replace( book, book.replace( " ", "|" ) )  # Converts book names into single words, for later use.
+				tmp_words = tmp_line.split( " " )  # Splits the line into words.
+				append = verse.append
+				for index, item in enumerate( tmp_words ):  # Iterates through the words.
+					tmp_words[ index ] = abbr( item.replace( "|", " " ).capitalize( ) )  # Converts the book name to their proper names.
+				for book in AKJV_BOOKS:  # Iterates through the books of the Bible.
+					while book in tmp_words:  # Iterates through the words while there is a book of the Bible within.
+						index = tmp_words.index( book )  # Fetches the list index for the book.
+						if not index == len( tmp_words ) - 1:  # Checks to see if the book name is at least 1 item before the final item in the word list.
+							if "," in tmp_words[ index + 1 ]:  # Checks for multiple verse references.
+								for item in tmp_words[ index + 1 ].split( ":" )[ 1 ].split( "," ):  # Checks if there are multiple specific verse reference attached to the book name.
+									append( f"{tmp_words[index]} {tmp_words[index+1].split(':')[0]}:{item}" )  # Adds a verse reference to the list.
+							else:
+								verse.append( f"{tmp_words[index]} {tmp_words[index+1]}" )  # Adds a single verse to the list.
+						tmp_words.remove( book )  # Removes (a single instance of) the book from the word list.
+				for verse_item in verse:  # Iterates through the verses found in the message.
+					if BIBLE_TYPES[ message.author.id ] == "text":  # What happens if the author's verse settings are set to "text" mode.
+						if "-" in verse_item and not verse_item in encountered:  # Checks for a passage reference.
+							if "AKJV" in message.content:
+								for msg in format_message( get_passage( verse_item, "akjv", include_header=True ) ):
+									await CLIENT.send_message( message.channel, f"```{msg.replace('```','')}```" )
+							elif "KJV" in message.content:
+								for msg in format_message( get_passage( verse_item, "kjv", include_header=True ) ):
+									await CLIENT.send_message( message.channel, f"```{msg.replace('```','')}```" )
+							elif "WEB" in message.content:
+								for msg in format_message( get_passage( verse_item, "web", include_header=True ) ):
+									await CLIENT.send_message( message.channel, f"```{msg.replace('```','')}```" )
+							elif "NIV" in message.content:
+								for msg in format_message( get_passage( verse_item, "niv", include_header=True ) ):
+									await CLIENT.send_message( message.channel, f"```{msg.replace('```','')}```" )
+							elif BIBLE_VERSIONS[ message.author.id ] == "kjv":
+								for msg in format_message( get_passage( verse_item, "kjv", include_header=True ) ):
+									msg = msg.replace( "```", "" ).split( '\n' )
+									msg[ 1 ] = f"```{msg[1]}"
+									msg = '\n'.join( msg ) + "```"
+									await CLIENT.send_message( message.channel, msg )
+							elif BIBLE_VERSIONS[ message.author.id ] == "akjv":
+								for msg in format_message( get_passage( verse_item, "akjv", include_header=True ) ):
+									msg = msg.replace( "```", "" ).split( '\n' )
+									msg[ 1 ] = f"```{msg[1]}"
+									msg = '\n'.join( msg ) + "```"
+									await CLIENT.send_message( message.channel, msg )
+							elif BIBLE_VERSIONS[ message.author.id ] == "web":
+								for msg in format_message( get_passage( verse_item, "web", include_header=True ) ):
+									msg = msg.replace( "```", "" ).split( '\n' )
+									msg[ 1 ] = f"```{msg[1]}"
+									msg = '\n'.join( msg ) + "```"
+									await CLIENT.send_message( message.channel, msg )
+							elif BIBLE_VERSIONS[ message.author.id ] == "niv":
+								for msg in format_message( get_passage( verse_item, "niv", include_header=True ) ):
+									msg = msg.replace( "```", "" ).split( '\n' )
+									msg[ 1 ] = f"```{msg[1]}"
+									msg = '\n'.join( msg ) + "```"
+									await CLIENT.send_message( message.channel, msg )
+						elif ":" in verse_item and not verse_item in encountered:
+							if "AKJV" in message.content:
+								for msg in format_message( get_verse( verse_item, "akjv", include_header=True ) ):
+									await CLIENT.send_message( message.channel, f"```{msg.replace('```','')}```" )
+							elif "KJV" in message.content:
+								for msg in format_message( get_verse( verse_item, "kjv", include_header=True ) ):
+									await CLIENT.send_message( message.channel, f"```{msg.replace('```','')}```" )
+							elif "WEB" in message.content:
+								for msg in format_message( get_verse( verse_item, "web", include_header=True ) ):
+									await CLIENT.send_message( message.channel, f"```{msg.replace('```','')}```" )
+							elif "NIV" in message.content:
+								for msg in format_message( get_verse( verse_item, "niv", include_header=True ) ):
+									await CLIENT.send_message( message.channel, f"```{msg.replace('```','')}```" )
+							elif BIBLE_VERSIONS[ message.author.id ] == "kjv":
+								for msg in format_message( get_verse( verse_item, "kjv", include_header=True ) ):
+									msg = msg.replace( "```", "" ).split( '\n' )
+									msg[ 1 ] = f"```{msg[1]}"
+									msg = '\n'.join( msg ) + "```"
+									await CLIENT.send_message( message.channel, msg )
+							elif BIBLE_VERSIONS[ message.author.id ] == "akjv":
+								for msg in format_message( get_verse( verse_item, "akjv", include_header=True ) ):
+									msg = msg.replace( "```", "" ).split( '\n' )
+									msg[ 1 ] = f"```{msg[1]}"
+									msg = '\n'.join( msg ) + "```"
+									await CLIENT.send_message( message.channel, msg )
+							elif BIBLE_VERSIONS[ message.author.id ] == "web":
+								for msg in format_message( get_verse( verse_item, "web", include_header=True ) ):
+									msg = msg.replace( "```", "" ).split( '\n' )
+									msg[ 1 ] = f"```{msg[1]}"
+									msg = '\n'.join( msg ) + "```"
+									await CLIENT.send_message( message.channel, msg )
+							elif BIBLE_VERSIONS[ message.author.id ] == "niv":
+								for msg in format_message( get_verse( verse_item, "niv", include_header=True ) ):
+									msg = msg.replace( "```", "" ).split( '\n' )
+									msg[ 1 ] = f"```{msg[1]}"
+									msg = '\n'.join( msg ) + "```"
+									await CLIENT.send_message( message.channel, msg )
+					else:
+						if "-" in verse_item and not verse_item in encountered:
+							if "AKJV" in message.content:
+								embed_obj.add_field(
+									name=verse_item,
+									value=get_passage(
+										verse_item,
+										"akjv",
+										include_header=False
+									)
 								)
-								print( f"Sending {', '.join(verse)} ~ Delay: {delay}s." )
-								del timestamp
-								del delay
-							del embed_obj
-							del encountered
-							del tmp_content
-							del verse
-							del msg_cont
-							del append
+							elif "KJV" in message.content:
+								embed_obj.add_field(
+									name=verse_item,
+									value=get_passage(
+										verse_item,
+										"kjv",
+										include_header=False
+									)
+								)
+							elif "WEB" in message.content:
+								embed_obj.add_field(
+									name=verse_item,
+									value=get_passage(
+										verse_item,
+										"web",
+										include_header=False
+									)
+								)
+							elif "NIV" in message.content:
+								embed_obj.add_field(
+									name=verse_item,
+									value=get_passage(
+										verse_item,
+										"niv",
+										include_header=False
+									)
+								)
+							elif BIBLE_VERSIONS[ message.author.id ] == "kjv":
+								embed_obj.add_field(
+									name=verse_item,
+									value=get_passage(
+										verse_item,
+										"kjv",
+										include_header=False
+									)
+								)
+							elif BIBLE_VERSIONS[ message.author.id ] == "akjv":
+								embed_obj.add_field(
+									name=verse_item,
+									value=get_passage(
+										verse_item,
+										"akjv",
+										include_header=False
+									)
+								)
+							elif BIBLE_VERSIONS[ message.author.id ] == "web":
+								embed_obj.add_field(
+									name=verse_item,
+									value=get_passage(
+										verse_item,
+										"web",
+										include_header=False
+									)
+								)
+							elif BIBLE_VERSIONS[ message.author.id ] == "niv":
+								embed_obj.add_field(
+									name=verse_item,
+									value=get_passage(
+										verse_item,
+										"niv",
+										include_header=False
+									)
+								)
+						elif ":" in verse_item and not verse_item in encountered:
+							if "AKJV" in message.content:
+								embed_obj.add_field(
+									name=verse_item,
+									value=get_verse(
+										verse_item,
+										"akjv",
+										include_header=False
+									)
+								)
+							elif "KJV" in message.content:
+								embed_obj.add_field(
+									name=verse_item,
+									value=get_verse(
+										verse_item,
+										"kjv",
+										include_header=False
+									)
+								)
+							elif "WEB" in message.content:
+								embed_obj.add_field(
+									name=verse_item,
+									value=get_verse(
+										verse_item,
+										"web",
+										include_header=False
+									)
+								)
+							elif "NIV" in message.content:
+								embed_obj.add_field(
+									name=verse_item,
+									value=get_verse(
+										verse_item,
+										"niv",
+										include_header=False
+									)
+								)
+							elif BIBLE_VERSIONS[ message.author.id ] == "kjv":
+								embed_obj.add_field(
+									name=verse_item,
+									value=get_verse(
+										verse_item,
+										"kjv",
+										include_header=False
+									)
+								)
+							elif BIBLE_VERSIONS[ message.author.id ] == "akjv":
+								embed_obj.add_field(
+									name=verse_item,
+									value=get_verse(
+										verse_item,
+										"akjv",
+										include_header=False
+									)
+								)
+							elif BIBLE_VERSIONS[ message.author.id ] == "web":
+								embed_obj.add_field(
+									name=verse_item,
+									value=get_verse(
+										verse_item,
+										"web",
+										include_header=False
+									)
+								)
+							elif BIBLE_VERSIONS[ message.author.id ] == "niv":
+								embed_obj.add_field(
+									name=verse_item,
+									value=get_verse(
+										verse_item,
+										"niv",
+										include_header=False
+									)
+								)
+					encountered.append( verse_item )
+				if BIBLE_TYPES[ message.author.id ] == "embed" and len( embed_obj.fields ) >= 1:
+					try:
+						# <editor-fold desc="Fetching Title...">
+						index = list( line ).index( '"' )
+						title = ""
+						has_found = False
+						for i in range( index + 1, len( line ) ):
+							if line[ i ] == "\"":
+								has_found = True
+							if not has_found:
+								title += line[ i ]
+						# </editor-fold>
+						embed_obj.title = title
+						del index
+						del title
+						del has_found
+					except Exception:
+						pass
+					try:
+						# <editor-fold desc="Fetching Description">
+						if "AKJV" in message.content:
+							description = "akjv"
+						elif "KJV" in message.content:
+							description = "kjv"
+						elif "WEB" in message.content:
+							description = "web"
+						elif "NIV" in message.content:
+							description = "niv"
+						else:
+							description = BIBLE_VERSIONS[ message.author.id ]
+						# </editor-fold>
+						embed_obj.description = description.upper( )
+						del description
+					except Exception:
+						pass
+					for i in range( 0, len( embed_obj.fields ) ):
+						if embed_obj.fields[ i ].value == "No such verse!":
+							embed_obj.remove_field( i )
+
+					timestamp = datetime.now( ) - message.timestamp
+					delay = int( timestamp.microseconds / 1000 )
+					if delay > 999:
+						delay = str( delay / 1000 )
+					else:
+						delay = f"0.{delay}"
+					await CLIENT.send_message(
+						message.channel,
+						f"Response in {delay} seconds! :smile:",
+						embed=embed_obj
+					)
+					print( f"Sending {', '.join(verse)} ~ Delay: {delay}s." )
+					del timestamp
+					del delay
+				del embed_obj
+				del encountered
+				del tmp_line
+				del verse
+				del tmp_words
+				del append
 
 		do_update = False
 
@@ -2239,35 +2061,43 @@ async def on_message ( message ):
 						"""
 						res = ""
 						if _version == "kjv":
-							res = get_kjv_passage(
+							res = get_passage(
 								_text,
+								"kjv",
 								include_header=False
-							) if "-" in _text else get_kjv_verse(
+							) if "-" in _text else get_verse(
 								_text,
+								"kjv",
 								include_header=False
 							)
 						elif _version == "akjv":
-							res = get_akjv_passage(
+							res = get_passage(
 								_text,
+								"akjv",
 								include_header=False
-							) if "-" in _text else get_akjv_verse(
+							) if "-" in _text else get_verse(
 								_text,
+								"akjv",
 								include_header=False
 							)
 						elif _version == "web":
-							res = get_web_passage(
+							res = get_passage(
 								_text,
+								"web",
 								include_header=False
-							) if "-" in _text else get_web_verse(
+							) if "-" in _text else get_verse(
 								_text,
+								"web",
 								include_header=False
 							)
 						elif _version == "niv":
-							res = get_niv_passage(
+							res = get_passage(
 								_text,
+								"niv",
 								include_header=False
-							) if "-" in _text else get_niv_verse(
+							) if "-" in _text else get_verse(
 								_text,
+								"niv",
 								include_header=False
 							)
 						return [
@@ -2339,35 +2169,43 @@ async def on_message ( message ):
 						"""
 						res = ""
 						if _version == "kjv":
-							res = get_kjv_passage(
+							res = get_passage(
 								_text,
+								"kjv",
 								include_header=False
-							) if "-" in _text else get_kjv_verse(
+							) if "-" in _text else get_verse(
 								_text,
+								"kjv",
 								include_header=False
 							)
 						elif _version == "akjv":
-							res = get_akjv_passage(
+							res = get_passage(
 								_text,
+								"akjv",
 								include_header=False
-							) if "-" in _text else get_akjv_verse(
+							) if "-" in _text else get_verse(
 								_text,
+								"akjv",
 								include_header=False
 							)
 						elif _version == "web":
-							res = get_web_passage(
+							res = get_passage(
 								_text,
+								"web",
 								include_header=False
-							) if "-" in _text else get_web_verse(
+							) if "-" in _text else get_verse(
 								_text,
+								"web",
 								include_header=False
 							)
 						elif _version == "niv":
-							res = get_niv_passage(
+							res = get_passage(
 								_text,
+								"niv",
 								include_header=False
-							) if "-" in _text else get_niv_verse(
+							) if "-" in _text else get_verse(
 								_text,
+								"niv",
 								include_header=False
 							)
 						return [

@@ -14,7 +14,6 @@ CLIENT = Client( )
 init( )
 
 SQL = sqlite3.connect( f"{os.getcwd()}\\Discord Logs\\SETTINGS\\logbot.db" )
-CURSOR = SQL.cursor( )
 
 EXITING = False
 REMINDERS = { }
@@ -55,11 +54,12 @@ def log_error ( error_text: str ):
 	del prev_text
 
 def get_prefix ( server: str ):
+	cursor = SQL.cursor( )
 	cmd = f"""SELECT prefix
 	FROM Prefixes
 	WHERE server='{server}';"""
-	CURSOR.execute( cmd )
-	return CURSOR.fetchall( )[ 0 ][ 0 ]
+	cursor.execute( cmd )
+	return cursor.fetchall( )[ 0 ][ 0 ]
 
 def calculate_time ( time: str ):
 	"""
@@ -148,9 +148,7 @@ async def on_message ( message: Message ):
 					await CLIENT.send_message( message.channel, f"Could not remove the timer." )
 		elif begins( f"r{prefix}reminders" ):
 			# Show the reminders
-			ret = ""
-			for item in REMINDERS[ message.author.id ]:
-				ret += f"{item[0]} - {item[1]}"
+			ret = '\n'.join( [ f"{time} - {msg}" for time, msg, t in REMINDERS[ message.author.id ] ] )
 			await CLIENT.send_message( message.channel, ret )
 		elif begins( f"logbot.reminders.update", f"$update" ):
 			# Update the module
