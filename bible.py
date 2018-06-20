@@ -584,9 +584,9 @@ def parse_num ( num: int ) -> str:
 	:return: A string representation of the number.
 	"""
 	_num = str( num )
-	_num = _num[ ::-1 ]
+	_num = _num[ ::-1 ] # Reverse the string.
 	_num = ','.join( [
-		_num[ i:i + 3 ]
+		_num[ i:i + 3 ] # Group by threes.
 		for i in range(
 			0,
 			len( _num ),
@@ -851,14 +851,16 @@ def get_chapter ( key: str, version: str ) -> str:
 	:param version: The bible version.
 	:return: The chapter text.
 	"""
-	ret = "{}\n".format( key )
+	ret = f"{key}\n"
 	res = ""
 	if version == "kjv":
-		res = SQLKJV.execute( "SELECT * FROM kjv WHERE key LIKE '{}:%';".format( key ) )
+		res = SQLKJV.execute( f"SELECT * FROM kjv WHERE key LIKE '{key}:%';" )
 	elif version == "akjv":
-		res = SQLD.execute( "SELECT * FROM akjv WHERE key LIKE '{}:%';".format( key ) )
+		res = SQLD.execute( f"SELECT * FROM akjv WHERE key LIKE '{key}:%';" )
 	elif version == "web":
-		res = SQLWEB.execute( "SELECT * FROM web WHERE key LIKE '{}:%';".format( key ) )
+		res = SQLWEB.execute( f"SELECT * FROM web WHERE key LIKE '{key}:%';" )
+	elif version == "niv":
+		res = SQLNIV.execute(f"SELECT * FROM niv WHERE key LIKE '{key}:%'f")
 	for result in res:
 		verse = result[ 0 ].split( ":" )[ 1 ]
 		ret += f"[{verse}] {result[1]}\n"
@@ -876,13 +878,13 @@ def get_random_verse ( version: str ) -> str:
 	book = random.choice( AKJV_BOOKS )
 	res = ""
 	if version == "kjv":
-		res = SQLKJV.execute( "SELECT * FROM kjv WHERE key LIKE '{}%'".format( book ) )
+		res = SQLKJV.execute( f"SELECT * FROM kjv WHERE key LIKE '{book}%'" )
 	elif version == "akjv":
-		res = SQLD.execute( "SELECT * FROM akjv WHERE key LIKE '{}%'".format( book ) )
+		res = SQLD.execute( f"SELECT * FROM akjv WHERE key LIKE '{book}%'" )
 	elif version == "web":
-		res = SQLWEB.execute( "SELECT * FROM web WHERE key LIKE '{}%'".format( book ) )
+		res = SQLWEB.execute( f"SELECT * FROM web WHERE key LIKE '{book}%'" )
 	elif version == "niv":
-		res = SQLNIV.execute( "SELECT * FROM niv WHERE key LIKE '{}%".format( book ) )
+		res = SQLNIV.execute( f"SELECT * FROM niv WHERE key LIKE '{book}%" )
 	selected_verse = random.choice( res )
 	ret = f"{selected_verse[0]}\n{selected_verse[1]}"
 	del selected_verse
