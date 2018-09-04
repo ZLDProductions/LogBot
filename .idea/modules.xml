@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../GlobalShortcut/.idea/GlobalShortcut.iml" filepath="$PROJECT_DIR$/../GlobalShortcut/.idea/GlobalShortcut.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../JVODBot/.idea/JVODBot.iml" filepath="$PROJECT_DIR$/../JVODBot/.idea/JVODBot.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/LogBot.iml" filepath="$PROJECT_DIR$/.idea/LogBot.iml" />
     </modules>
   </component>
