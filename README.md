@@ -1774,6 +1774,20 @@ LogBot Admin
 
 ---
 
+#### $piglatin
+**Info**
+Translates a message into pig latin.
+
+**Usage**
+
+    $piglatin {message}
+`message` is a string of text.
+
+**Required Level**
+None
+
+---
+
 ## Features
 * Bible
   * Verse Recognition for three versions.

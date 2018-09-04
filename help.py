@@ -933,6 +933,13 @@ INFOS = dict( {
 		"Required Level":"None",
 		"Plugin"        :"Reminders",
 		"Type"          :"Fun"
+	},
+	"_piglatin"      :{
+		"Info"          :"Translates a message into pig latin.",
+		"Usage"         :"_piglatin {message}",
+		"Required Level":"None",
+		"Plugin"        :"Main",
+		"Type"          :"Fun"
 	}
 } )
 PREFIXES = {
