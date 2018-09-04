@@ -25,7 +25,6 @@ import urbandictionary
 import wikipedia
 import wolframalpha
 from PyDictionary import PyDictionary
-from PyQt5 import Qt
 from colorama import Fore, init
 
 import argparser
@@ -40,12 +39,12 @@ WHATS_NEW = [
 	"• Added NIV Bible.",
 	"• Code structure changes (should be more readable now).",
 	"• Updated copypasta character list."
-] # list of recent changes to the code.
+]  # list of recent changes to the code.
 PLANNED = [
 	"There is nothing planned at the moment."
-] # list of what I plan to do.
-BOOTUP_TIME = datetime.now( ) # the time the bot started.
-EXITING = False # determines if the bot is closing. If False, the bot automatically restarts.
+]  # list of what I plan to do.
+BOOTUP_TIME = datetime.now( )  # the time the bot started.
+EXITING = False  # determines if the bot is closing. If False, the bot automatically restarts.
 EIGHTBALL_POS = [
 	"It is certain",
 	"Without a doubt",
@@ -70,24 +69,14 @@ EIGHTBALL_NEG = [
 # </editor-fold>
 
 # <editor-fold desc="Clients and Classes">
-CLIENT = discord.Client( ) # Discord client
-init( ) # Colorama client (color the console!)
-WCLIENT = wolframalpha.Client( app_id=wa_token ) # Wolfram|Alpha client
-PARSER = configparser.ConfigParser( ) # ConfigParser init
-CHANNELPARSER = configparser.ConfigParser( ) # ConfigParser init
-PYDICT = PyDictionary( ) # PyDictionary client
-PURGEPARSER = argparser.ArgParser( "&&", "=" ) # ArgParser (my own class) init
-GC = giphy_client.DefaultApi( ) # Giphy client
-# </editor-fold>
-
-# <editor-fold desc="Tray Icon">
-SELECTED_IMAGE = f"{os.getcwd()}\\Discord Logs\\SETTINGS\\avatar5.jpg" # Bot image
-APP = Qt.QApplication( argv )
-STI = Qt.QSystemTrayIcon( Qt.QIcon( SELECTED_IMAGE ), APP )
-ICON = Qt.QIcon( SELECTED_IMAGE )
-STI.setIcon( ICON )
-STI.show( )
-STI.setToolTip( "LogBot" )
+CLIENT = discord.Client( )  # Discord client
+init( )  # Colorama client (color the console!)
+WCLIENT = wolframalpha.Client( app_id=wa_token )  # Wolfram|Alpha client
+PARSER = configparser.ConfigParser( )  # ConfigParser init
+CHANNELPARSER = configparser.ConfigParser( )  # ConfigParser init
+PYDICT = PyDictionary( )  # PyDictionary client
+PURGEPARSER = argparser.ArgParser( "&&", "=" )  # ArgParser (my own class) init
+GC = giphy_client.DefaultApi( )  # Giphy client
 # </editor-fold>
 
 # <editor-fold desc="Databases">
@@ -265,7 +254,7 @@ def is_ascii ( string: str ) -> bool:
 	:param string: The string to analyze.
 	:return: True if `s` is not unicode, otherwise False.
 	"""
-	return all( ord( c ) < 128 for c in string ) # Returns true if the string has no unicode characters.
+	return all( ord( c ) < 128 for c in string )  # Returns true if the string has no unicode characters.
 
 # Changes the time from UTC to PST (-8 hrs)
 def format_time ( time_stamp: datetime, message: discord.Message ) -> datetime:
@@ -281,7 +270,7 @@ def format_time ( time_stamp: datetime, message: discord.Message ) -> datetime:
 	minute = _tz * 60
 	td = timedelta( minutes=minute )
 	ret = time_stamp
-	if "-" in TIME_ZONES.get(message.server.id):
+	if "-" in TIME_ZONES.get( message.server.id ):
 		ret -= td
 	else:
 		ret += td
@@ -334,11 +323,11 @@ def save ( sid: str ):
 	writer.write( str( TIME_ZONES ) )
 	writer.close( )
 	# </editor-fold>
-
 	# <editor-fold desc="ini file">
 	with open( f"{DISCORD_SETTINGS_PATH}\\data.ini", 'w' ) as configfile:
 		PARSER.write( configfile )
-	# </editor-fold>
+
+# </editor-fold>
 
 def check ( *args ) -> str:
 	"""
@@ -374,30 +363,6 @@ def update ( mid: str, cid: str ):
 	"""
 	subprocess.Popen( f"python {os.getcwd()}\\logbot.py -m {mid} -c {cid} -t {BOOTUP_TIME.month}.{BOOTUP_TIME.day}.{BOOTUP_TIME.year}.{BOOTUP_TIME.hour}.{BOOTUP_TIME.minute}.{BOOTUP_TIME.second}.{BOOTUP_TIME.microsecond}", False )
 	exit( 1 )
-
-def send_notification ( _nick: str, _name: str, _id: str, _server: str, _content: str, _who: discord.User ):
-	"""
-	Sends a windows notification.
-	:param _nick: The nickname of the author.
-	:param _name: The name of the author.
-	:param _id: The id of the author.
-	:param _server: The server the message was send in.
-	:param _content: The content of the message.
-	:param _who: The author of the message.
-	"""
-	_n = check( _nick, _name, _id )
-	_header = f"{_n} ({_server}) mentioned {_who}!"
-	STI.showMessage( _header, _content )
-	del _n
-	del _header
-
-def notify ( header: str, body: str ):
-	"""
-	Sends a windows notification.
-	:param header: The header for the notification.
-	:param body: The body for the notification.
-	"""
-	STI.showMessage( header, body )
 
 def sort ( ):
 	"""
@@ -495,7 +460,6 @@ def get_diff ( then: datetime, now: datetime ) -> str:
 		weeks += 1
 		days -= 7
 	# </editor-fold>
-
 	_str = f"{years} {'years' if not years == 1 else 'year'}, {months} {'months' if not months == 1 else 'month'}, {weeks} {'weeks' if not weeks == 1 else 'week'}, {days} {'days' if not days == 1 else 'day'}, {hours} {'hours' if not hours == 1 else 'hour'}, {minutes} {'minutes' if not minutes == 1 else 'minute'}, {seconds} {'seconds' if not seconds == 1 else 'second'}"
 	_str = _str.replace( "0 years,", "" ).replace( " 0 months,", "" ).replace( " 0 weeks,", "" ).replace( " 0 days,", "" ).replace( " 0 hours,", "" ).replace( " 0 minutes,", "" ).replace( " 0 seconds", "" )
 	del years
@@ -1143,7 +1107,6 @@ class Commands:
 				else:
 					user = message.server.get_member_named( msg.get( "user" ) )
 			# </editor-fold>
-
 			if message.channel_mentions:
 				permissions = user.permissions_in( message.channel_mentions[ 0 ] )
 				embed_obj = discord.Embed( title=f"Permissions for {user}", colour=discord.Colour.dark_blue( ) ) \
@@ -1266,6 +1229,19 @@ class Commands:
 				del tmp
 				del ret
 			del content
+		@staticmethod
+		async def piglatin ( message: discord.Message, prefix: str ):
+			"""
+			Translates a string of text into pig latin.
+			:param message: A discord.Message object.
+			:param prefix: The server's prefix.
+			"""
+			words = message.content.replace( f"{prefix}piglatin ", "" ).split( " " )
+			for i in range( 0, len( words ) ):
+				tmp = words[ i ]
+				words[ i ] = tmp[ 1: ] + tmp[ 0 ] + "ay"
+				del tmp
+			await CLIENT.send_message( message.channel, ' '.join( words ) )
 	# noinspection PyShadowingNames
 	class Admin:
 		"""
@@ -1397,7 +1373,6 @@ class Commands:
 			goodbye = msg2.content
 			await CLIENT.delete_messages( [ msg1, msg2 ] )
 			# </editor-fold>
-
 			for _channel in excludes:
 				if _channel.id not in EXCLUDE_CHANNEL_LIST:
 					EXCLUDE_CHANNEL_LIST.append( _channel.id )
@@ -1551,6 +1526,7 @@ class Commands:
 					user,
 					muted_role
 				)
+			# noinspection PyUnresolvedReferences,PyUnresolvedReferences
 			await CLIENT.send_message( message.channel, f"Muted {', '.join([str(x) for x in users_to_mute])} ({len(users_to_mute)}) users. :mute:" )
 			del users_to_mute
 		@staticmethod
@@ -1579,6 +1555,7 @@ class Commands:
 				users_to_mute.remove( None )
 			for user in users_to_mute:
 				await CLIENT.remove_roles( user, muted_role )
+			# noinspection PyUnresolvedReferences,PyUnresolvedReferences
 			await CLIENT.send_message( message.channel, f"Unmuted {', '.join([str(x) for x in users_to_mute])} ({len(users_to_mute)}) users. :loud_sound:" )
 			del users_to_mute
 		@staticmethod
@@ -2189,17 +2166,6 @@ class Commands:
 			del random_access_memory
 			del current_time
 			del embed_obj
-		@staticmethod
-		async def refresh ( ):
-			"""
-			Refreshes the bot.
-			"""
-			global ICON
-			os.system( "cls" )
-			print( f"{Fore.MAGENTA}Signed in and waiting...\nRunning version: LogBot Version {VERSION}{Fore.RESET}" )
-			await CLIENT.change_presence( game=None, status=discord.Status.online )
-			ICON = Qt.QIcon( SELECTED_IMAGE )
-			STI.setIcon( ICON )
 	class DM:
 		"""
 		Private channel commands only!
@@ -2312,16 +2278,6 @@ class Commands:
 			tmp = '\n'.join( WHATS_NEW )
 			await CLIENT.send_message( message.channel, f"```Updates:\n{tmp}```" )
 			del tmp
-		@staticmethod
-		async def refresh ( ):
-			"""
-			Refreshes the bot.
-			"""
-			global ICON
-			os.system( "cls" )
-			print( f"{Fore.MAGENTA}Signed in and waiting...\nRunning version: LogBot Version {VERSION}{Fore.RESET}" )
-			ICON = Qt.QIcon( SELECTED_IMAGE )
-			STI.setIcon( ICON )
 		@staticmethod
 		async def exit ( ):
 			"""
@@ -2842,11 +2798,6 @@ async def on_message ( message: discord.Message ):
 						await CLIENT.send_file( message.channel, f"{_file}" )
 					else:
 						await send_no_perm( message )
-				elif startswith( f"{prefix}refresh" ):
-					if message.author.id == owner_id:
-						await Commands.Owner.refresh( )
-					else:
-						await send_no_perm( message )
 				elif startswith( f"{prefix}dict " ):
 					if not DISABLES[ message.server.id ].get( "dict" ) is True:
 						await Commands.Member.dict( message, prefix )
@@ -2900,14 +2851,14 @@ async def on_message ( message: discord.Message ):
 						await Commands.Admin.join_role( message, prefix )
 					elif DISABLES[ message.server.id ][ "welcome" ]:
 						await CLIENT.send_message( message.channel, "```That command has been disabled!```" )
-					else: send_no_perm( message )
+					else: await send_no_perm( message )
 				elif startswith( f"{prefix}joinrole" ):
 					if not DISABLES[ message.server.id ].get( "welcome" ) is True or message.author.id == owner_id:
 						role = discord.utils.find( lambda r:r.id == JOIN_ROLES[ message.server.id ], message.server.roles )
 						await CLIENT.send_message( message.channel, f"Join Role for {message.server.name}: {role}" )
 					elif DISABLES[ message.server.id ][ "welcome" ]:
 						await CLIENT.send_message( message.channel, "```That command has been disabled!```" )
-					else: send_no_perm( message )
+					else: await send_no_perm( message )
 				elif startswith( f"{prefix}logchannel " ):
 					if admin_role in message.author.roles:
 						cmentions = message.channel_mentions
@@ -2921,7 +2872,7 @@ async def on_message ( message: discord.Message ):
 							await CLIENT.send_message( message.channel, f"```Set the log channel to None```" )
 						del cmentions
 					else:
-						send_no_perm( message )
+						await send_no_perm( message )
 				elif startswith( f"{prefix}logchannel" ):
 					if admin_role in message.author.roles:
 						channel_obj = CLIENT.get_channel( PARSER[ message.server.id ][ "logchannel" ] )
@@ -2931,7 +2882,7 @@ async def on_message ( message: discord.Message ):
 							await CLIENT.send_message( message.channel, f"```The log channel is #{channel_obj}.```" )
 						del channel_obj
 					else:
-						send_no_perm( message )
+						await send_no_perm( message )
 				elif startswith( f"{prefix}roll" ):
 					if not DISABLES[ message.server.id ].get( "roll" ) is True:
 						await CLIENT.send_message( message.channel, f"You rolled {random.choice(range(1, int(message.content.replace('{prefix}roll ', ''))))}!" )
@@ -2943,12 +2894,12 @@ async def on_message ( message: discord.Message ):
 					if admin_role in message.author.roles or message.author.id == owner_id:
 						await Commands.Admin.defaultchannel( message )
 					else:
-						send_no_perm( message )
+						await send_no_perm( message )
 				elif startswith( f"{prefix}defaultchannel" ):
 					if admin_role in message.author.roles or message.author.id == owner_id:
 						await Commands.Admin.get_defaultchannel( message )
 					else:
-						send_no_perm( message )
+						await send_no_perm( message )
 				elif startswith( f"{prefix}simwelcome" ):
 					if message.author.id == owner_id:
 						await on_member_join( message.author )
@@ -2959,7 +2910,7 @@ async def on_message ( message: discord.Message ):
 					if admin_role in message.author.roles or message.author.id == owner_id:
 						await Commands.Admin.changeprefix( message, prefix )
 					else:
-						send_no_perm( message )
+						await send_no_perm( message )
 				elif startswith( f"{prefix}prefix" ):
 					await CLIENT.send_message( message.channel, f"You guessed it!" )
 				elif startswith( f"{prefix}role " ):
@@ -2983,7 +2934,7 @@ async def on_message ( message: discord.Message ):
 					if admin_role in message.author.roles:
 						await Commands.Admin.filter_settings( message, prefix )
 					else:
-						send_no_perm( message )
+						await send_no_perm( message )
 				elif startswith( f"{prefix}8ball " ):
 					await Commands.Member.eightball( message )
 				elif startswith( f"{prefix}ToS" ):
@@ -2996,7 +2947,9 @@ async def on_message ( message: discord.Message ):
 					if admin_role in message.author.roles or message.author.id is owner_id:
 						await Commands.Admin.time_zone( message, prefix )
 					else:
-						send_no_perm( message )
+						await send_no_perm( message )
+				elif startswith( f"{prefix}piglatin " ):
+					await Commands.Member.piglatin( message, prefix )
 			elif startswith( f"$update", "logbot.update" ):
 				if message.author.id == owner_id:
 					msg = await CLIENT.send_message( message.channel, "```Updating...```" )
@@ -3012,9 +2965,6 @@ async def on_message ( message: discord.Message ):
 					await send_no_perm( message )
 			elif startswith( "logbot.info" ):
 				await Commands.Owner.info( message )
-			elif startswith( "logbot.refresh" ):
-				STI.hide( )
-				STI.show( )
 			elif startswith( "$prefix" ):
 				await CLIENT.send_message( message.channel, f"The prefix is {prefix}" )
 			elif startswith( f"mu$playlist " ):
@@ -3095,9 +3045,6 @@ async def on_message ( message: discord.Message ):
 					await send_no_perm( message )
 			elif message.content.startswith( "$updates" ):
 				await Commands.DM.updates( message )
-			elif message.content.startswith( "$refresh" ):
-				if message.author.id == owner_id:
-					await Commands.DM.refresh( )
 			elif message.content.startswith( "$update" ) or message.content.startswith( "logbot.update" ):
 				if message.author.id == owner_id:
 					await Commands.DM.update( message )
@@ -3690,7 +3637,7 @@ async def on_ready ( ):
 	"""
 	Occurs when the bot logs in.
 	"""
-	global ICON, BOOTUP_TIME
+	global BOOTUP_TIME
 	# gets and deletes the Update message from the parameters.
 	if argv:
 		index = -1
@@ -3716,15 +3663,6 @@ async def on_ready ( ):
 			}
 	# Updates bot icon, status, and game.
 	await CLIENT.change_presence( game=discord.Game( name="Prefix: $" ), status=None )
-	try:
-		avatar_tmp = open( SELECTED_IMAGE, "rb" )
-		await CLIENT.edit_profile( avatar=avatar_tmp.read( ) )
-		avatar_tmp.close( )
-		ICON = Qt.QIcon( SELECTED_IMAGE )
-		STI.setIcon( ICON )
-		del avatar_tmp
-	except Exception:
-		pass
 
 CLIENT.run( token )
 
